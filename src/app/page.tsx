@@ -1,3 +1,5 @@
+//import { ThemeToggle } from '@/components/ThemeToggle';
+
 export default function Home() {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -5,6 +7,7 @@ export default function Home() {
                 <h1 className="text-3xl font-bold mb-8 text-center">
                     Vocabulary Builder
                 </h1>
+                {/* <ThemeToggle /> */}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Dictionary Section */}

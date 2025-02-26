@@ -210,9 +210,364 @@ API for images:
 
 1. https://api.pexels.com/v1/search?query=nature&orientation=portrait&size=small&locale=en-US
 
+===================================
+
 Tables:
 
-1. users
-2. words
-3. dictionaries
-4. lists
+one audio can be used in many main_dictionary records
+
+one main_dictionary record can have many synonyms
+one synonym can be used in many main_dictionary records
+
+one main_dictionary record can have many examples
+one word can be used in many main_dictionary records
+one one_word_definition can be used in many main_dictionary records
+
+psql $DATABASE_URL
+
+# Database Tables
+
+# Database Tables
+
+## Languages Table
+
+| Column     | Type        | Constraints               |
+| ---------- | ----------- | ------------------------- |
+| id         | UUID        | PRIMARY KEY               |
+| code       | VARCHAR(5)  | UNIQUE NOT NULL           |
+| name       | VARCHAR(50) | NOT NULL                  |
+| created_at | TIMESTAMP   | DEFAULT CURRENT_TIMESTAMP |
+
+### Indexes
+
+-   None
+
+---
+
+## Users Table
+
+| Column             | Type         | Constraints                        |
+| ------------------ | ------------ | ---------------------------------- |
+| id                 | UUID         | PRIMARY KEY                        |
+| name               | VARCHAR(255) | NOT NULL                           |
+| email              | VARCHAR(255) | NOT NULL                           |
+| password           | VARCHAR(255) | NOT NULL                           |
+| base_language_id   | UUID         | REFERENCES languages(id)           |
+| target_language_id | UUID         | REFERENCES languages(id)           |
+| created_at         | TIMESTAMP    | NOT NULL DEFAULT CURRENT_TIMESTAMP |
+| updated_at         | TIMESTAMP    | NOT NULL DEFAULT CURRENT_TIMESTAMP |
+| lastLogin          | TIMESTAMP    | NOT NULL DEFAULT CURRENT_TIMESTAMP |
+| role               | VARCHAR(255) | NOT NULL                           |
+| isVerified         | BOOLEAN      | NOT NULL DEFAULT FALSE             |
+| verificationToken  | VARCHAR(255) |                                    |
+| profilePictureUrl  | VARCHAR(255) |                                    |
+| status             | VARCHAR(255) | NOT NULL                           |
+| settings           | JSONB        | NOT NULL                           |
+| study_preferences  | JSONB        | NOT NULL                           |
+| deleted_at         | TIMESTAMP    |                                    |
+
+### Indexes
+
+-   `idx_user_last_login` on `lastLogin`
+
+---
+
+## Audios Table
+
+| Column      | Type         | Constraints               |
+| ----------- | ------------ | ------------------------- |
+| id          | UUID         | PRIMARY KEY               |
+| audio       | VARCHAR(255) | NOT NULL                  |
+| language_id | UUID         | REFERENCES languages(id)  |
+| created_at  | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP |
+
+### Indexes
+
+-   `idx_audio_language` on `language_id`
+
+---
+
+## Words Table
+
+| Column      | Type         | Constraints               |
+| ----------- | ------------ | ------------------------- |
+| id          | UUID         | PRIMARY KEY               |
+| word        | VARCHAR(255) | NOT NULL                  |
+| language_id | UUID         | REFERENCES languages(id)  |
+| created_at  | TIMESTAMP    | DEFAULT CURRENT_TIMESTAMP |
+
+### Indexes
+
+-   None
+
+---
+
+## One Word Definition Table
+
+| Column      | Type      | Constraints               |
+| ----------- | --------- | ------------------------- |
+| id          | UUID      | PRIMARY KEY               |
+| definition  | TEXT      | NOT NULL                  |
+| language_id | UUID      | REFERENCES languages(id)  |
+| created_at  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+
+### Indexes
+
+-   None
+
+---
+
+## Main Dictionary Table
+
+| Column                                                                        | Type             | Constraints                                 |
+| ----------------------------------------------------------------------------- | ---------------- | ------------------------------------------- |
+| id                                                                            | UUID             | PRIMARY KEY                                 |
+| word_id                                                                       | UUID             | NOT NULL REFERENCES words(id)               |
+| one_word_definition_id                                                        | UUID             | NOT NULL REFERENCES one_word_definition(id) |
+| base_language_id                                                              | UUID             | REFERENCES languages(id)                    |
+| target_language_id                                                            | UUID             | REFERENCES languages(id)                    |
+| description_base                                                              | TEXT             |                                             |
+| description_target                                                            | TEXT             |                                             |
+| audio_id                                                                      | UUID             | REFERENCES audios(id)                       |
+| frequency                                                                     | INTEGER          |                                             |
+| part_of_speech                                                                | part_of_speech   |                                             |
+| phonetic                                                                      | VARCHAR(100)     |                                             |
+| difficulty_level                                                              | difficulty_level |                                             |
+| etymology                                                                     | TEXT             |                                             |
+| source                                                                        | source_type      |                                             |
+| created_at                                                                    | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP                   |
+| updated_at                                                                    | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP                   |
+| deleted_at                                                                    | TIMESTAMP        |                                             |
+| UNIQUE(word_id, one_word_definition_id, base_language_id, target_language_id) |                  |                                             |
+
+### Indexes
+
+-   `idx_main_dict_languages` on `(base_language_id, target_language_id)`
+-   `idx_main_dict_word_search` on `USING gin((word_id::text) gin_trgm_ops)`
+-   `idx_word_lookup` on `(word_id, base_language_id, target_language_id) INCLUDE (one_word_definition_id)`
+
+---
+
+## Dictionary Examples Table
+
+| Column        | Type      | Constraints                             |
+| ------------- | --------- | --------------------------------------- |
+| id            | UUID      | PRIMARY KEY                             |
+| dictionary_id | UUID      | NOT NULL REFERENCES main_dictionary(id) |
+| example       | TEXT      | NOT NULL                                |
+| language_id   | UUID      | REFERENCES languages(id)                |
+| created_at    | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP               |
+| updated_at    | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP               |
+| deleted_at    | TIMESTAMP |                                         |
+
+### Indexes
+
+-   None
+
+---
+
+## Synonyms Table
+
+| Column      | Type      | Constraints               |
+| ----------- | --------- | ------------------------- |
+| id          | UUID      | PRIMARY KEY               |
+| synonym     | TEXT      | NOT NULL UNIQUE           |
+| language_id | UUID      | REFERENCES languages(id)  |
+| created_at  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| updated_at  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| deleted_at  | TIMESTAMP |                           |
+
+### Indexes
+
+-   None
+
+---
+
+## Dictionary Synonyms Table
+
+| Column                                  | Type      | Constraints                             |
+| --------------------------------------- | --------- | --------------------------------------- |
+| dictionary_id                           | UUID      | NOT NULL REFERENCES main_dictionary(id) |
+| synonym_id                              | UUID      | NOT NULL REFERENCES synonyms(id)        |
+| created_at                              | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP               |
+| updated_at                              | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP               |
+| deleted_at                              | TIMESTAMP |                                         |
+| PRIMARY KEY (dictionary_id, synonym_id) |           |                                         |
+
+### Indexes
+
+-   None
+
+---
+
+## User Dictionary Table
+
+| Column                               | Type      | Constraints                    |
+| ------------------------------------ | --------- | ------------------------------ |
+| id                                   | UUID      | PRIMARY KEY                    |
+| user_id                              | UUID      | REFERENCES users(id)           |
+| main_dictionary_id                   | UUID      | REFERENCES main_dictionary(id) |
+| base_language_id                     | UUID      | REFERENCES languages(id)       |
+| target_language_id                   | UUID      | REFERENCES languages(id)       |
+| custom_definition_baseLanguage       | TEXT      |                                |
+| custom_definition_targetLanguage     | TEXT      |                                |
+| is_learned                           | BOOLEAN   | NOT NULL DEFAULT FALSE         |
+| is_needs_review                      | BOOLEAN   | NOT NULL DEFAULT FALSE         |
+| is_difficult_to_learn                | BOOLEAN   | NOT NULL DEFAULT FALSE         |
+| is_modified                          | BOOLEAN   | NOT NULL DEFAULT FALSE         |
+| last_reviewed_at                     | TIMESTAMP |                                |
+| review_count                         | INTEGER   | DEFAULT 0                      |
+| time_word_was_started_to_learn       | TIMESTAMP |                                |
+| time_word_was_learned                | TIMESTAMP |                                |
+| progress                             | FLOAT     | DEFAULT 0                      |
+| created_at                           | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP      |
+| updated_at                           | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP      |
+| deleted_at                           | TIMESTAMP |                                |
+| UNIQUE (user_id, main_dictionary_id) |           |                                |
+
+### Indexes
+
+-   `idx_user_dict_learning` on `(user_id, is_learned, last_reviewed_at)`
+-   `idx_user_dict_review` on `(user_id, is_needs_review)`
+-   `idx_user_dict_difficult` on `(user_id, is_difficult_to_learn)`
+-   `idx_active_words` on `last_reviewed_at WHERE is_learned = false`
+
+---
+
+## User Dictionary Examples Table
+
+| Column                                                          | Type      | Constraints               |
+| --------------------------------------------------------------- | --------- | ------------------------- |
+| id                                                              | UUID      | PRIMARY KEY               |
+| user_dictionary_id                                              | UUID      |                           |
+| example                                                         | TEXT      | NOT NULL                  |
+| language_id                                                     | UUID      | REFERENCES languages(id)  |
+| created_at                                                      | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| updated_at                                                      | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| deleted_at                                                      | TIMESTAMP |                           |
+| UNIQUE (user_dictionary_id, example)                            |           |                           |
+| FOREIGN KEY (user_dictionary_id) REFERENCES user_dictionary(id) |           |                           |
+
+### Indexes
+
+-   None
+
+---
+
+## User Synonyms Table
+
+| Column      | Type      | Constraints               |
+| ----------- | --------- | ------------------------- |
+| id          | UUID      | PRIMARY KEY               |
+| synonym     | TEXT      | NOT NULL UNIQUE           |
+| language_id | UUID      | REFERENCES languages(id)  |
+| created_at  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| updated_at  | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| deleted_at  | TIMESTAMP |                           |
+
+### Indexes
+
+-   None
+
+---
+
+## User Dictionary Synonyms Table
+
+| Column                                                          | Type      | Constraints               |
+| --------------------------------------------------------------- | --------- | ------------------------- |
+| user_dictionary_id                                              | UUID      |                           |
+| user_synonym_id                                                 | UUID      |                           |
+| created_at                                                      | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| updated_at                                                      | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+| deleted_at                                                      | TIMESTAMP |                           |
+| PRIMARY KEY (user_dictionary_id, user_synonym_id)               |           |                           |
+| FOREIGN KEY (user_dictionary_id) REFERENCES user_dictionary(id) |           |                           |
+| FOREIGN KEY (user_synonym_id) REFERENCES user_synonyms(id)      |           |                           |
+
+### Indexes
+
+-   None
+
+---
+
+## Lists Table
+
+| Column             | Type             | Constraints               |
+| ------------------ | ---------------- | ------------------------- |
+| id                 | UUID             | PRIMARY KEY               |
+| name               | VARCHAR(255)     | NOT NULL                  |
+| description        | TEXT             |                           |
+| base_language_id   | UUID             | REFERENCES languages(id)  |
+| target_language_id | UUID             | REFERENCES languages(id)  |
+| is_public          | BOOLEAN          | NOT NULL DEFAULT FALSE    |
+| created_at         | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP |
+| updated_at         | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP |
+| tags               | TEXT[]           |                           |
+| coverImageUrl      | VARCHAR(255)     |                           |
+| difficultyLevel    | difficulty_level |                           |
+| wordCount          | INTEGER          | DEFAULT 0                 |
+| last_modified      | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP |
+| jsonb_data         | JSONB            | DEFAULT '{}'::jsonb       |
+| owner_id           | UUID             | REFERENCES users(id)      |
+| deleted_at         | TIMESTAMP        |                           |
+
+### Indexes
+
+-   `idx_lists_language` on `(base_language_id, target_language_id)`
+
+---
+
+## List Words Table
+
+| Column                               | Type    | Constraints                    |
+| ------------------------------------ | ------- | ------------------------------ |
+| list_id                              | UUID    | REFERENCES lists(id)           |
+| dictionary_id                        | UUID    | REFERENCES main_dictionary(id) |
+| order_index                          | INTEGER |                                |
+| PRIMARY KEY (list_id, dictionary_id) |         |                                |
+
+### Indexes
+
+-   `idx_list_words_order` on `(list_id, order_index)`
+
+---
+
+## User Lists Table
+
+| Column                     | Type             | Constraints               |
+| -------------------------- | ---------------- | ------------------------- |
+| id                         | UUID             | PRIMARY KEY               |
+| user_id                    | UUID             | REFERENCES users(id)      |
+| lists_id                   | UUID             | REFERENCES lists(id)      |
+| base_language_id           | UUID             | REFERENCES languages(id)  |
+| target_language_id         | UUID             | REFERENCES languages(id)  |
+| is_modified                | BOOLEAN          | DEFAULT FALSE             |
+| custom_name_of_list        | VARCHAR(255)     |                           |
+| custom_description_of_list | TEXT             |                           |
+| created_at                 | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP |
+| updated_at                 | TIMESTAMP        | DEFAULT CURRENT_TIMESTAMP |
+| custom_difficulty          | difficulty_level |                           |
+| progress                   | FLOAT            | DEFAULT 0                 |
+| jsonb_data                 | JSONB            | DEFAULT '{}'::jsonb       |
+| deleted_at                 | TIMESTAMP        |                           |
+| UNIQUE (user_id, lists_id) |                  |                           |
+
+### Indexes
+
+-   `idx_user_lists_progress` on `(user_id, progress)`
+-   `idx_user_lists_modified` on `(user_id, is_modified)`
+
+---
+
+## User List Words Table
+
+| Column                                    | Type    | Constraints                    |
+| ----------------------------------------- | ------- | ------------------------------ |
+| user_list_id                              | UUID    | REFERENCES user_lists(id)      |
+| dictionary_id                             | UUID    | REFERENCES main_dictionary(id) |
+| order_index                               | INTEGER |                                |
+| PRIMARY KEY (user_list_id, dictionary_id) |         |                                |
+
+### Indexes
+
+-   None

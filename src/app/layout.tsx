@@ -1,21 +1,15 @@
-import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Metadata } from 'next';
+import { geistSans, geistMono } from '@/components/ui/fonts';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import AuthProvider from '@/components/AuthProvider';
-
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
-});
+import { ReduxProvider } from '@/components/ReduxProvider';
 
 export const metadata: Metadata = {
-    title: 'Keystroke App',
+    title: {
+        default: 'Keystroke App',
+        template: '%s | Keystroke App',
+    },
     description:
         'This is an application to help in learning to type foreign language words on the keyboard it helps in learning the language in learning new words and also developing typing skills',
 };
@@ -30,11 +24,16 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <AuthProvider>
-                    <ThemeProvider defaultTheme="system" storageKey="ui-theme">
-                        {children}
-                    </ThemeProvider>
-                </AuthProvider>
+                <ReduxProvider>
+                    <AuthProvider>
+                        <ThemeProvider
+                            defaultTheme="system"
+                            storageKey="ui-theme"
+                        >
+                            {children}
+                        </ThemeProvider>
+                    </AuthProvider>
+                </ReduxProvider>
             </body>
         </html>
     );

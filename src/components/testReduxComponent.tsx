@@ -26,13 +26,18 @@ export default function TestReduxComponent() {
                 <p>Target Language: {user?.targetLanguageId}</p>
                 <p>Profile Picture: {user?.profilePictureUrl}</p>
             </div>
-            <Image
-                className="w-30 h-30 rounded-full"
-                src={user?.profilePictureUrl || ''}
-                alt="Rounded avatar"
-                width={100}
-                height={100}
-            />
+            {user?.profilePictureUrl &&
+                user.profilePictureUrl.includes(
+                    'public.blob.vercel-storage.com'
+                ) && (
+                    <Image
+                        className="w-30 h-30 rounded-full"
+                        src={user.profilePictureUrl}
+                        alt={`${user.name}'s profile picture`}
+                        width={100}
+                        height={100}
+                    />
+                )}
         </>
     );
 }

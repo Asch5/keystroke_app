@@ -1,7 +1,5 @@
 'use server';
 
-import { z } from 'zod';
-
 import { prisma } from '@/lib/prisma';
 import { User } from '@prisma/client';
 
@@ -44,18 +42,22 @@ export async function createUser(user: User) {
 
 export async function updateUser(user: User) {
     const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         id,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         createdAt,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         updatedAt,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         deletedAt,
         settings,
         studyPreferences,
-        ...userData
+        ...rest
     } = user;
     const updatedUser = await prisma.user.update({
         where: { id: user.id },
         data: {
-            ...userData,
+            ...rest,
             settings: settings ?? {},
             studyPreferences: studyPreferences ?? {},
         },

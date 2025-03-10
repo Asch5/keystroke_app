@@ -4,7 +4,7 @@ import { AuthError } from 'next-auth';
 import { signIn } from '@/auth';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { createUser, getUserByEmail } from '../db/user';
+import { getUserByEmail } from '../db/user';
 import { prisma } from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 import { UserBasicData } from '@/types/user';

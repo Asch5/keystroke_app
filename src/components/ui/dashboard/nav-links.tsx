@@ -4,7 +4,6 @@ import {
     UserGroupIcon,
     HomeIcon,
     DocumentDuplicateIcon,
-    Cog6ToothIcon,
     UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';

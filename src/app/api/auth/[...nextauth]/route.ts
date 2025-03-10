@@ -29,21 +29,14 @@ export const authOptions: NextAuthConfig = {
                 password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
-                console.log('---------------credentials----------------');
                 try {
                     // Validate credentials schema
                     const validatedCredentials =
                         credentialsSchema.parse(credentials);
-                    console.log(
-                        '-------validatedCredentials------------',
-                        validatedCredentials
-                    );
                     // Find user
                     const user = await prisma.user.findUnique({
                         where: { email: validatedCredentials.email },
                     });
-
-                    console.log('user from db', user);
 
                     if (!user || !user.password) {
                         throw new Error('Invalid credentials');
@@ -60,7 +53,9 @@ export const authOptions: NextAuthConfig = {
                     }
 
                     // Return user without password
-                    const { password: _, ...userWithoutPassword } = user;
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    const { password: _password, ...userWithoutPassword } =
+                        user;
                     return userWithoutPassword;
                 } catch (error) {
                     if (error instanceof z.ZodError) {

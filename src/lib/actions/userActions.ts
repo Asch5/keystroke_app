@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
 import { put } from '@vercel/blob';
+import { Prisma } from '@prisma/client';
 
 const profileSchema = z.object({
     name: z
@@ -41,6 +42,19 @@ type State = {
     message?: string | null;
     success?: boolean;
 };
+
+interface UserSettings {
+    [key: string]: string | undefined; // Add index signature
+    theme?: 'light' | 'dark';
+}
+
+interface UpdateData {
+    name?: string;
+    baseLanguageId?: string | null;
+    targetLanguageId?: string | null;
+    settings?: Prisma.JsonValue;
+    profilePictureUrl?: string;
+}
 
 export async function updateUserProfile(
     prevState: State,
@@ -79,10 +93,10 @@ export async function updateUserProfile(
         }
 
         // Get current settings to merge with new ones
-        const currentSettings = user.settings as Record<string, any>;
+        const currentSettings = user.settings as UserSettings;
 
         // Prepare update data object
-        const updateData: Record<string, any> = {};
+        const updateData: UpdateData = {};
 
         // Only add fields that are present in the validated data and have values
         if (validatedFields.data.name !== undefined) {
@@ -140,7 +154,7 @@ export async function updateUserProfile(
         if (Object.keys(updateData).length > 0) {
             await prisma.user.update({
                 where: { id: user.id },
-                data: updateData,
+                data: updateData as Prisma.UserUpdateInput,
             });
 
             // Revalidate the profile page

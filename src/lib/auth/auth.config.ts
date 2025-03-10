@@ -50,7 +50,10 @@ export const authConfig: NextAuthConfig = {
                         email: validatedCredentials.email,
                         role: 'user',
                     };
-                } catch (error) {
+                } catch (
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    _error
+                ) {
                     return null;
                 }
             },

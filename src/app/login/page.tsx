@@ -30,7 +30,7 @@ export default function LoginPage() {
 
                 <div className="flex flex-row items-center justify-start gap-2 pt-2">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Don't have an account?{' '}
+                        Don&apos;t have an account?{' '}
                     </p>
                     <svg
                         className="w-4 h-4 text-gray-800 dark:text-white"

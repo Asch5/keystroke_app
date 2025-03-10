@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useActionState } from 'react';
+import { useState, useEffect, useActionState, useCallback } from 'react';
 import { updateUserProfile } from '@/lib/actions/userActions';
 import { getLanguages, getUserByEmail } from '@/lib/db/user';
 import { Theme } from '@/types/user';
@@ -24,7 +24,7 @@ export default function ProfileForm() {
     console.log('state', state);
 
     // Function to manually refresh user data in Redux
-    const refreshUserData = async () => {
+    const refreshUserData = useCallback(async () => {
         if (session?.user?.email) {
             try {
                 const user = await getUserByEmail(session.user.email);
@@ -45,7 +45,7 @@ export default function ProfileForm() {
                 console.error('Error refreshing user data:', error);
             }
         }
-    };
+    }, [session, dispatch]);
 
     useEffect(() => {
         // Fetch available languages
@@ -63,10 +63,9 @@ export default function ProfileForm() {
 
     useEffect(() => {
         if (state.success) {
-            // Assuming your state includes a success flag
             refreshUserData();
         }
-    }, [state]);
+    }, [state, refreshUserData]);
 
     return (
         <form action={formAction} className="max-w-lg mx-auto">

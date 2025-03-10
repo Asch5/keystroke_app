@@ -4,6 +4,8 @@ import { SessionProvider, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '@/lib/redux/store';
 import { setUser, clearUser } from '@/lib/redux/features/authSlice';
+import { getUserById } from '@/lib/db/user';
+import { UserBasicData } from '@/types/user';
 
 // Component to sync NextAuth session with Redux
 function SessionSync() {
@@ -11,41 +13,51 @@ function SessionSync() {
     const dispatch = useAppDispatch();
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (status === 'loading') return;
+    // useEffect(() => {
+    //     if (status === 'loading') return;
 
-        try {
-            if (status === 'authenticated' && session?.user) {
-                if (process.env.NODE_ENV === 'development') {
-                    console.log('Session authenticated:', session);
-                }
+    //     const syncUserData = async () => {
+    //         try {
+    //             if (status === 'authenticated' && session?.user) {
+    //                 if (process.env.NODE_ENV === 'development') {
+    //                     console.log('---Session authenticated:', session);
+    //                 }
 
-                const userData = {
-                    id: session.user.id as string,
-                    name: session.user.name as string,
-                    email: session.user.email as string,
-                };
+    //                 const user = await getUserById(session.user.id as string);
 
-                // Add role if it exists
-                if ('role' in session.user) {
-                    Object.assign(userData, { role: session.user.role });
-                }
+    //                 if (!user) {
+    //                     console.error('User not found in database');
+    //                     return;
+    //                 }
 
-                dispatch(setUser(userData));
-            } else if (status === 'unauthenticated') {
-                if (process.env.NODE_ENV === 'development') {
-                    console.log('Session unauthenticated');
-                }
-                dispatch(clearUser());
-            }
-        } catch (err) {
-            console.error('Error processing session:', err);
-            setError(
-                err instanceof Error ? err.message : 'Unknown session error'
-            );
-            dispatch(clearUser());
-        }
-    }, [session, status, dispatch]);
+    //                 const userBasicData: UserBasicData = {
+    //                     id: user.id,
+    //                     name: user.name,
+    //                     email: user.email,
+    //                     role: user.role,
+    //                     status: user.status,
+    //                     baseLanguageId: user.baseLanguageId,
+    //                     targetLanguageId: user.targetLanguageId,
+    //                 };
+
+    //                 dispatch(setUser(userBasicData));
+    //             } else if (status === 'unauthenticated') {
+    //                 if (process.env.NODE_ENV === 'development') {
+    //                     console.log('Session unauthenticated');
+    //                 }
+    //                 dispatch(clearUser());
+    //             }
+    //         } catch (err) {
+    //             console.error('Error processing session:', err);
+    //             setError(
+    //                 err instanceof Error ? err.message : 'Unknown session error'
+    //             );
+    //             dispatch(clearUser());
+    //         }
+    //     };
+
+    //     syncUserData();
+    // }, [session, status, dispatch]);
 
     if (error) {
         return (

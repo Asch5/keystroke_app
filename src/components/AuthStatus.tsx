@@ -1,12 +1,11 @@
 'use client';
 
-import { useAppSelector } from '@/lib/redux/store';
 import { useSession } from 'next-auth/react';
 
 export default function AuthStatus() {
-    const { user, isAuthenticated } = useAppSelector((state) => state.auth);
-    const { status } = useSession();
-    console.log('user', user);
+    const { status, data: session } = useSession();
+    const isAuthenticated = status === 'authenticated';
+    const user = session?.user;
 
     if (status === 'loading') {
         return (
@@ -21,7 +20,7 @@ export default function AuthStatus() {
             <h2 className="text-lg font-bold mb-2">Authentication Status</h2>
             <p>Session Status: {status}</p>
             <p>
-                Redux Auth State:{' '}
+                Auth State:{' '}
                 {isAuthenticated ? 'Authenticated' : 'Not Authenticated'}
             </p>
             {user && (
@@ -29,6 +28,7 @@ export default function AuthStatus() {
                     <p>User ID: {user.id}</p>
                     <p>Name: {user.name}</p>
                     <p>Email: {user.email}</p>
+                    <p>Role: {user.role}</p>
                 </div>
             )}
         </div>

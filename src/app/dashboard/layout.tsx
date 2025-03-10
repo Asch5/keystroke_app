@@ -1,5 +1,6 @@
+'use client';
+
 import SideNav from '@/components/ui/dashboard/sidenav';
-import AuthStatus from '@/components/AuthStatus';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
@@ -8,7 +9,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <SideNav />
             </div>
             <div className="flex-grow p-6 md:overflow-y-auto md:p-12">
-                <AuthStatus />
                 <div className="mt-4">{children}</div>
             </div>
         </div>

@@ -1,113 +1,43 @@
-export default function Page() {
+import SignupForm from '@/components/ui/signup-form';
+import Link from 'next/link';
+import { Suspense } from 'react';
+export default function SignupPage() {
     return (
         <main className="flex items-center justify-center md:h-screen">
-            <form className="max-w-sm mx-auto">
-                <div className="mb-5">
-                    <label
-                        htmlFor="email"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            <div className="relative sflex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
+                <h1 className="text-2xl font-bold text-center mb-5">
+                    Register
+                </h1>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <SignupForm />
+                </Suspense>
+                <div className="flex flex-row items-center justify-start gap-2 pt-2">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        Already have an account?{' '}
+                    </p>
+                    <svg
+                        className="w-4 h-4 text-gray-800 dark:text-white"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 10"
                     >
-                        Your email
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-                        placeholder="name@flowbite.com"
-                        required
-                    />
-                </div>
-                <div className="mb-5">
-                    <label
-                        htmlFor="email"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                        Your email
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-                        placeholder="name@flowbite.com"
-                        required
-                    />
-                </div>
-                <div className="mb-5">
-                    <label
-                        htmlFor="email"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                        Your email
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-                        placeholder="name@flowbite.com"
-                        required
-                    />
-                </div>
-                <div className="mb-5">
-                    <label
-                        htmlFor="countries"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                        Select an option
-                    </label>
-                    <select
-                        id="countries"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
-                        <option value="FR">France</option>
-                        <option value="DE">Germany</option>
-                    </select>
-                </div>
-                <div className="mb-5">
-                    <label
-                        htmlFor="repeat-password"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                        Repeat password
-                    </label>
-                    <input
-                        type="password"
-                        id="repeat-password"
-                        className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-                        required
-                    />
-                </div>
-                <div className="flex items-start mb-5">
-                    <div className="flex items-center h-5">
-                        <input
-                            id="terms"
-                            type="checkbox"
-                            value=""
-                            className="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-                            required
+                        <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
                         />
-                    </div>
-                    <label
-                        htmlFor="terms"
-                        className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    </svg>
+                    <Link
+                        href="/login"
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                     >
-                        I agree with the{' '}
-                        <a
-                            href="#"
-                            className="text-blue-600 hover:underline dark:text-blue-500"
-                        >
-                            terms and conditions
-                        </a>
-                    </label>
+                        Log In
+                    </Link>
                 </div>
-                <button
-                    type="submit"
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                    Register new account
-                </button>
-            </form>
+            </div>
         </main>
     );
 }

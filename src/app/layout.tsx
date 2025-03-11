@@ -24,16 +24,16 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <ReduxProvider>
-                    <AuthProvider>
+                <AuthProvider>
+                    <ReduxProvider>
                         <ThemeProvider
                             defaultTheme="system"
                             storageKey="ui-theme"
                         >
                             {children}
                         </ThemeProvider>
-                    </AuthProvider>
-                </ReduxProvider>
+                    </ReduxProvider>
+                </AuthProvider>
             </body>
         </html>
     );

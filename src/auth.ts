@@ -37,7 +37,12 @@ export const authConfig: NextAuthConfig = {
             return session;
         },
         // Authorized callback for route protection
-        authorized: ({ auth, request }) => {
+
+        authorized: ({
+            auth,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            request,
+        }) => {
             return !!auth?.user;
         },
     },
@@ -84,6 +89,7 @@ export const authConfig: NextAuthConfig = {
                     }
 
                     // Return user without password
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { password: _, ...userWithoutPassword } = user;
                     return userWithoutPassword;
                 } catch (error) {

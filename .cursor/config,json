@@ -20,7 +20,8 @@
             "Vercel AI SDK": "https://sdk.vercel.ai/docs/introduction",
             "Vercel Blob": "https://vercel.com/docs/blob/introduction",
             "Vercel Postgres": "https://vercel.com/docs/postgres/introduction",
-            "Redux Persist": "https://www.npmjs.com/package/redux-persist"
+            "Redux Persist": "https://www.npmjs.com/package/redux-persist",
+            "ESLint": "https://eslint.org/docs/latest/rules/"
         },
         "comments": true
     }

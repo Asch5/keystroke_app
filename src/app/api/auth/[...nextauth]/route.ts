@@ -84,9 +84,6 @@ export const authOptions: NextAuthConfig = {
     },
 };
 
-export const {
-    auth,
-    handlers: { GET, POST },
-    signOut,
-    signIn,
-} = NextAuth(authOptions);
+// Only export the handlers that Next.js expects in route files
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

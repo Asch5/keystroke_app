@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { SourceType } from '@prisma/client';
+
+enum SourceType {
+    IMPORT = 'import',
+    USER = 'user',
+    SYSTEM = 'system',
+}
 
 export async function POST(request: NextRequest) {
     try {
@@ -65,7 +70,7 @@ export async function POST(request: NextRequest) {
                     targetLanguageId,
                     partOfSpeech,
                     difficultyLevel,
-                    source: SourceType.user,
+                    source: SourceType.USER,
                 },
             });
 

@@ -19,9 +19,15 @@ import {
     userDictionarySynonyms,
     userSynonyms,
 } from '../src/lib/placeholder-data';
-import { SourceType } from '@prisma/client';
 
 const prisma = new PrismaClient();
+
+// If you need SourceType, define it directly in the seed file:
+enum SourceType {
+    IMPORT = 'import',
+    USER = 'user',
+    SYSTEM = 'system',
+}
 
 async function main() {
     console.log('🌱 Starting seeding...');
@@ -119,9 +125,7 @@ async function main() {
     for (const dict of mainDictionary) {
         // Convert source type to match Prisma's enum format
         const sourceType =
-            dict.source === SourceType.ai_generated
-                ? SourceType.ai_generated
-                : dict.source;
+            dict.source === SourceType.IMPORT ? SourceType.IMPORT : dict.source;
 
         await prisma.mainDictionary.upsert({
             where: { id: dict.id },

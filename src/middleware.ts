@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
-import { authConfig } from '@/lib/auth/auth.config';
+import { edgeAuthConfig } from '@/lib/auth/edge-config';
 
-const { auth } = NextAuth(authConfig);
+const { auth } = NextAuth(edgeAuthConfig);
 
 // Define path permissions for different roles
 const rolePermissions = {
@@ -43,7 +43,7 @@ export default auth((req) => {
     const allowedPaths =
         rolePermissions[userRole as keyof typeof rolePermissions] || [];
     const isPathAllowed = allowedPaths.some((path) =>
-        nextUrl.pathname.startsWith(path)
+        nextUrl.pathname.startsWith(path),
     );
 
     if (!isPathAllowed) {

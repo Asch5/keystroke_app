@@ -24,7 +24,7 @@ export async function createUser(user: User) {
             data: {
                 email,
                 password, // Note: In a real app, you should hash this password
-                name: email.split('@')[0], // Default name from email
+                name: email.split('@')[0] || 'user', // Default name from email
                 role: 'USER',
                 status: 'ACTIVE',
                 isVerified: false,

@@ -31,6 +31,11 @@ export default function AuthStatus() {
                     <p>Role: {user.role}</p>
                 </div>
             )}
+            {process.env.NODE_ENV === 'production' && (
+                <p>
+                    Secret Loaded: {process.env.NEXTAUTH_SECRET ? '✅' : '❌'}
+                </p>
+            )}
         </div>
     );
 }

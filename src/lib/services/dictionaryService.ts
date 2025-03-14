@@ -10,14 +10,14 @@ import { prisma } from '@/lib/prisma';
  */
 export async function getDictionaryWords(
     targetLanguageId: string,
-    baseLanguageId: string | null
+    baseLanguageId: string | null,
 ): Promise<Word[]> {
     try {
         // Query mainDictionary table instead
         const entries = await prisma.mainDictionary.findMany({
             where: {
-                targetLanguageId: targetLanguageId,
-                baseLanguageId: baseLanguageId || undefined,
+                targetLanguageId: targetLanguageId || '',
+                baseLanguageId: baseLanguageId || '',
             },
             include: {
                 word: true,
@@ -26,14 +26,14 @@ export async function getDictionaryWords(
 
         // Transform data to match Word type
         return entries.map((entry) => ({
-            id: entry.id,
+            id: entry.id || '',
             text: entry.word?.word || '',
             translation: entry.descriptionBase || '',
-            languageId: entry.targetLanguageId,
+            languageId: entry.targetLanguageId || '',
             category: entry.partOfSpeech || '',
             difficulty: mapDifficultyLevel(entry.difficultyLevel),
-            audioUrl: entry.audioId ? `/api/audio/${entry.audioId}` : undefined,
-            exampleSentence: entry.descriptionTarget || undefined,
+            audioUrl: entry.audioId ? `/api/audio/${entry.audioId}` : '',
+            exampleSentence: entry.descriptionTarget || '',
         }));
     } catch (error) {
         console.error('Error fetching dictionary words:', error);

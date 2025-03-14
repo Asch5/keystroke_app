@@ -1,5 +1,29 @@
 # Authentication System Architecture
 
+## Key Components
+
+### 1. Server-Side Authentication (`lib/auth/config.ts`)
+
+```mermaid
+graph TD
+    A[Credentials Provider] --> B[Prisma Adapter]
+    B --> C[PostgreSQL Database]
+    C --> D[JWT Session Token]
+    D --> E[Session Callbacks]
+```
+
+### 2. Edge-Compatible Authentication (`lib/auth/edge-config.ts`)
+
+```mermaid
+graph TD
+    A[Middleware Request] --> B[Edge Runtime Auth]
+    B --> C[JWT Decryption]
+    C --> D[Session Validation]
+    D --> E[Role-Based Access]
+```
+
+### 3. Core Authentication Flow
+
 ## Overview
 
 This authentication system is built using NextAuth.js v5 with a split configuration approach to support both Edge runtime (middleware) and server-side features. The system implements role-based access control (RBAC) and uses Prisma as the database adapter.
@@ -8,47 +32,47 @@ This authentication system is built using NextAuth.js v5 with a split configurat
 
 ### 1. Base Configuration (`src/lib/auth/auth.config.ts`)
 
--   **Purpose**: Provides Edge-compatible configuration
--   **Key Features**:
-    -   Defines base credential validation using Zod
-    -   Sets up basic callbacks for JWT and session handling
-    -   Configures login page route
-    -   Edge-compatible (no Prisma adapter)
-    -   Used by middleware for route protection
+- **Purpose**: Provides Edge-compatible configuration
+- **Key Features**:
+    - Defines base credential validation using Zod
+    - Sets up basic callbacks for JWT and session handling
+    - Configures login page route
+    - Edge-compatible (no Prisma adapter)
+    - Used by middleware for route protection
 
 ### 2. Main Auth Configuration (`src/lib/auth/auth.ts`)
 
--   **Purpose**: Full server-side authentication implementation
--   **Key Features**:
-    -   Extends base configuration
-    -   Implements Prisma adapter
-    -   Handles password comparison
-    -   Full user authentication logic
-    -   Database interactions
+- **Purpose**: Full server-side authentication implementation
+- **Key Features**:
+    - Extends base configuration
+    - Implements Prisma adapter
+    - Handles password comparison
+    - Full user authentication logic
+    - Database interactions
 
 ### 3. Route Handler (`src/app/api/auth/[...nextauth]/route.ts`)
 
--   **Purpose**: API endpoint for authentication
--   **Key Features**:
-    -   Handles auth requests
-    -   Exports auth handlers (GET, POST)
-    -   Exports signIn/signOut functions
+- **Purpose**: API endpoint for authentication
+- **Key Features**:
+    - Handles auth requests
+    - Exports auth handlers (GET, POST)
+    - Exports signIn/signOut functions
 
 ### 4. Middleware (`src/middleware.ts`)
 
--   **Purpose**: Route protection and RBAC
--   **Key Features**:
-    -   Protects routes based on authentication status
-    -   Implements role-based access control
-    -   Defines public paths
-    -   Handles redirects for unauthorized access
+- **Purpose**: Route protection and RBAC
+- **Key Features**:
+    - Protects routes based on authentication status
+    - Implements role-based access control
+    - Defines public paths
+    - Handles redirects for unauthorized access
 
 ## Helper Components
 
 ### 1. RoleGate Component (`src/components/auth/RoleGate.tsx`)
 
--   **Purpose**: Client-side role-based component protection
--   **Usage**: Wrap components to restrict access based on user roles
+- **Purpose**: Client-side role-based component protection
+- **Usage**: Wrap components to restrict access based on user roles
 
 ```tsx
 <RoleGate allowedRoles={['admin']}>
@@ -58,8 +82,8 @@ This authentication system is built using NextAuth.js v5 with a split configurat
 
 ### 2. CheckRole Utility (`src/lib/auth/checkRole.ts`)
 
--   **Purpose**: Server-side role validation
--   **Usage**: Protect server components or actions based on roles
+- **Purpose**: Server-side role validation
+- **Usage**: Protect server components or actions based on roles
 
 ```tsx
 await checkRole(['admin']);
@@ -90,9 +114,9 @@ await checkRole(['admin']);
 
 ### Defined Roles:
 
--   `admin`: Full access
--   `user`: Limited access to dashboard and profile
--   `editor`: Content management access
+- `admin`: Full access
+- `user`: Limited access to dashboard and profile
+- `editor`: Content management access
 
 ### Access Control Implementation:
 

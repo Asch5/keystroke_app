@@ -1,4 +1,3 @@
-import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -12,6 +11,17 @@ const credentialsSchema = z.object({
     password: z.string().min(6),
 });
 
+if (process.env.NODE_ENV === 'production' && !process.env.NEXTAUTH_SECRET) {
+    console.error(
+        '===========NEXTAUTH_SECRET is not defined in production===============',
+    );
+    throw new Error('NEXTAUTH_SECRET must be defined in production');
+} else {
+    console.log(
+        '===========NEXTAUTH_SECRET is defined in production===============',
+    );
+}
+
 // Auth configuration following NextAuth v5 structure
 export const authConfig: NextAuthConfig = {
     // Use Prisma adapter for database session storage
@@ -24,7 +34,7 @@ export const authConfig: NextAuthConfig = {
         jwt: async ({ token, user }) => {
             if (user) {
                 token.id = user.id ?? '';
-                token.role = user.role;
+                token.role = user.role ?? '';
             }
             return token;
         },
@@ -50,8 +60,8 @@ export const authConfig: NextAuthConfig = {
     session: {
         strategy: 'jwt',
     },
-    // Set auth secret from environment variables
-    secret: process.env.NEXTAUTH_SECRET,
+    // Set auth secret from environment variables, providing a fallback
+    secret: process.env.NEXTAUTH_SECRET!, // Replace 'default_secret' with a secure default
     // Configure authentication providers
     providers: [
         CredentialsProvider({
@@ -81,7 +91,7 @@ export const authConfig: NextAuthConfig = {
                     // Verify password
                     const isPasswordValid = await compare(
                         validatedCredentials.password,
-                        user.password
+                        user.password,
                     );
 
                     if (!isPasswordValid) {
@@ -103,4 +113,4 @@ export const authConfig: NextAuthConfig = {
 };
 
 // Create auth handlers with NextAuth
-export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
+export { handlers, auth, signIn, signOut } from '@/lib/auth/config';

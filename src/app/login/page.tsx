@@ -7,7 +7,8 @@ import { useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
     const searchParams = useSearchParams();
-    const showRegistrationSuccess = searchParams.get('registered') === 'true';
+
+    const showRegistrationSuccess = searchParams?.get('registered') === 'true';
 
     return (
         <main className="flex items-center justify-center md:h-screen">

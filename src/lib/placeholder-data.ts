@@ -498,7 +498,7 @@ export const userLists: UserList[] = [
     {
         id: userList_Id_1,
         userId: user_Id_1,
-        listsId: lists[0].id,
+        listsId: list_Id_1,
         baseLanguageId: language_Id_2,
         targetLanguageId: language_Id_1,
         customNameOfList: 'Custom Name of List',

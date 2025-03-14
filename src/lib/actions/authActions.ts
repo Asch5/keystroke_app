@@ -27,7 +27,7 @@ export type StateAuth = {
 
 export async function authenticate(
     prevState: StateAuth,
-    formData: FormData
+    formData: FormData,
 ): Promise<StateAuth> {
     try {
         const validatedFields = formSchemaLogin.safeParse({
@@ -106,7 +106,7 @@ export type StateSignup = {
 
 export async function signUp(
     prevState: StateSignup,
-    formData: FormData
+    formData: FormData,
 ): Promise<StateSignup> {
     const validatedFields = formSchemaSignup.safeParse({
         email: formData.get('email'),
@@ -142,7 +142,7 @@ export async function signUp(
             data: {
                 email,
                 password: hashedPassword,
-                name: email.split('@')[0], // Default name from email
+                name: email.split('@')[0] || 'user', // Default name from email
                 role: 'user',
                 status: 'active',
                 isVerified: false,

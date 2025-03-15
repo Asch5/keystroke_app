@@ -1,6 +1,9 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
+  //output   = "../node_modules/.prisma/client"
+  // Only need these for Vercel deployment
+  previewFeatures = ["driverAdapters"]
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {

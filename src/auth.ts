@@ -1,3 +1,4 @@
+//adapter only works in node environment
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -10,17 +11,6 @@ const credentialsSchema = z.object({
     email: z.string().email(),
     password: z.string().min(6),
 });
-
-if (process.env.NODE_ENV === 'production' && !process.env.NEXTAUTH_SECRET) {
-    console.error(
-        '===========NEXTAUTH_SECRET is not defined in production===============',
-    );
-    throw new Error('NEXTAUTH_SECRET must be defined in production');
-} else {
-    console.log(
-        '===========NEXTAUTH_SECRET is defined in production===============',
-    );
-}
 
 // Auth configuration following NextAuth v5 structure
 export const authConfig: NextAuthConfig = {
@@ -61,7 +51,7 @@ export const authConfig: NextAuthConfig = {
         strategy: 'jwt',
     },
     // Set auth secret from environment variables, providing a fallback
-    secret: process.env.NEXTAUTH_SECRET!, // Replace 'default_secret' with a secure default
+    secret: process.env.NEXTAUTH_SECRET!,
     // Configure authentication providers
     providers: [
         CredentialsProvider({

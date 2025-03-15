@@ -7,6 +7,8 @@ export default function AuthStatus() {
     const isAuthenticated = status === 'authenticated';
     const user = session?.user;
 
+    console.log('user', user);
+
     if (status === 'loading') {
         return (
             <div className="p-4 bg-gray-100 rounded-lg dark:bg-gray-800">

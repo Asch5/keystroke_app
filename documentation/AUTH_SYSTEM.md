@@ -1,202 +1,188 @@
-# Authentication System Architecture
+# NextAuth Workflow Documentation
 
-## Key Components
-
-### 1. Server-Side Authentication (`lib/auth/config.ts`)
+## Authentication Flow Diagram
 
 ```mermaid
-graph TD
-    A[Credentials Provider] --> B[Prisma Adapter]
-    B --> C[PostgreSQL Database]
-    C --> D[JWT Session Token]
-    D --> E[Session Callbacks]
+sequenceDiagram
+    participant User
+    participant Middleware
+    participant EdgeAuth
+    participant ServerAuth
+    participant Database
+
+    User->>Middleware: Request Protected Route
+    Middleware->>EdgeAuth: Validate JWT
+    EdgeAuth->>Middleware: Session Data
+    alt Valid Session
+        Middleware->>User: Grant Access
+    else Invalid Session
+        Middleware->>User: Redirect to Login
+    end
+
+    User->>ServerAuth: Submit Credentials
+
+    ServerAuth->>Database: Verify User
+
+    Database->>ServerAuth: User Data
+
+    ServerAuth->>User: Set JWT Cookie
 ```
 
-### 2. Edge-Compatible Authentication (`lib/auth/edge-config.ts`)
+## Core Workflow Components
 
-```mermaid
-graph TD
-    A[Middleware Request] --> B[Edge Runtime Auth]
-    B --> C[JWT Decryption]
-    C --> D[Session Validation]
-    D --> E[Role-Based Access]
-```
-
-### 3. Core Authentication Flow
-
-## Overview
-
-This authentication system is built using NextAuth.js v5 with a split configuration approach to support both Edge runtime (middleware) and server-side features. The system implements role-based access control (RBAC) and uses Prisma as the database adapter.
-
-## Core Components
-
-### 1. Base Configuration (`src/lib/auth/auth.config.ts`)
-
-- **Purpose**: Provides Edge-compatible configuration
-- **Key Features**:
-    - Defines base credential validation using Zod
-    - Sets up basic callbacks for JWT and session handling
-    - Configures login page route
-    - Edge-compatible (no Prisma adapter)
-    - Used by middleware for route protection
-
-### 2. Main Auth Configuration (`src/lib/auth/auth.ts`)
-
-- **Purpose**: Full server-side authentication implementation
-- **Key Features**:
-    - Extends base configuration
-    - Implements Prisma adapter
-    - Handles password comparison
-    - Full user authentication logic
-    - Database interactions
-
-### 3. Route Handler (`src/app/api/auth/[...nextauth]/route.ts`)
-
-- **Purpose**: API endpoint for authentication
-- **Key Features**:
-    - Handles auth requests
-    - Exports auth handlers (GET, POST)
-    - Exports signIn/signOut functions
-
-### 4. Middleware (`src/middleware.ts`)
-
-- **Purpose**: Route protection and RBAC
-- **Key Features**:
-    - Protects routes based on authentication status
-    - Implements role-based access control
-    - Defines public paths
-    - Handles redirects for unauthorized access
-
-## Helper Components
-
-### 1. RoleGate Component (`src/components/auth/RoleGate.tsx`)
-
-- **Purpose**: Client-side role-based component protection
-- **Usage**: Wrap components to restrict access based on user roles
-
-```tsx
-<RoleGate allowedRoles={['admin']}>
-    <AdminPanel />
-</RoleGate>
-```
-
-### 2. CheckRole Utility (`src/lib/auth/checkRole.ts`)
-
-- **Purpose**: Server-side role validation
-- **Usage**: Protect server components or actions based on roles
-
-```tsx
-await checkRole(['admin']);
-```
-
-## Authentication Flow
-
-1. **Login Request**:
-
-    - User submits credentials
-    - Credentials validated by Zod schema
-    - Password compared with hashed version
-    - JWT token generated and session created
-
-2. **Route Protection**:
-
-    - Middleware checks auth status
-    - Validates user role against route permissions
-    - Redirects unauthorized access
-    - Allows public paths without auth
-
-3. **Session Management**:
-    - JWT strategy for session handling
-    - Session includes user ID and role
-    - Callbacks enrich session with user data
-
-## Role-Based Access Control
-
-### Defined Roles:
-
-- `admin`: Full access
-- `user`: Limited access to dashboard and profile
-- `editor`: Content management access
-
-### Access Control Implementation:
+### 1. Edge Runtime Flow (Middleware)
 
 ```typescript
-const rolePermissions = {
-    admin: ['/dashboard', '/users', '/settings', '/profile'],
-    user: ['/dashboard', '/profile'],
-    editor: ['/dashboard', '/content', '/profile'],
+// Simplified Edge Auth Check
+export const edgeAuthConfig = {
+    callbacks: {
+        jwt: ({ token, user }) => ({
+            id: user?.id, // From credential validation
+            role: user?.role, // From database
+        }),
+        session: ({ session, token }) => ({
+            user: {
+                id: token.id, // Passed to middleware
+                role: token.role, // For RBAC checks
+            },
+        }),
+    },
 };
 ```
 
-## Security Features
-
-1. **Password Security**:
-
-    - Bcrypt for password hashing
-    - Credential validation using Zod
-    - No plain text password storage
-
-2. **Route Protection**:
-
-    - Edge middleware for fast auth checks
-    - Role-based access control
-    - Protected API routes
-
-3. **Session Security**:
-    - JWT-based sessions
-    - Secure session cookies
-    - Environment-based secrets
-
-## Environment Variables Required
-
-```env
-NEXTAUTH_SECRET=your-secret-key
-NEXTAUTH_URL=http://localhost:3000 (development)
-DATABASE_URL=your-database-connection-string
-```
-
-## Best Practices Implemented
-
-1. **Type Safety**:
-
-    - Full TypeScript implementation
-    - Zod schema validation
-    - Proper type definitions
-
-2. **Code Organization**:
-
-    - Separation of concerns
-    - Edge-compatible configurations
-    - Modular components
-
-3. **Error Handling**:
-    - Proper error messages
-    - Fallback mechanisms
-    - Validation error handling
-
-## Usage Examples
-
-### Protecting a Server Component
+### 2. Server-Side Flow (API Routes)
 
 ```typescript
-import { checkRole } from '@/lib/auth/checkRole';
-
-export default async function AdminPage() {
-    await checkRole(['admin']);
-    return <div>Admin Only Content</div>;
+// Full Auth Configuration
+export const authConfig = {
+  adapter: PrismaAdapter(prisma), // DB operations
+  providers: [
+    CredentialsProvider({
+      authorize: async (credentials) => {
+        // Full credential validation
+        const user = await prisma.user.findUnique(...);
+        return user;
+      }
+    })
+  ]
 }
 ```
 
-### Protecting a Client Component
+## Type Safety Implementation
 
 ```typescript
-import { RoleGate } from '@/components/auth/RoleGate';
+// Extended Type Definitions
+declare module 'next-auth' {
+    interface User {
+        id: string;
+        role: 'user' | 'admin' | 'editor';
+    }
+    interface Session {
+        user: {
+            id: string;
+            role: string;
+        };
+    }
+}
 
-export default function Page() {
-    return (
-        <RoleGate allowedRoles={['admin']} fallback={<AccessDenied />}>
-            <AdminPanel />
-        </RoleGate>
-    );
+// JWT Type Guards
+interface CustomJWT extends JWT {
+    id: string;
+    role: string;
 }
 ```
+
+## Security Implementation Table
+
+| Security Layer        | Implementation Details                  |
+| --------------------- | --------------------------------------- |
+| Credential Validation | Zod schema + bcrypt password comparison |
+| Session Encryption    | AES-256-CBC with NEXTAUTH_SECRET        |
+| RBAC Enforcement      | Middleware + rolePermissions matrix     |
+| CSRF Protection       | NextAuth built-in CSRF tokens           |
+| Brute Force Defense   | Prisma-based login attempt tracking     |
+
+## Secret Management Strategy
+
+```bash
+# Secret Rotation Process
+1. Generate new secret: openssl rand -base64 32
+2. Update .env.production: NEXTAUTH_SECRET_NEW=<new-secret>
+3. Modify auth config:
+secret: [process.env.NEXTAUTH_SECRET_NEW, process.env.NEXTAUTH_SECRET]
+4. Deploy and monitor
+5. Remove old secret after 72h
+```
+
+## Error Recovery Guide
+
+### Common JWT Errors
+
+```typescript
+// JWT Error Handling Pattern
+try {
+    await auth();
+} catch (error) {
+    if (error instanceof JWSError) {
+        // Handle invalid signature
+        redirect('/login?error=invalid_session');
+    }
+    if (error instanceof JWTExpired) {
+        // Handle expired token
+        redirect('/login?error=session_expired');
+    }
+}
+```
+
+### Middleware Error Recovery
+
+```mermaid
+graph TD
+    A[Auth Error] --> B{Error Type}
+    B -->|Invalid Secret| C[Clear Cookies]
+    B -->|Expired Token| D[Force Re-auth]
+    B -->|DB Connection| E[Fallback Cache]
+    C --> F[Redirect to Login]
+    D --> F
+    E --> G[Log Error]
+```
+
+## Performance Optimization
+
+### Cache Strategy
+
+```typescript
+// Session Cache Example
+const sessionCache = new LRUCache<string, Session>({
+    max: 1000, // Max cached sessions
+    ttl: 1000 * 60 * 5, // 5 minutes
+});
+
+export async function getCachedSession() {
+    const session = await auth();
+    sessionCache.set(session.user.id, session);
+    return session;
+}
+```
+
+### Edge Performance Metrics
+
+```typescript
+// Middleware Metrics
+export default auth((req) => {
+    const start = Date.now();
+    // ... auth logic ...
+    const duration = Date.now() - start;
+
+    metrics.timing('middleware.auth', duration);
+    metrics.increment('middleware.requests');
+});
+```
+
+This documentation provides a complete view of the authentication system with:
+
+1. Visual workflow diagrams
+2. Type-safe implementation details
+3. Security best practices
+4. Error recovery patterns
+5. Performance optimization strategies

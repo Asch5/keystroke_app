@@ -4,6 +4,11 @@ import { edgeAuthConfig } from '@/lib/auth/edge-config';
 
 const { auth } = NextAuth(edgeAuthConfig);
 
+console.log(
+    '--------------------------------middleware--------------------------------',
+);
+console.log('process.env.NODE_ENV =', process.env.NODE_ENV);
+
 // Define path permissions for different roles
 const rolePermissions = {
     admin: ['/dashboard', '/users', '/settings', '/profile'],

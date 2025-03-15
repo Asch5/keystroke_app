@@ -8,6 +8,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum DifficultyLevel {
+  A1
+  A2
+  B1
+  B2
+  C1
+  C2
+}
+
+enum PartOfSpeech {
+  noun
+  verb
+  adjective
+  adverb
+  pronoun
+  preposition
+  conjunction
+  interjection
+}
+
+enum SourceType {
+  user
+  import
+  ai_generated @map("ai-generated")
+}
+
 model Language {
   id                     String                  @id @default(uuid()) @db.Uuid
   code                   String                  @unique @db.VarChar(5)
@@ -320,27 +346,4 @@ model UserListWord {
 
   @@id([userListId, userDictionaryId])
   @@map("user_list_words")
-}
-
-enum DifficultyLevel {
-  A1
-  A2
-  B1
-  B2
-  C1
-  C2
-}
-
-enum PartOfSpeech {
-  noun
-  verb
-  adjective
-  adverb
-  preposition
-}
-
-enum SourceType {
-  user
-  import
-  ai_generated @map("ai-generated")
 }

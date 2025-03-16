@@ -1,15 +1,16 @@
 //import CardWrapper from '@/app/ui/dashboard/cards';
 //import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 //import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
-'use client';
 
 import {
     RevenueChartSkeleton,
-    CardsSkeleton,
     LatestInvoicesSkeleton,
+    //CardsSkeleton,
 } from '@/components/ui/skeletons';
 import { geistSans } from '@/components/ui/fonts';
 import AuthStatus from '@/components/AuthStatus';
+import { Suspense } from 'react';
+import CardWrapper from '@/components/ui/dashboard/cards';
 
 export default function Page() {
     return (
@@ -21,11 +22,11 @@ export default function Page() {
                 <AuthStatus />
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <CardsSkeleton />
-                {/* <Suspense fallback={<CardsSkeleton />}>
+                Hello
+                {/* <CardsSkeleton /> */}
+                <Suspense fallback={<div>Loading...</div>}>
                     <CardWrapper />
-                    
-                </Suspense> */}
+                </Suspense>
             </div>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
                 <RevenueChartSkeleton />

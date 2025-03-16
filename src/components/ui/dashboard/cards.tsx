@@ -4,46 +4,67 @@ import {
     UserGroupIcon,
     InboxIcon,
 } from '@heroicons/react/24/outline';
+import { auth } from '@/auth';
 import { geistSans } from '@/components/ui/fonts';
-//import { fetchCardData } from '@/app/lib/data';
+import {
+    getWordsAddedByUser,
+    getWordsAddedFromLists,
+    getWordsInProgress,
+    getAllUserWords,
+} from '@/lib/db/dictionary';
 
 const iconMap = {
-    collected: BanknotesIcon,
-    customers: UserGroupIcon,
-    pending: ClockIcon,
-    invoices: InboxIcon,
+    allUserWords: BanknotesIcon,
+    wordsAddedByUser: UserGroupIcon,
+    wordsAddedFromLists: ClockIcon,
+    wordsInProgress: InboxIcon,
 };
 
-// export default async function CardWrapper() {
-//     const {
-//         totalPaidInvoices,
-//         totalPendingInvoices,
-//         numberOfInvoices,
-//         numberOfCustomers,
-//     } = await fetchCardData();
-//     return (
-//         <>
-//             {/* NOTE: Uncomment this code in Chapter 9 */}
+export default async function CardWrapper() {
+    const session = await auth();
+    if (!session?.user?.email) {
+        return null; // Handle unauthenticated state
+    }
+    console.log('session', session);
+    console.log('session.user', session.user);
 
-//             <Card
-//                 title="Collected"
-//                 value={totalPaidInvoices}
-//                 type="collected"
-//             />
-//             <Card title="Pending" value={totalPendingInvoices} type="pending" />
-//             <Card
-//                 title="Total Invoices"
-//                 value={numberOfInvoices}
-//                 type="invoices"
-//             />
-//             <Card
-//                 title="Total Customers"
-//                 value={numberOfCustomers}
-//                 type="customers"
-//             />
-//         </>
-//     );
-// }
+    const userId = session.user.id;
+    console.log('userId', userId);
+    const allUserWords = await getAllUserWords(userId);
+    const wordsAddedByUser = await getWordsAddedByUser(userId);
+    const wordsAddedFromLists = await getWordsAddedFromLists(userId);
+    const wordsInProgress = await getWordsInProgress(userId);
+
+    console.log('allUserWords', allUserWords);
+    console.log('wordsAddedByUser', wordsAddedByUser);
+    console.log('wordsAddedFromLists', wordsAddedFromLists);
+    console.log('wordsInProgress', wordsInProgress);
+
+    return (
+        <>
+            <Card
+                title="All words"
+                value={allUserWords.length}
+                type="allUserWords"
+            />
+            <Card
+                title="Added by me"
+                value={wordsAddedByUser.length}
+                type="wordsAddedByUser"
+            />
+            <Card
+                title="Added from catalogs"
+                value={wordsAddedFromLists.length}
+                type="wordsAddedFromLists"
+            />
+            <Card
+                title="My vocabulary"
+                value={wordsInProgress.length}
+                type="wordsInProgress"
+            />
+        </>
+    );
+}
 
 export function Card({
     title,
@@ -52,7 +73,11 @@ export function Card({
 }: {
     title: string;
     value: number | string;
-    type: 'invoices' | 'customers' | 'pending' | 'collected';
+    type:
+        | 'allUserWords'
+        | 'wordsAddedByUser'
+        | 'wordsAddedFromLists'
+        | 'wordsInProgress';
 }) {
     const Icon = iconMap[type];
 

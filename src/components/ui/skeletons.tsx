@@ -1,11 +1,12 @@
-import { Card } from '@/components/ui/dashboard/cards';
+//import { Card } from '@/components/ui/dashboard/cards';
 
 // Loading animation
 const shimmer =
     'before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent';
 
 export function CardSkeleton() {
-    return <Card title="waiting..." value="..." type="customers" />;
+    return <div>Skeleton</div>;
+    // return <Card title="waiting..." value="..." type="allUserWords" />;
 }
 
 export function CardsSkeleton() {

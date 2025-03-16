@@ -17,9 +17,15 @@ export default Credentials({
             if (!user?.password) return null;
 
             const isValid = await compare(password, user.password);
-            return isValid
-                ? { id: user.id, email: user.email, role: user.role }
-                : null;
+            if (!isValid) return null;
+
+            // Ensure all required fields are returned
+            return {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+                name: user.name, // optional
+            };
         } catch (error) {
             console.error('Auth error:', error);
             return null;

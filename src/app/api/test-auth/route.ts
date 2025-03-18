@@ -55,7 +55,7 @@ export async function GET() {
         console.error('Error in test-auth endpoint:', error);
         return NextResponse.json(
             { error: 'Test auth failed', details: String(error) },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }

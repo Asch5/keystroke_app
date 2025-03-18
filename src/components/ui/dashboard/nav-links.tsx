@@ -1,36 +1,15 @@
 'use client';
 
-import {
-    UserGroupIcon,
-    HomeIcon,
-    DocumentDuplicateIcon,
-    UserCircleIcon,
-} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { NavLink } from '@/types/nav';
 
-// ...
-
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
-const links = [
-    { name: 'Home', href: '/', icon: HomeIcon },
-    {
-        name: 'Dictionary',
-        href: '/dashboard/dictionary',
-        icon: DocumentDuplicateIcon,
-    },
-    { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
-    { name: 'Profile', href: '/dashboard/profile', icon: UserCircleIcon },
-    { name: 'Admin', href: '/dashboard/admin', icon: UserCircleIcon },
-];
-
-export default function NavLinks() {
+export default function NavLinks({ links }: { links: NavLink[] }) {
     const pathname = usePathname();
     return (
         <>
-            {links.map((link) => {
+            {links.map((link: NavLink) => {
                 const LinkIcon = link.icon;
                 return (
                     <Link
@@ -41,7 +20,7 @@ export default function NavLinks() {
                             {
                                 'bg-sky-100 text-blue-600':
                                     pathname === link.href,
-                            }
+                            },
                         )}
                     >
                         <LinkIcon className="w-6" />

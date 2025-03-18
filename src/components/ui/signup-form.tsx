@@ -9,12 +9,12 @@ export default function SignupForm() {
     const [state, formAction, isPending] = useActionState(signUp, initialState);
 
     const [languages, setLanguages] = useState<{ id: string; name: string }[]>(
-        []
+        [],
     );
 
     useEffect(() => {
         // Fetch available languages
-        console.log('fetching languages');
+
         const fetchLanguages = async () => {
             try {
                 const response = await getLanguages();

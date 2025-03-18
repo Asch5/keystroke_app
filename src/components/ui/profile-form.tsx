@@ -11,7 +11,7 @@ const arrTheme: Theme = ['light', 'dark'];
 
 export default function ProfileForm() {
     const [languages, setLanguages] = useState<{ id: string; name: string }[]>(
-        []
+        [],
     );
     const dispatch = useAppDispatch();
     const { data: session } = useSession();
@@ -21,7 +21,6 @@ export default function ProfileForm() {
         message: null,
         success: false,
     });
-    console.log('state', state);
 
     // Function to manually refresh user data in Redux
     const refreshUserData = useCallback(async () => {
@@ -49,7 +48,7 @@ export default function ProfileForm() {
 
     useEffect(() => {
         // Fetch available languages
-        console.log('fetching languages');
+
         const fetchLanguages = async () => {
             try {
                 const response = await getLanguages();

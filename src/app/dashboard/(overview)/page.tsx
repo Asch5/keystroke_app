@@ -5,7 +5,7 @@
 import {
     RevenueChartSkeleton,
     LatestInvoicesSkeleton,
-    //CardsSkeleton,
+    CardsSkeleton,
 } from '@/components/ui/skeletons';
 import { geistSans } from '@/components/ui/fonts';
 import AuthStatus from '@/components/AuthStatus';
@@ -22,9 +22,7 @@ export default function Page() {
                 <AuthStatus />
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                Hello
-                {/* <CardsSkeleton /> */}
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<CardsSkeleton />}>
                     <CardWrapper />
                 </Suspense>
             </div>

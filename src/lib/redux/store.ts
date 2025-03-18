@@ -14,11 +14,13 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 import { combineReducers } from '@reduxjs/toolkit';
 import themeReducer from './features/themeSlice';
 import authReducer from './features/authSlice';
+import userDictionaryReducer from './features/userDictionarySlice';
 
 // Create a root reducer
 const rootReducer = combineReducers({
     theme: themeReducer,
     auth: authReducer,
+    userDictionary: userDictionaryReducer,
 });
 
 // Configuration for redux-persist

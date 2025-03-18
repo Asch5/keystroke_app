@@ -49,3 +49,44 @@ function mapDifficultyLevel(level?: string): 'easy' | 'medium' | 'hard' {
     if (['B1', 'B2'].includes(level)) return 'medium';
     return 'hard'; // C1, C2 or unknown
 }
+
+/**
+ * Server action to add a word to user's dictionary
+ */
+export async function addWordToUserDictionary(
+    userId: string,
+    mainDictionaryId: string,
+    baseLanguageId: string,
+    targetLanguageId: string,
+) {
+    try {
+        const userDictionary = await prisma.userDictionary.upsert({
+            where: {
+                userId_mainDictionaryId: {
+                    userId,
+                    mainDictionaryId,
+                },
+            },
+            update: {}, // If it exists, do nothing
+            create: {
+                userId,
+                mainDictionaryId,
+                baseLanguageId,
+                targetLanguageId,
+                isLearned: false,
+                isNeedsReview: false,
+                isDifficultToLearn: false,
+                isModified: false,
+                reviewCount: 0,
+                progress: 0,
+                timeWordWasStartedToLearn: new Date(),
+                jsonbData: {},
+            },
+        });
+
+        return userDictionary;
+    } catch (error) {
+        console.error('Error adding word to user dictionary:', error);
+        throw new Error('Failed to add word to user dictionary');
+    }
+}

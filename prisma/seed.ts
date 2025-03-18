@@ -36,8 +36,11 @@ async function main() {
     console.log('Seeding languages...');
     for (const language of languages) {
         await prisma.language.upsert({
-            where: { id: language.id },
-            update: {},
+            where: { code: language.code },
+            update: {
+                name: language.name,
+                createdAt: language.createdAt,
+            },
             create: {
                 id: language.id,
                 code: language.code,
@@ -52,8 +55,23 @@ async function main() {
     for (const user of users) {
         const hashedPassword = await bcryptjs.hash(user.password, 10);
         await prisma.user.upsert({
-            where: { id: user.id },
-            update: {},
+            where: { email: user.email },
+            update: {
+                name: user.name,
+                password: hashedPassword,
+                baseLanguageId: user.baseLanguageId,
+                targetLanguageId: user.targetLanguageId,
+                role: user.role,
+                isVerified: user.isVerified,
+                verificationToken: user.verificationToken,
+                profilePictureUrl: user.profilePictureUrl,
+                status: user.status,
+                settings: user.settings as Record<string, string>,
+                studyPreferences: user.studyPreferences as Record<
+                    string,
+                    string
+                >,
+            },
             create: {
                 id: user.id,
                 name: user.name,
@@ -99,6 +117,7 @@ async function main() {
             create: {
                 id: word.id,
                 word: word.word,
+                phonetic: word.phonetic,
                 languageId: word.languageId,
                 createdAt: word.createdAt,
             },
@@ -141,7 +160,6 @@ async function main() {
                 audioId: dict.audioId,
                 frequency: dict.frequency,
                 partOfSpeech: dict.partOfSpeech,
-                phonetic: dict.phonetic,
                 difficultyLevel: dict.difficultyLevel,
                 etymology: dict.etymology,
                 source: sourceType,

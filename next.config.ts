@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+    // Enable verbose logging for debugging
+    logging: {
+        fetches: {
+            fullUrl: true,
+        },
+    },
+    // Add trailing slash for consistent routing
+    trailingSlash: false,
 };
 
 export default nextConfig;

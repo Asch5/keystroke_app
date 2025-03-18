@@ -102,18 +102,21 @@ export const words: Word[] = [
     {
         id: word_Id_1,
         word: 'hello',
+        phonetic: 'həˈləʊ',
         languageId: language_Id_1,
         createdAt: new Date(),
     },
     {
         id: word_Id_2,
         word: 'world',
+        phonetic: 'ˈwɜːld',
         languageId: language_Id_1,
         createdAt: new Date(),
     },
     {
         id: word_Id_3,
         word: 'кукуруза',
+        phonetic: 'ˈkʊkʊˈrʊzə',
         languageId: language_Id_2,
         createdAt: new Date(),
     },
@@ -152,7 +155,6 @@ export const mainDictionary: MainDictionary[] = [
         audioId: audio_Id_1,
         frequency: 100,
         partOfSpeech: 'noun',
-        phonetic: 'həˈləʊ',
         difficultyLevel: 'A1',
         etymology:
             'Это слово является заимствованием из английского языка и означает "приветствие"',
@@ -172,7 +174,6 @@ export const mainDictionary: MainDictionary[] = [
         audioId: audio_Id_2,
         frequency: 50,
         partOfSpeech: 'noun',
-        phonetic: 'ˈwɜːld',
         difficultyLevel: 'A1',
         etymology:
             'Это слово берет свое начало от древнеанглийского языка и означает "земля"',
@@ -192,7 +193,6 @@ export const mainDictionary: MainDictionary[] = [
         audioId: audio_Id_3,
         frequency: 100,
         partOfSpeech: 'noun',
-        phonetic: '',
         difficultyLevel: 'A1',
         etymology: 'This word is a loanword from English and means "corn"', //in base language
         source: 'import',

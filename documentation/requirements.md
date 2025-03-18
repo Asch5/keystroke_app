@@ -2,8 +2,7 @@ _Draft_
 • User wants to learn to type new words
 • User wants to type on a keyboard fast
 • User wants to learn new words
-all words are kept in a single table.
-
+• All words are kept in a single table. (MainDictionary)
 • User wants to add his words to his dictionary
 • User wants to create different lists of words
 • User wants to listen to pronunciation of word

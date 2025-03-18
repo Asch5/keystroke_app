@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  //output   = "../node_modules/.prisma/client"
   // Only need these for Vercel deployment
   previewFeatures = ["driverAdapters"]
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
@@ -104,6 +103,7 @@ model Audio {
 model Word {
   id             String           @id @default(uuid()) @db.Uuid
   word           String           @db.VarChar(255)
+  phonetic       String?             @db.VarChar(100)
   languageId     String           @map("language_id") @db.Uuid
   createdAt      DateTime         @default(now()) @map("created_at")
   mainDictionary MainDictionary[]
@@ -135,7 +135,6 @@ model MainDictionary {
   audioId             String?             @map("audio_id") @db.Uuid
   frequency           Int?
   partOfSpeech        PartOfSpeech        @map("part_of_speech")
-  phonetic            String?             @db.VarChar(100)
   difficultyLevel     DifficultyLevel     @map("difficulty_level")
   etymology           String?
   source              SourceType

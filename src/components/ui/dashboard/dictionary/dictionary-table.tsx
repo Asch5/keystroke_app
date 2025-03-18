@@ -2,17 +2,34 @@
 
 import { useState } from 'react';
 import { Word } from '@/types/word';
+import { addWordToUserDictionary } from '@/lib/actions/dictionaryActions';
+import { useSession } from 'next-auth/react';
+import { Toast } from 'flowbite-react';
+import { HiCheck, HiX } from 'react-icons/hi';
 
 type DictionaryTableProps = {
     words: Word[];
+    baseLanguageId: string;
+    targetLanguageId: string;
 };
 
 /**
  * Dictionary table component that displays words and their translations
  * Includes pagination for better performance with large dictionaries
  */
-export default function DictionaryTable({ words }: DictionaryTableProps) {
+export default function DictionaryTable({
+    words,
+    baseLanguageId,
+    targetLanguageId,
+}: DictionaryTableProps) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState<string | null>(null);
+    const [toast, setToast] = useState<{
+        show: boolean;
+        message: string;
+        type: 'success' | 'error';
+    }>({ show: false, message: '', type: 'success' });
+    const { data: session } = useSession();
     const itemsPerPage = 10;
 
     // Calculate pagination
@@ -20,6 +37,46 @@ export default function DictionaryTable({ words }: DictionaryTableProps) {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentWords = words.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(words.length / itemsPerPage);
+
+    // Handle adding word to practice
+    const handleAddToPractice = async (wordId: string) => {
+        if (!session?.user?.id) {
+            setToast({
+                show: true,
+                message: 'Please sign in to add words to your practice list',
+                type: 'error',
+            });
+            return;
+        }
+
+        try {
+            setLoading(wordId);
+            await addWordToUserDictionary(
+                session.user.id,
+                wordId,
+                baseLanguageId,
+                targetLanguageId,
+            );
+            setToast({
+                show: true,
+                message: 'Word added to your practice list',
+                type: 'success',
+            });
+        } catch (error) {
+            console.error('Error adding word:', error);
+            setToast({
+                show: true,
+                message: 'Failed to add word to practice list',
+                type: 'error',
+            });
+        } finally {
+            setLoading(null);
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                setToast((prev) => ({ ...prev, show: false }));
+            }, 3000);
+        }
+    };
 
     // Handle page changes
     const handlePrevPage = () => {
@@ -32,6 +89,29 @@ export default function DictionaryTable({ words }: DictionaryTableProps) {
 
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            {/* Toast notification */}
+            {toast.show && (
+                <div className="fixed top-4 right-4 z-50">
+                    <Toast>
+                        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+                            {toast.type === 'success' ? (
+                                <HiCheck className="h-5 w-5 text-green-500" />
+                            ) : (
+                                <HiX className="h-5 w-5 text-red-500" />
+                            )}
+                        </div>
+                        <div className="ml-3 text-sm font-normal">
+                            {toast.message}
+                        </div>
+                        <Toast.Toggle
+                            onDismiss={() =>
+                                setToast((prev) => ({ ...prev, show: false }))
+                            }
+                        />
+                    </Toast>
+                </div>
+            )}
+
             {words.length === 0 ? (
                 <div className="p-6 text-center">
                     <p className="text-gray-500 dark:text-gray-400">
@@ -85,17 +165,29 @@ export default function DictionaryTable({ words }: DictionaryTableProps) {
                                                 word.difficulty === 'easy'
                                                     ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
                                                     : word.difficulty ===
-                                                      'medium'
-                                                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                                                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                                                        'medium'
+                                                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                                                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                                             }`}
                                         >
                                             {word.difficulty}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline me-3">
-                                            Add to Practice
+                                        <button
+                                            onClick={() =>
+                                                handleAddToPractice(word.id)
+                                            }
+                                            disabled={loading === word.id}
+                                            className={`font-medium text-blue-600 dark:text-blue-500 hover:underline me-3 ${
+                                                loading === word.id
+                                                    ? 'opacity-50 cursor-not-allowed'
+                                                    : ''
+                                            }`}
+                                        >
+                                            {loading === word.id
+                                                ? 'Adding...'
+                                                : 'Add to Practice'}
                                         </button>
                                     </td>
                                 </tr>

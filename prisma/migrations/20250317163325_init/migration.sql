@@ -2,7 +2,7 @@
 CREATE TYPE "DifficultyLevel" AS ENUM ('A1', 'A2', 'B1', 'B2', 'C1', 'C2');
 
 -- CreateEnum
-CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'adjective', 'adverb', 'preposition');
+CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection');
 
 -- CreateEnum
 CREATE TYPE "SourceType" AS ENUM ('user', 'import', 'ai-generated');
@@ -54,6 +54,7 @@ CREATE TABLE "audios" (
 CREATE TABLE "words" (
     "id" UUID NOT NULL,
     "word" VARCHAR(255) NOT NULL,
+    "phonetic" VARCHAR(100),
     "language_id" UUID NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -82,7 +83,6 @@ CREATE TABLE "main_dictionary" (
     "audio_id" UUID,
     "frequency" INTEGER,
     "part_of_speech" "PartOfSpeech" NOT NULL,
-    "phonetic" VARCHAR(100),
     "difficulty_level" "DifficultyLevel" NOT NULL,
     "etymology" TEXT,
     "source" "SourceType" NOT NULL,
@@ -245,14 +245,17 @@ CREATE TABLE "user_lists" (
 -- CreateTable
 CREATE TABLE "user_list_words" (
     "user_list_id" UUID NOT NULL,
-    "dictionary_id" UUID NOT NULL,
     "order_index" INTEGER NOT NULL,
+    "user_dictionary_id" UUID NOT NULL,
 
-    CONSTRAINT "user_list_words_pkey" PRIMARY KEY ("user_list_id","dictionary_id")
+    CONSTRAINT "user_list_words_pkey" PRIMARY KEY ("user_list_id","user_dictionary_id")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "languages_code_key" ON "languages"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE INDEX "users_lastLogin_idx" ON "users"("lastLogin");
@@ -327,13 +330,13 @@ ALTER TABLE "words" ADD CONSTRAINT "words_language_id_fkey" FOREIGN KEY ("langua
 ALTER TABLE "one_word_definition" ADD CONSTRAINT "one_word_definition_language_id_fkey" FOREIGN KEY ("language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "main_dictionary" ADD CONSTRAINT "main_dictionary_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "main_dictionary" ADD CONSTRAINT "main_dictionary_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audios"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "main_dictionary" ADD CONSTRAINT "main_dictionary_one_word_definition_id_fkey" FOREIGN KEY ("one_word_definition_id") REFERENCES "one_word_definition"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "main_dictionary" ADD CONSTRAINT "main_dictionary_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audios"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "main_dictionary" ADD CONSTRAINT "main_dictionary_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "dictionary_examples" ADD CONSTRAINT "dictionary_examples_dictionary_id_fkey" FOREIGN KEY ("dictionary_id") REFERENCES "main_dictionary"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -351,22 +354,22 @@ ALTER TABLE "dictionary_synonyms" ADD CONSTRAINT "dictionary_synonyms_dictionary
 ALTER TABLE "dictionary_synonyms" ADD CONSTRAINT "dictionary_synonyms_synonym_id_fkey" FOREIGN KEY ("synonym_id") REFERENCES "synonyms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_dictionary" ADD CONSTRAINT "user_dictionary_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_dictionary" ADD CONSTRAINT "user_dictionary_base_language_id_fkey" FOREIGN KEY ("base_language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_dictionary" ADD CONSTRAINT "user_dictionary_main_dictionary_id_fkey" FOREIGN KEY ("main_dictionary_id") REFERENCES "main_dictionary"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_dictionary" ADD CONSTRAINT "user_dictionary_base_language_id_fkey" FOREIGN KEY ("base_language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "user_dictionary" ADD CONSTRAINT "user_dictionary_target_language_id_fkey" FOREIGN KEY ("target_language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_dictionary_examples" ADD CONSTRAINT "user_dictionary_examples_user_dictionary_id_fkey" FOREIGN KEY ("user_dictionary_id") REFERENCES "user_dictionary"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_dictionary" ADD CONSTRAINT "user_dictionary_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_dictionary_examples" ADD CONSTRAINT "user_dictionary_examples_language_id_fkey" FOREIGN KEY ("language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_dictionary_examples" ADD CONSTRAINT "user_dictionary_examples_user_dictionary_id_fkey" FOREIGN KEY ("user_dictionary_id") REFERENCES "user_dictionary"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_synonyms" ADD CONSTRAINT "user_synonyms_language_id_fkey" FOREIGN KEY ("language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -381,31 +384,31 @@ ALTER TABLE "user_dictionary_synonyms" ADD CONSTRAINT "user_dictionary_synonyms_
 ALTER TABLE "lists" ADD CONSTRAINT "lists_base_language_id_fkey" FOREIGN KEY ("base_language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "lists" ADD CONSTRAINT "lists_target_language_id_fkey" FOREIGN KEY ("target_language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "lists" ADD CONSTRAINT "lists_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "list_words" ADD CONSTRAINT "list_words_list_id_fkey" FOREIGN KEY ("list_id") REFERENCES "lists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "lists" ADD CONSTRAINT "lists_target_language_id_fkey" FOREIGN KEY ("target_language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "list_words" ADD CONSTRAINT "list_words_dictionary_id_fkey" FOREIGN KEY ("dictionary_id") REFERENCES "main_dictionary"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_lists_id_fkey" FOREIGN KEY ("lists_id") REFERENCES "lists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "list_words" ADD CONSTRAINT "list_words_list_id_fkey" FOREIGN KEY ("list_id") REFERENCES "lists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_base_language_id_fkey" FOREIGN KEY ("base_language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_lists_id_fkey" FOREIGN KEY ("lists_id") REFERENCES "lists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_target_language_id_fkey" FOREIGN KEY ("target_language_id") REFERENCES "languages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_list_words" ADD CONSTRAINT "user_list_words_user_list_id_fkey" FOREIGN KEY ("user_list_id") REFERENCES "user_lists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_list_words" ADD CONSTRAINT "user_list_words_dictionary_id_fkey" FOREIGN KEY ("dictionary_id") REFERENCES "main_dictionary"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_list_words" ADD CONSTRAINT "user_list_words_user_dictionary_id_fkey" FOREIGN KEY ("user_dictionary_id") REFERENCES "user_dictionary"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_list_words" ADD CONSTRAINT "user_list_words_user_list_id_fkey" FOREIGN KEY ("user_list_id") REFERENCES "user_lists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

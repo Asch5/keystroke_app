@@ -1,18 +1,14 @@
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 import { edgeAuthConfig } from '@/lib/auth/edge-config';
+import type { NextRequest } from 'next/server';
 
 const { auth } = NextAuth(edgeAuthConfig);
-
-console.log(
-    '--------------------------------middleware--------------------------------',
-);
-console.log('process.env.NODE_ENV =', process.env.NODE_ENV);
 
 // Define path permissions for different roles
 const rolePermissions = {
     admin: ['/dashboard', '/users', '/settings', '/profile'],
-    user: ['/dashboard', '/profile', '/dictionary', '/settings'],
+    user: ['/dashboard', '/profile', '/dictionary', '/settings', '/api-test'],
     editor: ['/dashboard', '/content', '/profile'],
 } as const;
 
@@ -20,12 +16,36 @@ const rolePermissions = {
 const publicPaths = ['/', '/login', '/signup'];
 
 // Define API paths that need to be accessible
-const apiPaths = ['/api/auth'];
+const apiPaths = ['/api/auth', '/api/user-dictionary', '/api/api-test'];
+
+// Custom middleware to enhance the default NextAuth middleware
+function enhancedMiddleware(request: NextRequest) {
+    const { pathname } = request.nextUrl;
+
+    // Log all API routes for debugging
+    if (pathname.startsWith('/api/')) {
+        console.log('=== MIDDLEWARE DEBUG ===');
+        console.log('API Request:', request.method, pathname);
+        console.log('Headers:', Object.fromEntries(request.headers));
+        console.log(
+            'Cookies:',
+            request.cookies
+                .getAll()
+                .map((c) => `${c.name}=${c.value}`)
+                .join('; '),
+        );
+    }
+
+    return NextResponse.next();
+}
 
 export default auth((req) => {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;
     const userRole = req.auth?.user?.role || 'user';
+
+    // First run our enhanced middleware
+    enhancedMiddleware(req);
 
     // Allow API paths without redirection
     if (apiPaths.some((path) => nextUrl.pathname.startsWith(path))) {
@@ -64,5 +84,7 @@ export const config = {
     matcher: [
         // Match all paths except static files
         '/((?!_next/static|_next/image|favicon.ico).*)',
+        // Match API routes but exclude Next.js internals
+        '/api/:path*',
     ],
 };

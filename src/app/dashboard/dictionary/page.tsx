@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '@/lib/redux/store';
 import { selectUser } from '@/lib/redux/features/authSlice';
-import DictionaryTable from '@/components/ui/dashboard/dictionary-table';
+import DictionaryTable from '@/components/ui/dashboard/dictionary/dictionary-table';
 import { Word } from '@/types/word';
 import { fetchDictionaryWords } from '@/lib/actions/dictionaryActions';
 
@@ -23,7 +23,7 @@ export default function DictionaryPage() {
         const loadWords = async () => {
             if (!user?.targetLanguageId) {
                 setError(
-                    'No target language selected. Please update your profile.'
+                    'No target language selected. Please update your profile.',
                 );
                 setIsLoading(false);
                 return;
@@ -33,9 +33,10 @@ export default function DictionaryPage() {
                 setIsLoading(true);
                 const fetchedWords = await fetchDictionaryWords(
                     user.targetLanguageId,
-                    user.baseLanguageId
+                    user.baseLanguageId,
                 );
                 setWords(fetchedWords);
+
                 setError(null);
             } catch (err) {
                 console.error('Error fetching dictionary words:', err);
@@ -128,7 +129,11 @@ export default function DictionaryPage() {
                 </div>
             ) : (
                 // Dictionary table component
-                <DictionaryTable words={filteredWords} />
+                <DictionaryTable
+                    words={filteredWords}
+                    baseLanguageId={user?.baseLanguageId || ''}
+                    targetLanguageId={user?.targetLanguageId || ''}
+                />
             )}
         </div>
     );

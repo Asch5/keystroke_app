@@ -67,5 +67,6 @@ export async function updateUser(user: User) {
 
 export async function getLanguages() {
     const languages = await prisma.language.findMany();
+    console.log('Languages:', languages);
     return languages;
 }

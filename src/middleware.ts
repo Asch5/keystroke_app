@@ -25,7 +25,9 @@ function enhancedMiddleware(request: NextRequest) {
     // Log all API routes for debugging
     if (pathname.startsWith('/api/')) {
         console.log('=== MIDDLEWARE DEBUG ===');
-        console.log('API Request:', request.method, pathname);
+
+        console.log('API request.method:', request.method);
+        console.log('API request.nextUrl:', pathname);
         console.log('Headers:', Object.fromEntries(request.headers));
         console.log(
             'Cookies:',

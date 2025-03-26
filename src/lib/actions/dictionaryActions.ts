@@ -31,7 +31,7 @@ export async function fetchDictionaryWords(
             languageId: entry.targetLanguageId || '',
             category: entry.partOfSpeech || '',
             difficulty: mapDifficultyLevel(entry.difficultyLevel),
-            audioUrl: entry.audioId ? `/api/audio/${entry.audioId}` : '',
+            audioUrl: entry.word?.audio || '',
             exampleSentence: entry.descriptionTarget || '',
         }));
     } catch (error) {
@@ -81,6 +81,8 @@ export async function addWordToUserDictionary(
                 progress: 0,
                 timeWordWasStartedToLearn: new Date(),
                 jsonbData: {},
+                customOneWordDefinition: '',
+                customDifficultyLevel: null,
             },
         });
 

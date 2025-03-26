@@ -3,34 +3,28 @@ import bcryptjs from 'bcryptjs';
 import {
     users,
     languages,
-    audio,
     words,
     oneWordDefinitions,
     mainDictionary,
     dictionaryExamples,
-    synonyms,
-    dictionarySynonyms,
     userDictionary,
     lists,
     listWords,
     userLists,
     userListWords,
-    userDictionaryExamples,
-    userDictionarySynonyms,
-    userSynonyms,
+    wordCompositions,
+    wordSynonyms,
+    categories,
+    user_Id_1,
 } from '../src/lib/placeholder-data';
 
 const prisma = new PrismaClient();
 
-// If you need SourceType, define it directly in the seed file:
-enum SourceType {
-    IMPORT = 'import',
-    USER = 'user',
-    SYSTEM = 'system',
-}
-
 async function main() {
     console.log('🌱 Starting seeding...');
+
+    // Store created user IDs
+    const createdUserIds: { [key: string]: string } = {};
 
     // Seed languages
     console.log('Seeding languages...');
@@ -39,6 +33,7 @@ async function main() {
             where: { code: language.code },
             update: {
                 name: language.name,
+                id: language.id,
                 createdAt: language.createdAt,
             },
             create: {
@@ -53,73 +48,87 @@ async function main() {
     // Seed users
     console.log('Seeding users...');
     for (const user of users) {
-        const hashedPassword = await bcryptjs.hash(user.password, 10);
-        await prisma.user.upsert({
-            where: { email: user.email },
-            update: {
-                name: user.name,
-                password: hashedPassword,
-                baseLanguageId: user.baseLanguageId,
-                targetLanguageId: user.targetLanguageId,
-                role: user.role,
-                isVerified: user.isVerified,
-                verificationToken: user.verificationToken,
-                profilePictureUrl: user.profilePictureUrl,
-                status: user.status,
-                settings: user.settings as Record<string, string>,
-                studyPreferences: user.studyPreferences as Record<
-                    string,
-                    string
-                >,
-            },
-            create: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                password: hashedPassword,
-                baseLanguageId: user.baseLanguageId,
-                targetLanguageId: user.targetLanguageId,
-                role: user.role,
-                isVerified: user.isVerified,
-                verificationToken: user.verificationToken,
-                profilePictureUrl: user.profilePictureUrl,
-                status: user.status,
-                settings: user.settings as Record<string, string>,
-                studyPreferences: user.studyPreferences as Record<
-                    string,
-                    string
-                >,
-            },
-        });
-    }
-
-    // Seed audio
-    console.log('Seeding audio...');
-    for (const a of audio) {
-        await prisma.audio.upsert({
-            where: { id: a.id },
-            update: {},
-            create: {
-                id: a.id,
-                audio: a.audio,
-                languageId: a.languageId,
-                createdAt: a.createdAt,
-            },
-        });
+        try {
+            const hashedPassword = await bcryptjs.hash(user.password, 10);
+            console.log(`Creating user with email: ${user.email}`);
+            const createdUser = await prisma.user.upsert({
+                where: { email: user.email },
+                update: {
+                    name: user.name,
+                    password: hashedPassword,
+                    baseLanguageId: user.baseLanguageId,
+                    targetLanguageId: user.targetLanguageId,
+                    role: user.role,
+                    isVerified: user.isVerified,
+                    verificationToken: user.verificationToken,
+                    profilePictureUrl: user.profilePictureUrl,
+                    status: user.status,
+                    settings: user.settings as Record<string, string>,
+                    studyPreferences: user.studyPreferences as Record<
+                        string,
+                        string
+                    >,
+                },
+                create: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    password: hashedPassword,
+                    baseLanguageId: user.baseLanguageId,
+                    targetLanguageId: user.targetLanguageId,
+                    role: user.role,
+                    isVerified: user.isVerified,
+                    verificationToken: user.verificationToken,
+                    profilePictureUrl: user.profilePictureUrl,
+                    status: user.status,
+                    settings: user.settings as Record<string, string>,
+                    studyPreferences: user.studyPreferences as Record<
+                        string,
+                        string
+                    >,
+                },
+            });
+            console.log(`Successfully created user: ${createdUser.id}`);
+            // Store the created user ID
+            if (user.email === 'anton.doe@example.com') {
+                createdUserIds['user_Id_1'] = createdUser.id;
+            } else if (user.email === 'max.mustermann@example.com') {
+                createdUserIds['user_Id_2'] = createdUser.id;
+            }
+        } catch (error) {
+            console.error(
+                `Failed to create user with email ${user.email}:`,
+                error,
+            );
+            throw error;
+        }
     }
 
     // Seed words
     console.log('Seeding words...');
     for (const word of words) {
         await prisma.word.upsert({
-            where: { id: word.id },
-            update: {},
+            where: {
+                word_languageId: {
+                    word: word.word,
+                    languageId: word.languageId,
+                },
+            },
+            update: {
+                id: word.id,
+                phonetic: word.phonetic,
+                audio: word.audio,
+                createdAt: word.createdAt,
+                updatedAt: word.updatedAt,
+            },
             create: {
                 id: word.id,
                 word: word.word,
                 phonetic: word.phonetic,
+                audio: word.audio,
                 languageId: word.languageId,
                 createdAt: word.createdAt,
+                updatedAt: word.updatedAt,
             },
         });
     }
@@ -142,10 +151,6 @@ async function main() {
     // Seed main dictionary
     console.log('Seeding main dictionary...');
     for (const dict of mainDictionary) {
-        // Convert source type to match Prisma's enum format
-        const sourceType =
-            dict.source === SourceType.IMPORT ? SourceType.IMPORT : dict.source;
-
         await prisma.mainDictionary.upsert({
             where: { id: dict.id },
             update: {},
@@ -157,14 +162,13 @@ async function main() {
                 targetLanguageId: dict.targetLanguageId,
                 descriptionBase: dict.descriptionBase,
                 descriptionTarget: dict.descriptionTarget,
-                audioId: dict.audioId,
-                frequency: dict.frequency,
                 partOfSpeech: dict.partOfSpeech,
                 difficultyLevel: dict.difficultyLevel,
                 etymology: dict.etymology,
-                source: sourceType,
+                source: dict.source,
                 createdAt: dict.createdAt,
                 updatedAt: dict.updatedAt,
+                deletedAt: dict.deletedAt,
             },
         });
     }
@@ -179,45 +183,50 @@ async function main() {
                 id: example.id,
                 dictionaryId: example.dictionaryId,
                 example: example.example,
+                audio: example.audio,
                 languageId: example.languageId,
                 createdAt: example.createdAt,
                 updatedAt: example.updatedAt,
+                deletedAt: example.deletedAt,
             },
         });
     }
 
-    // Seed synonyms
-    console.log('Seeding synonyms...');
-    for (const synonym of synonyms) {
-        await prisma.synonym.upsert({
-            where: { id: synonym.id },
-            update: {},
-            create: {
-                id: synonym.id,
-                synonym: synonym.synonym,
-                languageId: synonym.languageId,
-                createdAt: synonym.createdAt,
-                updatedAt: synonym.updatedAt,
-            },
-        });
-    }
-
-    // Seed dictionary synonyms
-    console.log('Seeding dictionary synonyms...');
-    for (const ds of dictionarySynonyms) {
-        await prisma.dictionarySynonym.upsert({
+    // Seed word compositions
+    console.log('Seeding word compositions...');
+    for (const composition of wordCompositions) {
+        await prisma.wordComposition.upsert({
             where: {
-                dictionaryId_synonymId: {
-                    dictionaryId: ds.dictionaryId,
-                    synonymId: ds.synonymId,
+                dictionaryId_wordId: {
+                    dictionaryId: composition.dictionaryId,
+                    wordId: composition.wordId,
                 },
             },
             update: {},
             create: {
-                dictionaryId: ds.dictionaryId,
-                synonymId: ds.synonymId,
-                createdAt: ds.createdAt,
-                updatedAt: ds.updatedAt,
+                dictionaryId: composition.dictionaryId,
+                wordId: composition.wordId,
+                orderIndex: composition.orderIndex,
+                createdAt: composition.createdAt,
+            },
+        });
+    }
+
+    // Seed word synonyms
+    console.log('Seeding word synonyms...');
+    for (const synonym of wordSynonyms) {
+        await prisma.wordSynonym.upsert({
+            where: {
+                dictionaryId_wordId: {
+                    dictionaryId: synonym.dictionaryId,
+                    wordId: synonym.wordId,
+                },
+            },
+            update: {},
+            create: {
+                dictionaryId: synonym.dictionaryId,
+                wordId: synonym.wordId,
+                createdAt: synonym.createdAt,
             },
         });
     }
@@ -225,12 +234,18 @@ async function main() {
     // Seed user dictionary
     console.log('Seeding user dictionary...');
     for (const ud of userDictionary) {
+        const mappedUserId =
+            createdUserIds[ud.userId === user_Id_1 ? 'user_Id_1' : 'user_Id_2'];
+        if (!mappedUserId) {
+            console.error(`Could not find mapped ID for user ${ud.userId}`);
+            continue;
+        }
         await prisma.userDictionary.upsert({
             where: { id: ud.id },
             update: {},
             create: {
                 id: ud.id,
-                userId: ud.userId,
+                userId: mappedUserId,
                 mainDictionaryId: ud.mainDictionaryId,
                 baseLanguageId: ud.baseLanguageId,
                 targetLanguageId: ud.targetLanguageId,
@@ -241,15 +256,42 @@ async function main() {
                 reviewCount: ud.reviewCount,
                 timeWordWasStartedToLearn: ud.timeWordWasStartedToLearn,
                 progress: ud.progress,
+                amountOfMistakes: ud.amountOfMistakes,
                 createdAt: ud.createdAt,
                 updatedAt: ud.updatedAt,
                 jsonbData: ud.jsonbData as Record<string, string>,
+                deletedAt: ud.deletedAt,
+                customOneWordDefinition: ud.customOneWordDefinition,
+                customDifficultyLevel: ud.customDifficultyLevel,
+                customEtymology: ud.customEtymology,
+                learningStatus: ud.learningStatus,
+                lastReviewedAt: ud.lastReviewedAt,
+                timeWordWasLearned: ud.timeWordWasLearned,
+                customDefinitionBase: ud.customDefinitionBase,
+                customDefinitionTarget: ud.customDefinitionTarget,
+                nextReviewDue: ud.nextReviewDue,
+                correctStreak: ud.correctStreak,
             },
         });
     }
 
-    // Continue with other entities...
-    // Lists
+    // Seed categories
+    console.log('Seeding categories...');
+    for (const category of categories) {
+        await prisma.category.upsert({
+            where: { id: category.id },
+            update: {},
+            create: {
+                id: category.id,
+                name: category.name,
+                description: category.description,
+                createdAt: category.createdAt,
+                updatedAt: category.updatedAt,
+            },
+        });
+    }
+
+    // Seed lists
     console.log('Seeding lists...');
     for (const list of lists) {
         await prisma.list.upsert({
@@ -259,6 +301,7 @@ async function main() {
                 id: list.id,
                 name: list.name,
                 description: list.description,
+                categoryId: list.categoryId,
                 baseLanguageId: list.baseLanguageId,
                 targetLanguageId: list.targetLanguageId,
                 isPublic: list.isPublic,
@@ -270,7 +313,7 @@ async function main() {
                 wordCount: list.wordCount,
                 lastModified: list.lastModified,
                 jsonbData: list.jsonbData as Record<string, string>,
-                ownerId: list.ownerId,
+                deletedAt: list.deletedAt,
             },
         });
     }
@@ -297,23 +340,31 @@ async function main() {
     // User Lists
     console.log('Seeding user lists...');
     for (const ul of userLists) {
+        const mappedUserId =
+            createdUserIds[ul.userId === user_Id_1 ? 'user_Id_1' : 'user_Id_2'];
+        if (!mappedUserId) {
+            console.error(`Could not find mapped ID for user ${ul.userId}`);
+            continue;
+        }
         await prisma.userList.upsert({
             where: { id: ul.id },
             update: {},
             create: {
                 id: ul.id,
-                userId: ul.userId,
-                listsId: ul.listsId,
+                userId: mappedUserId,
+                listId: ul.listId,
                 baseLanguageId: ul.baseLanguageId,
                 targetLanguageId: ul.targetLanguageId,
                 isModified: ul.isModified,
                 customNameOfList: ul.customNameOfList,
                 customDescriptionOfList: ul.customDescriptionOfList,
+                customCoverImageUrl: ul.customCoverImageUrl,
                 createdAt: ul.createdAt,
                 updatedAt: ul.updatedAt,
                 customDifficulty: ul.customDifficulty,
                 progress: ul.progress,
                 jsonbData: ul.jsonbData as Record<string, string>,
+                deletedAt: ul.deletedAt,
             },
         });
     }
@@ -333,59 +384,6 @@ async function main() {
                 userListId: ulw.userListId,
                 userDictionaryId: ulw.userDictionaryId,
                 orderIndex: ulw.orderIndex,
-            },
-        });
-    }
-
-    // User Dictionary Examples
-    console.log('Seeding user dictionary examples...');
-    for (const ude of userDictionaryExamples) {
-        await prisma.userDictionaryExample.upsert({
-            where: { id: ude.id },
-            update: {},
-            create: {
-                id: ude.id,
-                userDictionaryId: ude.userDictionaryId,
-                example: ude.example,
-                languageId: ude.languageId,
-                createdAt: ude.createdAt,
-                updatedAt: ude.updatedAt,
-            },
-        });
-    }
-
-    // User Synonyms
-    console.log('Seeding user synonyms...');
-    for (const us of userSynonyms) {
-        await prisma.userSynonym.upsert({
-            where: { id: us.id },
-            update: {},
-            create: {
-                id: us.id,
-                synonym: us.synonym,
-                languageId: us.languageId,
-                createdAt: us.createdAt,
-                updatedAt: us.updatedAt,
-            },
-        });
-    }
-
-    // User Dictionary Synonyms
-    console.log('Seeding user dictionary synonyms...');
-    for (const uds of userDictionarySynonyms) {
-        await prisma.userDictionarySynonym.upsert({
-            where: {
-                userDictionaryId_userSynonymId: {
-                    userDictionaryId: uds.userDictionaryId,
-                    userSynonymId: uds.userSynonymId,
-                },
-            },
-            update: {},
-            create: {
-                userDictionaryId: uds.userDictionaryId,
-                userSynonymId: uds.userSynonymId,
-                createdAt: uds.createdAt,
-                updatedAt: uds.updatedAt,
             },
         });
     }

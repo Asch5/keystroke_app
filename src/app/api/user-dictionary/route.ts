@@ -78,10 +78,10 @@ async function handler(request: Request) {
         // Transform database models to match frontend interface
         const transformedData = userDictionary.map((item) => ({
             id: item.id,
-            word: item.mainDictionary.word.word,
-            translation: item.mainDictionary.descriptionBase || '',
-            category: item.mainDictionary.partOfSpeech,
-            difficulty: item.mainDictionary.difficultyLevel,
+            word: item.mainDictionary?.word.word || '',
+            translation: item.mainDictionary?.descriptionBase || '',
+            category: item.mainDictionary?.partOfSpeech || '',
+            difficulty: item.mainDictionary?.difficultyLevel || '',
             progress: item.progress,
             isLearned: item.isLearned,
             isNeedsReview: item.isNeedsReview,

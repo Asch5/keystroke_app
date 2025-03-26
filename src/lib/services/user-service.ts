@@ -5,6 +5,14 @@ import { UserWithLanguages } from '@/types/prisma-types';
 /**
  * Service for user-related operations using Prisma
  */
+//list of services for user-related operations using Prisma:
+//1. Get a user by ID with their base and target languages
+//2. Get all users with pagination
+//3. Create a new user
+//4. Update a user
+//5. Delete a user
+//6. Get a user's dictionary entries
+//7. Get a user's lists
 export class UserService {
     /**
      * Get a user by ID with their base and target languages
@@ -46,7 +54,7 @@ export class UserService {
      */
     static async updateUser(
         id: string,
-        data: Prisma.UserUpdateInput
+        data: Prisma.UserUpdateInput,
     ): Promise<User> {
         return prisma.user.update({
             where: { id },

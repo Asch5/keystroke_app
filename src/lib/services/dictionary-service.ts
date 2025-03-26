@@ -8,6 +8,10 @@ import { prisma } from '@/lib/prisma';
  * @param baseLanguageId - The ID of the base language for translations
  * @returns An array of Word objects
  */
+//list of services for dictionary-related operations using Prisma:
+//1. Get dictionary words
+//2. Map difficulty level
+
 export async function getDictionaryWords(
     targetLanguageId: string,
     baseLanguageId: string | null,
@@ -32,7 +36,7 @@ export async function getDictionaryWords(
             languageId: entry.targetLanguageId || '',
             category: entry.partOfSpeech || '',
             difficulty: mapDifficultyLevel(entry.difficultyLevel),
-            audioUrl: entry.audioId ? `/api/audio/${entry.audioId}` : '',
+            audioUrl: entry.word?.audio || '',
             exampleSentence: entry.descriptionTarget || '',
         }));
     } catch (error) {

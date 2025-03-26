@@ -14,6 +14,7 @@ export default function SignupForm() {
 
     useEffect(() => {
         // Fetch available languages
+        console.log('Fetching languages');
 
         const fetchLanguages = async () => {
             try {

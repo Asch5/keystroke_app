@@ -19,7 +19,9 @@ export async function getAllUserWords(userId: string): Promise<Word[]> {
             },
         });
 
-        return allUserWords.map((entry) => entry.mainDictionary.word);
+        return allUserWords
+            .map((entry) => entry.mainDictionary?.word)
+            .filter((word): word is Word => word !== undefined);
     } catch (error) {
         console.error('Error fetching all user words:', error);
         throw error;
@@ -45,7 +47,9 @@ export async function getWordsAddedByUser(userId: string): Promise<Word[]> {
             },
         });
 
-        return wordsAddedByUser.map((entry) => entry.mainDictionary.word);
+        return wordsAddedByUser
+            .map((entry) => entry.mainDictionary?.word)
+            .filter((word): word is Word => word !== undefined);
     } catch (error) {
         console.error('Error fetching words added by user:', error);
         throw error;
@@ -71,7 +75,9 @@ export async function getWordsAddedFromLists(userId: string): Promise<Word[]> {
             },
         });
 
-        return wordsAddedFromLists.map((entry) => entry.mainDictionary.word);
+        return wordsAddedFromLists
+            .map((entry) => entry.mainDictionary?.word)
+            .filter((word): word is Word => word !== undefined);
     } catch (error) {
         console.error('Error fetching words added from lists:', error);
         throw error;
@@ -98,7 +104,9 @@ export async function getWordsInProgress(userId: string): Promise<Word[]> {
             },
         });
 
-        return wordsInProgress.map((entry) => entry.mainDictionary.word);
+        return wordsInProgress
+            .map((entry) => entry.mainDictionary?.word)
+            .filter((word): word is Word => word !== undefined);
     } catch (error) {
         console.error('Error fetching words in progress:', error);
         throw error;

@@ -4,6 +4,15 @@ import { Language, Prisma } from '@prisma/client';
 /**
  * Service for language-related operations using Prisma
  */
+//list of services for language-related operations using Prisma:
+//1. Get all languages
+//2. Get a language by code
+//3. Get a language by ID
+//4. Create a new language
+//5. Update a language
+//6. Delete a language
+//7. Get words for a language
+
 export class LanguageService {
     /**
      * Get all languages
@@ -38,7 +47,7 @@ export class LanguageService {
      * Create a new language
      */
     static async createLanguage(
-        data: Prisma.LanguageCreateInput
+        data: Prisma.LanguageCreateInput,
     ): Promise<Language> {
         return prisma.language.create({
             data,
@@ -50,7 +59,7 @@ export class LanguageService {
      */
     static async updateLanguage(
         id: string,
-        data: Prisma.LanguageUpdateInput
+        data: Prisma.LanguageUpdateInput,
     ): Promise<Language> {
         return prisma.language.update({
             where: { id },
@@ -88,7 +97,7 @@ export class LanguageService {
         baseLanguageId: string,
         targetLanguageId: string,
         page = 1,
-        pageSize = 20
+        pageSize = 20,
     ) {
         return prisma.mainDictionary.findMany({
             where: {
@@ -114,7 +123,7 @@ export class LanguageService {
     static async searchWords(
         languageId: string,
         searchTerm: string,
-        limit = 10
+        limit = 10,
     ) {
         return prisma.word.findMany({
             where: {

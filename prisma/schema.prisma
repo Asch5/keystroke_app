@@ -32,9 +32,9 @@ enum PartOfSpeech {
 }
 
 enum SourceType {
-  user
-  import
   ai_generated @map("ai-generated")
+  merriam
+  user
 }
 
 enum LearningStatus {

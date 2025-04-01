@@ -1,37 +1,43 @@
 import {
-    UserGroupIcon,
-    HomeIcon,
     DocumentDuplicateIcon,
-    UserCircleIcon,
+    PresentationChartBarIcon,
+    ChartPieIcon,
+    Cog6ToothIcon,
     BookOpenIcon,
+    UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import { NavLink } from '@/types/nav';
 
 export const dashboardNavLinks: NavLink[] = [
-    { name: 'Home', href: '/', icon: HomeIcon },
     {
         name: 'Dictionary',
         href: '/dashboard/dictionary',
-        icon: DocumentDuplicateIcon,
+        icon: BookOpenIcon,
     },
 
-    { name: 'Lists', href: '/dashboard/lists', icon: UserGroupIcon },
-    { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
-    { name: 'Profile', href: '/dashboard/profile', icon: UserCircleIcon },
-    { name: 'Admin', href: '/dashboard/admin', icon: UserCircleIcon },
+    {
+        name: 'Practice',
+        href: '/dashboard/practice',
+        icon: PresentationChartBarIcon,
+    },
+    { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon },
+    { name: 'Settings', href: '/dashboard/settings', icon: Cog6ToothIcon },
 ];
 
 export const dictionaryNavLinks: NavLink[] = [
-    { name: 'Home', href: '/', icon: HomeIcon },
     {
-        name: 'Statistics',
-        href: '/dashboard/dictionary/statistics',
+        name: 'Practice',
+        href: '/dashboard/practice',
+        icon: PresentationChartBarIcon,
+    },
+    {
+        name: 'Catalogue',
+        href: '/dashboard/dictionary/catalogue',
         icon: DocumentDuplicateIcon,
     },
-    { name: 'Lists', href: '/dashboard/dictionary/lists', icon: UserGroupIcon },
     {
-        name: 'My Dictionary',
-        href: '/dashboard/dictionary/my-dictionary',
-        icon: BookOpenIcon,
+        name: 'New Word',
+        href: '/dashboard/dictionary/add-new-word',
+        icon: UserGroupIcon,
     },
 ];

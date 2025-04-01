@@ -11,7 +11,7 @@ export default function LoginForm() {
     const initialState: StateAuth = { message: null, errors: {} };
     const [state, formAction, isPending] = useActionState(
         authenticate,
-        initialState
+        initialState,
     );
     const dispatch = useAppDispatch();
 

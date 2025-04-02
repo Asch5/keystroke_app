@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { getUserByEmail } from '../db/user';
+import { getUserByEmail } from '@/lib/db/user';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
@@ -58,7 +58,7 @@ interface UpdateData {
 
 export async function updateUserProfile(
     prevState: State,
-    formData: FormData
+    formData: FormData,
 ): Promise<State> {
     // Get the current user from the session
     const session = await auth();

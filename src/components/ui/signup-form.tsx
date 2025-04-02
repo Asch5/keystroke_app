@@ -1,8 +1,24 @@
 'use client';
 
 import { signUp, StateSignup } from '@/lib/actions/authActions';
-import { getLanguages } from '@/lib/db/user';
+import { LanguageCode } from '@prisma/client';
 import { useActionState, useEffect, useState } from 'react';
+
+// Language mapping based on LanguageCode enum
+const LANGUAGE_MAP: Record<LanguageCode, string> = {
+    en: 'English',
+    ru: 'Russian',
+    da: 'Danish',
+    es: 'Spanish',
+    fr: 'French',
+    de: 'German',
+    it: 'Italian',
+    pt: 'Portuguese',
+    zh: 'Chinese',
+    ja: 'Japanese',
+    ko: 'Korean',
+    ar: 'Arabic',
+} as const;
 
 export default function SignupForm() {
     const initialState: StateSignup = { message: null, errors: {} };
@@ -13,18 +29,14 @@ export default function SignupForm() {
     );
 
     useEffect(() => {
-        // Fetch available languages
-        console.log('Fetching languages');
-
-        const fetchLanguages = async () => {
-            try {
-                const response = await getLanguages();
-                setLanguages(response);
-            } catch (err) {
-                console.error('Error fetching languages:', err);
-            }
-        };
-        fetchLanguages();
+        // Convert language map to array format for the select inputs
+        const languageArray = Object.entries(LANGUAGE_MAP).map(
+            ([code, name]) => ({
+                id: code,
+                name: name,
+            }),
+        );
+        setLanguages(languageArray);
     }, []);
 
     return (

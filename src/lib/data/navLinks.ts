@@ -5,6 +5,8 @@ import {
     Cog6ToothIcon,
     BookOpenIcon,
     UserGroupIcon,
+    BuildingLibraryIcon,
+    LanguageIcon,
 } from '@heroicons/react/24/outline';
 import { NavLink } from '@/types/nav';
 
@@ -22,6 +24,7 @@ export const dashboardNavLinks: NavLink[] = [
     },
     { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon },
     { name: 'Settings', href: '/dashboard/settings', icon: Cog6ToothIcon },
+    { name: 'Admin', href: '/dashboard/admin', icon: BuildingLibraryIcon },
 ];
 
 export const dictionaryNavLinks: NavLink[] = [
@@ -39,5 +42,23 @@ export const dictionaryNavLinks: NavLink[] = [
         name: 'New Word',
         href: '/dashboard/dictionary/add-new-word',
         icon: UserGroupIcon,
+    },
+];
+
+export const adminNavLinks: NavLink[] = [
+    {
+        name: 'Users',
+        href: '/dashboard/admin/users',
+        icon: UserGroupIcon,
+    },
+    {
+        name: 'Languages',
+        href: '/dashboard/admin/languages',
+        icon: LanguageIcon,
+    },
+    {
+        name: 'Dictionaries',
+        href: '/dashboard/admin/dictionaries',
+        icon: BookOpenIcon,
     },
 ];

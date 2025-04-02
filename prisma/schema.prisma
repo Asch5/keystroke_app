@@ -23,6 +23,7 @@ enum DifficultyLevel {
 enum PartOfSpeech {
   noun
   verb
+  phrasal_verb
   adjective
   adverb
   pronoun
@@ -32,8 +33,9 @@ enum PartOfSpeech {
 }
 
 enum SourceType {
-  ai_generated @map("ai-generated")
-  merriam
+  ai_generated     @map("ai-generated")
+  merriam_learners
+  merriam_intermediate
   user
 }
 
@@ -53,24 +55,27 @@ enum SessionType {
   spaced
 }
 
-model Language {
-  id                     String                  @id @default(uuid()) @db.Uuid
-  code                   String                  @unique @db.VarChar(5)
-  name                   String                  @db.VarChar(50)
-  createdAt              DateTime                @default(now()) @map("created_at")
-  dictionaryExamples     DictionaryExample[]
-  listsBase              List[]                  @relation("BaseLanguage")
-  listsTarget            List[]                  @relation("TargetLanguage")
-  oneWordDefinitions     OneWordDefinition[]
-  userDictionaryBase     UserDictionary[]        @relation("UserDictionaryBaseLanguage")
-  userDictionaryTarget   UserDictionary[]        @relation("UserDictionaryTargetLanguage")
-  userListsBase          UserList[]              @relation("UserListBaseLanguage")
-  userListsTarget        UserList[]              @relation("UserListTargetLanguage")
-  usersBaseLanguage      User[]                  @relation("BaseLanguage")
-  usersTargetLanguage    User[]                  @relation("TargetLanguage")
-  words                  Word[]
+enum LanguageCode {
+  en @map("en") // English
+  ru @map("ru") // Russian
+  da @map("da") // Danish
+  es @map("es") // Spanish
+  fr @map("fr") // French
+  de @map("de") // German
+  it @map("it") // Italian
+  pt @map("pt") // Portuguese
+  zh @map("zh") // Chinese
+  ja @map("ja") // Japanese
+  ko @map("ko") // Korean
+  ar @map("ar") // Arabic
+}
 
-  @@map("languages")
+enum RelationshipType {
+  synonym
+  antonym
+  related
+  composition
+  plural_en
 }
 
 model User {
@@ -78,8 +83,8 @@ model User {
   name              String           @db.VarChar(255)
   email             String           @unique @db.VarChar(255)
   password          String           @db.VarChar(255)
-  baseLanguageId    String          @map("base_language_id") @db.Uuid
-  targetLanguageId  String          @map("target_language_id") @db.Uuid
+  baseLanguageCode  LanguageCode     @map("base_language_code")
+  targetLanguageCode LanguageCode    @map("target_language_code")
   createdAt         DateTime         @default(now()) @map("created_at")
   updatedAt         DateTime         @default(now()) @updatedAt @map("updated_at")
   lastLogin         DateTime         @default(now()) @map("lastLogin")
@@ -91,11 +96,9 @@ model User {
   settings          Json             @default("{}")
   studyPreferences  Json             @map("study_preferences")
   deletedAt         DateTime?        @map("deleted_at")
-  lists             List[]          @relation("UserToList")
+  lists             List[]           @relation("UserToList")
   userDictionary    UserDictionary[]
   userLists         UserList[]       @relation("UserToUserList")
-  baseLanguage      Language?        @relation("BaseLanguage", fields: [baseLanguageId], references: [id])
-  targetLanguage    Language?        @relation("TargetLanguage", fields: [targetLanguageId], references: [id])
   userSettings      UserSettings?
   learningSessions  UserLearningSession[]
 
@@ -107,223 +110,192 @@ model User {
 /// It serves as the base entity for dictionary entries and contains
 /// basic information like pronunciation and audio
 model Word {
-  id             String           @id @default(uuid()) @db.Uuid
+  id             Int              @id @default(autoincrement())
   word           String           @db.VarChar(255)
   phonetic       String?          @db.VarChar(100)
-  audio          String           @db.VarChar(255)
-  languageId     String           @map("language_id") @db.Uuid
-  createdAt      DateTime         @default(now()) @map("created_at")
-  updatedAt      DateTime         @default(now()) @updatedAt @map("updated_at")
-  language       Language         @relation(fields: [languageId], references: [id])
+  audio          String?          @db.VarChar(255)
+  etymology      String?          @db.Text
+  difficultyLevel DifficultyLevel @map("difficulty_level")
+  additionalInfo Json?            @default("{}")
+  languageCode   LanguageCode     @map("language_code")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
   
-  dictionaryEntries MainDictionary[] @relation("WordToDictionary")
-  composedDictionaries WordComposition[]
-  synonymDictionaries  WordSynonym[]
-  relatedWordsDictionaries WordRelated[]
+  // Relations
+  wordDefinitions WordDefinition[] @relation("WordToDefinition")
+  phrases        Phrase[]        @relation("PhraseToWord")
+  
+  // Consolidated self-referential relationship
+  relatedFrom    WordRelationship[] @relation("FromWord")
+  relatedTo      WordRelationship[] @relation("ToWord")
 
-  @@unique([word, languageId])
+  @@unique([word, languageCode])
   @@index([word], map: "idx_word_search")
-  @@index([languageId], map: "idx_word_language")
-  @@index([createdAt], map: "idx_word_created_at")
+  @@index([languageCode], map: "idx_word_language")
+  @@index([difficultyLevel], map: "idx_word_difficulty")
   @@map("words")
 }
 
-model OneWordDefinition {
-  id             String           @id @default(uuid()) @db.Uuid
-  definition     String
-  languageId     String           @map("language_id") @db.Uuid
-  createdAt      DateTime         @default(now()) @map("created_at")
-  mainDictionary MainDictionary[]
-  language       Language         @relation(fields: [languageId], references: [id])
+/// Junction table for Word-Definition many-to-many relationship
+model WordDefinition {
+  wordId         Int          @map("word_id")
+  definitionId   Int          @map("definition_id")
+  isPrimary      Boolean      @default(false) @map("is_primary")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
 
-  @@map("one_word_definition")
+  // Relations
+  word           Word         @relation("WordToDefinition", fields: [wordId], references: [id], onDelete: Cascade)
+  definition     Definition   @relation("DefinitionToWord", fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@id([wordId, definitionId])
+  @@index([wordId], map: "idx_word_definition_word")
+  @@index([definitionId], map: "idx_word_definition_def")
+  @@map("word_definitions")
 }
 
-/// Image represents a visual representation that can be shared across multiple dictionary entries
+/// WordRelationship represents any type of relationship between words
+/// The type field indicates whether it's a synonym, antonym, composition, etc.
+model WordRelationship {
+  fromWordId     Int              @map("from_word_id")
+  toWordId       Int              @map("to_word_id")
+  type           RelationshipType @map("relationship_type")
+  orderIndex     Int?             @map("order_index") // For composition relationships
+  createdAt      DateTime         @default(now()) @map("created_at")
+  
+  fromWord       Word             @relation("FromWord", fields: [fromWordId], references: [id], onDelete: Cascade)
+  toWord         Word             @relation("ToWord", fields: [toWordId], references: [id], onDelete: Cascade)
+
+  @@id([fromWordId, toWordId, type])
+  @@index([fromWordId, type], map: "idx_word_relationship_from")
+  @@index([toWordId, type], map: "idx_word_relationship_to") 
+  @@map("word_relationships")
+}
+
+/// Definition represents the meaning of a word with its part of speech
+/// One word can have multiple definitions across different contexts
+model Definition {
+  id              Int          @id @default(autoincrement())
+  definition      String       @db.Text
+  partOfSpeech    PartOfSpeech @map("part_of_speech")
+  plural          Boolean      @default(false)
+  frequencyUsing  Int          @default(0) @map("frequency_using") @db.SmallInt
+  imageId         Int?         @map("image_id")
+  source          SourceType
+  languageCode    LanguageCode @map("language_code")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  words           WordDefinition[] @relation("DefinitionToWord")
+  image           Image?       @relation(fields: [imageId], references: [id])
+  examples        DefinitionExample[] @relation("DefinitionToExample")
+  listWords       ListWord[]
+  userDictionary  UserDictionary[]
+
+  @@index([partOfSpeech], map: "idx_definition_pos")
+  @@index([frequencyUsing], map: "idx_definition_frequency")
+  @@map("definitions")
+}
+
+/// DefinitionExample represents a usage example specifically for word definitions
+model DefinitionExample {
+  id            Int          @id @default(autoincrement())
+  example       String       @db.Text
+  audio         String?      @db.VarChar(255)
+  languageCode  LanguageCode @map("language_code")
+  definitionId  Int          @map("definition_id")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  definition    Definition   @relation("DefinitionToExample", fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@index([definitionId], map: "idx_definition_example_def")
+  @@index([languageCode], map: "idx_definition_example_lang")
+  @@map("definition_examples")
+}
+
+/// Phrase represents a multi-word expression with its meaning
+model Phrase {
+  id           Int          @id @default(autoincrement())
+  phrase       String       @db.Text
+  definition   String       @db.Text
+  languageCode LanguageCode @map("language_code")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  examples     PhraseExample[] @relation("PhraseToExample")
+  words        Word[]       @relation("PhraseToWord")
+
+  @@index([languageCode], map: "idx_phrase_language")
+  @@map("phrases")
+}
+
+/// PhraseExample represents a usage example specifically for phrases
+model PhraseExample {
+  id            Int          @id @default(autoincrement())
+  example       String       @db.Text
+  audio         String?      @db.VarChar(255)
+  languageCode  LanguageCode @map("language_code")
+  phraseId      Int          @map("phrase_id")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  phrase        Phrase       @relation("PhraseToExample", fields: [phraseId], references: [id], onDelete: Cascade)
+
+  @@index([phraseId], map: "idx_phrase_example_phrase")
+  @@index([languageCode], map: "idx_phrase_example_lang")
+  @@map("phrase_examples")
+}
+
+/// Image represents a visual representation used for definitions
 model Image {
-  id             String           @id @default(uuid()) @db.Uuid
-  url            String           @db.VarChar(255) 
-  description    String?          
-  createdAt      DateTime         @default(now()) 
-  updatedAt      DateTime         @updatedAt      
-  mainDictionaries MainDictionary[]   @relation("ImageToMainDictionary")
+  id          Int          @id @default(autoincrement())
+  url         String       @db.VarChar(255)
+  description String?      @db.Text
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  definitions Definition[]
 
   @@map("images")
 }
 
-/// MainDictionary stores the core dictionary entries with their definitions,
-/// parts of speech, and relationships to other words
-model MainDictionary {
-  id                  String              @id @default(uuid()) @db.Uuid
-  wordId              String              @map("word_id") @db.Uuid
-  oneWordDefinitionId String              @map("one_word_definition_id") @db.Uuid
-  baseLanguageId      String              @map("base_language_id") @db.Uuid
-  targetLanguageId    String              @map("target_language_id") @db.Uuid
-  imageId             String?             @map("image_id") @db.Uuid
-  descriptionBase     String?             @map("description_base") @db.VarChar(2000)
-  descriptionTarget   String?             @map("description_target") @db.VarChar(2000)
-  partOfSpeech        PartOfSpeech        @map("part_of_speech")
-  difficultyLevel     DifficultyLevel     @map("difficulty_level")
-  etymology           String?             @db.VarChar(1000)
-  source              SourceType
-  version             Int                 @default(1) @map("version")
-  versionNotes        String?             @map("version_notes") @db.VarChar(500)
-  lastVersionUpdate   DateTime?           @map("last_version_update")
-  createdAt           DateTime            @default(now()) @map("created_at")
-  updatedAt           DateTime            @default(now()) @updatedAt @map("updated_at")
-  deletedAt           DateTime?           @map("deleted_at")
-  examples            DictionaryExample[]
-  listWords           ListWord[]
-  oneWordDefinition   OneWordDefinition   @relation(fields: [oneWordDefinitionId], references: [id])
-  userDictionary      UserDictionary[]
-  word                Word                @relation("WordToDictionary", fields: [wordId], references: [id])
-  composedOf          WordComposition[]
-  synonyms            WordSynonym[]
-  relatedWords        WordRelated[]
-  image               Image?              @relation("ImageToMainDictionary", fields: [imageId], references: [id])
-
-  @@unique([wordId, oneWordDefinitionId, baseLanguageId, targetLanguageId])
-  @@index([baseLanguageId, targetLanguageId], map: "idx_main_dict_languages")
-  @@index([wordId, baseLanguageId, targetLanguageId], map: "idx_word_lookup")
-  @@index([difficultyLevel], map: "idx_difficulty_level")
-  @@index([partOfSpeech], map: "idx_part_of_speech")
-  @@index([createdAt], map: "idx_created_at")
-  @@index([imageId], map: "idx_image")
-  @@index([version, wordId], map: "idx_version_tracking")
-  @@map("main_dictionary")
-}
-
-model DictionaryExample {
-  id           String         @id @default(uuid()) @db.Uuid
-  dictionaryId String         @map("dictionary_id") @db.Uuid
-  audio          String           @db.VarChar(255) 
-  example      String
-  languageId   String         @map("language_id") @db.Uuid
-  createdAt    DateTime       @default(now()) @map("created_at")
-  updatedAt    DateTime       @default(now()) @updatedAt @map("updated_at")
-  deletedAt    DateTime?      @map("deleted_at")
-  dictionary   MainDictionary @relation(fields: [dictionaryId], references: [id])
-  language     Language       @relation(fields: [languageId], references: [id])
-
-  @@map("dictionary_examples")
-}
-
-model WordRelated {
-  dictionaryId    String         @map("dictionary_id") @db.Uuid
-  wordId          String         @map("word_id") @db.Uuid
-  dictionary      MainDictionary @relation(fields: [dictionaryId], references: [id])
-  word            Word           @relation(fields: [wordId], references: [id])
-  createdAt       DateTime       @default(now())
-
-  @@id([dictionaryId, wordId])
-  @@map("word_related")
-}
-
-model WordSynonym {
-  dictionaryId    String         @map("dictionary_id") @db.Uuid
-  wordId          String         @map("word_id") @db.Uuid
-  dictionary      MainDictionary @relation(fields: [dictionaryId], references: [id])
-  word            Word           @relation(fields: [wordId], references: [id])
-  createdAt       DateTime       @default(now())
-
-  @@id([dictionaryId, wordId])
-  @@map("word_synonyms")
-}
-
-model WordComposition {
-  dictionaryId    String         @map("dictionary_id") @db.Uuid
-  wordId          String         @map("word_id") @db.Uuid
-  dictionary      MainDictionary @relation(fields: [dictionaryId], references: [id])
-  word            Word           @relation(fields: [wordId], references: [id])
-  orderIndex      Int?          // Optional: if you need to maintain word order
-  createdAt       DateTime       @default(now())
-
-  @@id([dictionaryId, wordId])
-  @@map("word_compositions")
-}
-
-model UserDictionary {
-  id                        String                  @id @default(uuid()) @db.Uuid
-  userId                    String                  @map("user_id") @db.Uuid
-  mainDictionaryId          String?                 @map("main_dictionary_id") @db.Uuid
-  baseLanguageId            String                  @map("base_language_id") @db.Uuid
-  targetLanguageId          String                  @map("target_language_id") @db.Uuid
-  customOneWordDefinition   String                  @map("custom_one_word_definition_id") @db.Uuid
-  customDefinitionBase      String?                 @map("custom_definition_baseLanguage")
-  customDefinitionTarget    String?                 @map("custom_definition_targetLanguage")
-  customDifficultyLevel     DifficultyLevel?        @map("custom_difficulty_level")
-  customEtymology           String?                 
-  learningStatus            LearningStatus          @default(notStarted) @map("learning_status")
-  isLearned                 Boolean                 @default(false) @map("is_learned")
-  isNeedsReview             Boolean                 @default(false) @map("is_needs_review")
-  isDifficultToLearn        Boolean                 @default(false) @map("is_difficult_to_learn")
-  isModified                Boolean                 @default(false) @map("is_modified")
-  lastReviewedAt            DateTime?               @map("last_reviewed_at")
-  reviewCount               Int                     @default(0) @map("review_count")
-  timeWordWasStartedToLearn DateTime?               @map("time_word_was_started_to_learn")
-  timeWordWasLearned        DateTime?               @map("time_word_was_learned")
-  nextReviewDue             DateTime?               @map("next_review_due")
-  progress                  Float                   @default(0)
-  amountOfMistakes          Int                     @default(0) @map("amount_of_mistakes")
-  correctStreak             Int                     @default(0) @map("correct_streak")
-  createdAt                 DateTime                @default(now()) @map("created_at")
-  updatedAt                 DateTime                @default(now()) @updatedAt @map("updated_at")
-  deletedAt                 DateTime?               @map("deleted_at")
-  jsonbData                 Json                    @default("{}") @map("jsonb_data")
-  
-  baseLanguage              Language                @relation("UserDictionaryBaseLanguage", fields: [baseLanguageId], references: [id])
-  mainDictionary            MainDictionary?         @relation(fields: [mainDictionaryId], references: [id])
-  targetLanguage            Language                @relation("UserDictionaryTargetLanguage", fields: [targetLanguageId], references: [id])
-  user                      User                    @relation(fields: [userId], references: [id])
-  userListWords             UserListWord[]
-  sessionItems              UserSessionItem[]
-
-  @@unique([userId, mainDictionaryId])
-  @@index([userId, isLearned, lastReviewedAt], map: "idx_user_dict_learning")
-  @@index([userId, isNeedsReview], map: "idx_user_dict_review")
-  @@index([userId, isDifficultToLearn], map: "idx_user_dict_difficult")
-  @@index([lastReviewedAt], map: "idx_active_words")
-  @@index([userId, learningStatus], map: "idx_learning_status")
-  @@index([userId, nextReviewDue], map: "idx_next_review")
-  @@index([userId, progress], map: "idx_progress")
-  @@index([userId, correctStreak], map: "idx_streak")
-  @@map("user_dictionary")
-}
-
 model List {
-  id               String          @id @default(uuid()) @db.Uuid
-  name             String          @db.VarChar(255)
-  description      String?
-  categoryId       String          @map("category_id") @db.Uuid 
-  baseLanguageId   String          @map("base_language_id") @db.Uuid
-  targetLanguageId String          @map("target_language_id") @db.Uuid
-  isPublic         Boolean         @default(false) @map("is_public")
-  createdAt        DateTime        @default(now()) @map("created_at")
-  updatedAt        DateTime        @default(now()) @updatedAt @map("updated_at")
-  tags             String[]
-  coverImageUrl    String?         @db.VarChar(255)
-  difficultyLevel  DifficultyLevel @map("difficultyLevel")
-  wordCount        Int             @default(0) @map("wordCount")
-  learnedWordCount Int             @default(0) @map("learned_word_count")
-  lastModified     DateTime        @default(now()) @map("last_modified")
-  jsonbData        Json            @default("{}") @map("jsonb_data")
-  deletedAt        DateTime?       @map("deleted_at")
-  listWords        ListWord[]
-  baseLanguage     Language        @relation("BaseLanguage", fields: [baseLanguageId], references: [id])
-  targetLanguage   Language        @relation("TargetLanguage", fields: [targetLanguageId], references: [id])
-  userLists        UserList[]      @relation("ListToUserLists")
-  category         Category        @relation(fields: [categoryId], references: [id])
-  users            User[]          @relation("UserToList")
-  learningSessions UserLearningSession[]
+  id                String          @id @default(uuid()) @db.Uuid
+  name              String          @db.VarChar(255)
+  description       String?
+  categoryId        Int             @map("category_id")
+  baseLanguageCode  LanguageCode    @map("base_language_code")
+  targetLanguageCode LanguageCode   @map("target_language_code")
+  isPublic          Boolean         @default(false) @map("is_public")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @default(now()) @updatedAt @map("updated_at")
+  tags              String[]
+  coverImageUrl     String?         @db.VarChar(255)
+  difficultyLevel   DifficultyLevel @map("difficultyLevel")
+  wordCount         Int             @default(0) @map("wordCount")
+  learnedWordCount  Int             @default(0) @map("learned_word_count")
+  lastModified      DateTime        @default(now()) @map("last_modified")
+  jsonbData         Json            @default("{}") @map("jsonb_data")
+  deletedAt         DateTime?       @map("deleted_at")
+  listWords         ListWord[]
+  userLists         UserList[]      @relation("ListToUserLists")
+  category          Category        @relation(fields: [categoryId], references: [id])
+  users             User[]          @relation("UserToList")
+  learningSessions  UserLearningSession[]
 
-  @@index([baseLanguageId, targetLanguageId], map: "idx_lists_language")
+  @@index([baseLanguageCode, targetLanguageCode], map: "idx_lists_language")
   @@index([difficultyLevel], map: "idx_list_difficulty")
-  @@index([isPublic, baseLanguageId, targetLanguageId], map: "idx_public_lists")
+  @@index([isPublic, baseLanguageCode, targetLanguageCode], map: "idx_public_lists")
   @@map("lists")
 }
 
+/// Category for organizing lists
 model Category {
-  id               String          @id @default(uuid()) @db.Uuid
+  id               Int             @id @default(autoincrement())
   name             String          @db.VarChar(255)
   description      String?
   createdAt        DateTime        @default(now()) @map("created_at")
@@ -334,13 +306,14 @@ model Category {
 }
 
 model ListWord {
-  listId       String         @map("list_id") @db.Uuid
-  dictionaryId String         @map("dictionary_id") @db.Uuid
-  orderIndex   Int            @map("order_index")
-  dictionary   MainDictionary @relation(fields: [dictionaryId], references: [id])
-  list         List           @relation(fields: [listId], references: [id])
+  listId       String     @map("list_id") @db.Uuid
+  definitionId Int        @map("definition_id")
+  orderIndex   Int        @map("order_index")
+  
+  list         List       @relation(fields: [listId], references: [id], onDelete: Cascade)
+  definition   Definition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
 
-  @@id([listId, dictionaryId])
+  @@id([listId, definitionId])
   @@index([listId, orderIndex], map: "idx_list_words_order")
   @@map("list_words")
 }
@@ -351,8 +324,8 @@ model UserList {
   id                      String           @id @default(uuid()) @db.Uuid
   userId                  String           @map("user_id") @db.Uuid
   listId                  String?          @map("list_id") @db.Uuid
-  baseLanguageId          String           @map("base_language_id") @db.Uuid
-  targetLanguageId        String           @map("target_language_id") @db.Uuid
+  baseLanguageCode        LanguageCode     @map("base_language_code")
+  targetLanguageCode      LanguageCode     @map("target_language_code")
   isModified              Boolean          @default(false) @map("is_modified")
   customNameOfList        String?          @map("custom_name_of_list") @db.VarChar(255)
   customDescriptionOfList String?          @map("custom_description_of_list") @db.VarChar(1000)
@@ -364,9 +337,7 @@ model UserList {
   jsonbData               Json             @default("{}") @map("jsonb_data")
   deletedAt               DateTime?        @map("deleted_at")
   userListWords           UserListWord[]
-  baseLanguage            Language         @relation("UserListBaseLanguage", fields: [baseLanguageId], references: [id])
   list                    List?            @relation("ListToUserLists", fields: [listId], references: [id])
-  targetLanguage          Language         @relation("UserListTargetLanguage", fields: [targetLanguageId], references: [id])
   user                    User             @relation("UserToUserList", fields: [userId], references: [id])
   learningSessions        UserLearningSession[]
 
@@ -381,8 +352,9 @@ model UserListWord {
   userListId       String         @map("user_list_id") @db.Uuid
   orderIndex       Int            @map("order_index")
   userDictionaryId String         @map("user_dictionary_id") @db.Uuid
-  userDictionary   UserDictionary @relation(fields: [userDictionaryId], references: [id])
-  userList         UserList       @relation(fields: [userListId], references: [id])
+  
+  userDictionary   UserDictionary @relation(fields: [userDictionaryId], references: [id], onDelete: Cascade)
+  userList         UserList       @relation(fields: [userListId], references: [id], onDelete: Cascade)
 
   @@id([userListId, userDictionaryId])
   @@map("user_list_words")
@@ -447,4 +419,51 @@ model UserSessionItem {
 
   @@unique([sessionId, userDictionaryId])
   @@map("user_session_items")
+}
+
+/// UserDictionary tracks a user's progress with individual definitions
+model UserDictionary {
+  id                    String           @id @default(uuid()) @db.Uuid
+  userId                String           @map("user_id") @db.Uuid
+  definitionId          Int              @map("definition_id")
+  baseLanguageCode      LanguageCode     @map("base_language_code")
+  targetLanguageCode    LanguageCode     @map("target_language_code")
+  
+  // Custom user modifications
+  customDefinitionBase    String?          @map("custom_definition_base") @db.Text
+  customDefinitionTarget  String?          @map("custom_definition_target") @db.Text
+  customDifficultyLevel   DifficultyLevel? @map("custom_difficulty_level")
+  customEtymology         String?          @db.Text
+  isModified              Boolean          @default(false) @map("is_modified")
+  
+  // Learning progress tracking - consolidated
+  learningStatus          LearningStatus   @default(notStarted) @map("learning_status")
+  lastReviewedAt          DateTime?        @map("last_reviewed_at")
+  reviewCount             Int              @default(0) @map("review_count")
+  timeWordWasStartedToLearn DateTime?     @map("time_word_was_started_to_learn")
+  timeWordWasLearned      DateTime?        @map("time_word_was_learned")
+  nextReviewDue           DateTime?        @map("next_review_due")
+  progress                Float            @default(0)
+  amountOfMistakes        Int              @default(0) @map("amount_of_mistakes")
+  correctStreak           Int              @default(0) @map("correct_streak")
+  
+  // Timestamps and metadata
+  createdAt               DateTime         @default(now()) @map("created_at")
+  updatedAt               DateTime         @updatedAt @map("updated_at")
+  deletedAt               DateTime?        @map("deleted_at")
+  jsonbData               Json             @default("{}") @map("jsonb_data")
+  
+  // Relations
+  definition              Definition       @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  user                    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userListWords           UserListWord[]
+  sessionItems            UserSessionItem[]
+
+  @@unique([userId, definitionId])
+  @@index([userId, learningStatus], map: "idx_learning_status")
+  @@index([userId, nextReviewDue], map: "idx_next_review")
+  @@index([userId, progress], map: "idx_progress")
+  @@index([userId, correctStreak], map: "idx_streak")
+  @@index([lastReviewedAt], map: "idx_active_words")
+  @@map("user_dictionary")
 }

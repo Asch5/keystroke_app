@@ -10,7 +10,7 @@ import {
 import { geistSans } from '@/components/ui/fonts';
 // import AuthStatus from '@/components/AuthStatus';
 import { Suspense } from 'react';
-import CardWrapper from '@/components/ui/dashboard/cards';
+// import CardWrapper from '@/components/ui/dashboard/cards';
 import Link from 'next/link';
 
 export default function Page() {
@@ -41,9 +41,9 @@ export default function Page() {
                             >
                                 <path
                                     stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                                 />
                             </svg>
@@ -66,7 +66,7 @@ export default function Page() {
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <Suspense fallback={<CardsSkeleton />}>
-                    <CardWrapper />
+                    {/* <CardWrapper /> */}
                 </Suspense>
             </div>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">

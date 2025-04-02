@@ -7,8 +7,8 @@ export type UserBasicData = Pick<
     | 'email'
     | 'role'
     | 'status'
-    | 'baseLanguageId'
-    | 'targetLanguageId'
+    | 'baseLanguageCode'
+    | 'targetLanguageCode'
     | 'profilePictureUrl'
 >;
 

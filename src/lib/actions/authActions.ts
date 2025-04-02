@@ -8,6 +8,7 @@ import { getUserByEmail } from '../db/user';
 import { prisma } from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 import { UserBasicData } from '@/types/user';
+import { LanguageCode } from '@prisma/client';
 
 const formSchemaLogin = z.object({
     email: z.string().email({ message: 'Invalid email address.' }),
@@ -80,8 +81,8 @@ export async function authenticate(
         name: user!.name,
         role: user!.role,
         status: user!.status,
-        baseLanguageId: user!.baseLanguageId,
-        targetLanguageId: user!.targetLanguageId,
+        baseLanguageCode: user!.baseLanguageCode,
+        targetLanguageCode: user!.targetLanguageCode,
         profilePictureUrl: user!.profilePictureUrl,
     };
 
@@ -155,8 +156,8 @@ export async function signUp(
                 isVerified: false,
                 settings: { theme: 'light' },
                 studyPreferences: {},
-                baseLanguageId,
-                targetLanguageId,
+                baseLanguageCode: baseLanguageId as LanguageCode,
+                targetLanguageCode: targetLanguageId as LanguageCode,
             },
         });
     } catch (error) {

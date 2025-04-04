@@ -12,6 +12,7 @@ import { geistSans } from '@/components/ui/fonts';
 import { Suspense } from 'react';
 // import CardWrapper from '@/components/ui/dashboard/cards';
 import Link from 'next/link';
+import { ModeToggle } from '@/components/ui/theme-toggle';
 
 export default function Page() {
     return (
@@ -19,6 +20,9 @@ export default function Page() {
             <h1 className={`${geistSans.className} mb-4 text-xl md:text-2xl`}>
                 Vocabulary Bilder
             </h1>
+            <div className="mb-4 flex justify-end ">
+                <ModeToggle />
+            </div>
             <div className="mb-4 flex justify-start ">
                 <Link
                     href="/dashboard/dictionary"

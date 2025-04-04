@@ -8,6 +8,8 @@ type ThemeProviderProps = {
     children: React.ReactNode;
     defaultTheme?: Theme;
     storageKey?: string;
+    enableSystem?: boolean;
+    attribute?: string;
 };
 
 type ThemeProviderState = {
@@ -26,22 +28,25 @@ export function ThemeProvider({
     children,
     defaultTheme = 'system',
     storageKey = 'theme',
+    enableSystem = true,
+    attribute = 'class',
     ...props
 }: ThemeProviderProps) {
     const [theme, setTheme] = useState<Theme>(() =>
         typeof window !== 'undefined'
             ? (localStorage.getItem(storageKey) as Theme) || defaultTheme
-            : defaultTheme
+            : defaultTheme,
     );
 
     useEffect(() => {
         const root = window.document.documentElement;
 
+        // Remove all previous classnames for theming
         root.classList.remove('light', 'dark');
 
-        if (theme === 'system') {
+        if (theme === 'system' && enableSystem) {
             const systemTheme = window.matchMedia(
-                '(prefers-color-scheme: dark)'
+                '(prefers-color-scheme: dark)',
             ).matches
                 ? 'dark'
                 : 'light';
@@ -50,8 +55,30 @@ export function ThemeProvider({
             return;
         }
 
-        root.classList.add(theme);
-    }, [theme]);
+        if (attribute === 'class') {
+            root.classList.add(theme);
+        } else {
+            root.setAttribute(attribute, theme);
+        }
+    }, [theme, attribute, enableSystem]);
+
+    // Listen for system theme changes if enableSystem is true
+    useEffect(() => {
+        if (!enableSystem) return;
+
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        const handleChange = () => {
+            if (theme === 'system') {
+                const root = window.document.documentElement;
+                root.classList.remove('light', 'dark');
+                root.classList.add(mediaQuery.matches ? 'dark' : 'light');
+            }
+        };
+
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
+    }, [enableSystem, theme]);
 
     const value = {
         theme,

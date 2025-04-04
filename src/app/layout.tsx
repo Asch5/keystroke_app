@@ -22,13 +22,15 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background font-sans`}
             >
                 <AuthProvider>
                     <ReduxProvider>
                         <ThemeProvider
                             defaultTheme="system"
                             storageKey="ui-theme"
+                            enableSystem
+                            attribute="class"
                         >
                             {children}
                         </ThemeProvider>

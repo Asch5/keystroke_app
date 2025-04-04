@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { Word } from '@/types/word';
+import { LanguageCode, Prisma } from '@prisma/client';
 
 /**
  * Server action to fetch dictionary words
@@ -9,30 +10,52 @@ import { Word } from '@/types/word';
  */
 export async function fetchDictionaryWords(
     targetLanguageId: string,
-    baseLanguageId: string | null,
 ): Promise<Word[]> {
     try {
-        // Query mainDictionary table instead
-        const entries = await prisma.mainDictionary.findMany({
+        const entries = await prisma.word.findMany({
             where: {
-                targetLanguageId: targetLanguageId || '',
-                baseLanguageId: baseLanguageId || '',
+                languageCode: targetLanguageId as LanguageCode,
             },
             include: {
-                word: true,
+                wordDefinitions: {
+                    include: {
+                        definition: {
+                            include: {
+                                examples: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 
+        // Define a type for the Word with relations, ensuring all nested includes are typed
+        type WordWithRelations = Prisma.WordGetPayload<{
+            include: {
+                wordDefinitions: {
+                    include: {
+                        definition: {
+                            include: { examples: true };
+                        };
+                    };
+                };
+            };
+        }>;
+
         // Transform to match Word type
-        return entries.map((entry) => ({
-            id: entry.id || '',
-            text: entry.word?.word || '', // Access word through relation
-            translation: entry.descriptionBase || '',
-            languageId: entry.targetLanguageId || '',
-            category: entry.partOfSpeech || '',
-            difficulty: mapDifficultyLevel(entry.difficultyLevel),
-            audioUrl: entry.word?.audio || '',
-            exampleSentence: entry.descriptionTarget || '',
+        return (entries as WordWithRelations[]).map((entry) => ({
+            id: String(entry.id),
+            text: entry.word || '',
+            translation:
+                entry.wordDefinitions?.[0]?.definition?.definition || '',
+            languageId: entry.languageCode,
+            category:
+                entry.wordDefinitions?.[0]?.definition?.partOfSpeech || '',
+            difficulty: mapDifficultyLevel(entry.difficultyLevel.toString()),
+            audioUrl: entry.audio || '',
+            exampleSentence:
+                entry.wordDefinitions?.[0]?.definition?.examples?.[0]
+                    ?.example || '',
         }));
     } catch (error) {
         console.error('Error fetching dictionary words:', error);
@@ -40,7 +63,7 @@ export async function fetchDictionaryWords(
     }
 }
 
-// Helper function to map difficulty levels
+// Helper function to map difficulty levels (assuming input might be enum name)
 function mapDifficultyLevel(level?: string): 'easy' | 'medium' | 'hard' {
     if (!level) return 'medium';
 
@@ -62,26 +85,23 @@ export async function addWordToUserDictionary(
     try {
         const userDictionary = await prisma.userDictionary.upsert({
             where: {
-                userId_mainDictionaryId: {
+                userId_definitionId: {
                     userId,
-                    mainDictionaryId,
+                    definitionId: parseInt(mainDictionaryId),
                 },
             },
-            update: {}, // If it exists, do nothing
+            update: {},
             create: {
                 userId,
-                mainDictionaryId,
-                baseLanguageId,
-                targetLanguageId,
-                isLearned: false,
-                isNeedsReview: false,
-                isDifficultToLearn: false,
+                definitionId: parseInt(mainDictionaryId),
+                baseLanguageCode: baseLanguageId as LanguageCode,
+                targetLanguageCode: targetLanguageId as LanguageCode,
+                learningStatus: 'notStarted',
+                progress: 0,
                 isModified: false,
                 reviewCount: 0,
-                progress: 0,
                 timeWordWasStartedToLearn: new Date(),
                 jsonbData: {},
-                customOneWordDefinition: '',
                 customDifficultyLevel: null,
             },
         });
@@ -90,148 +110,5 @@ export async function addWordToUserDictionary(
     } catch (error) {
         console.error('Error adding word to user dictionary:', error);
         throw new Error('Failed to add word to user dictionary');
-    }
-}
-
-export interface MerriamWebsterResponse {
-    meta: {
-        id: string;
-        uuid: string;
-        src: string;
-        section: string;
-        stems: string[];
-        offensive: boolean;
-    };
-    hwi: {
-        hw: string;
-        prs?: Array<{
-            mw: string;
-            sound: {
-                audio: string;
-            };
-        }>;
-    };
-    fl?: string;
-    def?: Array<{
-        sseq: Array<
-            Array<
-                [
-                    string,
-                    {
-                        dt: Array<[string, string]>;
-                        sls?: string[];
-                    },
-                ]
-            >
-        >;
-    }>;
-    et?: Array<[string, string]>;
-}
-
-export type StateMerriamWebster =
-    | {
-          message: string;
-          errors: Record<string, never>;
-          data: MerriamWebsterResponse;
-      }
-    | {
-          message: null;
-          errors: {
-              word: string[];
-          };
-          data?: never;
-      };
-
-export async function getWordFromMerriamWebster(
-    _prevState: StateMerriamWebster,
-    formData: FormData,
-): Promise<StateMerriamWebster> {
-    const word = formData.get('word');
-    const dictionaryType = formData.get('dictionaryType');
-
-    if (!word || typeof word !== 'string') {
-        return {
-            message: null,
-            errors: {
-                word: ['Word is required'],
-            },
-        };
-    }
-
-    try {
-        const API_KEY =
-            dictionaryType === 'intermediate'
-                ? process.env.DICTIONARY_INTERMEDIATE_API_KEY
-                : process.env.DICTIONARY_LEARNERS_API_KEY;
-
-        if (!API_KEY) {
-            return {
-                message: null,
-                errors: {
-                    word: ['API key is not configured'],
-                },
-            };
-        }
-
-        const dictionaryPath =
-            dictionaryType === 'intermediate' ? 'sd3' : 'learners';
-        const response = await fetch(
-            `https://www.dictionaryapi.com/api/v3/references/${dictionaryPath}/json/${encodeURIComponent(word)}?key=${API_KEY}`,
-        );
-
-        // Check if response is ok before trying to parse JSON
-        if (!response.ok) {
-            const errorText = await response.text();
-            return {
-                message: null,
-                errors: {
-                    word: [`API request failed: ${errorText}`],
-                },
-            };
-        }
-
-        const data = await response.json();
-
-        // Handle case where API returns suggestions instead of definitions
-        if (
-            Array.isArray(data) &&
-            data.length > 0 &&
-            typeof data[0] === 'string'
-        ) {
-            return {
-                message: null,
-                errors: {
-                    word: [
-                        'Word not found. Did you mean: ' +
-                            data.slice(0, 3).join(', '),
-                    ],
-                },
-            };
-        }
-
-        // Handle case where no results are found
-        if (!data || data.length === 0) {
-            return {
-                message: null,
-                errors: {
-                    word: ['No results found for this word'],
-                },
-            };
-        }
-
-        // Return the first definition
-        return {
-            message: 'Success',
-            data: data[0],
-            errors: {},
-        };
-    } catch (error) {
-        console.error('Error fetching word:', error);
-        return {
-            message: null,
-            errors: {
-                word: ['Failed to fetch word definition'],
-            },
-        };
     }
 }

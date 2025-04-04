@@ -9,19 +9,59 @@ import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
 import { put } from '@vercel/blob';
 import { Prisma } from '@prisma/client';
-
+import { LanguageCode } from '@prisma/client';
 const profileSchema = z.object({
     name: z
         .string()
         .min(2, { message: 'Name must be at least 2 characters long.' })
         .optional(),
-    baseLanguageId: z
+    baseLanguageCode: z
         .string()
-        .uuid({ message: 'Please select your native language.' })
+        .refine(
+            (value) => {
+                // Validate that the language code is a valid LanguageCode
+                const validLanguageCodes: LanguageCode[] = [
+                    'en',
+                    'ru',
+                    'da',
+                    'es',
+                    'fr',
+                    'de',
+                    'it',
+                    'pt',
+                    'zh',
+                    'ja',
+                    'ko',
+                    'ar',
+                ];
+                return validLanguageCodes.includes(value as LanguageCode);
+            },
+            { message: 'Please select a valid native language.' },
+        )
         .optional(),
-    targetLanguageId: z
+    targetLanguageCode: z
         .string()
-        .uuid({ message: 'Please select a language to learn.' })
+        .refine(
+            (value) => {
+                // Validate that the language code is a valid LanguageCode
+                const validLanguageCodes: LanguageCode[] = [
+                    'en',
+                    'ru',
+                    'da',
+                    'es',
+                    'fr',
+                    'de',
+                    'it',
+                    'pt',
+                    'zh',
+                    'ja',
+                    'ko',
+                    'ar',
+                ];
+                return validLanguageCodes.includes(value as LanguageCode);
+            },
+            { message: 'Please select a valid language to learn.' },
+        )
         .optional(),
     theme: z
         .enum(['light', 'dark'], {
@@ -34,8 +74,8 @@ const profileSchema = z.object({
 type State = {
     errors?: {
         name?: string[];
-        baseLanguageId?: string[];
-        targetLanguageId?: string[];
+        baseLanguageCode?: string[];
+        targetLanguageCode?: string[];
         theme?: string[];
         photo?: string[];
     };
@@ -50,8 +90,8 @@ interface UserSettings {
 
 interface UpdateData {
     name?: string;
-    baseLanguageId?: string | null;
-    targetLanguageId?: string | null;
+    baseLanguageCode?: string | null;
+    targetLanguageCode?: string | null;
     settings?: Prisma.JsonValue;
     profilePictureUrl?: string;
 }
@@ -63,6 +103,8 @@ export async function updateUserProfile(
     // Get the current user from the session
     const session = await auth();
 
+    console.log('formData', formData);
+
     if (!session || !session.user || !session.user.email) {
         redirect('/login');
     }
@@ -70,8 +112,8 @@ export async function updateUserProfile(
     // Validate the form data
     const validatedFields = profileSchema.safeParse({
         name: formData.get('name') || undefined,
-        baseLanguageId: formData.get('baseLanguageId') || undefined,
-        targetLanguageId: formData.get('targetLanguageId') || undefined,
+        baseLanguageCode: formData.get('baseLanguageCode') || undefined,
+        targetLanguageCode: formData.get('targetLanguageCode') || undefined,
         theme: formData.get('theme') || undefined,
         photo:
             formData.get('photo') instanceof File &&
@@ -103,12 +145,13 @@ export async function updateUserProfile(
             updateData.name = validatedFields.data.name;
         }
 
-        if (validatedFields.data.baseLanguageId !== undefined) {
-            updateData.baseLanguageId = validatedFields.data.baseLanguageId;
+        if (validatedFields.data.baseLanguageCode !== undefined) {
+            updateData.baseLanguageCode = validatedFields.data.baseLanguageCode;
         }
 
-        if (validatedFields.data.targetLanguageId !== undefined) {
-            updateData.targetLanguageId = validatedFields.data.targetLanguageId;
+        if (validatedFields.data.targetLanguageCode !== undefined) {
+            updateData.targetLanguageCode =
+                validatedFields.data.targetLanguageCode;
         }
 
         if (validatedFields.data.theme !== undefined) {

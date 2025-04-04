@@ -1,38 +1,64 @@
+import { LanguageCode } from '@prisma/client';
+
 // Types for dictionary-related data structures
+const LANGUAGE_MAP: Record<LanguageCode, string> = {
+    en: 'English',
+    ru: 'Russian',
+    da: 'Danish',
+    es: 'Spanish',
+    fr: 'French',
+    de: 'German',
+    it: 'Italian',
+    pt: 'Portuguese',
+    zh: 'Chinese',
+    ja: 'Japanese',
+    ko: 'Korean',
+    ar: 'Arabic',
+} as const;
 
-export type DifficultyLevel = 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2';
+// const LANGUAGE_MAP_ARRAY = Object.entries(LANGUAGE_MAP).map(([code, name]) => ({
+//     id: code,
+//     name,
+// }));
 
-export type PartOfSpeech =
-    | 'noun'
-    | 'verb'
-    | 'adjective'
-    | 'adverb'
-    | 'pronoun'
-    | 'preposition'
-    | 'conjunction'
-    | 'interjection';
+const LANGUAGE_MAP_ARRAY = [
+    { id: 'en', name: 'English' },
+    { id: 'ru', name: 'Russian' },
+    { id: 'da', name: 'Danish' },
+];
 
-export type SourceType = 'user' | 'import' | 'ai_generated';
-
-export interface WordAnalysisResult {
-    isCorrect: boolean;
-    isWord: boolean;
-    baseLanguage: string;
-    targetLanguage: string;
-    wordInBaseLanguage: string;
-    wordInTargetLanguage: string;
-    oneWordDefinitionInBaseLanguage: string;
-    oneWordDefinitionInTargetLanguage: string;
-    fullWordDescriptionInBaseLanguage: string;
-    fullWordDescriptionInTargetLanguage: string;
-    examplesInBaseLanguage: string[];
-    examplesInTargetLanguage: string[];
-    synonymsInBaseLanguage: string[];
-    synonymsInTargetLanguage: string[];
-    phoneticSpellingInBaseLanguage: string;
-    phoneticSpellingInTargetLanguage: string;
-    partOfSpeechInBaseLanguage: PartOfSpeech;
-    partOfSpeechInTargetLanguage: PartOfSpeech;
-    difficultyLevel: DifficultyLevel;
-    source: SourceType;
+// src/types/dictionary.ts
+export interface ProcessedWordData {
+    word: {
+        word: string;
+        languageCode: string;
+        phonetic: string | null;
+        audio: string | null;
+        relatedWords: {
+            type: 'plural_en' | 'related' | 'phrasal_verb';
+            word: string;
+        }[];
+    };
+    definitions: {
+        partOfSpeech: string;
+        source: string;
+        languageCode: string;
+        isPlural: boolean;
+        definition: string;
+        examples: {
+            example: string;
+            languageCode: string;
+        }[];
+    }[];
+    phrases: {
+        phrase: string;
+        definition: string;
+        examples: {
+            example: string;
+            languageCode: string;
+        }[];
+    }[];
+    stems: string[];
 }
+
+export { LANGUAGE_MAP, LANGUAGE_MAP_ARRAY };

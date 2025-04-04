@@ -30,6 +30,7 @@ enum PartOfSpeech {
   preposition
   conjunction
   interjection
+  undefined
 }
 
 enum SourceType {
@@ -78,6 +79,14 @@ enum RelationshipType {
   plural_en
 }
 
+enum UserRole {
+  admin
+  user
+  moderator
+  learner
+  guest
+}
+
 model User {
   id                String           @id @default(uuid()) @db.Uuid
   name              String           @db.VarChar(255)
@@ -88,7 +97,7 @@ model User {
   createdAt         DateTime         @default(now()) @map("created_at")
   updatedAt         DateTime         @default(now()) @updatedAt @map("updated_at")
   lastLogin         DateTime         @default(now()) @map("lastLogin")
-  role              String           @db.VarChar(255)
+  role              UserRole         
   isVerified        Boolean          @default(false)
   verificationToken String?          @db.VarChar(255)
   profilePictureUrl String?          @db.VarChar(255)

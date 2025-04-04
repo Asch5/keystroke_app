@@ -1,18 +1,18 @@
 'use client';
 
-import { useState, useEffect, useActionState, useCallback } from 'react';
+import { useEffect, useActionState, useCallback } from 'react';
 import { updateUserProfile } from '@/lib/actions/userActions';
-import { getLanguages, getUserByEmail } from '@/lib/db/user';
+import { getUserByEmail } from '@/lib/db/user';
 import { Theme } from '@/types/user';
 import { setUser } from '@/lib/redux/features/authSlice';
 import { useAppDispatch } from '@/lib/redux/store';
 import { useSession } from 'next-auth/react';
+import { LANGUAGE_MAP_ARRAY } from '@/types/dictionary';
 const arrTheme: Theme = ['light', 'dark'];
 
 export default function ProfileForm() {
-    const [languages, setLanguages] = useState<{ id: string; name: string }[]>(
-        [],
-    );
+    const languages = LANGUAGE_MAP_ARRAY;
+
     const dispatch = useAppDispatch();
     const { data: session } = useSession();
 
@@ -34,8 +34,8 @@ export default function ProfileForm() {
                         email: user.email,
                         role: user.role,
                         status: user.status,
-                        baseLanguageId: user.baseLanguageId,
-                        targetLanguageId: user.targetLanguageId,
+                        baseLanguageCode: user.baseLanguageCode,
+                        targetLanguageCode: user.targetLanguageCode,
                         profilePictureUrl: user.profilePictureUrl,
                     };
                     dispatch(setUser(userBasicData));
@@ -45,20 +45,6 @@ export default function ProfileForm() {
             }
         }
     }, [session, dispatch]);
-
-    useEffect(() => {
-        // Fetch available languages
-
-        const fetchLanguages = async () => {
-            try {
-                const response = await getLanguages();
-                setLanguages(response);
-            } catch (err) {
-                console.error('Error fetching languages:', err);
-            }
-        };
-        fetchLanguages();
-    }, []);
 
     useEffect(() => {
         if (state.success) {
@@ -115,10 +101,10 @@ export default function ProfileForm() {
                         Native Language
                     </label>
                     <select
-                        name="baseLanguageId"
-                        id="baseLanguage"
+                        name="baseLanguageCode"
+                        id="baseLanguageCode"
                         className={`shadow-xs bg-gray-50 border ${
-                            state.errors?.baseLanguageId
+                            state.errors?.baseLanguageCode
                                 ? 'border-red-500'
                                 : 'border-gray-300'
                         } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light`}
@@ -130,9 +116,9 @@ export default function ProfileForm() {
                             </option>
                         ))}
                     </select>
-                    {state.errors?.baseLanguageId && (
+                    {state.errors?.baseLanguageCode && (
                         <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-                            {state.errors.baseLanguageId[0]}
+                            {state.errors.baseLanguageCode[0]}
                         </p>
                     )}
                 </div>
@@ -145,10 +131,10 @@ export default function ProfileForm() {
                         Language to Learn
                     </label>
                     <select
-                        name="targetLanguageId"
-                        id="targetLanguage"
+                        name="targetLanguageCode"
+                        id="targetLanguageCode"
                         className={`shadow-xs bg-gray-50 border ${
-                            state.errors?.targetLanguageId
+                            state.errors?.targetLanguageCode
                                 ? 'border-red-500'
                                 : 'border-gray-300'
                         } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light`}
@@ -160,16 +146,16 @@ export default function ProfileForm() {
                             </option>
                         ))}
                     </select>
-                    {state.errors?.targetLanguageId && (
+                    {state.errors?.targetLanguageCode && (
                         <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-                            {state.errors.targetLanguageId[0]}
+                            {state.errors.targetLanguageCode[0]}
                         </p>
                     )}
                 </div>
             </div>
             <div className="mb-5">
                 <label
-                    htmlFor="targetLanguage"
+                    htmlFor="theme"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                     Theme

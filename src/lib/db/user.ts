@@ -1,5 +1,3 @@
-// src/lib/db/user.ts
-
 import { prisma } from '@/lib/prisma';
 import { Prisma, User } from '@prisma/client';
 export type UserWithStatsAndMeta = UserWithStats & {

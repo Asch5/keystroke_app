@@ -1,43 +1,16 @@
 'use client';
 
 import { signUp, StateSignup } from '@/lib/actions/authActions';
-import { LanguageCode } from '@prisma/client';
-import { useActionState, useEffect, useState } from 'react';
+import { LANGUAGE_MAP_ARRAY } from '@/types/dictionary';
+import { useActionState } from 'react';
 
 // Language mapping based on LanguageCode enum
-const LANGUAGE_MAP: Record<LanguageCode, string> = {
-    en: 'English',
-    ru: 'Russian',
-    da: 'Danish',
-    es: 'Spanish',
-    fr: 'French',
-    de: 'German',
-    it: 'Italian',
-    pt: 'Portuguese',
-    zh: 'Chinese',
-    ja: 'Japanese',
-    ko: 'Korean',
-    ar: 'Arabic',
-} as const;
 
 export default function SignupForm() {
     const initialState: StateSignup = { message: null, errors: {} };
     const [state, formAction, isPending] = useActionState(signUp, initialState);
 
-    const [languages, setLanguages] = useState<{ id: string; name: string }[]>(
-        [],
-    );
-
-    useEffect(() => {
-        // Convert language map to array format for the select inputs
-        const languageArray = Object.entries(LANGUAGE_MAP).map(
-            ([code, name]) => ({
-                id: code,
-                name: name,
-            }),
-        );
-        setLanguages(languageArray);
-    }, []);
+    const languages = LANGUAGE_MAP_ARRAY;
 
     return (
         <form action={formAction} className="max-w-sm mx-auto">

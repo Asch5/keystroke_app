@@ -12,7 +12,7 @@
             "next-auth": "https://authjs.dev/getting-started/installation?framework=next-js",
             "vercel": "https://vercel.com/docs",
             "Redux": "https://redux.js.org/introduction/getting-started",
-            "Flowbite": "https://flowbite.com/docs/components/",
+            "shadcn": "https://ui.shadcn.com/docs",
             "TypeScript": "https://www.typescriptlang.org/docs/",
             "Redux Toolkit": "https://redux-toolkit.js.org/introduction/getting-started",
             "Zod": "https://zod.dev/",

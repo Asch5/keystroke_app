@@ -14,7 +14,7 @@ export default function PageWrapper({
             >
                 {title}
             </h1>
-            <div className="mb-4 flex justify-center md:justify-start ">
+            <div className="mb-4 flex flex-col gap-8 justify-center md:justify-start ">
                 {children}
             </div>
         </main>

@@ -63,15 +63,15 @@ Acceptance Criteria:_
 2. Clicking "Import Words" opens a file selection dialog
 3. The file selection dialog filters for .xls, .xlsx, and .csv file types
 4. Upon selecting a file, the app validates the file format and structure
-    - The file must be a valid Excel or CSV file
-    - The file must contain a header row with "Word" and "Definition" columns
-    - Additional columns like "Examples" and "Synonyms" are optional
-      VALIDATION:
-    - The file must contain a header row with "Word" and "Definition" columns
-    - Additional columns like "Examples" and "Synonyms" are optional
-    - The file must be a valid Excel or CSV file
-    - The first word in the word column must be a language to learn
-    - The first definition in the definition column must be a native language
+   - The file must be a valid Excel or CSV file
+   - The file must contain a header row with "Word" and "Definition" columns
+   - Additional columns like "Examples" and "Synonyms" are optional
+     VALIDATION:
+   - The file must contain a header row with "Word" and "Definition" columns
+   - Additional columns like "Examples" and "Synonyms" are optional
+   - The file must be a valid Excel or CSV file
+   - The first word in the word column must be a language to learn
+   - The first definition in the definition column must be a native language
 5. If validation fails, the app displays an error message specifying the issue
 6. If validation succeeds, the app creates a array of objects with the following fields: {word: string, definition: string, examples: string[], synonyms: string[], nativeLanguage: string, languageToLearn: string}
    then the app checks if the word && definition already exists in the main dictionary these wards are sent to the user's dictionary then the remaining objects (without word && definition) are handled by the AI agent to create a new card for the word before handling the next word-object the AI agent checks the consistentcy of the paire word && definition
@@ -134,20 +134,20 @@ Acceptance Criteria:_
 
 1. Core Dictionary System:
 
-    - Word input form + AI card generation
-    - Basic dictionary display
-    - Excel import/export
+   - Word input form + AI card generation
+   - Basic dictionary display
+   - Excel import/export
 
 2. Practice Modules:
 
-    - Typing interface
-    - Pronunciation player
-    - Flashcard system
+   - Typing interface
+   - Pronunciation player
+   - Flashcard system
 
 3. Advanced Features:
-    - Word lists management
-    - User progress tracking
-    - Social sharing features
+   - Word lists management
+   - User progress tracking
+   - Social sharing features
 
 // ... existing user stories and core features ...
 
@@ -155,39 +155,39 @@ Acceptance Criteria:_
 
 **Frontend:**
 
--   Next.js 14 (App Router)
--   **State Management:** Redux Toolkit with these key stores:
-    -   `userSlice`: Manages authentication, user preferences, and progress
-    -   `dictionarySlice`: Handles word cards, AI generation status, and dictionary operations
-    -   `wordListsSlice`: Controls custom lists and practice sessions
-    -   `practiceSlice`: Tracks typing exercises and pronunciation progress
-    -   `uiSlice`: Manages modals and loading states
+- Next.js 14 (App Router)
+- **State Management:** Redux Toolkit with these key stores:
+  - `userSlice`: Manages authentication, user preferences, and progress
+  - `dictionarySlice`: Handles word cards, AI generation status, and dictionary operations
+  - `wordListsSlice`: Controls custom lists and practice sessions
+  - `practiceSlice`: Tracks typing exercises and pronunciation progress
+  - `uiSlice`: Manages modals and loading states
 
 **Redux Middleware:**
 
--   `redux-thunk` for async operations (API calls, AI processing)
--   `redux-persist` for local storage of user data
--   Custom middleware for API error handling
+- `redux-thunk` for async operations (API calls, AI processing)
+- `redux-persist` for local storage of user data
+- Custom middleware for API error handling
 
 // ... existing backend and AI sections ...
 
 ### Implementation Strategy
 
 1. **Redux Store Configuration:**
-    - Create a `store.ts` file to configure the Redux store
+   - Create a `store.ts` file to configure the Redux store
 
 Backend: Next.js API routes + PostgreSQL
 // ... existing technical architecture ...
 
 **AI System:**
 
--   DeepSeek API for:
-    -   Word card generation (definitions/examples/synonyms)
-    -   Context-aware word explanations
-    -   Sentence generation
--   Text-to-speech service for pronunciation
--   Rate limiting strategy for API calls
--   Fallback mechanism for API failures
+- DeepSeek API for:
+  - Word card generation (definitions/examples/synonyms)
+  - Context-aware word explanations
+  - Sentence generation
+- Text-to-speech service for pronunciation
+- Rate limiting strategy for API calls
+- Fallback mechanism for API failures
 
 ### AI Integration Strategy
 
@@ -196,10 +196,10 @@ Backend: Next.js API routes + PostgreSQL
 
 APIs:
 
--   DeepSeek API for word card generation
--   Text-to-speech service for pronunciation
--   Rate limiting strategy for API calls
--   Fallback mechanism for API failures
+- DeepSeek API for word card generation
+- Text-to-speech service for pronunciation
+- Rate limiting strategy for API calls
+- Fallback mechanism for API failures
 
 as example:
 
@@ -240,7 +240,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -268,7 +268,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   `idx_user_last_login` on `lastLogin`
+- `idx_user_last_login` on `lastLogin`
 
 ---
 
@@ -283,7 +283,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   `idx_audio_language` on `language_id`
+- `idx_audio_language` on `language_id`
 
 ---
 
@@ -298,7 +298,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -313,7 +313,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -342,9 +342,9 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   `idx_main_dict_languages` on `(base_language_id, target_language_id)`
--   `idx_main_dict_word_search` on `USING gin((word_id::text) gin_trgm_ops)`
--   `idx_word_lookup` on `(word_id, base_language_id, target_language_id) INCLUDE (one_word_definition_id)`
+- `idx_main_dict_languages` on `(base_language_id, target_language_id)`
+- `idx_main_dict_word_search` on `USING gin((word_id::text) gin_trgm_ops)`
+- `idx_word_lookup` on `(word_id, base_language_id, target_language_id) INCLUDE (one_word_definition_id)`
 
 ---
 
@@ -362,7 +362,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -379,7 +379,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -396,7 +396,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -427,10 +427,10 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   `idx_user_dict_learning` on `(user_id, is_learned, last_reviewed_at)`
--   `idx_user_dict_review` on `(user_id, is_needs_review)`
--   `idx_user_dict_difficult` on `(user_id, is_difficult_to_learn)`
--   `idx_active_words` on `last_reviewed_at WHERE is_learned = false`
+- `idx_user_dict_learning` on `(user_id, is_learned, last_reviewed_at)`
+- `idx_user_dict_review` on `(user_id, is_needs_review)`
+- `idx_user_dict_difficult` on `(user_id, is_difficult_to_learn)`
+- `idx_active_words` on `last_reviewed_at WHERE is_learned = false`
 
 ---
 
@@ -450,7 +450,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -467,7 +467,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -486,7 +486,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None
 
 ---
 
@@ -513,7 +513,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   `idx_lists_language` on `(base_language_id, target_language_id)`
+- `idx_lists_language` on `(base_language_id, target_language_id)`
 
 ---
 
@@ -528,7 +528,7 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   `idx_list_words_order` on `(list_id, order_index)`
+- `idx_list_words_order` on `(list_id, order_index)`
 
 ---
 
@@ -554,8 +554,8 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   `idx_user_lists_progress` on `(user_id, progress)`
--   `idx_user_lists_modified` on `(user_id, is_modified)`
+- `idx_user_lists_progress` on `(user_id, progress)`
+- `idx_user_lists_modified` on `(user_id, is_modified)`
 
 ---
 
@@ -570,4 +570,4 @@ psql $DATABASE_URL
 
 ### Indexes
 
--   None
+- None

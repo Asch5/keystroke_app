@@ -4,22 +4,22 @@ import { useSession } from 'next-auth/react';
 import { ReactNode } from 'react';
 
 interface RoleGateProps {
-    children: ReactNode;
-    allowedRoles: string[];
-    fallback?: ReactNode;
+  children: ReactNode;
+  allowedRoles: string[];
+  fallback?: ReactNode;
 }
 
 export const RoleGate = ({
-    children,
-    allowedRoles,
-    fallback,
+  children,
+  allowedRoles,
+  fallback,
 }: RoleGateProps) => {
-    const { data: session } = useSession();
-    const userRole = session?.user?.role || 'user';
+  const { data: session } = useSession();
+  const userRole = session?.user?.role || 'user';
 
-    if (!allowedRoles.includes(userRole)) {
-        return fallback || null;
-    }
+  if (!allowedRoles.includes(userRole)) {
+    return fallback || null;
+  }
 
-    return <>{children}</>;
+  return <>{children}</>;
 };

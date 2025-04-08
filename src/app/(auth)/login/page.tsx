@@ -1,61 +1,49 @@
 'use client';
 
-import LoginForm from '@/components/ui/login-form';
+import LoginForm from '@/components/forms/login-form';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ArrowRight } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 export default function LoginPage() {
-    const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
 
-    const showRegistrationSuccess = searchParams?.get('registered') === 'true';
+  const showRegistrationSuccess = searchParams?.get('registered') === 'true';
 
-    return (
-        <main className="flex items-center justify-center md:h-screen">
-            <div className="relative sflex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
-                <h1 className="text-2xl font-bold text-center mb-5">Login</h1>
+  return (
+    <main className="flex items-center justify-center min-h-screen bg-muted/40">
+      <div className="w-full max-w-md p-6 space-y-6">
+        {showRegistrationSuccess && (
+          <Alert variant="success" className="mb-4">
+            <AlertDescription>
+              Registration successful! Please login with your credentials.
+            </AlertDescription>
+          </Alert>
+        )}
 
-                {showRegistrationSuccess && (
-                    <div
-                        className="p-4 mb-5 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
-                        role="alert"
-                    >
-                        Registration successful! Please login with your
-                        credentials.
-                    </div>
-                )}
+        <Suspense fallback={<div className="text-center">Loading...</div>}>
+          <LoginForm />
+        </Suspense>
 
-                <Suspense fallback={<div>Loading...</div>}>
-                    <LoginForm />
-                </Suspense>
-
-                <div className="flex flex-row items-center justify-start gap-2 pt-2">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
-                        Don&apos;t have an account?{' '}
-                    </p>
-                    <svg
-                        className="w-4 h-4 text-gray-800 dark:text-white"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
-                    >
-                        <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                        />
-                    </svg>
-                    <Link
-                        href="/signup"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                        Register
-                    </Link>
-                </div>
-            </div>
-        </main>
-    );
+        <div className="text-center space-y-2">
+          <Separator />
+          <div className="flex items-center justify-center gap-2 pt-4">
+            <p className="text-sm text-muted-foreground">
+              Don&apos;t have an account?
+            </p>
+            <Link
+              href="/signup"
+              className="inline-flex items-center text-sm font-medium text-primary hover:underline"
+            >
+              Register
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
 }

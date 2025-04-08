@@ -9,11 +9,11 @@ import { WordAnalysisResult } from '@/types/dictionary';
  * @param targetLanguage - The target language code
  */
 export async function analyzeWord(
-    word: string,
-    baseLanguage: string,
-    targetLanguage: string,
+  word: string,
+  baseLanguage: string,
+  targetLanguage: string,
 ): Promise<WordAnalysisResult> {
-    const prompt = `Analyze the following word: "${word}"
+  const prompt = `Analyze the following word: "${word}"
   Base language: ${baseLanguage}
   Target language: ${targetLanguage}
 
@@ -43,27 +43,27 @@ export async function analyzeWord(
 
   Ensure all text fields are properly escaped and the response is valid JSON.`;
 
-    try {
-        const { text } = await generateText({
-            model: openai('gpt-4-turbo-preview'),
-            messages: [
-                {
-                    role: 'system',
-                    content:
-                        'You are a highly knowledgeable linguistics expert and translator.',
-                },
-                {
-                    role: 'user',
-                    content: prompt,
-                },
-            ],
-            temperature: 0.3,
-        });
+  try {
+    const { text } = await generateText({
+      model: openai('gpt-4-turbo-preview'),
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You are a highly knowledgeable linguistics expert and translator.',
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 0.3,
+    });
 
-        const result = JSON.parse(text) as WordAnalysisResult;
-        return result;
-    } catch (error) {
-        console.error('Error analyzing word:', error);
-        throw new Error('Failed to analyze word');
-    }
+    const result = JSON.parse(text) as WordAnalysisResult;
+    return result;
+  } catch (error) {
+    console.error('Error analyzing word:', error);
+    throw new Error('Failed to analyze word');
+  }
 }

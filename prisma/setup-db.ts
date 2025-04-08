@@ -12,26 +12,26 @@ import { execSync } from 'child_process';
 console.log('🔄 Setting up database...');
 
 try {
-    // Create migrations from the schema if they don't exist
-    console.log('📝 Creating migrations...');
-    execSync('npx prisma migrate dev --name init --create-only', {
-        stdio: 'inherit',
-    });
+  // Create migrations from the schema if they don't exist
+  console.log('📝 Creating migrations...');
+  execSync('npx prisma migrate dev --name init --create-only', {
+    stdio: 'inherit',
+  });
 
-    // Apply migrations
-    console.log('🚀 Applying migrations...');
-    execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+  // Apply migrations
+  console.log('🚀 Applying migrations...');
+  execSync('npx prisma migrate deploy', { stdio: 'inherit' });
 
-    // Generate Prisma client
-    console.log('🔧 Generating Prisma client...');
-    execSync('npx prisma generate', { stdio: 'inherit' });
+  // Generate Prisma client
+  console.log('🔧 Generating Prisma client...');
+  execSync('npx prisma generate', { stdio: 'inherit' });
 
-    // Seed the database
-    console.log('🌱 Seeding database...');
-    execSync('npm run seed', { stdio: 'inherit' });
+  // Seed the database
+  console.log('🌱 Seeding database...');
+  execSync('npm run seed', { stdio: 'inherit' });
 
-    console.log('✅ Database setup complete!');
+  console.log('✅ Database setup complete!');
 } catch (error) {
-    console.error('❌ Database setup failed:', error);
-    process.exit(1);
+  console.error('❌ Database setup failed:', error);
+  process.exit(1);
 }

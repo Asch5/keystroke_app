@@ -83,30 +83,30 @@ erDiagram
 
 1. **Multi-language Support**
 
-    - Each user has base and target languages
-    - Content is language-specific with translations
+   - Each user has base and target languages
+   - Content is language-specific with translations
 
 2. **Personalization**
 
-    - Users can customize dictionary entries and lists
-    - Progress tracking per word and list
-    - Custom difficulty levels and learning status
+   - Users can customize dictionary entries and lists
+   - Progress tracking per word and list
+   - Custom difficulty levels and learning status
 
 3. **Content Organization**
 
-    - Hierarchical categorization of lists
-    - Word relationships (synonyms, related words, compositions)
-    - Examples and visual aids
+   - Hierarchical categorization of lists
+   - Word relationships (synonyms, related words, compositions)
+   - Examples and visual aids
 
 4. **Learning Progress**
 
-    - Tracking of learned words
-    - Review scheduling
-    - Difficulty assessment
-    - Mistake counting
+   - Tracking of learned words
+   - Review scheduling
+   - Difficulty assessment
+   - Mistake counting
 
 5. **Soft Delete Support**
-    - Most entities include `deletedAt` for safe removal
+   - Most entities include `deletedAt` for safe removal
 
 ## Performance Considerations
 

@@ -1,2178 +1,2513 @@
 [
-    {
+  {
+    "word": [
+      {
         "meta": {
-            "id": "test:1",
-            "uuid": "050b619c-ffad-4eaf-ba0a-93e9dab0e278",
-            "src": "learners",
-            "section": "alpha",
-            "highlight": "yes",
-            "stems": [
-                "test",
-                "tests",
-                "put (someone or something) to the test",
-                "put someone to the test",
-                "put something to the test",
-                "put to the test",
-                "stand the test of time",
-                "test of (your) character",
-                "test of character",
-                "test of your character",
-                "took/had a test",
-                "had a test",
-                "took a test",
-                "did a test",
-                "test scores",
-                "drug test",
-                "test results",
-                "pregnancy test",
-                "dna test",
-                "taste tests",
-                "test subjects",
-                "test group"
-            ],
-            "app-shortdef": {
-                "hw": "test:1",
-                "fl": "noun",
-                "def": [
-                    "{bc} a set of questions or problems that are designed to measure a person's knowledge, skills, or abilities",
-                    "{bc} a careful study of a part of the body or of a substance taken from the body",
-                    "{bc} a careful study of a small amount of water, soil, air, etc., in order to see if its quality is good, to find out if it contains a dangerous substance, etc."
-                ]
-            },
-            "offensive": false
+          "id": "word:1",
+          "uuid": "32037143-e6a0-450f-9f85-8aa50a207782",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "5797b71b-4c8a-4d3d-8232-30986bc15da9",
+            "tsrc": "collegiate"
+          },
+          "highlight": "yes",
+          "stems": [
+            "word",
+            "good word",
+            "in a word",
+            "in so many words",
+            "of few words",
+            "of one's word",
+            "of her word",
+            "of his word",
+            "of their word",
+            "upon my word",
+            "words",
+            "actions speak louder than words",
+            "a picture is worth a thousand words",
+            "at a loss for words",
+            "a word in someone's ear",
+            "a word in someones ear",
+            "a word to the wise",
+            "by word of mouth",
+            "eat your words",
+            "from the word go",
+            "get a word in edgewise",
+            "hang on someone's every word",
+            "hang on someones every word",
+            "in other words",
+            "in as many words",
+            "in words of one syllable",
+            "lost for words",
+            "mark my words",
+            "mum's the word",
+            "mums the word",
+            "play with words",
+            "put words in/into someone's mouth",
+            "put words in someone's mouth",
+            "put words into someone's mouth",
+            "put words in/into someones mouth",
+            "put words in someones mouth",
+            "put words into someones mouth",
+            "say the word",
+            "take the words right out of someone's mouth",
+            "take the words right out of someones mouth",
+            "the last/final word",
+            "the final word",
+            "the last word",
+            "(upon) my word",
+            "my word",
+            "war of words",
+            "word for word",
+            "word of honor",
+            "in every sense of the word",
+            "big words",
+            "words fail me",
+            "have a word with you",
+            "word of warning",
+            "don't say/breathe a word",
+            "don't breathe a word",
+            "don't say a word",
+            "dont say/breathe a word",
+            "dont breathe a word",
+            "dont say a word",
+            "man of few words",
+            "say a few words",
+            "spread the word",
+            "sent word",
+            "word has it",
+            "put/got the word out",
+            "got the word out",
+            "put the word out",
+            "give you my word",
+            "keep your word",
+            "man of his word",
+            "his word is his bond",
+            "go back on my word",
+            "take my word for it",
+            "true to her word",
+            "had words",
+            "have a word in your ear",
+            "what's the good word",
+            "whats the good word",
+            "not in so many words",
+            "have the last word"
+          ],
+          "app-shortdef": {
+            "hw": "word:1",
+            "fl": "noun",
+            "def": [
+              "{bc} a sound or combination of sounds that has a meaning and is spoken or written",
+              "{bc} a brief remark or conversation {bc} something that a person says",
+              "{bc} an order or command"
+            ]
+          },
+          "offensive": false
         },
         "hom": 1,
         "hwi": {
-            "hw": "test",
-            "prs": [
-                {
-                    "ipa": "ˈtɛst",
-                    "sound": {
-                        "audio": "test0001"
-                    }
-                }
-            ]
+          "hw": "word",
+          "prs": [
+            {
+              "ipa": "ˈwɚd",
+              "sound": {
+                "audio": "word0001"
+              }
+            }
+          ]
         },
         "fl": "noun",
         "ins": [
+          {
+            "il": "plural",
+            "if": "words"
+          }
+        ],
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "sgram": "count",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a sound or combination of sounds that has a meaning and is spoken or written "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "How do you spell that {it}word{/it}?"
+                          },
+                          {
+                            "t": "{ldquo}Please{rdquo} is a useful {it}word{/it}."
+                          },
+                          {
+                            "t": "Our teacher often used {it}words{/it} I didn't know."
+                          },
+                          {
+                            "t": "What is the French {it}word{/it} for car?"
+                          },
+                          {
+                            "t": "She was a genius {phrase}in every sense of the word{/phrase}. [=she was truly a genius]"
+                          },
+                          {
+                            "t": "You don't need to use {phrase}big words{/phrase} [=difficult words used to try to impress people] to make your point."
+                          },
+                          {
+                            "t": "{phrase}Words fail me{/phrase}. [=I don't know what to say]"
+                          }
+                        ]
+                      ],
+                      [
+                        "text",
+                        "{dx}see also {dxt|buzzword||} {dxt|four-letter word||} {dxt|function word||} {dxt|password||} {dxt|swearword||} {dxt|watchword||} {dxt|weasel word||}{/dx}"
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "sgram": "count",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a brief remark or conversation {bc}something that a person says "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "You can't believe a {it}word{/it} (of what) she says. [=you can't believe anything she says]"
+                          },
+                          {
+                            "t": "Describe the experience in your own {it}words{/it}."
+                          },
+                          {
+                            "t": "The lawyer used Joe's {it}words{/it} against him."
+                          },
+                          {
+                            "t": "Could I {phrase}have a word with you{/phrase}? [=could I talk with you briefly?]"
+                          },
+                          {
+                            "t": "They gave me a {phrase}word of warning{/phrase} [=they told me about] about the slippery roads."
+                          },
+                          {
+                            "t": "{phrase}Don't say/breathe a word{/phrase} [=don't talk] about this to anyone."
+                          },
+                          {
+                            "t": "My grandfather was a {phrase}man of few words{/phrase}. [=a man who did not talk very much]"
+                          },
+                          {
+                            "t": "I've been asked to {phrase}say a few words{/phrase} [=make a short speech or statement] about the new play."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "3",
+                    "sgram": "singular",
+                    "dt": [
+                      ["text", "{bc}an order or command "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She gave the {it}word{/it} to begin."
+                          },
+                          {
+                            "t": "We will wait for your {it}word{/it} before we serve dinner."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "4",
+                    "sgram": "singular",
+                    "dt": [
+                      ["text", "{bc}news or information "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "(Is there) Any {it}word{/it} on how they are?"
+                          },
+                          {
+                            "t": "If {it}word{/it} of this gets out, we're all in trouble."
+                          },
+                          {
+                            "t": "What's the {it}word{/it}?"
+                          },
+                          {
+                            "t": "There is still no {it}word{/it} from the hospital."
+                          },
+                          {
+                            "t": "{phrase}Spread the word{/phrase} [=tell the others] that we're leaving in five minutes."
+                          },
+                          {
+                            "t": "They {phrase}sent word{/phrase} [=sent a message] that they'd be late."
+                          },
+                          {
+                            "t": "{phrase}Word has it{/phrase} [=I have heard] that the neighbors are moving next month."
+                          },
+                          {
+                            "t": "The police {phrase}put/got the word out{/phrase} that they were looking for him. [=the police let people know that they were looking for him]"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "5",
+                    "sgram": "singular",
+                    "dt": [
+                      ["text", "{bc}a promise to do something "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "I'll be there. I {phrase}give you my word{/phrase}. [=I promise]"
+                          },
+                          {
+                            "t": "You'd better {phrase}keep your word{/phrase}. [=keep your promise to do something]"
+                          },
+                          {
+                            "t": "He is a {phrase}man of his word{/phrase}. = {phrase}His word is his bond{/phrase}. [=he always keeps his promises]"
+                          },
+                          {
+                            "t": "I told her I'd help. I can't {phrase}go back on my word{/phrase}. [=I can't break my promise]"
+                          },
+                          {
+                            "t": "You'll have to {phrase}take my word for it{/phrase}. [=you'll have to believe me]"
+                          },
+                          {
+                            "t": "She was {phrase}true to her word{/phrase}. [=she did what she said she would do]"
+                          }
+                        ]
+                      ],
+                      ["text", "{dx}see also {dxt|word of honor||(below)}{/dx}"]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "6",
+                    "bnote": "words",
+                    "sgram": "plural",
+                    "dt": [
+                      ["text", "{bc}angry remarks "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "{it}Words{/it} were exchanged [=people said angry things to each other] and a fight broke out."
+                          },
+                          {
+                            "t": "He {phrase}had words{/phrase} [=had an argument] with his boss."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "7",
+                    "bnote": "the Word",
+                    "sls": ["religion"],
+                    "dt": [
+                      ["text", "{bc}stories and lessons of the Bible "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "{it}the Word{/it} of God"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "dros": [
+          {
+            "drp": "actions speak louder than words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|action||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "a picture is worth a thousand words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|worth:1||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "at a loss for words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|loss||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "a word in someone's ear",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sls": ["chiefly British"],
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}a remark that is made privately to someone "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "May I {phrase}have a word in your ear{/phrase} [=may I speak to you privately] before you leave?"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "a word to the wise",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "uns",
+                            [
+                              [
+                                [
+                                  "text",
+                                  "used to say that you are about to give someone advice or a warning "
+                                ],
+                                [
+                                  "vis",
+                                  [
+                                    {
+                                      "t": "{it}A word to the wise{/it}: never sign a contract without reading it first."
+                                    }
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "by word of mouth",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          ["text", "{bc}by being told by another person "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "We found this hotel {it}by word of mouth{/it}."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "eat your words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|eat||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "from the word go",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sls": ["informal"],
+                        "dt": [
+                          ["text", "{bc}from the beginning "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "The show was a success {it}from the word go{/it}."
+                              },
+                              {
+                                "t": "We were in trouble ({it}right{/it}) {it}from the word go{/it}."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "get a word in edgewise",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|edgewise||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "good word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          ["text", "{bc}a favorable comment "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "Please put in a {it}good word{/it} for me [=say something good about me] when you talk to the boss."
+                              },
+                              {
+                                "t": "({it}US, informal{/it}) I haven't seen you in ages! {phrase}What's the good word{/phrase}? [={it}how's it going?; how are you?{/it}]"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "hang on someone's every word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|hang:1||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "in a word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          ["text", "{bc}very briefly {bc}in short"],
+                          [
+                            "uns",
+                            [
+                              [
+                                [
+                                  "text",
+                                  "used to indicate that you are saying something by using only one word or by using as few words as possible "
+                                ],
+                                [
+                                  "vis",
+                                  [
+                                    {
+                                      "t": "Our answer, {it}in a word{/it}, is no."
+                                    }
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "in other words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "uns",
+                            [
+                              [
+                                [
+                                  "text",
+                                  "used to introduce a statement that repeats what has been said in a different and usually a simpler or more exact way "
+                                ],
+                                [
+                                  "vis",
+                                  [
+                                    {
+                                      "t": "{ldquo}She said the movie was a bit predictable.{rdquo} {ldquo}{it}In other words{/it}, she didn't like it.{rdquo}"
+                                    },
+                                    {
+                                      "t": "So, {it}in other words{/it}, you're saying that you forgot to do it."
+                                    }
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "in so many words",
+            "vrs": [
+              {
+                "vl": "also",
+                "va": "in as many words"
+              }
+            ],
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}in exactly those words or in exactly that way"
+                          ],
+                          [
+                            "uns",
+                            [
+                              [
+                                [
+                                  "text",
+                                  "usually used in negative statements "
+                                ],
+                                [
+                                  "vis",
+                                  [
+                                    {
+                                      "t": "{ldquo}Did he say he wouldn't do it?{rdquo} {ldquo}{phrase}Not in so many words{/phrase}, but that was the impression I got.{rdquo}"
+                                    }
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "in words of one syllable",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          ["text", "{bc}in clear and simple terms "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "We explained our views to the press {it}in words of one syllable{/it}."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "lost for words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|lost:2||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "mark my words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|mark:2||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "mum's the word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|mum:1||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "play with words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{dx}see {dxt|play:1||}{/dx}"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "put words in/into someone's mouth",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}to suggest that someone said or meant something that he or she did not say or mean "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "Don't {it}put words in my mouth{/it}. I wasn't defending his actions, despite what you may think."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "say the word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          ["text", "{bc}to give an order "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "When you want to leave (just) {it}say the word{/it}."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "take the words right out of someone's mouth",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}to say exactly what someone was thinking "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "I agree! You {it}took the words right out of my mouth{/it}!"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "the last/final word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "1",
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}the final thing said in an argument or a discussion "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "Your mother's decision is {it}the final word{/it} on the matter."
+                              },
+                              {
+                                "t": "Why do you always have to {phrase}have the last word{/phrase}? [=to be the last person to speak]"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "2",
+                        "dt": [
+                          ["text", "{bc}the power to make a final decision "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "The judge will have {it}the last word{/it} [={it}the final say{/it}] on the divorce agreement."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "3",
+                        "sls": ["informal"],
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}the most modern or best one of its kind "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "This is {it}the last word{/it} in wireless phones."
+                              },
+                              {
+                                "t": "The van's design is {it}the last word{/it} in safety."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "(upon) my word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sls": ["somewhat old-fashioned"],
+                        "dt": [
+                          [
+                            "uns",
+                            [
+                              [
+                                ["text", "used to express surprise "],
+                                [
+                                  "vis",
+                                  [
+                                    {
+                                      "t": "{it}My word{/it}, what a beautiful dress!"
+                                    }
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "war of words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}an argument in which people or groups criticize and disagree with each other publicly and repeatedly for usually a long time "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "Rival groups have engaged in a {it}war of words{/it} over the new law."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "word for word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          ["text", "{bc}in the exact words "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "He gave the same speech {it}word for word{/it} [={it}verbatim{/it}] yesterday."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "word of honor",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "snote",
+                            [
+                              [
+                                "t",
+                                "Your {it}word of honor{/it} is your promise that you will do something, that something is true, etc."
+                              ],
+                              [
+                                "vis",
+                                [
+                                  {
+                                    "t": "I give you my {it}word of honor{/it} that I will pay the money back."
+                                  }
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "shortdef": [
+          "a sound or combination of sounds that has a meaning and is spoken or written",
+          "a brief remark or conversation : something that a person says",
+          "an order or command"
+        ]
+      },
+      {
+        "meta": {
+          "id": "word:2",
+          "uuid": "bb70bc6e-84e5-429e-9cfc-993fa8ca89f9",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "f9399ba2-4fb4-4f05-851f-64ef0f346533",
+            "tsrc": "collegiate"
+          },
+          "stems": ["word", "worded", "wording", "words"],
+          "app-shortdef": {
+            "hw": "word:2",
+            "fl": "verb",
+            "def": [
+              "{bc} to say (something) in a particular way by choosing which words to use"
+            ]
+          },
+          "offensive": false
+        },
+        "hom": 2,
+        "hwi": {
+          "hw": "word",
+          "altprs": [
             {
-                "il": "plural",
-                "if": "tests"
+              "ipa": "ˈwɚd"
             }
+          ]
+        },
+        "fl": "verb",
+        "ins": [
+          {
+            "if": "words"
+          },
+          {
+            "if": "word*ed"
+          },
+          {
+            "if": "word*ing"
+          }
+        ],
+        "gram": "+ obj",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}to say (something) in a particular way by choosing which words to use "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "They {it}worded{/it} [={it}phrased{/it}] their request with great care."
+                          },
+                          {
+                            "t": "Could we {it}word{/it} the headline differently?"
+                          }
+                        ]
+                      ],
+                      [
+                        "uns",
+                        [
+                          [
+                            ["text", "often used as {it}(be) worded{/it} "],
+                            [
+                              "vis",
+                              [
+                                {
+                                  "t": "Their request {it}was worded{/it} very carefully."
+                                },
+                                {
+                                  "t": "a carefully {it}worded{/it} statement"
+                                }
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "to say (something) in a particular way by choosing which words to use —often used as (be) worded"
+        ]
+      },
+      {
+        "meta": {
+          "id": "word-perfect",
+          "uuid": "01dc28b1-200a-4ab4-b7ef-4791ba73facb",
+          "src": "learners",
+          "section": "alpha",
+          "stems": ["word-perfect"],
+          "app-shortdef": {
+            "hw": "word-perfect",
+            "fl": "adjective",
+            "def": ["{it}British{/it} {bc} correct in every detail"]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word-perfect"
+        },
+        "fl": "adjective",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sls": ["British"],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}correct in every detail {bc}{sx|letter-perfect||} "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "All the actors should be congratulated on a {it}word-perfect{/it} performance."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": ["correct in every detail : letter-perfect"]
+      },
+      {
+        "meta": {
+          "id": "word processing",
+          "uuid": "44df5659-e3bd-4b75-a42c-ab75ed3b488e",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "e22824b4-d330-4fe1-b619-a57a33f71fe9",
+            "tsrc": "collegiate"
+          },
+          "stems": ["word processing", "word process", "word processings"],
+          "app-shortdef": {
+            "hw": "word processing",
+            "fl": "noun",
+            "def": [
+              "{bc} the production of printed pages of writing (such as business letters) that can be stored and printed by using computer equipment"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word processing"
+        },
+        "fl": "noun",
+        "gram": "noncount",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}the production of printed pages of writing (such as business letters) that can be stored and printed by using computer equipment "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "These terminals are used mostly for {it}word processing{/it}."
+                          },
+                          {
+                            "t": "{it}word processing{/it} software"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "the production of printed pages of writing (such as business letters) that can be stored and printed by using computer equipment"
+        ]
+      },
+      {
+        "meta": {
+          "id": "word processor",
+          "uuid": "c192177b-a203-45fd-9a10-b7c128ecc663",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "1f0a7ffe-c0b3-4831-b9bc-2aa268d5e1ba",
+            "tsrc": "collegiate"
+          },
+          "stems": ["word processor", "word processors"],
+          "app-shortdef": {
+            "hw": "word processor",
+            "fl": "noun",
+            "def": [
+              "{bc} a computer used for creating, storing, and printing text {bc} a computer used for word processing",
+              "{bc} software used on a computer to perform word processing"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word processor"
+        },
+        "fl": "noun",
+        "ins": [
+          {
+            "il": "plural",
+            "ifc": "~ -sors",
+            "if": "word processors"
+          }
         ],
         "gram": "count",
         "def": [
-            {
-                "sseq": [
-                    [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a computer used for creating, storing, and printing text {bc}a computer used for word processing "
+                      ],
+                      [
+                        "vis",
                         [
-                            "sense",
-                            {
-                                "sn": "1",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}a set of questions or problems that are designed to measure a person's knowledge, skills, or abilities "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "She is studying for her math/spelling/history {it}test{/it}."
-                                            },
-                                            {
-                                                "t": "I passed/failed/flunked my biology {it}test{/it}."
-                                            },
-                                            {
-                                                "t": "The teacher sat at his desk grading {it}tests{/it}."
-                                            },
-                                            {
-                                                "t": "a driver's/driving {it}test{/it} [=a test that is used to see if someone is able to safely drive a car]"
-                                            },
-                                            {
-                                                "t": "an IQ {it}test{/it}"
-                                            },
-                                            {
-                                                "t": "{it}test{/it} questions"
-                                            },
-                                            {
-                                                "t": "The {it}test{/it} will be on [=the questions on the test will be about] the first three chapters of the book."
-                                            },
-                                            {
-                                                "t": "We {phrase}took/had a test{/phrase} on European capitals. = ({it}Brit{/it}) We {phrase}did a test{/phrase} on European capitals."
-                                            },
-                                            {
-                                                "t": "The college relies on {phrase}test scores{/phrase} in its admissions process."
-                                            }
-                                        ]
-                                    ],
-                                    [
-                                        "text",
-                                        "{dx}see also {dxt|intelligence test||} {dxt|rorschach test||} {dxt|screen test||}{/dx}"
-                                    ]
-                                ]
-                            }
+                          {
+                            "t": "At work she sits in front of her {it}word processor{/it} all day."
+                          }
                         ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "2 a",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}a careful study of a part of the body or of a substance taken from the body "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "The {it}test{/it} showed/revealed a problem with your liver function."
-                                            },
-                                            {
-                                                "t": "a vision/hearing {it}test{/it} [=a test that shows how well you see/hear]"
-                                            },
-                                            {
-                                                "t": "a urine {it}test{/it} [=a test that examines a person's urine for evidence of disease or illegal drugs]"
-                                            },
-                                            {
-                                                "t": "allergy {it}tests{/it} [=tests that show what you are allergic to]"
-                                            },
-                                            {
-                                                "t": "All applicants must pass a {phrase}drug test{/phrase}. [=a test that examines a person's blood or urine for evidence of illegal drugs]"
-                                            },
-                                            {
-                                                "t": "The doctor will call you with the {phrase}test results{/phrase}."
-                                            },
-                                            {
-                                                "t": "They went to the drug store to buy a {phrase}pregnancy test{/phrase}. [=a device that reacts to a woman's urine in a way that shows whether or not she is pregnant]"
-                                            },
-                                            {
-                                                "t": "a {phrase}DNA test{/phrase} [=a test that examines DNA and that is used to identify someone or to show that people are relatives]"
-                                            }
-                                        ]
-                                    ],
-                                    [
-                                        "text",
-                                        "{dx}see also {dxt|blood test||} {dxt|breath test||} {dxt|stress test||}{/dx}"
-                                    ]
-                                ]
-                            }
-                        ],
-                        [
-                            "sense",
-                            {
-                                "sn": "b",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}a careful study of a small amount of water, soil, air, etc., in order to see if its quality is good, to find out if it contains a dangerous substance, etc. "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "The {it}test{/it} indicated high levels of lead in the soil."
-                                            },
-                                            {
-                                                "t": "routine water {it}tests{/it}"
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "3",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}a planned and usually controlled act or series of acts that is done to learn something, to see if something works properly, etc. "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "lab/laboratory {it}tests{/it}"
-                                            },
-                                            {
-                                                "t": "underground nuclear {it}tests{/it}"
-                                            },
-                                            {
-                                                "t": "a {it}test{/it} of a new vaccine"
-                                            },
-                                            {
-                                                "t": "{phrase}Taste tests{/phrase} revealed that people prefer this brand of cola over that one."
-                                            }
-                                        ]
-                                    ],
-                                    [
-                                        "uns",
-                                        [
-                                            [
-                                                [
-                                                    "text",
-                                                    "often used before another noun "
-                                                ],
-                                                [
-                                                    "vis",
-                                                    [
-                                                        {
-                                                            "t": "As participants in the sleep study, {phrase}test subjects{/phrase} will be kept awake for 18 hours."
-                                                        },
-                                                        {
-                                                            "t": "The effects of the drug were clear when the {phrase}test group{/phrase} was compared with the control group."
-                                                        }
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ],
-                                    [
-                                        "text",
-                                        "{dx}see also {dxt|road test||}{/dx}"
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "4",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}something (such as a difficult situation or task) that shows how strong or skilled someone or something is "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "a {it}test{/it} of will/strength/character"
-                                            },
-                                            {
-                                                "t": "The real/true {it}test{/it} of your ability as a skier is whether you can ski well on very hard snow."
-                                            }
-                                        ]
-                                    ],
-                                    [
-                                        "text",
-                                        "{dx}see also {dxt|acid test||} {dxt|litmus test||}{/dx}"
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "5",
-                                "sls": ["British", "sports"],
-                                "dt": [["text", "{bc}{sx|test match||}"]]
-                            }
-                        ]
+                      ]
                     ]
+                  }
                 ]
-            }
-        ],
-        "dros": [
-            {
-                "drp": "put (someone or something) to the test",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}to cause (someone or something) to be in a situation that shows how strong, good, etc., that person or thing really is "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "The team has been playing well so far, but tomorrow's game will really {it}put them to the test{/it}. [=will really test them]"
-                                                    },
-                                                    {
-                                                        "t": "A trip through the desert will {it}put{/it} the truck {it}to the test{/it}."
-                                                    },
-                                                    {
-                                                        "t": "We decided to {it}put{/it} the idea/theory {it}to the test{/it} [=to test the theory] with a little experiment."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}software used on a computer to perform word processing "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She closed down her {it}word processor{/it} and opened her e-mail program."
+                          }
                         ]
-                    }
+                      ]
+                    ]
+                  }
                 ]
-            },
-            {
-                "drp": "stand the test of time",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}to continue to be important, respected, etc., for a long period of time "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "Great art/literature/music can {it}stand the test of time{/it}."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "test of (your) character",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|character||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            }
-        ],
-        "dxnls": ["see also {dxt|high-test||} {dxt|means test||}"],
-        "shortdef": [
-            "a set of questions or problems that are designed to measure a person's knowledge, skills, or abilities",
-            "a careful study of a part of the body or of a substance taken from the body",
-            "a careful study of a small amount of water, soil, air, etc., in order to see if its quality is good, to find out if it contains a dangerous substance, etc."
-        ]
-    },
-    {
-        "meta": {
-            "id": "word:1",
-            "uuid": "32037143-e6a0-450f-9f85-8aa50a207782",
-            "src": "learners",
-            "section": "alpha",
-            "target": {
-                "tuuid": "5797b71b-4c8a-4d3d-8232-30986bc15da9",
-                "tsrc": "collegiate"
-            },
-            "highlight": "yes",
-            "stems": [
-                "word",
-                "good word",
-                "in a word",
-                "in so many words",
-                "of few words",
-                "of one's word",
-                "of her word",
-                "of his word",
-                "of their word",
-                "upon my word",
-                "words",
-                "actions speak louder than words",
-                "a picture is worth a thousand words",
-                "at a loss for words",
-                "a word in someone's ear",
-                "a word in someones ear",
-                "a word to the wise",
-                "by word of mouth",
-                "eat your words",
-                "from the word go",
-                "get a word in edgewise",
-                "hang on someone's every word",
-                "hang on someones every word",
-                "in other words",
-                "in as many words",
-                "in words of one syllable",
-                "lost for words",
-                "mark my words",
-                "mum's the word",
-                "mums the word",
-                "play with words",
-                "put words in/into someone's mouth",
-                "put words in someone's mouth",
-                "put words into someone's mouth",
-                "put words in/into someones mouth",
-                "put words in someones mouth",
-                "put words into someones mouth",
-                "say the word",
-                "take the words right out of someone's mouth",
-                "take the words right out of someones mouth",
-                "the last/final word",
-                "the final word",
-                "the last word",
-                "(upon) my word",
-                "my word",
-                "war of words",
-                "word for word",
-                "word of honor",
-                "in every sense of the word",
-                "big words",
-                "words fail me",
-                "have a word with you",
-                "word of warning",
-                "don't say/breathe a word",
-                "don't breathe a word",
-                "don't say a word",
-                "dont say/breathe a word",
-                "dont breathe a word",
-                "dont say a word",
-                "man of few words",
-                "say a few words",
-                "spread the word",
-                "sent word",
-                "word has it",
-                "put/got the word out",
-                "got the word out",
-                "put the word out",
-                "give you my word",
-                "keep your word",
-                "man of his word",
-                "his word is his bond",
-                "go back on my word",
-                "take my word for it",
-                "true to her word",
-                "had words",
-                "have a word in your ear",
-                "what's the good word",
-                "whats the good word",
-                "not in so many words",
-                "have the last word"
-            ],
-            "app-shortdef": {
-                "hw": "word:1",
-                "fl": "noun",
-                "def": [
-                    "{bc} a sound or combination of sounds that has a meaning and is spoken or written",
-                    "{bc} a brief remark or conversation {bc} something that a person says",
-                    "{bc} an order or command"
-                ]
-            },
-            "offensive": false
-        },
-        "hom": 1,
-        "hwi": {
-            "hw": "word",
-            "prs": [
-                {
-                    "ipa": "ˈwɚd",
-                    "sound": {
-                        "audio": "word0001"
-                    }
-                }
+              ]
             ]
+          }
+        ],
+        "shortdef": [
+          "a computer used for creating, storing, and printing text : a computer used for word processing",
+          "software used on a computer to perform word processing"
+        ]
+      },
+      {
+        "meta": {
+          "id": "code word",
+          "uuid": "687573c9-98fa-43f2-9bac-8a881d75670e",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "5a2ad283-feb7-4e49-8dce-c784ff9ed3ed",
+            "tsrc": "collegiate"
+          },
+          "stems": ["code word", "code words"],
+          "app-shortdef": {
+            "hw": "code word",
+            "fl": "noun",
+            "def": [
+              "{bc} a word or phrase that has a secret meaning or that is used instead of another word or phrase to avoid speaking directly"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "code word"
         },
         "fl": "noun",
         "ins": [
-            {
-                "il": "plural",
-                "if": "words"
-            }
+          {
+            "il": "plural",
+            "ifc": "~ words",
+            "if": "code words"
+          }
         ],
+        "gram": "count",
         "def": [
-            {
-                "sseq": [
-                    [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a word or phrase that has a secret meaning or that is used instead of another word or phrase to avoid speaking directly "
+                      ],
+                      [
+                        "vis",
                         [
-                            "sense",
-                            {
-                                "sn": "1",
-                                "sgram": "count",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}a sound or combination of sounds that has a meaning and is spoken or written "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "How do you spell that {it}word{/it}?"
-                                            },
-                                            {
-                                                "t": "{ldquo}Please{rdquo} is a useful {it}word{/it}."
-                                            },
-                                            {
-                                                "t": "Our teacher often used {it}words{/it} I didn't know."
-                                            },
-                                            {
-                                                "t": "What is the French {it}word{/it} for car?"
-                                            },
-                                            {
-                                                "t": "She was a genius {phrase}in every sense of the word{/phrase}. [=she was truly a genius]"
-                                            },
-                                            {
-                                                "t": "You don't need to use {phrase}big words{/phrase} [=difficult words used to try to impress people] to make your point."
-                                            },
-                                            {
-                                                "t": "{phrase}Words fail me{/phrase}. [=I don't know what to say]"
-                                            }
-                                        ]
-                                    ],
-                                    [
-                                        "text",
-                                        "{dx}see also {dxt|buzzword||} {dxt|four-letter word||} {dxt|function word||} {dxt|password||} {dxt|swearword||} {dxt|watchword||} {dxt|weasel word||}{/dx}"
-                                    ]
-                                ]
-                            }
+                          {
+                            "t": "The {it}code word{/it} {ldquo}conflict{rdquo} has been used for what some people are calling a war."
+                          }
                         ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "2",
-                                "sgram": "count",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}a brief remark or conversation {bc}something that a person says "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "You can't believe a {it}word{/it} (of what) she says. [=you can't believe anything she says]"
-                                            },
-                                            {
-                                                "t": "Describe the experience in your own {it}words{/it}."
-                                            },
-                                            {
-                                                "t": "The lawyer used Joe's {it}words{/it} against him."
-                                            },
-                                            {
-                                                "t": "Could I {phrase}have a word with you{/phrase}? [=could I talk with you briefly?]"
-                                            },
-                                            {
-                                                "t": "They gave me a {phrase}word of warning{/phrase} [=they told me about] about the slippery roads."
-                                            },
-                                            {
-                                                "t": "{phrase}Don't say/breathe a word{/phrase} [=don't talk] about this to anyone."
-                                            },
-                                            {
-                                                "t": "My grandfather was a {phrase}man of few words{/phrase}. [=a man who did not talk very much]"
-                                            },
-                                            {
-                                                "t": "I've been asked to {phrase}say a few words{/phrase} [=make a short speech or statement] about the new play."
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "3",
-                                "sgram": "singular",
-                                "dt": [
-                                    ["text", "{bc}an order or command "],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "She gave the {it}word{/it} to begin."
-                                            },
-                                            {
-                                                "t": "We will wait for your {it}word{/it} before we serve dinner."
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "4",
-                                "sgram": "singular",
-                                "dt": [
-                                    ["text", "{bc}news or information "],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "(Is there) Any {it}word{/it} on how they are?"
-                                            },
-                                            {
-                                                "t": "If {it}word{/it} of this gets out, we're all in trouble."
-                                            },
-                                            {
-                                                "t": "What's the {it}word{/it}?"
-                                            },
-                                            {
-                                                "t": "There is still no {it}word{/it} from the hospital."
-                                            },
-                                            {
-                                                "t": "{phrase}Spread the word{/phrase} [=tell the others] that we're leaving in five minutes."
-                                            },
-                                            {
-                                                "t": "They {phrase}sent word{/phrase} [=sent a message] that they'd be late."
-                                            },
-                                            {
-                                                "t": "{phrase}Word has it{/phrase} [=I have heard] that the neighbors are moving next month."
-                                            },
-                                            {
-                                                "t": "The police {phrase}put/got the word out{/phrase} that they were looking for him. [=the police let people know that they were looking for him]"
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "5",
-                                "sgram": "singular",
-                                "dt": [
-                                    ["text", "{bc}a promise to do something "],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "I'll be there. I {phrase}give you my word{/phrase}. [=I promise]"
-                                            },
-                                            {
-                                                "t": "You'd better {phrase}keep your word{/phrase}. [=keep your promise to do something]"
-                                            },
-                                            {
-                                                "t": "He is a {phrase}man of his word{/phrase}. = {phrase}His word is his bond{/phrase}. [=he always keeps his promises]"
-                                            },
-                                            {
-                                                "t": "I told her I'd help. I can't {phrase}go back on my word{/phrase}. [=I can't break my promise]"
-                                            },
-                                            {
-                                                "t": "You'll have to {phrase}take my word for it{/phrase}. [=you'll have to believe me]"
-                                            },
-                                            {
-                                                "t": "She was {phrase}true to her word{/phrase}. [=she did what she said she would do]"
-                                            }
-                                        ]
-                                    ],
-                                    [
-                                        "text",
-                                        "{dx}see also {dxt|word of honor||(below)}{/dx}"
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "6",
-                                "bnote": "words",
-                                "sgram": "plural",
-                                "dt": [
-                                    ["text", "{bc}angry remarks "],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "{it}Words{/it} were exchanged [=people said angry things to each other] and a fight broke out."
-                                            },
-                                            {
-                                                "t": "He {phrase}had words{/phrase} [=had an argument] with his boss."
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "7",
-                                "bnote": "the Word",
-                                "sls": ["religion"],
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}stories and lessons of the Bible "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "{it}the Word{/it} of God"
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
+                      ]
                     ]
+                  }
                 ]
-            }
-        ],
-        "dros": [
-            {
-                "drp": "actions speak louder than words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|action||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "a picture is worth a thousand words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|worth:1||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "at a loss for words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|loss||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "a word in someone's ear",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "sls": ["chiefly British"],
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}a remark that is made privately to someone "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "May I {phrase}have a word in your ear{/phrase} [=may I speak to you privately] before you leave?"
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "a word to the wise",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "uns",
-                                                [
-                                                    [
-                                                        [
-                                                            "text",
-                                                            "used to say that you are about to give someone advice or a warning "
-                                                        ],
-                                                        [
-                                                            "vis",
-                                                            [
-                                                                {
-                                                                    "t": "{it}A word to the wise{/it}: never sign a contract without reading it first."
-                                                                }
-                                                            ]
-                                                        ]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "by word of mouth",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}by being told by another person "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "We found this hotel {it}by word of mouth{/it}."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "eat your words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            ["text", "{dx}see {dxt|eat||}{/dx}"]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "from the word go",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "sls": ["informal"],
-                                        "dt": [
-                                            ["text", "{bc}from the beginning "],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "The show was a success {it}from the word go{/it}."
-                                                    },
-                                                    {
-                                                        "t": "We were in trouble ({it}right{/it}) {it}from the word go{/it}."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "get a word in edgewise",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|edgewise||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "good word",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}a favorable comment "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "Please put in a {it}good word{/it} for me [=say something good about me] when you talk to the boss."
-                                                    },
-                                                    {
-                                                        "t": "({it}US, informal{/it}) I haven't seen you in ages! {phrase}What's the good word{/phrase}? [={it}how's it going?; how are you?{/it}]"
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "hang on someone's every word",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|hang:1||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "in a word",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}very briefly {bc}in short"
-                                            ],
-                                            [
-                                                "uns",
-                                                [
-                                                    [
-                                                        [
-                                                            "text",
-                                                            "used to indicate that you are saying something by using only one word or by using as few words as possible "
-                                                        ],
-                                                        [
-                                                            "vis",
-                                                            [
-                                                                {
-                                                                    "t": "Our answer, {it}in a word{/it}, is no."
-                                                                }
-                                                            ]
-                                                        ]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "in other words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "uns",
-                                                [
-                                                    [
-                                                        [
-                                                            "text",
-                                                            "used to introduce a statement that repeats what has been said in a different and usually a simpler or more exact way "
-                                                        ],
-                                                        [
-                                                            "vis",
-                                                            [
-                                                                {
-                                                                    "t": "{ldquo}She said the movie was a bit predictable.{rdquo} {ldquo}{it}In other words{/it}, she didn't like it.{rdquo}"
-                                                                },
-                                                                {
-                                                                    "t": "So, {it}in other words{/it}, you're saying that you forgot to do it."
-                                                                }
-                                                            ]
-                                                        ]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "in so many words",
-                "vrs": [
-                    {
-                        "vl": "also",
-                        "va": "in as many words"
-                    }
-                ],
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}in exactly those words or in exactly that way"
-                                            ],
-                                            [
-                                                "uns",
-                                                [
-                                                    [
-                                                        [
-                                                            "text",
-                                                            "usually used in negative statements "
-                                                        ],
-                                                        [
-                                                            "vis",
-                                                            [
-                                                                {
-                                                                    "t": "{ldquo}Did he say he wouldn't do it?{rdquo} {ldquo}{phrase}Not in so many words{/phrase}, but that was the impression I got.{rdquo}"
-                                                                }
-                                                            ]
-                                                        ]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "in words of one syllable",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}in clear and simple terms "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "We explained our views to the press {it}in words of one syllable{/it}."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "lost for words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|lost:2||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "mark my words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|mark:2||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "mum's the word",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|mum:1||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "play with words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{dx}see {dxt|play:1||}{/dx}"
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "put words in/into someone's mouth",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}to suggest that someone said or meant something that he or she did not say or mean "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "Don't {it}put words in my mouth{/it}. I wasn't defending his actions, despite what you may think."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "say the word",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            ["text", "{bc}to give an order "],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "When you want to leave (just) {it}say the word{/it}."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "take the words right out of someone's mouth",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}to say exactly what someone was thinking "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "I agree! You {it}took the words right out of my mouth{/it}!"
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "the last/final word",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "sn": "1",
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}the final thing said in an argument or a discussion "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "Your mother's decision is {it}the final word{/it} on the matter."
-                                                    },
-                                                    {
-                                                        "t": "Why do you always have to {phrase}have the last word{/phrase}? [=to be the last person to speak]"
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ],
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "sn": "2",
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}the power to make a final decision "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "The judge will have {it}the last word{/it} [={it}the final say{/it}] on the divorce agreement."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ],
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "sn": "3",
-                                        "sls": ["informal"],
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}the most modern or best one of its kind "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "This is {it}the last word{/it} in wireless phones."
-                                                    },
-                                                    {
-                                                        "t": "The van's design is {it}the last word{/it} in safety."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "(upon) my word",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "sls": ["somewhat old-fashioned"],
-                                        "dt": [
-                                            [
-                                                "uns",
-                                                [
-                                                    [
-                                                        [
-                                                            "text",
-                                                            "used to express surprise "
-                                                        ],
-                                                        [
-                                                            "vis",
-                                                            [
-                                                                {
-                                                                    "t": "{it}My word{/it}, what a beautiful dress!"
-                                                                }
-                                                            ]
-                                                        ]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "war of words",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}an argument in which people or groups criticize and disagree with each other publicly and repeatedly for usually a long time "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "Rival groups have engaged in a {it}war of words{/it} over the new law."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "word for word",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            ["text", "{bc}in the exact words "],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "He gave the same speech {it}word for word{/it} [={it}verbatim{/it}] yesterday."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            },
-            {
-                "drp": "word of honor",
-                "def": [
-                    {
-                        "sseq": [
-                            [
-                                [
-                                    "sense",
-                                    {
-                                        "dt": [
-                                            [
-                                                "snote",
-                                                [
-                                                    [
-                                                        "t",
-                                                        "Your {it}word of honor{/it} is your promise that you will do something, that something is true, etc."
-                                                    ],
-                                                    [
-                                                        "vis",
-                                                        [
-                                                            {
-                                                                "t": "I give you my {it}word of honor{/it} that I will pay the money back."
-                                                            }
-                                                        ]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
-                            ]
-                        ]
-                    }
-                ]
-            }
+              ]
+            ]
+          }
         ],
         "shortdef": [
-            "a sound or combination of sounds that has a meaning and is spoken or written",
-            "a brief remark or conversation : something that a person says",
-            "an order or command"
+          "a word or phrase that has a secret meaning or that is used instead of another word or phrase to avoid speaking directly"
         ]
-    },
-    {
+      },
+      {
         "meta": {
-            "id": "rescue:1",
-            "uuid": "df97c573-471b-4db4-b2f5-44503ac2afef",
-            "src": "learners",
-            "section": "alpha",
-            "target": {
-                "tuuid": "b9441519-aaca-459c-936a-65730c4f5c42",
-                "tsrc": "collegiate"
-            },
-            "highlight": "yes",
-            "stems": [
-                "rescue",
-                "rescues",
-                "rescued",
-                "rescuing",
-                "rescuer",
-                "rescuers"
-            ],
-            "app-shortdef": {
-                "hw": "rescue:1",
-                "fl": "verb",
-                "def": [
-                    "{bc} to save (someone or something) from danger or harm"
+          "id": "dirty word",
+          "uuid": "1cd76ed3-6046-4c63-bbbd-906fdb12a777",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "1d4c58b6-ee38-48a3-b108-dbb994452847",
+            "tsrc": "collegiate"
+          },
+          "stems": ["dirty word", "dirty words"],
+          "app-shortdef": {
+            "hw": "dirty word",
+            "fl": "noun",
+            "def": [
+              "{bc} an offensive word",
+              "{bc} a word, subject, or idea that is disliked by some people"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "dirty word"
+        },
+        "fl": "noun",
+        "ins": [
+          {
+            "il": "plural",
+            "ifc": "~ words",
+            "if": "dirty words"
+          }
+        ],
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "sgram": "count",
+                    "dt": [
+                      ["text", "{bc}an offensive word "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "The movie is just a lot of sex, violence, and {it}dirty words{/it}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
                 ]
-            },
-            "offensive": false
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "sgram": "singular",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a word, subject, or idea that is disliked by some people "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "They regard {ldquo}taxes{rdquo} as a {it}dirty word{/it}."
+                          },
+                          {
+                            "t": "Politics is a {it}dirty word{/it} [=they don't talk about politics] in their home."
+                          },
+                          {
+                            "t": "The way he acts, you'd think compassion was a {it}dirty word{/it}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "an offensive word",
+          "a word, subject, or idea that is disliked by some people"
+        ]
+      },
+      {
+        "meta": {
+          "id": "four-letter word",
+          "uuid": "1117598e-e1c7-4238-bd90-6708e010f573",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "37dd7645-2a6b-497b-973d-638d5f21213d",
+            "tsrc": "collegiate"
+          },
+          "stems": ["four-letter word", "four-letter words"],
+          "app-shortdef": {
+            "hw": "four-letter word",
+            "fl": "noun",
+            "def": [
+              "{bc} an offensive word and especially an offensive word that has four letters",
+              "{bc} a word, subject, or idea that is disliked by some people"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "four-letter word"
+        },
+        "fl": "noun",
+        "ins": [
+          {
+            "il": "plural",
+            "ifc": "~ words",
+            "if": "four-letter words"
+          }
+        ],
+        "gram": "count",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}an offensive word and especially an offensive word that has four letters {bc}{sx|dirty word||1} "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "a book that contains a lot of {it}four-letter words{/it}"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a word, subject, or idea that is disliked by some people {bc}{sx|dirty word||2} "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "{ldquo}Tax{rdquo} is a {it}four-letter word{/it} as far as he's concerned."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "an offensive word and especially an offensive word that has four letters : dirty word",
+          "a word, subject, or idea that is disliked by some people : dirty word"
+        ]
+      },
+      {
+        "meta": {
+          "id": "function word",
+          "uuid": "2c6e8b03-468a-4394-b5d9-0da3fe1e6b5c",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "680b66e8-9663-4d0e-85a9-3d5ec46b1e41",
+            "tsrc": "collegiate"
+          },
+          "stems": ["function word", "function words"],
+          "app-shortdef": {
+            "hw": "function word",
+            "fl": "noun",
+            "def": [
+              "{it}linguistics{/it} {bc} a word (such as a preposition or a conjunction) that is used mainly to show grammatical relationships between other words"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "function word"
+        },
+        "fl": "noun",
+        "ins": [
+          {
+            "il": "plural",
+            "ifc": "~ words",
+            "if": "function words"
+          }
+        ],
+        "gram": "count",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sls": ["linguistics"],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a word (such as a preposition or a conjunction) that is used mainly to show grammatical relationships between other words"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "a word (such as a preposition or a conjunction) that is used mainly to show grammatical relationships between other words"
+        ]
+      },
+      {
+        "meta": {
+          "id": "f-word",
+          "uuid": "d1c4c458-a037-482b-ae25-e8dc8d2079c3",
+          "src": "learners",
+          "section": "alpha",
+          "stems": ["f-word", "the f-word"],
+          "app-shortdef": {
+            "hw": "f-word",
+            "fl": "noun",
+            "def": [
+              "used as a way to refer to the offensive word {ldquo}fuck{rdquo} without saying it or writing it"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "f-word",
+          "prs": [
+            {
+              "ipa": "ˈɛfˌwɚd",
+              "sound": {
+                "audio": "fword01ld"
+              }
+            }
+          ]
+        },
+        "fl": "noun",
+        "dros": [
+          {
+            "drp": "the f-word",
+            "vrs": [
+              {
+                "vl": "or",
+                "va": "the F-word"
+              }
+            ],
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "uns",
+                            [
+                              [
+                                [
+                                  "text",
+                                  "used as a way to refer to the offensive word {ldquo}fuck{rdquo} without saying it or writing it "
+                                ],
+                                [
+                                  "vis",
+                                  [
+                                    {
+                                      "t": "He got in trouble for using {it}the f-word{/it} on television."
+                                    }
+                                  ]
+                                ]
+                              ]
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "shortdef": []
+      }
+    ]
+  },
+  {
+    "word": [
+      {
+        "meta": {
+          "id": "word:1",
+          "uuid": "f87cbe74-70fe-43d8-a252-73e1df701107",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": [
+            "word",
+            "good word",
+            "in a word",
+            "in so many words",
+            "of few words",
+            "of one's word",
+            "upon my word",
+            "words",
+            "of ones word"
+          ],
+          "offensive": false
         },
         "hom": 1,
         "hwi": {
-            "hw": "res*cue",
-            "prs": [
-                {
-                    "ipa": "ˈrɛskju",
-                    "sound": {
-                        "audio": "rescue01"
-                    }
-                }
-            ]
+          "hw": "word",
+          "prs": [
+            {
+              "mw": "ˈwərd",
+              "sound": {
+                "audio": "word0001"
+              }
+            }
+          ]
         },
-        "fl": "verb",
-        "ins": [
-            {
-                "ifc": "-cues",
-                "if": "res*cues"
-            },
-            {
-                "ifc": "-cued",
-                "if": "res*cued"
-            },
-            {
-                "ifc": "-cu*ing",
-                "if": "res*cu*ing"
-            }
-        ],
-        "gram": "+ obj",
+        "fl": "noun",
         "def": [
-            {
-                "sseq": [
-                    [
-                        [
-                            "sense",
-                            {
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}to save (someone or something) from danger or harm "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "The survivors were {it}rescued{/it} by the Coast Guard."
-                                            }
-                                        ]
-                                    ],
-                                    [
-                                        "uns",
-                                        [
-                                            [
-                                                [
-                                                    "text",
-                                                    "often + {it}from{/it} "
-                                                ],
-                                                [
-                                                    "vis",
-                                                    [
-                                                        {
-                                                            "t": "A fireman {it}rescued{/it} three children {it}from{/it} the burning building."
-                                                        }
-                                                    ]
-                                                ]
-                                            ],
-                                            [
-                                                [
-                                                    "text",
-                                                    "sometimes used figuratively "
-                                                ],
-                                                [
-                                                    "vis",
-                                                    [
-                                                        {
-                                                            "t": "She {it}rescued{/it} an old chair {it}from{/it} the trash."
-                                                        }
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a sound or combination of sounds that has meaning and is spoken by a human being"
+                      ]
                     ]
+                  }
                 ]
-            }
-        ],
-        "uros": [
-            {
-                "ure": "res*cu*er",
-                "fl": "noun",
-                "ins": [
-                    {
-                        "il": "plural",
-                        "ifc": "-ers",
-                        "if": "res*cu*ers"
-                    }
-                ],
-                "gram": "count",
-                "utxt": [
-                    [
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a written or printed letter or letters standing for a spoken word"
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "3",
+                    "dt": [
+                      ["text", "{bc}a brief remark or conversation "],
+                      [
                         "vis",
                         [
-                            {
-                                "t": "{it}Rescuers{/it} struggled to free the young man from the car wreck."
-                            }
+                          {
+                            "t": "could I have a {it}word{/it} with you"
+                          }
                         ]
+                      ]
                     ]
+                  }
                 ]
-            }
-        ],
-        "shortdef": [
-            "to save (someone or something) from danger or harm —often + from —sometimes used figuratively"
-        ]
-    },
-    {
-        "meta": {
-            "id": "modify",
-            "uuid": "b545d2b9-a471-4be6-aa05-209debb966c2",
-            "src": "learners",
-            "section": "alpha",
-            "target": {
-                "tuuid": "73958895-1e7f-4f25-9927-fd58d96e1d21",
-                "tsrc": "collegiate"
-            },
-            "stems": ["modify", "modifies", "modified", "modifying"],
-            "app-shortdef": {
-                "hw": "modify",
-                "fl": "verb",
-                "def": [
-                    "{bc} to change some parts of (something) while not changing other parts",
-                    "{it}grammar{/it} {bc} to limit or describe the meaning of (a word or group of words)"
-                ]
-            },
-            "offensive": false
-        },
-        "hwi": {
-            "hw": "mod*i*fy",
-            "prs": [
-                {
-                    "ipa": "ˈmɑːdəˌfaɪ",
-                    "sound": {
-                        "audio": "modify01"
-                    }
-                }
-            ]
-        },
-        "fl": "verb",
-        "ins": [
-            {
-                "ifc": "-fies",
-                "if": "mod*i*fies"
-            },
-            {
-                "ifc": "-fied",
-                "if": "mod*i*fied"
-            },
-            {
-                "ifc": "-fy*ing",
-                "if": "mod*i*fy*ing"
-            }
-        ],
-        "gram": "+ obj",
-        "def": [
-            {
-                "sseq": [
-                    [
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "4",
+                    "dt": [
+                      ["text", "{bc}{sx|order:1||5b} "],
+                      [
+                        "vis",
                         [
-                            "sense",
-                            {
-                                "sn": "1",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}to change some parts of (something) while not changing other parts "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "We can help you {it}modify{/it} an existing home or build a new one."
-                                            },
-                                            {
-                                                "t": "He {it}modified{/it} the recipe by using oil instead of butter."
-                                            },
-                                            {
-                                                "t": "{it}modify{/it} a plan"
-                                            },
-                                            {
-                                                "t": "She has {it}modified{/it} her views on the matter."
-                                            },
-                                            {
-                                                "t": "The design was {it}modified{/it} to add another window."
-                                            },
-                                            {
-                                                "t": "We played a {it}modified{/it} version of our favorite game."
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
+                          {
+                            "t": "give the {it}word{/it} to begin"
+                          }
                         ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "2",
-                                "sls": ["grammar"],
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}to limit or describe the meaning of (a word or group of words) "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "Adjectives usually {it}modify{/it} nouns, and adverbs usually {it}modify{/it} verbs, adjectives, and other adverbs."
-                                            },
-                                            {
-                                                "t": "In the phrase {ldquo}a red hat,{rdquo} the adjective {ldquo}red{rdquo} {it}modifies{/it} the noun {ldquo}hat.{rdquo}"
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
+                      ]
                     ]
+                  }
                 ]
-            }
-        ],
-        "shortdef": [
-            "to change some parts of (something) while not changing other parts",
-            "to limit or describe the meaning of (a word or group of words)"
-        ]
-    },
-    {
-        "meta": {
-            "id": "modify",
-            "uuid": "84bd43e8-926a-445b-9bd5-d15c431377d3",
-            "src": "int_dict",
-            "section": "alpha",
-            "stems": [
-                "modify",
-                "modifiabilities",
-                "modifiability",
-                "modifiable",
-                "modified",
-                "modifies",
-                "modifying"
-            ],
-            "offensive": false
-        },
-        "hwi": {
-            "hw": "mod*i*fy",
-            "prs": [
-                {
-                    "mw": "ˈmäd-ə-ˌfī",
-                    "sound": {
-                        "audio": "modify01"
-                    }
-                }
-            ]
-        },
-        "fl": "verb",
-        "ins": [
-            {
-                "ifc": "-fied",
-                "if": "mod*i*fied"
-            },
-            {
-                "ifc": "-fy*ing",
-                "if": "mod*i*fy*ing"
-            }
-        ],
-        "def": [
-            {
-                "sseq": [
-                    [
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "5 a",
+                    "dt": [
+                      ["text", "{bc}{sx|news||1} "],
+                      [
+                        "vis",
                         [
-                            "sense",
-                            {
-                                "sn": "1",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}to make changes in {bc}{sx|alter||} "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "{it}modify{/it} a plan"
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
+                          {
+                            "t": "any {it}word{/it} on how they are"
+                          }
                         ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "2",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}to lower or reduce in amount or degree {bc}{sx|moderate||}"
-                                    ]
-                                ]
-                            }
-                        ]
-                    ],
-                    [
-                        [
-                            "sense",
-                            {
-                                "sn": "3",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}to limit in meaning {bc}{sx|qualify||} "
-                                    ],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "in the phrase {ldquo}green gloves,{rdquo} {ldquo}green{rdquo} {it}modifies{/it} {ldquo}gloves{rdquo}"
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
+                      ]
                     ]
-                ]
-            }
-        ],
-        "uros": [
-            {
-                "ure": "mod*i*fi*able",
-                "prs": [
-                    {
-                        "mw": "-ˌfī-ə-bəl",
-                        "sound": {
-                            "audio": "modify03"
-                        }
-                    }
+                  }
                 ],
-                "fl": "adjective"
-            }
-        ],
-        "shortdef": [
-            "to make changes in : alter",
-            "to lower or reduce in amount or degree : moderate",
-            "to limit in meaning : qualify"
-        ]
-    },
-    {
-        "meta": {
-            "id": "abide",
-            "uuid": "3aa1392b-16ae-4971-b499-7e21627d9d68",
-            "src": "learners",
-            "section": "alpha",
-            "target": {
-                "tuuid": "14e7a484-faea-4ef9-80f5-38ccbb28d687",
-                "tsrc": "collegiate"
-            },
-            "stems": [
-                "abide",
-                "abide by",
-                "abided",
-                "abider",
-                "abiders",
-                "abides",
-                "abiding",
-                "abode"
-            ],
-            "app-shortdef": {
-                "hw": "abide",
-                "fl": "verb",
-                "def": [
-                    "{bc} to accept or bear (someone or something bad, unpleasant, etc.)",
-                    "{bc} to stay or live somewhere",
-                    "{bc} to remain or continue"
+                [
+                  "sense",
+                  {
+                    "sn": "b",
+                    "dt": [["text", "{bc}{sx|rumor||}"]]
+                  }
                 ]
-            },
-            "offensive": false
-        },
-        "hwi": {
-            "hw": "abide",
-            "prs": [
-                {
-                    "ipa": "əˈbaɪd",
-                    "sound": {
-                        "audio": "abide001"
-                    }
-                }
-            ]
-        },
-        "fl": "verb",
-        "ins": [
-            {
-                "if": "abides"
-            },
-            {
-                "if": "abid*ed"
-            },
-            {
-                "if": "abid*ing"
-            }
-        ],
-        "def": [
-            {
-                "sseq": [
-                    [
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "6",
+                    "dt": [
+                      ["text", "{bc}{sx|promise:1||1} "],
+                      [
+                        "vis",
                         [
-                            "sense",
-                            {
-                                "sn": "1",
-                                "sgram": "+ obj",
-                                "dt": [
-                                    [
-                                        "text",
-                                        "{bc}to accept or bear (someone or something bad, unpleasant, etc.)"
-                                    ],
-                                    [
-                                        "uns",
-                                        [
-                                            [
-                                                [
-                                                    "text",
-                                                    "usually used in negative constructions "
-                                                ],
-                                                [
-                                                    "vis",
-                                                    [
-                                                        {
-                                                            "t": "I can't {it}abide{/it} his bad moods. [=(more commonly) I can't stand his bad moods; I hate his bad moods]"
-                                                        }
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            }
+                          {
+                            "t": "I give you my {it}word{/it}"
+                          }
                         ]
-                    ],
-                    [
-                        [
-                            "sen",
-                            {
-                                "sn": "2",
-                                "sgram": "no obj",
-                                "sls": ["old-fashioned + literary"]
-                            }
-                        ],
-                        [
-                            "sense",
-                            {
-                                "sn": "a",
-                                "ins": [
-                                    {
-                                        "il": "past tense also",
-                                        "if": "abode"
-                                    }
-                                ],
-                                "dt": [
-                                    ["text", "{bc}to stay or live somewhere "],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "{it}abide{/it} in the house of the Lord"
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ],
-                        [
-                            "sense",
-                            {
-                                "sn": "b",
-                                "dt": [
-                                    ["text", "{bc}to remain or continue "],
-                                    [
-                                        "vis",
-                                        [
-                                            {
-                                                "t": "a love that {it}abided{/it} till the end of their lives"
-                                            }
-                                        ]
-                                    ]
-                                ]
-                            }
-                        ]
+                      ]
                     ]
+                  }
                 ]
-            }
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "7",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a remark or conversation uttered in anger "
+                      ],
+                      [
+                        "uns",
+                        [
+                          [
+                            ["text", "usually used in plural "],
+                            [
+                              "vis",
+                              [
+                                {
+                                  "t": "{it}words{/it} were exchanged and a fight broke out"
+                                }
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
         ],
         "dros": [
-            {
-                "drp": "abide by",
-                "gram": "phrasal verb",
-                "def": [
-                    {
-                        "sseq": [
+          {
+            "drp": "good word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "1",
+                        "dt": [
+                          ["text", "{bc}a favorable statement "],
+                          [
+                            "vis",
                             [
-                                [
-                                    "sense",
-                                    {
-                                        "sphrasev": {
-                                            "phrs": [
-                                                {
-                                                    "pva": "abide by (something)"
-                                                }
-                                            ]
-                                        },
-                                        "dt": [
-                                            [
-                                                "text",
-                                                "{bc}to accept and be guided by (something) {bc}{sx|obey||} "
-                                            ],
-                                            [
-                                                "vis",
-                                                [
-                                                    {
-                                                        "t": "We have to {it}abide by{/it} the rules."
-                                                    },
-                                                    {
-                                                        "t": "They promise to {it}abide by{/it} our decision."
-                                                    }
-                                                ]
-                                            ]
-                                        ]
-                                    }
-                                ]
+                              {
+                                "t": "put in a {it}good word{/it} for me"
+                              }
                             ]
+                          ]
                         ]
-                    }
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "2",
+                        "dt": [
+                          ["text", "{bc}good news "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "what's the {it}good word{/it}"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
                 ]
-            }
+              }
+            ]
+          },
+          {
+            "drp": "in a word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [["text", "{bc}in short"]]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "in so many words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "1",
+                        "dt": [
+                          ["text", "{bc}in exactly those words "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "implied that such behavior was unacceptable but didn't say so {it}in so many words{/it}"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "2",
+                        "dt": [
+                          ["text", "{bc}in plain straightforward language "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "told him {it}in so many words{/it} that he wasn't welcome"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "of few words",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          ["text", "{bc}not saying more than is necessary "],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "a man {it}of few words{/it}"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "drp": "of one's word",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}that can be relied on to keep a promise "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "a woman {it}of her word{/it}"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          }
         ],
         "shortdef": [
-            "to accept or bear (someone or something bad, unpleasant, etc.)—usually used in negative constructions",
-            "to stay or live somewhere",
-            "to remain or continue"
+          "a sound or combination of sounds that has meaning and is spoken by a human being",
+          "a written or printed letter or letters standing for a spoken word",
+          "a brief remark or conversation"
         ]
-    }
+      },
+      {
+        "meta": {
+          "id": "word:2",
+          "uuid": "44382362-cfdd-46ee-97c8-f0a2fff758db",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["word", "worded", "wording", "words"],
+          "offensive": false
+        },
+        "hom": 2,
+        "hwi": {
+          "hw": "word"
+        },
+        "fl": "verb",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      ["text", "{bc}to express in words {bc}{sx|phrase||} "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "{it}worded{/it} their request with great care"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": ["to express in words : phrase"]
+      },
+      {
+        "meta": {
+          "id": "word-for-word",
+          "uuid": "f5157dc9-dbe1-4134-9f5f-daf8d0a1bdca",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["word-for-word"],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word-for-word"
+        },
+        "fl": "adjective",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}being in or following the exact words {bc}{sx|verbatim||} "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "a {it}word-for-word{/it} translation"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": ["being in or following the exact words : verbatim"]
+      },
+      {
+        "meta": {
+          "id": "word for word",
+          "uuid": "b1780c4b-4818-4116-8b5f-d5d0f4a41634",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["word for word"],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word for word"
+        },
+        "fl": "adverb",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      ["text", "{bc}in the exact words {bc}{sx|verbatim||} "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "repeated the message {it}word for word{/it}"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": ["in the exact words : verbatim"]
+      },
+      {
+        "meta": {
+          "id": "word of mouth",
+          "uuid": "3046ecbb-4379-40eb-b69c-1f886e5d0a21",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["word of mouth"],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word of mouth"
+        },
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [["text", "{bc}spoken communication"]]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": ["spoken communication"]
+      },
+      {
+        "meta": {
+          "id": "word order",
+          "uuid": "76cf61bd-0ff7-4dd2-96ea-cba2bc44b7bc",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["word order", "word orders"],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word order"
+        },
+        "fl": "noun",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}the order or arrangement of words in a phrase, clause, or sentence"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "the order or arrangement of words in a phrase, clause, or sentence"
+        ]
+      },
+      {
+        "meta": {
+          "id": "word processing",
+          "uuid": "bf53f409-f69a-4cf9-8d0a-e2b1131d2376",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["word processing", "word process", "word processings"],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word processing"
+        },
+        "fl": "noun",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}the production of typewritten documents (as business letters) with automated and usually computerized equipment for preparing text"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "the production of typewritten documents (as business letters) with automated and usually computerized equipment for preparing text"
+        ]
+      },
+      {
+        "meta": {
+          "id": "word processor",
+          "uuid": "a845a9e3-7a66-4fce-8883-2b2c3deb7097",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["word processor", "word processors"],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "word processor"
+        },
+        "fl": "noun",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a keyboard-operated terminal usually with a video display and a magnetic storage device for use in word processing"
+                      ]
+                    ],
+                    "sdsense": {
+                      "sd": "also",
+                      "dt": [
+                        [
+                          "text",
+                          "{bc}software (as for a computer system) to perform word processing"
+                        ]
+                      ]
+                    }
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "a keyboard-operated terminal usually with a video display and a magnetic storage device for use in word processing; also : software (as for a computer system) to perform word processing"
+        ]
+      },
+      {
+        "meta": {
+          "id": "entry word",
+          "uuid": "6df2ddb6-5eeb-4869-aecc-a3cc4c898e47",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["entry word", "entry words"],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "entry word"
+        },
+        "fl": "noun",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [["text", "{bc}a word entered in a list or book"]],
+                    "sdsense": {
+                      "sd": "especially",
+                      "dt": [
+                        [
+                          "text",
+                          "{bc}a word in boldface type that is being explained in a dictionary"
+                        ]
+                      ]
+                    }
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "a word entered in a list or book; especially : a word in boldface type that is being explained in a dictionary"
+        ]
+      },
+      {
+        "meta": {
+          "id": "function word",
+          "uuid": "039e7991-6fe8-4c56-8df7-f67e2ba4f65a",
+          "src": "int_dict",
+          "section": "alpha",
+          "stems": ["function word", "function words"],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "function word"
+        },
+        "fl": "noun",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a word (as a preposition, helping verb, or conjunction) expressing primarily grammatical relationship"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "a word (as a preposition, helping verb, or conjunction) expressing primarily grammatical relationship"
+        ]
+      }
+    ]
+  }
 ]

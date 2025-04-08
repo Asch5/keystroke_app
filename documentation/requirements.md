@@ -64,15 +64,15 @@ Acceptance Criteria:_
 2. Clicking "Import Words" opens a file selection dialog
 3. The file selection dialog filters for .xls, .xlsx, and .csv file types
 4. Upon selecting a file, the app validates the file format and structure
-    - The file must be a valid Excel or CSV file
-    - The file must contain a header row with "Word" and "Definition" columns
-    - Additional columns like "Examples" and "Synonyms" are optional
-      VALIDATION:
-    - The file must contain a header row with "Word" and "Definition" columns
-    - Additional columns like "Examples" and "Synonyms" are optional
-    - The file must be a valid Excel or CSV file
-    - The first word in the word column must be a language to learn
-    - The first definition in the definition column must be a native language
+   - The file must be a valid Excel or CSV file
+   - The file must contain a header row with "Word" and "Definition" columns
+   - Additional columns like "Examples" and "Synonyms" are optional
+     VALIDATION:
+   - The file must contain a header row with "Word" and "Definition" columns
+   - Additional columns like "Examples" and "Synonyms" are optional
+   - The file must be a valid Excel or CSV file
+   - The first word in the word column must be a language to learn
+   - The first definition in the definition column must be a native language
 5. If validation fails, the app displays an error message specifying the issue
 6. If validation succeeds, the app creates a array of objects with the following fields: {word: string, definition: string, examples: string[], synonyms: string[], nativeLanguage: string, languageToLearn: string}
    then the app checks if the word && definition already exists in the main dictionary these wards are sent to the user's dictionary then the remaining objects (without word && definition) are handled by the AI agent to create a new card for the word before handling the next word-object the AI agent checks the consistentcy of the paire word && definition
@@ -135,20 +135,20 @@ Acceptance Criteria:_
 
 1. Core Dictionary System:
 
-    - Word input form + AI card generation
-    - Basic dictionary display
-    - Excel import/export
+   - Word input form + AI card generation
+   - Basic dictionary display
+   - Excel import/export
 
 2. Practice Modules:
 
-    - Typing interface
-    - Pronunciation player
-    - Flashcard system
+   - Typing interface
+   - Pronunciation player
+   - Flashcard system
 
 3. Advanced Features:
-    - Word lists management
-    - User progress tracking
-    - Social sharing features
+   - Word lists management
+   - User progress tracking
+   - Social sharing features
 
 // ... existing user stories and core features ...
 
@@ -158,11 +158,11 @@ Acceptance Criteria:_
 
 - Next.js 14 (App Router)
 - **State Management:** Redux Toolkit with these key stores:
-    - `userSlice`: Manages authentication, user preferences, and progress
-    - `dictionarySlice`: Handles word cards, AI generation status, and dictionary operations
-    - `wordListsSlice`: Controls custom lists and practice sessions
-    - `practiceSlice`: Tracks typing exercises and pronunciation progress
-    - `uiSlice`: Manages modals and loading states
+  - `userSlice`: Manages authentication, user preferences, and progress
+  - `dictionarySlice`: Handles word cards, AI generation status, and dictionary operations
+  - `wordListsSlice`: Controls custom lists and practice sessions
+  - `practiceSlice`: Tracks typing exercises and pronunciation progress
+  - `uiSlice`: Manages modals and loading states
 
 **Redux Middleware:**
 
@@ -175,7 +175,7 @@ Acceptance Criteria:_
 ### Implementation Strategy
 
 1. **Redux Store Configuration:**
-    - Create a `store.ts` file to configure the Redux store
+   - Create a `store.ts` file to configure the Redux store
 
 Backend: Next.js API routes + PostgreSQL
 // ... existing technical architecture ...
@@ -183,9 +183,9 @@ Backend: Next.js API routes + PostgreSQL
 **AI System:**
 
 - DeepSeek API for:
-    - Word card generation (definitions/examples/synonyms)
-    - Context-aware word explanations
-    - Sentence generation
+  - Word card generation (definitions/examples/synonyms)
+  - Context-aware word explanations
+  - Sentence generation
 - Text-to-speech service for pronunciation
 - Rate limiting strategy for API calls
 - Fallback mechanism for API failures

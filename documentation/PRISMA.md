@@ -14,14 +14,14 @@ Prisma is already set up in this project with the following components:
 
 The database schema includes the following main models:
 
--   `Language`: Languages supported by the application
--   `User`: User accounts and profiles
--   `Word`: Words in different languages
--   `MainDictionary`: Main dictionary entries
--   `UserDictionary`: User-specific dictionary entries
--   `List`: Word lists
--   `UserList`: User-specific word lists
--   And many more related models
+- `Language`: Languages supported by the application
+- `User`: User accounts and profiles
+- `Word`: Words in different languages
+- `MainDictionary`: Main dictionary entries
+- `UserDictionary`: User-specific dictionary entries
+- `List`: Word lists
+- `UserList`: User-specific word lists
+- And many more related models
 
 ## Using Prisma in Your Code
 
@@ -43,7 +43,7 @@ const languages = await prisma.language.findMany();
 
 ```typescript
 const language = await prisma.language.findUnique({
-    where: { code: 'en' },
+  where: { code: 'en' },
 });
 ```
 
@@ -51,10 +51,10 @@ const language = await prisma.language.findUnique({
 
 ```typescript
 const newLanguage = await prisma.language.create({
-    data: {
-        code: 'fr',
-        name: 'French',
-    },
+  data: {
+    code: 'fr',
+    name: 'French',
+  },
 });
 ```
 
@@ -62,10 +62,10 @@ const newLanguage = await prisma.language.create({
 
 ```typescript
 const updatedLanguage = await prisma.language.update({
-    where: { id: 'language-id' },
-    data: {
-        name: 'Updated Name',
-    },
+  where: { id: 'language-id' },
+  data: {
+    name: 'Updated Name',
+  },
 });
 ```
 
@@ -73,7 +73,7 @@ const updatedLanguage = await prisma.language.update({
 
 ```typescript
 const deletedLanguage = await prisma.language.delete({
-    where: { id: 'language-id' },
+  where: { id: 'language-id' },
 });
 ```
 
@@ -84,20 +84,20 @@ The schema includes many relationships between models. For example:
 ```typescript
 // Get a user with their base and target languages
 const user = await prisma.user.findUnique({
-    where: { id: 'user-id' },
-    include: {
-        baseLanguage: true,
-        targetLanguage: true,
-    },
+  where: { id: 'user-id' },
+  include: {
+    baseLanguage: true,
+    targetLanguage: true,
+  },
 });
 
 // Get a dictionary entry with related word and examples
 const dictionaryEntry = await prisma.mainDictionary.findUnique({
-    where: { id: 'entry-id' },
-    include: {
-        word: true,
-        examples: true,
-    },
+  where: { id: 'entry-id' },
+  include: {
+    word: true,
+    examples: true,
+  },
 });
 ```
 
@@ -112,12 +112,12 @@ import { User, Language, Prisma } from '@prisma/client';
 
 // Use the model types directly
 function processUser(user: User) {
-    console.log(user.name);
+  console.log(user.name);
 }
 
 // Use Prisma namespace types for inputs
 function createUser(data: Prisma.UserCreateInput) {
-    return prisma.user.create({ data });
+  return prisma.user.create({ data });
 }
 ```
 
@@ -126,19 +126,19 @@ function createUser(data: Prisma.UserCreateInput) {
 ```typescript
 // Define a type that includes relations
 type UserWithLanguages = User & {
-    baseLanguage: Language | null;
-    targetLanguage: Language | null;
+  baseLanguage: Language | null;
+  targetLanguage: Language | null;
 };
 
 // Use Prisma's utility type for specific query payloads
 type UserProfile = Prisma.UserGetPayload<{
-    select: {
-        id: true;
-        name: true;
-        email: true;
-        baseLanguage: true;
-        targetLanguage: true;
-    };
+  select: {
+    id: true;
+    name: true;
+    email: true;
+    baseLanguage: true;
+    targetLanguage: true;
+  };
 }>;
 ```
 
@@ -147,11 +147,11 @@ type UserProfile = Prisma.UserGetPayload<{
 ```typescript
 // The return type is fully typed based on your query
 const result = await prisma.user.findUnique({
-    where: { id: 'user-id' },
-    include: {
-        baseLanguage: true,
-        targetLanguage: true,
-    },
+  where: { id: 'user-id' },
+  include: {
+    baseLanguage: true,
+    targetLanguage: true,
+  },
 });
 // result has type: User & { baseLanguage: Language | null, targetLanguage: Language | null }
 ```
@@ -235,6 +235,6 @@ npm run prisma:studio
 
 ## Resources
 
--   [Prisma Documentation](https://www.prisma.io/docs/)
--   [Prisma with Next.js](https://www.prisma.io/nextjs)
--   [Prisma TypeScript Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)
+- [Prisma Documentation](https://www.prisma.io/docs/)
+- [Prisma with Next.js](https://www.prisma.io/nextjs)
+- [Prisma TypeScript Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference)

@@ -13,42 +13,42 @@ import { prisma } from '@/lib/prisma';
 //2. Map difficulty level
 
 export async function getDictionaryWords(
-    targetLanguageId: string,
-    baseLanguageId: string | null,
+  targetLanguageId: string,
+  baseLanguageId: string | null,
 ): Promise<Word[]> {
-    try {
-        // Query mainDictionary table instead
-        const entries = await prisma.mainDictionary.findMany({
-            where: {
-                targetLanguageId: targetLanguageId || '',
-                baseLanguageId: baseLanguageId || '',
-            },
-            include: {
-                word: true,
-            },
-        });
+  try {
+    // Query mainDictionary table instead
+    const entries = await prisma.mainDictionary.findMany({
+      where: {
+        targetLanguageId: targetLanguageId || '',
+        baseLanguageId: baseLanguageId || '',
+      },
+      include: {
+        word: true,
+      },
+    });
 
-        // Transform data to match Word type
-        return entries.map((entry) => ({
-            id: entry.id || '',
-            text: entry.word?.word || '',
-            translation: entry.descriptionBase || '',
-            languageId: entry.targetLanguageId || '',
-            category: entry.partOfSpeech || '',
-            difficulty: mapDifficultyLevel(entry.difficultyLevel),
-            audioUrl: entry.word?.audio || '',
-            exampleSentence: entry.descriptionTarget || '',
-        }));
-    } catch (error) {
-        console.error('Error fetching dictionary words:', error);
-        throw new Error('Failed to fetch dictionary words');
-    }
+    // Transform data to match Word type
+    return entries.map((entry) => ({
+      id: entry.id || '',
+      text: entry.word?.word || '',
+      translation: entry.descriptionBase || '',
+      languageId: entry.targetLanguageId || '',
+      category: entry.partOfSpeech || '',
+      difficulty: mapDifficultyLevel(entry.difficultyLevel),
+      audioUrl: entry.word?.audio || '',
+      exampleSentence: entry.descriptionTarget || '',
+    }));
+  } catch (error) {
+    console.error('Error fetching dictionary words:', error);
+    throw new Error('Failed to fetch dictionary words');
+  }
 }
 
 // Add helper function
 function mapDifficultyLevel(level?: string): 'easy' | 'medium' | 'hard' {
-    if (!level) return 'medium';
-    if (['A1', 'A2'].includes(level)) return 'easy';
-    if (['B1', 'B2'].includes(level)) return 'medium';
-    return 'hard';
+  if (!level) return 'medium';
+  if (['A1', 'A2'].includes(level)) return 'easy';
+  if (['B1', 'B2'].includes(level)) return 'medium';
+  return 'hard';
 }

@@ -2,15 +2,15 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 
 export async function checkRole(allowedRoles: string[]) {
-    const session = await auth();
+  const session = await auth();
 
-    if (!session) {
-        redirect('/login');
-    }
+  if (!session) {
+    redirect('/login');
+  }
 
-    const userRole = session.user?.role || 'user';
+  const userRole = session.user?.role || 'user';
 
-    if (!allowedRoles.includes(userRole)) {
-        redirect('/dashboard');
-    }
+  if (!allowedRoles.includes(userRole)) {
+    redirect('/dashboard');
+  }
 }

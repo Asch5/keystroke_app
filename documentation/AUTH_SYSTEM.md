@@ -35,18 +35,18 @@ sequenceDiagram
 ```typescript
 // Simplified Edge Auth Check
 export const edgeAuthConfig = {
-    callbacks: {
-        jwt: ({ token, user }) => ({
-            id: user?.id, // From credential validation
-            role: user?.role, // From database
-        }),
-        session: ({ session, token }) => ({
-            user: {
-                id: token.id, // Passed to middleware
-                role: token.role, // For RBAC checks
-            },
-        }),
-    },
+  callbacks: {
+    jwt: ({ token, user }) => ({
+      id: user?.id, // From credential validation
+      role: user?.role, // From database
+    }),
+    session: ({ session, token }) => ({
+      user: {
+        id: token.id, // Passed to middleware
+        role: token.role, // For RBAC checks
+      },
+    }),
+  },
 };
 ```
 
@@ -73,22 +73,22 @@ export const authConfig = {
 ```typescript
 // Extended Type Definitions
 declare module 'next-auth' {
-    interface User {
-        id: string;
-        role: 'user' | 'admin' | 'editor';
-    }
-    interface Session {
-        user: {
-            id: string;
-            role: string;
-        };
-    }
+  interface User {
+    id: string;
+    role: 'user' | 'admin' | 'editor';
+  }
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+    };
+  }
 }
 
 // JWT Type Guards
 interface CustomJWT extends JWT {
-    id: string;
-    role: string;
+  id: string;
+  role: string;
 }
 ```
 
@@ -121,16 +121,16 @@ secret: [process.env.NEXTAUTH_SECRET_NEW, process.env.NEXTAUTH_SECRET]
 ```typescript
 // JWT Error Handling Pattern
 try {
-    await auth();
+  await auth();
 } catch (error) {
-    if (error instanceof JWSError) {
-        // Handle invalid signature
-        redirect('/login?error=invalid_session');
-    }
-    if (error instanceof JWTExpired) {
-        // Handle expired token
-        redirect('/login?error=session_expired');
-    }
+  if (error instanceof JWSError) {
+    // Handle invalid signature
+    redirect('/login?error=invalid_session');
+  }
+  if (error instanceof JWTExpired) {
+    // Handle expired token
+    redirect('/login?error=session_expired');
+  }
 }
 ```
 
@@ -154,14 +154,14 @@ graph TD
 ```typescript
 // Session Cache Example
 const sessionCache = new LRUCache<string, Session>({
-    max: 1000, // Max cached sessions
-    ttl: 1000 * 60 * 5, // 5 minutes
+  max: 1000, // Max cached sessions
+  ttl: 1000 * 60 * 5, // 5 minutes
 });
 
 export async function getCachedSession() {
-    const session = await auth();
-    sessionCache.set(session.user.id, session);
-    return session;
+  const session = await auth();
+  sessionCache.set(session.user.id, session);
+  return session;
 }
 ```
 
@@ -170,12 +170,12 @@ export async function getCachedSession() {
 ```typescript
 // Middleware Metrics
 export default auth((req) => {
-    const start = Date.now();
-    // ... auth logic ...
-    const duration = Date.now() - start;
+  const start = Date.now();
+  // ... auth logic ...
+  const duration = Date.now() - start;
 
-    metrics.timing('middleware.auth', duration);
-    metrics.increment('middleware.requests');
+  metrics.timing('middleware.auth', duration);
+  metrics.increment('middleware.requests');
 });
 ```
 

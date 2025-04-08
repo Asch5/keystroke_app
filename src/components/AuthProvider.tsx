@@ -7,9 +7,9 @@ import { SessionProvider } from 'next-auth/react';
  * This enables authentication state to be accessible throughout the app
  */
 export default function AuthProvider({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    return <SessionProvider>{children}</SessionProvider>;
+  return <SessionProvider>{children}</SessionProvider>;
 }

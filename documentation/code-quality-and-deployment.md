@@ -19,22 +19,22 @@ We use a strict ESLint configuration to enforce code quality standards and catch
 
 ```json
 {
-    "extends": [
-        "next/core-web-vitals",
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
     ],
-    "plugins": ["@typescript-eslint"],
-    "rules": {
-        "@typescript-eslint/no-unused-vars": [
-            "error",
-            { "argsIgnorePattern": "^_" }
-        ],
-        "@typescript-eslint/no-explicit-any": "error",
-        "react-hooks/exhaustive-deps": "error"
-        // ... other rules
-    }
+    "@typescript-eslint/no-explicit-any": "error",
+    "react-hooks/exhaustive-deps": "error"
+    // ... other rules
+  }
 }
 ```
 
@@ -54,14 +54,14 @@ Our TypeScript configuration enforces strict type-checking across the codebase t
 
 ```json
 {
-    "compilerOptions": {
-        "strict": true,
-        "noUncheckedIndexedAccess": true,
-        "exactOptionalPropertyTypes": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true
-        // ... other options
-    }
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true
+    // ... other options
+  }
 }
 ```
 
@@ -80,10 +80,10 @@ We use Husky and lint-staged to run quality checks before each commit.
 ```json
 // package.json
 {
-    "lint-staged": {
-        "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
-        "*.{json,md}": ["prettier --write"]
-    }
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
+  }
 }
 ```
 
@@ -125,18 +125,18 @@ We use GitHub Actions to automate testing and validation on each push and pull r
 # .github/workflows/ci.yml
 name: CI/CD
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - name: Setup Node.js
-              uses: actions/setup-node@v3
-            # ... other steps
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+      # ... other steps
 ```
 
 ## 6. Best Practices

@@ -34,8 +34,10 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
+# Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
 # keystroke_app
+
 This is an application to help in learning to type foreign language words on the keyboard it helps in learning the language in learning new words and also developing typing skills
->>>>>>> fb1d1e200dfa09800f900ac990d89df0646f66db
+
+> > > > > > > fb1d1e200dfa09800f900ac990d89df0646f66db

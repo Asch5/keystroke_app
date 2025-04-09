@@ -141,6 +141,13 @@ export type WordDetails = {
     [RelationshipType.composition]: Array<{ id: number; word: string }>;
     [RelationshipType.plural_en]: Array<{ id: number; word: string }>;
     [RelationshipType.phrasal_verb]: Array<{ id: number; word: string }>;
+    [RelationshipType.past_tense_en]: Array<{ id: number; word: string }>;
+    [RelationshipType.past_participle_en]: Array<{ id: number; word: string }>;
+    [RelationshipType.present_participle_en]: Array<{
+      id: number;
+      word: string;
+    }>;
+    [RelationshipType.third_person_en]: Array<{ id: number; word: string }>;
   };
   definitions: Array<{
     id: number;
@@ -235,22 +242,46 @@ export async function getWordDetails(
       [RelationshipType.composition]: [],
       [RelationshipType.plural_en]: [],
       [RelationshipType.phrasal_verb]: [],
+      [RelationshipType.past_tense_en]: [],
+      [RelationshipType.past_participle_en]: [],
+      [RelationshipType.present_participle_en]: [],
+      [RelationshipType.third_person_en]: [],
     };
 
     // Process related words from the word
     for (const relation of word.relatedFrom) {
-      relatedWords[relation.type].push({
-        id: relation.toWord.id,
-        word: relation.toWord.word,
-      });
+      const relationType = relation.type as keyof typeof relatedWords;
+      // Ensure the relationship type exists in our object
+      if (!relatedWords[relationType]) {
+        // Handle unknown relationship types by adding them to the 'related' category
+        relatedWords[RelationshipType.related].push({
+          id: relation.toWord.id,
+          word: relation.toWord.word,
+        });
+      } else {
+        relatedWords[relationType].push({
+          id: relation.toWord.id,
+          word: relation.toWord.word,
+        });
+      }
     }
 
     // Process related words to the word
     for (const relation of word.relatedTo) {
-      relatedWords[relation.type].push({
-        id: relation.fromWord.id,
-        word: relation.fromWord.word,
-      });
+      const relationType = relation.type as keyof typeof relatedWords;
+      // Ensure the relationship type exists in our object
+      if (!relatedWords[relationType]) {
+        // Handle unknown relationship types by adding them to the 'related' category
+        relatedWords[RelationshipType.related].push({
+          id: relation.fromWord.id,
+          word: relation.fromWord.word,
+        });
+      } else {
+        relatedWords[relationType].push({
+          id: relation.fromWord.id,
+          word: relation.fromWord.word,
+        });
+      }
     }
 
     // Process definitions

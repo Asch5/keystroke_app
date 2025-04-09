@@ -72,12 +72,46 @@ enum LanguageCode {
 }
 
 enum RelationshipType {
+  // Semantic relationships (language-agnostic)
   synonym
   antonym
   related
   composition
-  plural_en
   phrasal_verb
+  
+  // English-specific inflections
+  plural_en        // English plurals (e.g., "book" -> "books")
+  past_tense_en    // English past tense (e.g., "take" -> "took")
+  past_participle_en // English past participle (e.g., "take" -> "taken")
+  present_participle_en // English -ing forms (e.g., "take" -> "taking")
+  third_person_en  // English third person singular (e.g., "take" -> "takes")
+  
+  // Danish-specific inflections
+  definite_form_da    // Danish definite form (e.g., "hus" -> "huset")
+  plural_da           // Danish plurals (e.g., "hus" -> "huse")
+  plural_definite_da  // Danish plural definite (e.g., "hus" -> "husene")
+  
+  // Danish noun gender forms
+  common_gender_da    // Danish common gender (fælleskøn)
+  neuter_gender_da    // Danish neuter gender (intetkøn)
+  
+  // Danish verb forms
+  present_tense_da    // Danish present tense (e.g., "tale" -> "taler")
+  past_tense_da       // Danish past tense (e.g., "tale" -> "talte")
+  past_participle_da  // Danish past participle (e.g., "tale" -> "talt")
+  imperative_da       // Danish imperative form (e.g., "tale" -> "tal")
+  
+  // Danish adjective forms
+  adjective_neuter_da  // Danish adjective neuter form (e.g., "stor" -> "stort")
+  adjective_plural_da  // Danish adjective plural form (e.g., "stor" -> "store")
+  comparative_da       // Danish comparative form (e.g., "stor" -> "større")
+  superlative_da       // Danish superlative form (e.g., "stor" -> "størst")
+  
+  // Generic (for future languages)
+  alternative_spelling // Alternative spellings
+  abbreviation        // Abbreviations
+  derived_form        // Derivations
+  dialect_variant     // Dialect variants
 }
 
 enum UserRole {
@@ -239,6 +273,7 @@ model Phrase {
   id           Int          @id @default(autoincrement())
   phrase       String       @db.Text
   definition   String       @db.Text
+  subjectStatusLabels String?      @map("subject_status_labels") @db.VarChar(255)
   languageCode LanguageCode @map("language_code")
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")

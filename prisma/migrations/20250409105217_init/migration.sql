@@ -23,7 +23,7 @@ CREATE TYPE "SessionType" AS ENUM ('review', 'newLearning', 'practice', 'test', 
 CREATE TYPE "LanguageCode" AS ENUM ('en', 'ru', 'da', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ar');
 
 -- CreateEnum
-CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'composition', 'plural_en', 'phrasal_verb');
+CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'composition', 'phrasal_verb', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant');
 
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('admin', 'user', 'moderator', 'learner', 'guest');
@@ -127,6 +127,7 @@ CREATE TABLE "phrases" (
     "id" SERIAL NOT NULL,
     "phrase" TEXT NOT NULL,
     "definition" TEXT NOT NULL,
+    "subject_status_labels" VARCHAR(255),
     "language_code" "LanguageCode" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,

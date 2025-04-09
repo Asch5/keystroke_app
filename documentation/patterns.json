@@ -1,0 +1,151 @@
+{
+  "begin": [
+    {
+      "ifc": "-gins",
+      "if": "be*gins"
+    },
+    {
+      "ifc": "-gan",
+      "if": "be*gan",
+      "prs": [
+        {
+          "ipa": "-ˈgæn",
+          "sound": {
+            "audio": "begin002"
+          }
+        }
+      ],
+      "altprs": [
+        {
+          "ipa": "bɪˈgæn"
+        }
+      ]
+    },
+    {
+      "ifc": "-gun",
+      "if": "be*gun",
+      "prs": [
+        {
+          "ipa": "-ˈgʌn",
+          "sound": {
+            "audio": "begin003"
+          }
+        }
+      ],
+      "altprs": [
+        {
+          "ipa": "bɪˈgʌn"
+        }
+      ]
+    },
+    {
+      "ifc": "-gin*ning",
+      "if": "be*gin*ning"
+    }
+  ],
+  "read": [
+    {
+      "if": "reads"
+    },
+    {
+      "if": "read",
+      "prs": [
+        {
+          "ipa": "ˈrɛd",
+          "sound": {
+            "audio": "read0002"
+          }
+        }
+      ]
+    },
+    {
+      "if": "read*ing",
+      "prs": [
+        {
+          "ipa": "ˈriːdɪŋ",
+          "sound": {
+            "audio": "read0003"
+          }
+        }
+      ]
+    }
+  ],
+  "come": [
+    {
+      "if": "comes"
+    },
+    {
+      "if": "came",
+      "prs": [
+        {
+          "ipa": "ˈkeɪm",
+          "sound": {
+            "audio": "come0002"
+          }
+        }
+      ]
+    },
+    {
+      "if": "come"
+    },
+    {
+      "if": "com*ing"
+    }
+  ],
+  "came": {
+    "meta": {
+      "id": "came",
+      "uuid": "8ac4b046-97f6-4272-8658-b4b48c29a632",
+      "src": "learners",
+      "section": "alpha",
+      "target": {
+        "tuuid": "390a9aeb-099f-422f-886d-0d0fe3d625e4",
+        "tsrc": "collegiate"
+      },
+      "stems": ["came", "come"],
+      "app-shortdef": null,
+      "offensive": false
+    },
+    "hwi": {
+      "hw": "came"
+    },
+    "cxs": [
+      {
+        "cxl": "past tense of",
+        "cxtis": [
+          {
+            "cxt": "come:1"
+          }
+        ]
+      }
+    ],
+    "shortdef": []
+  },
+  "take": [
+    {
+      "if": "took",
+      "prs": [
+        {
+          "ipa": "ˈtʊk",
+          "sound": {
+            "audio": "take0002"
+          }
+        }
+      ]
+    },
+    {
+      "if": "tak*en",
+      "prs": [
+        {
+          "ipa": "ˈteɪkən",
+          "sound": {
+            "audio": "take0003"
+          }
+        }
+      ]
+    },
+    {
+      "if": "tak*ing"
+    }
+  ]
+}

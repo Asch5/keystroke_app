@@ -11,6 +11,65 @@ import {
   DifficultyLevel,
 } from '@prisma/client';
 
+type WordWithAudioAndDefinitions = Prisma.WordGetPayload<{
+  include: {
+    wordDefinitions: {
+      include: {
+        definition: {
+          include: {
+            examples: true;
+          };
+        };
+      };
+    };
+    audioFiles: {
+      include: {
+        audio: true;
+      };
+    };
+  };
+}>;
+
+type WordWithFullRelations = Prisma.WordGetPayload<{
+  include: {
+    relatedFrom: {
+      include: {
+        toWord: true;
+      };
+    };
+    relatedTo: {
+      include: {
+        fromWord: true;
+      };
+    };
+    wordDefinitions: {
+      include: {
+        definition: {
+          include: {
+            image: true;
+            examples: true;
+          };
+        };
+      };
+    };
+    phrases: {
+      include: {
+        examples: true;
+        audio: {
+          include: {
+            audio: true;
+          };
+        };
+      };
+    };
+    audioFiles: {
+      include: {
+        audio: true;
+      };
+    };
+  };
+}>;
+
 /**
  * Server action to fetch dictionary words
  * This provides a secure way to access the database from the client
@@ -33,31 +92,27 @@ export async function fetchDictionaryWords(
             },
           },
         },
+        audioFiles: {
+          include: {
+            audio: true,
+          },
+          where: {
+            isPrimary: true,
+          },
+          take: 1,
+        },
       },
     });
 
-    // Define a type for the Word with relations, ensuring all nested includes are typed
-    type WordWithRelations = Prisma.WordGetPayload<{
-      include: {
-        wordDefinitions: {
-          include: {
-            definition: {
-              include: { examples: true };
-            };
-          };
-        };
-      };
-    }>;
-
     // Transform to match Word type
-    return (entries as WordWithRelations[]).map((entry) => ({
+    return (entries as WordWithAudioAndDefinitions[]).map((entry) => ({
       id: String(entry.id),
       text: entry.word || '',
       translation: entry.wordDefinitions?.[0]?.definition?.definition || '',
       languageId: entry.languageCode,
       category: entry.wordDefinitions?.[0]?.definition?.partOfSpeech || '',
       difficulty: mapDifficultyLevel(entry.difficultyLevel.toString()),
-      audioUrl: entry.audio || '',
+      audioUrl: entry.audioFiles?.[0]?.audio?.url || '',
       exampleSentence:
         entry.wordDefinitions?.[0]?.definition?.examples?.[0]?.example || '',
     }));
@@ -190,8 +245,8 @@ export async function getWordDetails(
   languageCode: LanguageCode = LanguageCode.en,
 ): Promise<WordDetails | null> {
   try {
-    // Find the base word
-    const word = await prisma.word.findUnique({
+    // Find the base word with all its relations
+    const word = (await prisma.word.findUnique({
       where: {
         word_languageCode: {
           word: wordText,
@@ -199,7 +254,6 @@ export async function getWordDetails(
         },
       },
       include: {
-        // Get all related words in both directions
         relatedFrom: {
           include: {
             toWord: true,
@@ -210,7 +264,6 @@ export async function getWordDetails(
             fromWord: true,
           },
         },
-        // Get word definitions with examples
         wordDefinitions: {
           include: {
             definition: {
@@ -221,14 +274,31 @@ export async function getWordDetails(
             },
           },
         },
-        // Get related phrases with examples
         phrases: {
           include: {
             examples: true,
+            audio: {
+              include: {
+                audio: true,
+              },
+              where: {
+                isPrimary: true,
+              },
+              take: 1,
+            },
           },
         },
+        audioFiles: {
+          include: {
+            audio: true,
+          },
+          where: {
+            isPrimary: true,
+          },
+          take: 1,
+        },
       },
-    });
+    })) as WordWithFullRelations | null;
 
     if (!word) {
       return null;
@@ -251,15 +321,13 @@ export async function getWordDetails(
     // Process related words from the word
     for (const relation of word.relatedFrom) {
       const relationType = relation.type as keyof typeof relatedWords;
-      // Ensure the relationship type exists in our object
-      if (!relatedWords[relationType]) {
-        // Handle unknown relationship types by adding them to the 'related' category
-        relatedWords[RelationshipType.related].push({
+      if (relationType in relatedWords) {
+        relatedWords[relationType].push({
           id: relation.toWord.id,
           word: relation.toWord.word,
         });
       } else {
-        relatedWords[relationType].push({
+        relatedWords[RelationshipType.related].push({
           id: relation.toWord.id,
           word: relation.toWord.word,
         });
@@ -269,15 +337,13 @@ export async function getWordDetails(
     // Process related words to the word
     for (const relation of word.relatedTo) {
       const relationType = relation.type as keyof typeof relatedWords;
-      // Ensure the relationship type exists in our object
-      if (!relatedWords[relationType]) {
-        // Handle unknown relationship types by adding them to the 'related' category
-        relatedWords[RelationshipType.related].push({
+      if (relationType in relatedWords) {
+        relatedWords[relationType].push({
           id: relation.fromWord.id,
           word: relation.fromWord.word,
         });
       } else {
-        relatedWords[relationType].push({
+        relatedWords[RelationshipType.related].push({
           id: relation.fromWord.id,
           word: relation.fromWord.word,
         });
@@ -302,7 +368,7 @@ export async function getWordDetails(
         examples: def.examples.map((ex) => ({
           id: ex.id,
           text: ex.example,
-          audio: ex.audio,
+          audio: null, // Audio will be handled separately if needed
         })),
       };
     });
@@ -315,7 +381,7 @@ export async function getWordDetails(
       examples: phrase.examples.map((ex) => ({
         id: ex.id,
         text: ex.example,
-        audio: ex.audio,
+        audio: null, // Audio will be handled separately if needed
       })),
     }));
 
@@ -331,7 +397,7 @@ export async function getWordDetails(
         id: word.id,
         text: word.word,
         phonetic: word.phonetic,
-        audio: word.audio,
+        audio: word.audioFiles?.[0]?.audio?.url || null,
         etymology: word.etymology,
         plural: !!pluralForm,
         pluralForm,

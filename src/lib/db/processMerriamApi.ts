@@ -1492,7 +1492,8 @@ async function upsertWord(
     difficultyLevel?: DifficultyLevel;
   } = {},
 ): Promise<Word> {
-  return tx.word.upsert({
+  // First create or update the word
+  const word = await tx.word.upsert({
     where: {
       word_languageCode: {
         word: wordText,
@@ -1503,16 +1504,55 @@ async function upsertWord(
       word: wordText,
       languageCode: language,
       phonetic: options.phonetic || null,
-      audio: options.audio || null,
       etymology: options.etymology || null,
       difficultyLevel: options.difficultyLevel || DifficultyLevel.B1,
     },
     update: {
       ...(options.phonetic !== undefined && { phonetic: options.phonetic }),
-      ...(options.audio !== undefined && { audio: options.audio }),
       ...(options.etymology !== undefined && { etymology: options.etymology }),
     },
   });
+
+  // If audio URL is provided, create audio entry and link it to the word
+  if (options.audio) {
+    // First find if audio with this URL exists
+    const existingAudio = await tx.audio.findFirst({
+      where: {
+        url: options.audio,
+      },
+    });
+
+    // Create or get the audio entry
+    const audio =
+      existingAudio ||
+      (await tx.audio.create({
+        data: {
+          url: options.audio,
+          source: SourceType.merriam_learners,
+          languageCode: language,
+        },
+      }));
+
+    // Create the word-audio relationship with isPrimary set to true
+    await tx.wordAudio.upsert({
+      where: {
+        wordId_audioId: {
+          wordId: word.id,
+          audioId: audio.id,
+        },
+      },
+      create: {
+        wordId: word.id,
+        audioId: audio.id,
+        isPrimary: true,
+      },
+      update: {
+        isPrimary: true,
+      },
+    });
+  }
+
+  return word;
 }
 
 /**

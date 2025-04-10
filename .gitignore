@@ -44,3 +44,7 @@ next-env.d.ts
 prisma/generated
 .prisma/client
 .env*.local
+
+# Documentation
+documentation/schema_merriam.json
+

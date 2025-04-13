@@ -1,4 +1,4 @@
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode, RelationshipType } from '@prisma/client';
 
 // Types for dictionary-related data structures
 const LANGUAGE_MAP: Record<LanguageCode, string> = {
@@ -38,7 +38,7 @@ export interface ProcessedWordData {
     etymology: string | null;
     phrasalVerbAnnotations?: string[] | null;
     relatedWords: {
-      type: 'plural_en' | 'related' | 'phrasal_verb';
+      type: RelationshipType;
       word: string;
     }[];
   };

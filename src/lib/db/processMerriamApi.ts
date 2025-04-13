@@ -14,6 +14,68 @@ import {
 } from '@prisma/client';
 import { getWordDetails } from '../actions/dictionaryActions';
 
+/**Defenitions:
+ * generalLabels "lbs" - a property that stores general labels (like capitalization indicators, usage notes, etc.)
+ *
+ * subjectStatusLabels "sls" - a property that stores subject status labels (like plural, singular, etc.)
+ *
+ * grammaticalNote "gram" - a property that stores grammatical notes (like phrasal verb, irregular verb, count, etc.)
+ *
+ * phonetic "ipa" - a property that stores the International Phonetic Alphabet (IPA) representation of the word's pronunciation.
+ *
+ * audio "sound" - a property that stores the URL or reference to the audio file for the word's pronunciation.
+ *
+ * etymology "et" - a property that stores the historical origin and development of the word.
+ *
+ * variants "vrs" - a property that stores alternative forms or spellings of the word.
+ *
+ * stems "stems" - a property that stores the base forms or root words from which the word is derived.
+ *
+ * synonyms "syns" - a property that stores words with similar meanings.
+ * antonyms "ants" - a property that stores words with opposite meanings.
+ *
+ * inflections "ins" - a property that stores different grammatical forms of the word (e.g., plural, past tense).
+ *
+ * cross-references "cxs" - a property that stores references to related words or forms (e.g., past tense, past participle).
+ *
+ * definitions "def" - a property that stores the meanings and explanations of the word.
+ *
+ * examples "vis" - a property that stores usage examples or verbal illustrations of the word.
+ *
+ * phrasalVerbs "phrasev" - a property that stores phrasal verb forms and their meanings.
+ *
+ * usageNotes "uns" - a property that stores additional notes on how the word is used in context.
+ *
+ * shortDefinitions "shortdef" - a property that stores concise definitions of the word.
+ *
+ * partOfSpeech "fl" - a property that stores the grammatical category of the word (e.g., noun, verb).
+ * source "src" - a property that stores the origin or dictionary source of the word's definition.
+ * target "tsrc" - a property that stores the target language or dictionary for translations.
+ * offensive "offensive" - a property that indicates if the word is considered offensive or sensitive.
+ * artwork "art" - a property that stores references to images or illustrations related to the word.
+ * tables "table" - a property that stores tabular data or structured information related to the word.
+ * quotations "quotes" - a property that stores notable quotes or citations using the word.
+ * verbalIllustrations "vis" - a property that stores examples of the word used in sentences or phrases.
+ * attributions "aq" - a property that stores the source or author of a quote or example.
+ * runIns "ri" - a property that stores inline or run-in text elements within the definition.
+ * biographicalNotes "bios" - a property that stores biographical information related to the word.
+ * geographicalDirection "g" - a property that stores geographical or directional information related to the word.
+ * verbConjugations "cjts" - a property that stores the different conjugated forms of a verb.
+ * genderLabels "gl" - a property that stores gender-specific forms or labels for the word.
+ * relatedWords "rel_list" - a property that stores a list of words related in meaning or usage.
+ * synonymLists "syn_list" - a property that stores lists of synonyms for the word.
+ * antonymLists "ant_list" - a property that stores lists of antonyms for the word.
+ * nearAntonymLists "near_list" - a property that stores lists of near antonyms for the word.
+ * selfExplanatoryList "list" - a property that stores a list of self-explanatory terms or phrases.
+ * synonymCrossReferences "srefs" - a property that stores cross-references to synonyms.
+ * usageCrossReferences "urefs" - a property that stores cross-references to usage notes.
+ * tokens "tokens" - a property that stores formatting or grammatical tokens used in the definition text.
+ *
+ *
+ *
+ *
+ */
+
 // Define a more accurate type for the API response, especially for 'prs' and 'ins'
 export interface MerriamWebsterPronunciation {
   mw?: string;
@@ -27,12 +89,21 @@ export interface MerriamWebsterInflection {
   prs?: MerriamWebsterPronunciation[];
 }
 
+export interface MerriamWebsterVariant {
+  vl: string; // variant label (e.g., "or less commonly", "or")
+  va: string; // variant form
+}
+
 export interface MerriamWebsterDefinitionSense {
   sn?: string;
   sgram?: string;
   dt: Array<[string, unknown]>;
   sdsense?: MerriamWebsterDefinitionSense;
   phrasev?: Array<{ pva?: string }>;
+  sphrasev?: {
+    phrs: Array<{ pva?: string }>;
+    phsls?: string[];
+  };
   sls?: string[];
   lbs?: string[];
   gram?: string;
@@ -44,12 +115,21 @@ export interface MerriamWebsterDefinitionEntry {
   sseq: Array<Array<[string, MerriamWebsterDefinitionSense]>>;
 }
 
+export interface MerriamWebsterDro {
+  drp: string;
+  def?: MerriamWebsterDefinitionEntry[];
+  gram?: string;
+}
+
 export interface MerriamWebsterResponse {
   meta: {
     id: string;
     uuid: string;
     src: string;
     section: string;
+    target: {
+      tsrc?: string;
+    };
     stems: string[];
     offensive: boolean;
     syns?: string[][];
@@ -64,15 +144,23 @@ export interface MerriamWebsterResponse {
   ins?: MerriamWebsterInflection[];
   def?: MerriamWebsterDefinitionEntry[];
   et?: Array<[string, string]>;
+  vrs?: MerriamWebsterVariant[]; // Add variants field
   dros?: Array<{
     drp: string;
-    def: MerriamWebsterDefinitionEntry[];
+    def?: MerriamWebsterDefinitionEntry[];
+    gram?: string;
   }>;
   uros?: Array<{
     ure: string;
     fl: string;
     prs?: MerriamWebsterPronunciation[];
     utxt?: Array<[string, unknown]>;
+  }>;
+  cxs?: Array<{
+    cxl: string;
+    cxtis: Array<{
+      cxt: string;
+    }>;
   }>;
   gram?: string;
   lbs?: string[];
@@ -175,13 +263,6 @@ export async function getWordFromMerriamWebster(
   }
 }
 
-// Update the type for dros to include gram property
-type MerriamWebsterDro = {
-  drp: string;
-  def?: MerriamWebsterDefinitionEntry[];
-  gram?: string;
-};
-
 export async function processAndSaveWord(
   apiResponse: MerriamWebsterResponse,
 ): Promise<ProcessedWordData> {
@@ -191,16 +272,76 @@ export async function processAndSaveWord(
 
   const checkedWordDetails = await getWordDetails(sourceWordText);
 
-  const language = LanguageCode.en; // Hardcoded as per workflow
+  const language = LanguageCode.en; // Hardcoded because we are using the English dictionary API
   const source = mapSourceType(apiResponse.meta.src);
   const partOfSpeech = mapPartOfSpeech(apiResponse.fl);
+  //const section = apiResponse.meta.section;
+  //const entrySource = apiResponse.meta.target.tsrc;
 
+  // Extract primary audio
+  //?do we need this file if we have audioFiles?
   const audio = apiResponse.hwi.prs?.[0]?.sound?.audio
     ? `https://media.merriam-webster.com/audio/prons/en/us/mp3/${apiResponse.hwi.prs[0].sound.audio.charAt(0)}/${apiResponse.hwi.prs[0].sound.audio}.mp3`
     : null;
 
+  // Extract all audio files (including alternate pronunciations)
+  const audioFiles: string[] = [];
+
+  // Process main pronunciations from hwi.prs
+  if (apiResponse.hwi.prs && apiResponse.hwi.prs.length > 0) {
+    apiResponse.hwi.prs.forEach((pronunciation) => {
+      if (pronunciation.sound?.audio) {
+        const audioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
+        audioFiles.push(audioUrl);
+      }
+    });
+  }
+
+  // Process alternate pronunciations from hwi.altprs if available
+  if (apiResponse.hwi.altprs && apiResponse.hwi.altprs.length > 0) {
+    apiResponse.hwi.altprs.forEach((pronunciation) => {
+      if (pronunciation.sound?.audio) {
+        const audioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
+        audioFiles.push(audioUrl);
+      }
+    });
+  }
+
   // Process etymology data from the API response
   const etymology = processEtymology(apiResponse.et);
+
+  // Process variants if they exist
+
+  // pack this into a function
+  /*
+variants = {
+  variant: string;
+  type: string;
+  note: string;
+}
+  */
+
+  const processVariantsFunction = (apiResponse: MerriamWebsterResponse) => {
+    const variants: Array<{ variant: string; type: string; note: string }> = [];
+
+    if (apiResponse.vrs && Array.isArray(apiResponse.vrs)) {
+      apiResponse.vrs.forEach((variantItem) => {
+        // Clean the variant form by removing asterisks
+        const cleanedVariant = variantItem.va.replaceAll('*', '');
+        // Skip if the variant is the same as the main word
+        if (cleanedVariant !== sourceWordText) {
+          variants.push({
+            variant: cleanedVariant,
+            type: 'spelling',
+            note: variantItem.vl || '',
+          });
+        }
+      });
+    }
+    return variants;
+  };
+
+  const variants = processVariantsFunction(apiResponse);
 
   // Extract and clean short definitions for later matching
   const shortDefTexts: string[] = [];
@@ -224,6 +365,7 @@ export async function processAndSaveWord(
         checkedWordDetails?.word?.phonetic ||
         null,
       audio: audio || checkedWordDetails?.word?.audio || null,
+      audioFiles: audioFiles.length > 0 ? audioFiles : null,
       etymology: etymology || checkedWordDetails?.word?.etymology || null,
       relatedWords: [],
     },
@@ -232,8 +374,56 @@ export async function processAndSaveWord(
     stems: apiResponse.meta.stems || [],
   };
 
+  let generalLabels: string = '';
+  /*
+CXS section
+*/
+  // Handle cross-references (cxs) if present (for irregular verbs)
+  if (apiResponse.cxs && apiResponse.cxs.length > 0) {
+    for (const cx of apiResponse.cxs) {
+      if (cx.cxtis?.length > 0 && cx.cxtis[0]?.cxt) {
+        const baseWord = cx.cxtis[0].cxt;
+        const relationship = cx.cxl.toLowerCase();
+
+        // Create a definition based on the cross-reference
+        let definitionText = '';
+
+        if (apiResponse.fl === 'verb') {
+          if (relationship.includes('past tense and past participle')) {
+            definitionText = `Past tense and past participle of "${baseWord}"`;
+          } else if (relationship.includes('past participle')) {
+            definitionText = `Past participle of "${baseWord}"`;
+          } else if (relationship.includes('past tense')) {
+            definitionText = `Past tense of "${baseWord}"`;
+          }
+
+          if (definitionText) {
+            processedData.definitions.push({
+              partOfSpeech: PartOfSpeech.verb,
+              source: source,
+              languageCode: language,
+              isPlural: false,
+              definition: definitionText,
+              subjectStatusLabels: null,
+              generalLabels: null,
+              grammaticalNote: relationship,
+              isInShortDef: false,
+              examples: [],
+            });
+          }
+        }
+        if (apiResponse.fl === 'noun') {
+          if (relationship.includes('less common spelling')) {
+            generalLabels = `Less common spelling of "${baseWord}"`;
+          }
+        }
+      }
+    }
+  }
+  console.log('generalLabels', generalLabels);
+
   // Process inflections from the API
-  let pluralForm: string | null = null;
+
   const verbForms: Array<{
     form: string;
     type: string;
@@ -241,7 +431,9 @@ export async function processAndSaveWord(
     audio?: string | null;
   }> = [];
 
-  if (apiResponse.ins) {
+  let pluralForm: string | null = null;
+
+  if (apiResponse.ins && apiResponse.fl === 'verb') {
     for (const inflection of apiResponse.ins) {
       if (!inflection.if) continue;
 
@@ -260,13 +452,45 @@ export async function processAndSaveWord(
       const formPhonetic =
         inflection.prs?.[0]?.ipa || inflection.prs?.[0]?.mw || null;
 
-      // Handle special case for plurals
-      if (inflection.il === 'plural') {
-        pluralForm = cleanedForm;
-      }
-
       // Save all forms for processing relationships later
       verbForms.push({
+        form: cleanedForm,
+        type: inflection.il || '',
+        phonetic: formPhonetic,
+        audio: formAudio,
+      });
+    }
+  }
+
+  const nounForms: Array<{
+    form: string;
+    type: string;
+    phonetic?: string | null;
+    audio?: string | null;
+  }> = [];
+
+  if (apiResponse.ins && apiResponse.fl === 'noun') {
+    for (const inflection of apiResponse.ins) {
+      if (!inflection.if) continue;
+
+      // Clean the inflection form
+      const cleanedForm = inflection.if.replace(/\*/g, '');
+
+      // Skip if identical to base word
+      if (cleanedForm === sourceWordText) continue;
+
+      // Extract audio URL if available
+      const formAudio = inflection.prs?.[0]?.sound?.audio
+        ? `https://media.merriam-webster.com/audio/prons/en/us/mp3/${inflection.prs[0].sound.audio.charAt(0)}/${inflection.prs[0].sound.audio}.mp3`
+        : null;
+
+      // Extract phonetic spelling if available
+      const formPhonetic =
+        inflection.prs?.[0]?.ipa || inflection.prs?.[0]?.mw || null;
+
+      pluralForm = inflection.il || null;
+      // Save all forms for processing relationships later
+      nounForms.push({
         form: cleanedForm,
         type: inflection.il || '',
         phonetic: formPhonetic,
@@ -309,15 +533,66 @@ export async function processAndSaveWord(
 
               // Extract examples from 'vis' entries
               const visExamplesArray = dt
-                ?.filter(([type]) => type === 'vis')
-                .flatMap(([, visData]) => visData as VerbalIllustration[]);
+                ?.filter(([type]: [string, unknown]) => type === 'vis')
+                .flatMap(
+                  ([, visData]: [string, unknown]) =>
+                    visData as VerbalIllustration[],
+                );
+
+              // Extract phrasal verb annotation if present
+              let phrasalVerbAnnotation = '';
+
+              // Track all phrasal verb annotations to create variants
+              const phrasalVerbAnnotations = new Set<string>();
+
+              // Check for phrasev (array-based format)
+              if (senseData.phrasev && Array.isArray(senseData.phrasev)) {
+                try {
+                  // Change from find to map to get all pva values
+                  const pvas = senseData.phrasev
+                    .filter((p: { pva?: string }) => p.pva)
+                    .map((p: { pva?: string }) => p.pva as string);
+
+                  if (pvas.length > 0) {
+                    // Use the first one for annotation in the definition
+                    phrasalVerbAnnotation = `${pvas[0]}: `;
+
+                    // Add all pva values to the set of annotations
+                    pvas.forEach((pva) => phrasalVerbAnnotations.add(pva));
+                  }
+                } catch (error) {
+                  console.warn('Error processing phrasev:', error);
+                }
+              }
+              // Check for sphrasev (object with phrs array format)
+              else if (
+                senseData.sphrasev?.phrs &&
+                Array.isArray(senseData.sphrasev.phrs)
+              ) {
+                try {
+                  // Change from find to map to get all pva values
+                  const pvas = senseData.sphrasev.phrs
+                    .filter((p: { pva?: string }) => p.pva)
+                    .map((p: { pva?: string }) => p.pva as string);
+
+                  if (pvas.length > 0) {
+                    // Use the first one for annotation in the definition
+                    phrasalVerbAnnotation = `${pvas[0]}: `;
+
+                    // Add all pva values to the set of annotations
+                    pvas.forEach((pva) => phrasalVerbAnnotations.add(pva));
+                  }
+                } catch (error) {
+                  console.warn('Error processing sphrasev:', error);
+                }
+              }
 
               // Extract usage notes and examples from 'uns' entries
               const usageNotesText: string[] = [];
               const unsExamplesArray =
                 dt
-                  ?.filter(([type]) => type === 'uns')
-                  .flatMap(([, unsData]) => {
+                  ?.filter(([type]: [string, unknown]) => type === 'uns')
+                  .flatMap(([, unsData]: [string, unknown]) => {
                     // uns structure can be complex with nested arrays
                     // Each uns entry can contain multiple note blocks
                     if (!Array.isArray(unsData)) return [];
@@ -329,8 +604,14 @@ export async function processAndSaveWord(
 
                         // Extract usage note text from 'text' entries within the note block
                         const textEntries = noteBlock
-                          .filter(([noteType]) => noteType === 'text')
-                          .map(([, textData]) => textData as string);
+                          .filter(
+                            ([noteType]: [string, unknown]) =>
+                              noteType === 'text',
+                          )
+                          .map(
+                            ([, textData]: [string, unknown]) =>
+                              textData as string,
+                          );
 
                         if (textEntries.length > 0) {
                           usageNotesText.push(...textEntries);
@@ -338,9 +619,13 @@ export async function processAndSaveWord(
 
                         // Find 'vis' entries within the note block
                         return noteBlock
-                          .filter(([noteType]) => noteType === 'vis')
+                          .filter(
+                            ([noteType]: [string, unknown]) =>
+                              noteType === 'vis',
+                          )
                           .flatMap(
-                            ([, visData]) => visData as VerbalIllustration[],
+                            ([, visData]: [string, unknown]) =>
+                              visData as VerbalIllustration[],
                           );
                       },
                     );
@@ -364,6 +649,11 @@ export async function processAndSaveWord(
 
               // Clean the main definition text
               let cleanedDefinition = cleanupDefinitionText(definitionText);
+
+              // Apply phrasal verb prefix if available
+              if (phrasalVerbAnnotation && cleanedDefinition) {
+                cleanedDefinition = phrasalVerbAnnotation + cleanedDefinition;
+              }
 
               // Process usage notes and append to the definition
               if (usageNotesText.length > 0) {
@@ -427,6 +717,13 @@ export async function processAndSaveWord(
                       languageCode: ex.languageCode as LanguageCode,
                     })) || [],
                 });
+
+                // If we have phrasal verb annotations, save them with the definition
+                if (phrasalVerbAnnotations.size > 0) {
+                  processedData.word.phrasalVerbAnnotations = Array.from(
+                    phrasalVerbAnnotations,
+                  );
+                }
               }
             }
           }
@@ -445,9 +742,48 @@ export async function processAndSaveWord(
           {
             phonetic: processedData.word.phonetic,
             audio: processedData.word.audio,
+            audioFiles: processedData.word.audioFiles || null,
             etymology: processedData.word.etymology,
           },
         );
+
+        // Process any phrasalVerbAnnotations
+        if (processedData.word.phrasalVerbAnnotations?.length) {
+          for (const pva of processedData.word.phrasalVerbAnnotations) {
+            // Create a word entity for the phrasal verb annotation
+            const pvaEntity = await upsertWord(tx, pva, language);
+
+            // Create relationship instead of wordVariant
+            await createWordRelationship(
+              tx,
+              sourceWord.id,
+              pvaEntity.id,
+              RelationshipType.variant_form_phrasal_verb_en,
+              false,
+            );
+          }
+        }
+
+        // Process word variants
+        if (variants.length > 0) {
+          for (const variant of variants) {
+            // Create word entity for the variant
+            const variantEntity = await upsertWord(
+              tx,
+              variant.variant,
+              language,
+            );
+
+            // Create relationship instead of wordVariant
+            await createWordRelationship(
+              tx,
+              sourceWord.id,
+              variantEntity.id,
+              RelationshipType.alternative_spelling,
+              false,
+            );
+          }
+        }
 
         const relatedWordEntities: Array<{
           wordEntity: Word;
@@ -526,7 +862,7 @@ export async function processAndSaveWord(
               );
             }
 
-            // Create a definition explaining this is a verb form
+            //! Create a definition explaining this is a verb form
             const formDescription = getVerbFormDescription(
               verbForm.type,
               sourceWordText,
@@ -711,13 +1047,62 @@ export async function processAndSaveWord(
           }
         }
 
-        //! --- 4e. Process Dros (Phrases/Phrasal Verbs) ---
+        //! --- 4e. Process Variants (vrs) ---
+        if (apiResponse.vrs) {
+          for (const variant of apiResponse.vrs) {
+            const cleanVariant = variant.va.replace(/\*/g, '');
+            if (!cleanVariant || processedWords.has(cleanVariant)) {
+              continue;
+            }
+
+            // Create the variant word entity
+            const variantEntity = await upsertWord(tx, cleanVariant, language);
+
+            // Create both alternative_spelling and related relationships
+            await createWordRelationship(
+              tx,
+              sourceWord.id,
+              variantEntity.id,
+              RelationshipType.alternative_spelling,
+              false,
+            );
+
+            await createWordRelationship(
+              tx,
+              sourceWord.id,
+              variantEntity.id,
+              RelationshipType.related,
+              false,
+            );
+
+            // Add a definition indicating this is a variant
+            const variantLabel = variant.vl || 'variant form';
+            await createDefinitionWithExamples(
+              tx,
+              {
+                definition: `${variantLabel} of "${sourceWord.word}"`,
+                partOfSpeech: partOfSpeech,
+                source: source,
+                languageCode: language,
+                plural: false,
+                subjectStatusLabels: null,
+                generalLabels: null,
+                grammaticalNote: `Variant: ${variantLabel}`,
+                isInShortDef: false,
+                examples: [],
+              },
+              variantEntity.id,
+            );
+
+            processedWords.add(cleanVariant);
+          }
+        }
+
+        //! --- 4f. Process Dros (Phrases/Phrasal Verbs) ---
         const processedPhrases = new Set<string>();
         if (apiResponse.dros) {
           for (const dro of apiResponse.dros as MerriamWebsterDro[]) {
             const cleanDrp = dro.drp.replace(/\*$/, '');
-            // Only check if it's already in the processedPhrases set, don't check processedWords
-            // which would filter out phrases we've previously added
             if (!cleanDrp || processedPhrases.has(cleanDrp)) {
               continue;
             }
@@ -731,191 +1116,130 @@ export async function processAndSaveWord(
                 language,
               );
 
-              // Instead of creating relationship immediately, add to array for later processing
-              relatedWordEntities.push({
-                wordEntity: phrasalVerbEntity,
-                type: RelationshipType.phrasal_verb,
-              });
+              // Create both phrasal_verb and related relationships
+              await createWordRelationship(
+                tx,
+                sourceWord.id,
+                phrasalVerbEntity.id,
+                RelationshipType.phrasal_verb,
+                false,
+              );
+
+              await createWordRelationship(
+                tx,
+                sourceWord.id,
+                phrasalVerbEntity.id,
+                RelationshipType.related,
+                false,
+              );
 
               // Process all definitions from the phrasal verb
               if (dro.def) {
-                // Track phrasal verb definitions to avoid duplicates
-                const phrasalVerbDefinitions = new Set<string>();
-
                 for (const defEntry of dro.def) {
                   if (defEntry.sseq) {
                     for (const sseqItem of defEntry.sseq) {
                       for (const [senseType, senseData] of sseqItem) {
                         if (senseType === 'sense' || senseType === 'sdsense') {
+                          // First, process the main phrasal verb definition
                           const dt = senseData.dt;
-                          const definitionText = dt?.find(
-                            ([type]) => type === 'text',
-                          )?.[1];
+                          if (dt) {
+                            const definitionText = dt.find(
+                              ([type]: [string, unknown]) => type === 'text',
+                            )?.[1];
 
-                          // Extract the phrasal verb annotation if present
-                          let phrasalVerbAnnotation = '';
-                          if (
-                            senseData.phrasev &&
-                            Array.isArray(senseData.phrasev)
-                          ) {
-                            const pva = senseData.phrasev.find(
-                              (p: { pva?: string }) => p.pva,
-                            )?.pva;
-                            if (pva) {
-                              phrasalVerbAnnotation = `${pva}: `;
-                            }
-                          }
-
-                          // First, check for usage notes - do this regardless of text definition
-                          const pvUsageNotesText: string[] = [];
-                          const unsExamplesArray =
-                            dt
-                              ?.filter(([type]) => type === 'uns')
-                              .flatMap(([, unsData]) => {
-                                // uns structure can be complex with nested arrays
-                                if (!Array.isArray(unsData)) return [];
-
-                                return unsData.flatMap(
-                                  (noteBlock: Array<[string, unknown]>) => {
-                                    // Each note block is an array of [type, data] pairs
-                                    if (!Array.isArray(noteBlock)) return [];
-
-                                    // Extract usage note text from 'text' entries within the note block
-                                    const textEntries = noteBlock
-                                      .filter(
-                                        ([noteType]) => noteType === 'text',
-                                      )
-                                      .map(
-                                        ([, textData]) => textData as string,
-                                      );
-
-                                    if (textEntries.length > 0) {
-                                      pvUsageNotesText.push(...textEntries);
-                                    }
-
-                                    // Find 'vis' entries within the note block
-                                    return noteBlock
-                                      .filter(
-                                        ([noteType]) => noteType === 'vis',
-                                      )
-                                      .flatMap(
-                                        ([, visData]) =>
-                                          visData as VerbalIllustration[],
-                                      );
-                                  },
-                                );
-                              }) || [];
-
-                          // Define cleaned definition text variable outside the if block
-                          let cleanedDefinition: string | null = null;
-
-                          // If we have a regular definition, use it
-                          if (
-                            definitionText &&
-                            typeof definitionText === 'string' &&
-                            !definitionText.startsWith('{dx')
-                          ) {
-                            // Add the phrasal verb annotation to the definition
-                            cleanedDefinition =
-                              phrasalVerbAnnotation +
-                              cleanupDefinitionText(definitionText);
-                          }
-                          // If we don't have a regular definition but have usage notes, use those
-                          else if (pvUsageNotesText.length > 0) {
-                            cleanedDefinition =
-                              phrasalVerbAnnotation +
-                              pvUsageNotesText.join(' ');
-                          }
-
-                          // Only proceed if we have a definition from either source
-                          if (cleanedDefinition) {
-                            // Skip if we've already processed this definition
-                            if (phrasalVerbDefinitions.has(cleanedDefinition)) {
-                              continue;
-                            }
-
-                            // Add to our set of processed definitions
-                            phrasalVerbDefinitions.add(cleanedDefinition);
-
-                            // Extract examples from 'vis' entries
-                            const examplesArray =
-                              extractExamples(dt, language) || [];
-
-                            // Combine both examples arrays
-                            const allExamplesArray = [
-                              ...examplesArray,
-                              ...unsExamplesArray.map((ex) => ({
-                                example: cleanupExampleText(ex.t),
-                                languageCode: language,
-                              })),
-                            ];
-
-                            // Deduplicate examples by their text
-                            const uniqueExamples = new Map();
-                            allExamplesArray.forEach((ex) => {
-                              uniqueExamples.set(ex.example, ex);
-                            });
-
-                            // Process usage notes and prepare final definition
-                            let finalDefinition = cleanedDefinition;
-                            // Only append usage notes if they're not already the entire definition
                             if (
-                              pvUsageNotesText.length > 0 &&
-                              cleanedDefinition !==
-                                phrasalVerbAnnotation +
-                                  pvUsageNotesText.join(' ')
+                              definitionText &&
+                              typeof definitionText === 'string'
                             ) {
-                              finalDefinition = processUsageNotes(
-                                finalDefinition,
-                                pvUsageNotesText,
-                              );
-                            }
+                              const cleanedDefinition =
+                                cleanupDefinitionText(definitionText);
 
-                            // Extract additional metadata fields for phrasal verb
-                            let pvSubjectStatusLabels = null;
-                            if (senseData.sls && Array.isArray(senseData.sls)) {
-                              pvSubjectStatusLabels = senseData.sls.join(',');
-                            }
+                              // Create definition for the main phrasal verb
+                              const definitionData = {
+                                definition: cleanedDefinition,
+                                partOfSpeech: PartOfSpeech.phrasal_verb,
+                                source: source,
+                                languageCode: language,
+                                plural: false,
+                                subjectStatusLabels:
+                                  senseData.sphrasev?.phsls?.join(', ') ||
+                                  senseData.sls?.join(', ') ||
+                                  null,
+                                generalLabels: null,
+                                grammaticalNote: null,
+                                isInShortDef: false,
+                                examples: extractExamples(dt, language) || [],
+                              };
 
-                            let pvGeneralLabels = null;
-                            if (senseData.lbs && Array.isArray(senseData.lbs)) {
-                              pvGeneralLabels = senseData.lbs.join(',');
-                            }
-
-                            const pvGrammaticalNote =
-                              senseData.gram || senseData.sgram || null;
-
-                            let pvIsInShortDef = false;
-                            // Check if this phrasal verb definition appears in shortdef array
-                            if (shortDefTexts.length > 0) {
-                              pvIsInShortDef = shortDefTexts.some((shortDef) =>
-                                isDefinitionMatch(
-                                  finalDefinition,
-                                  shortDef,
-                                  shortDefTexts.length,
-                                ),
-                              );
-                            }
-
-                            // Only proceed if definition is valid (not a cross-ref)
-                            if (finalDefinition) {
-                              // Create Definition with phrasal_verb part of speech
                               await createDefinitionWithExamples(
                                 tx,
-                                {
-                                  definition: finalDefinition,
-                                  partOfSpeech: PartOfSpeech.phrasal_verb,
-                                  source: source,
-                                  languageCode: language,
-                                  plural: false,
-                                  subjectStatusLabels: pvSubjectStatusLabels,
-                                  generalLabels: pvGeneralLabels,
-                                  grammaticalNote: pvGrammaticalNote,
-                                  isInShortDef: pvIsInShortDef,
-                                  examples: Array.from(uniqueExamples.values()),
-                                },
+                                definitionData,
                                 phrasalVerbEntity.id,
                               );
+
+                              // Now process phrasal verb variants (pva)
+                              const pvas: string[] = [];
+
+                              // Check for phrasev (array-based format)
+                              if (
+                                senseData.phrasev &&
+                                Array.isArray(senseData.phrasev)
+                              ) {
+                                pvas.push(
+                                  ...senseData.phrasev
+                                    .filter((p: { pva?: string }) => p.pva)
+                                    .map(
+                                      (p: { pva?: string }) => p.pva as string,
+                                    ),
+                                );
+                              }
+
+                              // Check for sphrasev (object with phrs array format)
+                              if (
+                                senseData.sphrasev?.phrs &&
+                                Array.isArray(senseData.sphrasev.phrs)
+                              ) {
+                                pvas.push(
+                                  ...senseData.sphrasev.phrs
+                                    .filter((p: { pva?: string }) => p.pva)
+                                    .map(
+                                      (p: { pva?: string }) => p.pva as string,
+                                    ),
+                                );
+                              }
+
+                              // Process each phrasal verb variant
+                              for (const pva of pvas) {
+                                if (!pva || processedPhrases.has(pva)) continue;
+
+                                // Create the variant entity
+                                const variantEntity = await upsertWord(
+                                  tx,
+                                  pva,
+                                  language,
+                                );
+
+                                // Create variant_form_phrasal_verb_en relationship
+                                await createWordRelationship(
+                                  tx,
+                                  phrasalVerbEntity.id,
+                                  variantEntity.id,
+                                  RelationshipType.variant_form_phrasal_verb_en,
+                                  false,
+                                );
+
+                                // Share the same definition with the variant
+                                await createDefinitionWithExamples(
+                                  tx,
+                                  {
+                                    ...definitionData,
+                                    grammaticalNote: 'Phrasal verb variant',
+                                  },
+                                  variantEntity.id,
+                                );
+
+                                processedPhrases.add(pva);
+                              }
                             }
                           }
                         }
@@ -927,129 +1251,55 @@ export async function processAndSaveWord(
 
               processedPhrases.add(cleanDrp);
             } else if (dro.def) {
-              // Handle non-phrasal verb dros
-              let droDefinitionText: string | null = null;
-              let droExamples: VerbalIllustration[] = [];
+              // Handle regular phrases
+              const phraseDefinitions: string[] = [];
+              const phraseExamples: Array<{
+                example: string;
+                languageCode: LanguageCode;
+              }> = [];
 
-              const firstDroDef = dro.def?.[0];
-              if (firstDroDef?.sseq) {
-                // Process all senses and combine them into one definition
-                const definitionParts: string[] = [];
-                const allExamples: VerbalIllustration[] = [];
+              // Process all definitions and examples from the phrase
+              for (const defEntry of dro.def) {
+                if (defEntry.sseq) {
+                  for (const sseqItem of defEntry.sseq) {
+                    for (const [senseType, senseData] of sseqItem) {
+                      if (senseType === 'sense' || senseType === 'sdsense') {
+                        const dt = senseData.dt;
+                        if (!dt) continue;
 
-                // Iterate through all senses to combine them
-                for (const sseqItem of firstDroDef.sseq) {
-                  for (const [senseType, senseData] of sseqItem) {
-                    if (senseType === 'sense' || senseType === 'sdsense') {
-                      // Get the sense number if available
-                      const senseNumber = senseData.sn
-                        ? `${senseData.sn}. `
-                        : '';
+                        // Get definition text
+                        const definitionText = dt.find(
+                          ([type]: [string, unknown]) => type === 'text',
+                        )?.[1];
 
-                      const dt = senseData.dt;
-                      if (!dt) continue;
-
-                      // First try to get text from 'uns' entries (usage notes)
-                      const unsEntries = dt.filter(([type]) => type === 'uns');
-                      for (const [, unsData] of unsEntries) {
-                        if (Array.isArray(unsData)) {
-                          for (const block of unsData) {
-                            if (Array.isArray(block)) {
-                              // Get text entries
-                              const textEntries = block
-                                .filter(([type]) => type === 'text')
-                                .map(([, text]) => text as string);
-                              if (textEntries.length > 0) {
-                                const cleanedText = textEntries
-                                  .map((text) => cleanupDefinitionText(text))
-                                  .join(' ');
-                                definitionParts.push(
-                                  `${senseNumber}${cleanedText}`,
-                                );
-                              }
-
-                              // Get examples
-                              const visEntries = block
-                                .filter(([type]) => type === 'vis')
-                                .flatMap(
-                                  ([, visData]) =>
-                                    visData as VerbalIllustration[],
-                                );
-                              allExamples.push(...visEntries);
-                            }
+                        if (
+                          definitionText &&
+                          typeof definitionText === 'string'
+                        ) {
+                          const cleanedDef =
+                            cleanupDefinitionText(definitionText);
+                          if (cleanedDef) {
+                            // Add sense number if available
+                            const sensePrefix = senseData.sn
+                              ? `${senseData.sn}. `
+                              : '';
+                            phraseDefinitions.push(sensePrefix + cleanedDef);
                           }
                         }
-                      }
 
-                      // Then try to get text from 'snote' entries
-                      const snoteDt = dt.find(([type]) => type === 'snote');
-                      if (snoteDt && Array.isArray(snoteDt[1])) {
-                        for (const snoteItem of snoteDt[1]) {
-                          if (Array.isArray(snoteItem)) {
-                            const [type, content] = snoteItem;
-                            if (type === 't') {
-                              const cleanedText =
-                                cleanupDefinitionText(content);
-                              definitionParts.push(
-                                `${senseNumber}${cleanedText}`,
-                              );
-                            } else if (type === 'vis') {
-                              // Extract examples from snote section
-                              const visExamples = content;
-                              if (Array.isArray(visExamples)) {
-                                allExamples.push(...visExamples);
-                              }
-                            }
-                          }
+                        // Get examples
+                        const examples = extractExamples(dt, language);
+                        if (examples.length > 0) {
+                          phraseExamples.push(...examples);
                         }
                       }
-
-                      // Finally try to get text from regular 'text' entries
-                      const textDt = dt.find(([type]) => type === 'text');
-                      if (
-                        textDt &&
-                        typeof textDt[1] === 'string' &&
-                        !textDt[1].startsWith('{dx')
-                      ) {
-                        const cleanedText = cleanupDefinitionText(textDt[1]);
-                        definitionParts.push(`${senseNumber}${cleanedText}`);
-                      }
-
-                      // Extract examples from 'vis' entries
-                      const visExamples = dt
-                        .filter(([type]) => type === 'vis')
-                        .flatMap(
-                          ([, visData]) => visData as VerbalIllustration[],
-                        );
-                      allExamples.push(...visExamples);
                     }
                   }
                 }
-
-                // Combine all parts into a single definition
-                //!corrected ';' to ' '
-                if (definitionParts.length > 0) {
-                  droDefinitionText = definitionParts.join('; ');
-                }
-
-                // Process examples
-                if (allExamples.length > 0) {
-                  // Deduplicate examples
-                  const uniqueExamples = new Map();
-                  allExamples.forEach((ex) => {
-                    const cleanedText = cleanupExampleText(ex.t);
-                    uniqueExamples.set(cleanedText, {
-                      t: cleanedText,
-                    });
-                  });
-
-                  droExamples = Array.from(uniqueExamples.values());
-                }
               }
 
-              // Only proceed if we have a valid definition text
-              if (droDefinitionText) {
-                // Handle as a Phrase entity
+              if (phraseDefinitions.length > 0) {
+                // Create or update the phrase
                 let phraseEntity = await tx.phrase.findFirst({
                   where: {
                     phrase: cleanDrp,
@@ -1057,24 +1307,26 @@ export async function processAndSaveWord(
                   },
                 });
 
+                const combinedDefinition = phraseDefinitions.join('; ');
+
                 if (phraseEntity) {
-                  // Update existing phrase and ensure connection
+                  // Update existing phrase
                   await tx.phrase.update({
                     where: { id: phraseEntity.id },
                     data: {
-                      definition: droDefinitionText,
+                      definition: combinedDefinition,
                       words: {
                         connect: { id: sourceWord.id },
                       },
                     },
                   });
                 } else {
-                  // Create new phrase and connect
+                  // Create new phrase
                   phraseEntity = await tx.phrase.create({
                     data: {
                       phrase: cleanDrp,
                       languageCode: language,
-                      definition: droDefinitionText,
+                      definition: combinedDefinition,
                       words: {
                         connect: { id: sourceWord.id },
                       },
@@ -1083,27 +1335,26 @@ export async function processAndSaveWord(
                 }
 
                 // Add examples for the phrase
-                for (const example of droExamples) {
-                  // Check if this exact example already exists for this phrase
+                for (const example of phraseExamples) {
+                  // Check if this exact example already exists
                   const existingExample = await tx.phraseExample.findFirst({
                     where: {
                       phraseId: phraseEntity.id,
-                      example: example.t,
+                      example: example.example,
                     },
                   });
+
                   if (!existingExample) {
                     await tx.phraseExample.create({
                       data: {
                         phraseId: phraseEntity.id,
-                        example: example.t,
-                        languageCode: language,
+                        example: example.example,
+                        languageCode: example.languageCode,
                       },
                     });
                   }
                 }
               }
-
-              processedPhrases.add(cleanDrp);
             }
           }
         }
@@ -1488,6 +1739,7 @@ async function upsertWord(
   options: {
     phonetic?: string | null;
     audio?: string | null;
+    audioFiles?: string[] | null;
     etymology?: string | null;
     difficultyLevel?: DifficultyLevel;
   } = {},
@@ -1513,7 +1765,7 @@ async function upsertWord(
     },
   });
 
-  // If audio URL is provided, create audio entry and link it to the word
+  // If single audio URL is provided, create audio entry and link it to the word
   if (options.audio) {
     // First find if audio with this URL exists
     const existingAudio = await tx.audio.findFirst({
@@ -1550,6 +1802,52 @@ async function upsertWord(
         isPrimary: true,
       },
     });
+  }
+
+  // Process multiple audio files if provided
+  if (options.audioFiles && options.audioFiles.length > 0) {
+    // Process each audio URL
+    for (let i = 0; i < options.audioFiles.length; i++) {
+      const audioUrl = options.audioFiles[i];
+      if (!audioUrl) continue;
+
+      // Skip if it's the same as the primary audio we already processed
+      if (audioUrl === options.audio) continue;
+
+      // First find if audio with this URL exists
+      const existingAudio = await tx.audio.findFirst({
+        where: {
+          url: audioUrl,
+        },
+      });
+
+      // Create or get the audio entry
+      const audio =
+        existingAudio ||
+        (await tx.audio.create({
+          data: {
+            url: audioUrl,
+            source: SourceType.merriam_learners,
+            languageCode: language,
+          },
+        }));
+
+      // Create the word-audio relationship (not primary)
+      await tx.wordAudio.upsert({
+        where: {
+          wordId_audioId: {
+            wordId: word.id,
+            audioId: audio.id,
+          },
+        },
+        create: {
+          wordId: word.id,
+          audioId: audio.id,
+          isPrimary: i === 0 && !options.audio, // Only set as primary if it's the first one and no primary audio was set
+        },
+        update: {}, // Don't change isPrimary if it already exists
+      });
+    }
   }
 
   return word;
@@ -1676,29 +1974,6 @@ async function createDefinitionWithExamples(
 }
 
 /**
- * Utility function to process usage notes and append them to a definition
- * @param definition Base definition text
- * @param usageNotes Array of usage notes
- * @returns Combined definition with usage notes
- */
-function processUsageNotes(definition: string, usageNotes: string[]): string {
-  if (usageNotes.length === 0) {
-    return definition;
-  }
-
-  const cleanedUsageNotes = usageNotes
-    .map((note, index) => `${index + 1}) ${cleanupDefinitionText(note)}`)
-    .filter((note) => note && note.trim() !== '')
-    .join(' ');
-
-  if (cleanedUsageNotes) {
-    return `${definition}. Usage: ${cleanedUsageNotes}`;
-  }
-
-  return definition;
-}
-
-/**
  * Utility function to extract examples from definition data
  * @param dt Definition data array
  * @param language Language code for examples
@@ -1711,8 +1986,10 @@ function extractExamples(
   if (!dt) return [];
 
   const examplesArray = dt
-    .filter(([type]) => type === 'vis')
-    .flatMap(([, visData]) => visData as VerbalIllustration[]);
+    .filter(([type]: [string, unknown]) => type === 'vis')
+    .flatMap(
+      ([, visData]: [string, unknown]) => visData as VerbalIllustration[],
+    );
 
   const uniqueExamples = new Map();
   examplesArray.forEach((ex) => {

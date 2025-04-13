@@ -2,6 +2,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 
 export async function saveJson(data: unknown, name: string) {
+  //let's save the data to a json file onside the project folder
   try {
     const documentationPath = path.resolve(
       process.cwd(),

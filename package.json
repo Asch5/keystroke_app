@@ -9,12 +9,12 @@
     "lint": "next lint",
     "seed": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed.ts",
     "setup-db": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/setup-db.ts",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate deploy",
-    "prisma:studio": "prisma studio",
+    "p-generate": "prisma generate",
+    "p-migrate": "prisma migrate deploy",
+    "p-studio": "prisma studio",
+    "p-new-setup": "prisma migrate reset && rm -rf node_modules/.prisma && pnpm install && prisma migrate dev --name init && prisma generate",
     "prepare": "husky",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
-    "postinstall": "prisma generate"
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.2.5",

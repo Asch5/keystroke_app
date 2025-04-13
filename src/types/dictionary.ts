@@ -34,7 +34,9 @@ export interface ProcessedWordData {
     languageCode: string;
     phonetic: string | null;
     audio: string | null;
+    audioFiles?: string[] | null;
     etymology: string | null;
+    phrasalVerbAnnotations?: string[] | null;
     relatedWords: {
       type: 'plural_en' | 'related' | 'phrasal_verb';
       word: string;

@@ -1,0 +1,70 @@
+{
+  "drp": "start in",
+  "gram": "phrasal verb",
+  "def": [
+    {
+      "sls": ["chiefly US", "informal"],
+      "sseq": [
+        [
+          [
+            "sense",
+            {
+              "sn": "1",
+              "dt": [
+                ["text", "{bc}to start doing a particular activity or action "],
+                [
+                  "vis",
+                  [
+                    {
+                      "t": "He took a break from painting to eat lunch, then {it}started in{/it} again."
+                    }
+                  ]
+                ],
+                [
+                  "uns",
+                  [
+                    [
+                      ["text", "often + {it}on{/it} "],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She {it}started in on{/it} another book."
+                          }
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            }
+          ]
+        ],
+        [
+          [
+            "sense",
+            {
+              "sn": "2",
+              "phrasev": [
+                {
+                  "pva": "start in on (someone)"
+                }
+              ],
+              "dt": [
+                ["text", "{bc}to criticize (someone) about something "],
+                [
+                  "vis",
+                  [
+                    {
+                      "t": "My dad {it}started in on{/it} me about not having a job."
+                    }
+                  ]
+                ]
+              ]
+            }
+          ]
+        ]
+      ]
+    }
+  ]
+}

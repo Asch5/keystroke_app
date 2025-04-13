@@ -29,7 +29,7 @@ CREATE TYPE "LanguageCode" AS ENUM ('en', 'ru', 'da', 'es', 'fr', 'de', 'it', 'p
 CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'undefined');
 
 -- CreateEnum
-CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'composition', 'phrasal_verb', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant');
+CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'composition', 'phrasal_verb', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant');
 
 -- CreateEnum
 CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'user');
@@ -82,6 +82,7 @@ CREATE TABLE "words" (
     "word" VARCHAR(255) NOT NULL,
     "phonetic" VARCHAR(100),
     "etymology" TEXT,
+    "category" VARCHAR(255),
     "difficulty_level" "DifficultyLevel" NOT NULL,
     "additionalInfo" JSONB DEFAULT '{}',
     "language_code" "LanguageCode" NOT NULL,
@@ -156,6 +157,7 @@ CREATE TABLE "audio" (
     "language_code" "LanguageCode" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "is_orphaned" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "audio_pkey" PRIMARY KEY ("id")
 );
@@ -624,6 +626,9 @@ CREATE UNIQUE INDEX "phrase_examples_phrase_id_example_key" ON "phrase_examples"
 CREATE INDEX "audio_language_code_idx" ON "audio"("language_code");
 
 -- CreateIndex
+CREATE INDEX "audio_is_orphaned_idx" ON "audio"("is_orphaned");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "images_url_key" ON "images"("url");
 
 -- CreateIndex
@@ -885,25 +890,25 @@ ALTER TABLE "word_relationships" ADD CONSTRAINT "word_relationships_to_word_id_f
 ALTER TABLE "word_audio" ADD CONSTRAINT "word_audio_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "word_audio" ADD CONSTRAINT "word_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "word_audio" ADD CONSTRAINT "word_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "definition_example_audio" ADD CONSTRAINT "definition_example_audio_example_id_fkey" FOREIGN KEY ("example_id") REFERENCES "definition_examples"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "definition_example_audio" ADD CONSTRAINT "definition_example_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "definition_example_audio" ADD CONSTRAINT "definition_example_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "phrase_example_audio" ADD CONSTRAINT "phrase_example_audio_example_id_fkey" FOREIGN KEY ("example_id") REFERENCES "phrase_examples"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "phrase_example_audio" ADD CONSTRAINT "phrase_example_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "phrase_example_audio" ADD CONSTRAINT "phrase_example_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "phrase_audio" ADD CONSTRAINT "phrase_audio_phrase_id_fkey" FOREIGN KEY ("phrase_id") REFERENCES "phrases"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "phrase_audio" ADD CONSTRAINT "phrase_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "phrase_audio" ADD CONSTRAINT "phrase_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PhraseToWord" ADD CONSTRAINT "_PhraseToWord_A_fkey" FOREIGN KEY ("A") REFERENCES "phrases"("id") ON DELETE CASCADE ON UPDATE CASCADE;

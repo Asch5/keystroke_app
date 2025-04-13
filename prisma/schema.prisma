@@ -111,6 +111,8 @@ enum RelationshipType {
   past_participle_en
   present_participle_en
   third_person_en
+  variant_form_phrasal_verb_en
+
   
   // Danish-specific inflections
   definite_form_da
@@ -230,6 +232,7 @@ model Word {
   word            String          @db.VarChar(255)
   phonetic        String?         @db.VarChar(100)
   etymology       String?         @db.Text
+  category        String?         @db.VarChar(255)
   difficultyLevel DifficultyLevel @map("difficulty_level")
   additionalInfo  Json?           @default("{}")
   languageCode    LanguageCode    @map("language_code")
@@ -343,6 +346,7 @@ model Audio {
   languageCode LanguageCode @map("language_code")
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
+  isOrphaned   Boolean      @default(false) @map("is_orphaned")  // Flag to mark records for cleanup
 
   // Relations
   words              WordAudio[]
@@ -351,6 +355,7 @@ model Audio {
   phrases            PhraseAudio[]
 
   @@index([languageCode])
+  @@index([isOrphaned]) // Index for faster cleanup queries
   @@map("audio")
 }
 
@@ -877,7 +882,7 @@ model WordAudio {
 
   // Relations
   word  Word  @relation("WordToAudio", fields: [wordId], references: [id], onDelete: Cascade)
-  audio Audio @relation(fields: [audioId], references: [id], onDelete: Cascade)
+  audio Audio @relation(fields: [audioId], references: [id], onDelete: Restrict) // Changed from Cascade
 
   @@id([wordId, audioId])
   @@index([wordId])
@@ -893,7 +898,7 @@ model DefinitionExampleAudio {
 
   // Relations
   example DefinitionExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
-  audio   Audio            @relation(fields: [audioId], references: [id], onDelete: Cascade)
+  audio   Audio            @relation(fields: [audioId], references: [id], onDelete: Restrict) // Changed from Cascade
 
   @@id([exampleId, audioId])
   @@index([exampleId])
@@ -909,7 +914,7 @@ model PhraseExampleAudio {
 
   // Relations
   example PhraseExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
-  audio   Audio        @relation(fields: [audioId], references: [id], onDelete: Cascade)
+  audio   Audio        @relation(fields: [audioId], references: [id], onDelete: Restrict) // Changed from Cascade
 
   @@id([exampleId, audioId])
   @@index([exampleId])
@@ -926,7 +931,7 @@ model PhraseAudio {
 
   // Relations
   phrase Phrase @relation(fields: [phraseId], references: [id], onDelete: Cascade)
-  audio  Audio  @relation(fields: [audioId], references: [id], onDelete: Cascade)
+  audio  Audio  @relation(fields: [audioId], references: [id], onDelete: Restrict) // Changed from Cascade
 
   @@id([phraseId, audioId])
   @@index([phraseId])

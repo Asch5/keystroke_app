@@ -67,6 +67,7 @@ type WordWithFullRelations = Prisma.WordGetPayload<{
         audio: true;
       };
     };
+    variants: true;
   };
 }>;
 
@@ -182,6 +183,11 @@ export type WordDetails = {
     text: string;
     phonetic: string | null;
     audio: string | null;
+    audioFiles: Array<{
+      id: number;
+      url: string;
+      isPrimary: boolean;
+    }>;
     etymology: string | null;
     plural: boolean;
     pluralForm: string | null;
@@ -203,6 +209,14 @@ export type WordDetails = {
       word: string;
     }>;
     [RelationshipType.third_person_en]: Array<{ id: number; word: string }>;
+    [RelationshipType.alternative_spelling]: Array<{
+      id: number;
+      word: string;
+    }>;
+    [RelationshipType.variant_form_phrasal_verb_en]: Array<{
+      id: number;
+      word: string;
+    }>;
   };
   definitions: Array<{
     id: number;
@@ -292,10 +306,6 @@ export async function getWordDetails(
           include: {
             audio: true,
           },
-          where: {
-            isPrimary: true,
-          },
-          take: 1,
         },
       },
     })) as WordWithFullRelations | null;
@@ -316,6 +326,8 @@ export async function getWordDetails(
       [RelationshipType.past_participle_en]: [],
       [RelationshipType.present_participle_en]: [],
       [RelationshipType.third_person_en]: [],
+      [RelationshipType.alternative_spelling]: [],
+      [RelationshipType.variant_form_phrasal_verb_en]: [],
     };
 
     // Process related words from the word
@@ -397,7 +409,12 @@ export async function getWordDetails(
         id: word.id,
         text: word.word,
         phonetic: word.phonetic,
-        audio: word.audioFiles?.[0]?.audio?.url || null,
+        audio: word.audioFiles?.find((a) => a.isPrimary)?.audio?.url || null,
+        audioFiles: word.audioFiles.map((af) => ({
+          id: af.audioId,
+          url: af.audio.url,
+          isPrimary: af.isPrimary,
+        })),
         etymology: word.etymology,
         plural: !!pluralForm,
         pluralForm,

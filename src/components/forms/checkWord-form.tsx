@@ -227,6 +227,80 @@ export default function CheckWordForm() {
                   </Button>
                 </div>
               )}
+
+              {/* Word Variants Section */}
+              {(wordDetails.relatedWords.alternative_spelling.length > 0 ||
+                wordDetails.relatedWords.variant_form_phrasal_verb_en.length >
+                  0) && (
+                <div className="col-span-2">
+                  <p className="text-sm font-medium text-muted-foreground mb-2">
+                    Alternative Forms
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {wordDetails.relatedWords.alternative_spelling.map(
+                      (variant: WordVariant) => (
+                        <div
+                          key={variant.id}
+                          className="flex items-center gap-1"
+                        >
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigateToRelatedWord(variant.word)}
+                          >
+                            {variant.word}
+                          </Button>
+                        </div>
+                      ),
+                    )}
+                    {wordDetails.relatedWords.variant_form_phrasal_verb_en.map(
+                      (variant: WordVariant) => (
+                        <div
+                          key={variant.id}
+                          className="flex items-center gap-1"
+                        >
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigateToRelatedWord(variant.word)}
+                          >
+                            {variant.word}
+                          </Button>
+                          <span className="text-xs text-muted-foreground">
+                            (phrasal verb form)
+                          </span>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Multiple Audio Pronunciations */}
+              {wordDetails.word.audioFiles.length > 1 && (
+                <div className="col-span-2">
+                  <p className="text-sm font-medium text-muted-foreground mb-2">
+                    Pronunciations
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {wordDetails.word.audioFiles.map((audio, index) => (
+                      <Button
+                        key={audio.id}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          new Audio(audio.url).play();
+                        }}
+                      >
+                        {audio.isPrimary
+                          ? 'Primary'
+                          : `Pronunciation ${index + 1}`}{' '}
+                        🔊
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
 
@@ -466,3 +540,8 @@ function EnhancedRelatedWordsList({
     </div>
   );
 }
+
+type WordVariant = {
+  id: number;
+  word: string;
+};

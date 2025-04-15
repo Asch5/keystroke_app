@@ -29,6 +29,17 @@ const formSchema = z.object({
   wordText: z.string().min(1, 'Please enter a word'),
 });
 
+// Add type definition or update the existing one to include grammaticalNote in examples
+// This is needed for TypeScript to recognize the grammaticalNote property
+
+// If there's no explicit type definition in the file, we'll need to add it
+type DefinitionExample = {
+  id: number;
+  text: string;
+  grammaticalNote?: string | null;
+  audio: string | null;
+};
+
 export default function CheckWordForm() {
   const [wordDetails, setWordDetails] = useState<WordDetails | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,6 +64,8 @@ export default function CheckWordForm() {
     try {
       const details = await getWordDetails(searchTerm, LanguageCode.en);
       setWordDetails(details);
+
+      console.log('details', details);
 
       // Update search history only if word is found
       if (details) {
@@ -397,19 +410,108 @@ export default function CheckWordForm() {
                                 <p>{def.grammaticalNote}</p>
                               </div>
                             )}
+                            {def.usageNote && (
+                              <div className="col-span-2">
+                                <p className="text-sm font-medium text-muted-foreground">
+                                  Usage Notes
+                                </p>
+                                <p className="text-sm whitespace-pre-line">
+                                  {def.usageNote}
+                                </p>
+                              </div>
+                            )}
                           </div>
                           {def.examples.length > 0 && (
                             <div>
                               <p className="text-sm font-medium text-muted-foreground mb-2">
                                 Examples
                               </p>
-                              <ol className="list-decimal pl-6 space-y-1">
-                                {def.examples.map((ex) => (
-                                  <li key={ex.id} className="text-sm">
-                                    {ex.text}
-                                  </li>
-                                ))}
-                              </ol>
+                              {/* Group examples by their usage context if applicable */}
+                              {(() => {
+                                // Ensure examples are properly typed
+                                const examples =
+                                  def.examples as DefinitionExample[];
+
+                                // Find all examples with usage notes
+                                const usageExamples = examples.filter(
+                                  (ex) =>
+                                    ex.grammaticalNote &&
+                                    ex.grammaticalNote.startsWith('usage '),
+                                );
+
+                                // Regular examples without usage notes
+                                const regularExamples = examples.filter(
+                                  (ex) =>
+                                    !ex.grammaticalNote ||
+                                    !ex.grammaticalNote.startsWith('usage '),
+                                );
+
+                                // If no usage examples, just display normally
+                                if (usageExamples.length === 0) {
+                                  return (
+                                    <ol className="list-decimal pl-6 space-y-1">
+                                      {examples.map((ex) => (
+                                        <li key={ex.id} className="text-sm">
+                                          {ex.text}
+                                        </li>
+                                      ))}
+                                    </ol>
+                                  );
+                                }
+
+                                // Group usage examples
+                                const usageGroups: Record<
+                                  string,
+                                  DefinitionExample[]
+                                > = {};
+                                usageExamples.forEach((ex) => {
+                                  const group = ex.grammaticalNote || 'unknown';
+                                  if (!usageGroups[group]) {
+                                    usageGroups[group] = [];
+                                  }
+                                  usageGroups[group].push(ex);
+                                });
+
+                                return (
+                                  <div className="space-y-4">
+                                    {/* Display regular examples first */}
+                                    {regularExamples.length > 0 && (
+                                      <ol className="list-decimal pl-6 space-y-1">
+                                        {regularExamples.map((ex) => (
+                                          <li key={ex.id} className="text-sm">
+                                            {ex.text}
+                                          </li>
+                                        ))}
+                                      </ol>
+                                    )}
+
+                                    {/* Then display usage-grouped examples */}
+                                    {Object.entries(usageGroups).map(
+                                      ([group, groupExamples]) => (
+                                        <div
+                                          key={group}
+                                          className="bg-secondary/20 p-2 rounded-md"
+                                        >
+                                          <p className="text-xs font-medium text-muted-foreground mb-1">
+                                            {group.charAt(0).toUpperCase() +
+                                              group.slice(1)}
+                                          </p>
+                                          <ol className="list-decimal pl-6 space-y-1">
+                                            {groupExamples.map((ex) => (
+                                              <li
+                                                key={ex.id}
+                                                className="text-sm"
+                                              >
+                                                {ex.text}
+                                              </li>
+                                            ))}
+                                          </ol>
+                                        </div>
+                                      ),
+                                    )}
+                                  </div>
+                                );
+                              })()}
                             </div>
                           )}
                         </CardContent>

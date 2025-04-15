@@ -105,6 +105,7 @@ CREATE TABLE "definitions" (
     "subject_status_labels" VARCHAR(255),
     "general_labels" VARCHAR(255),
     "grammatical_note" VARCHAR(255),
+    "usage_note" VARCHAR(255),
     "is_in_short_def" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -129,6 +130,7 @@ CREATE TABLE "phrases" (
 CREATE TABLE "definition_examples" (
     "id" SERIAL NOT NULL,
     "example" TEXT NOT NULL,
+    "grammatical_note" VARCHAR(255),
     "language_code" "LanguageCode" NOT NULL,
     "definition_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -141,6 +143,7 @@ CREATE TABLE "definition_examples" (
 CREATE TABLE "phrase_examples" (
     "id" SERIAL NOT NULL,
     "example" TEXT NOT NULL,
+    "grammatical_note" VARCHAR(255),
     "language_code" "LanguageCode" NOT NULL,
     "phrase_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -627,6 +630,9 @@ CREATE INDEX "audio_language_code_idx" ON "audio"("language_code");
 
 -- CreateIndex
 CREATE INDEX "audio_is_orphaned_idx" ON "audio"("is_orphaned");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "audio_url_key" ON "audio"("url");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "images_url_key" ON "images"("url");

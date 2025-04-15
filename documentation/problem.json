@@ -1,70 +1,41 @@
-{
-  "drp": "start in",
-  "gram": "phrasal verb",
-  "def": [
-    {
-      "sls": ["chiefly US", "informal"],
-      "sseq": [
+[
+  "sense",
+  {
+    "sn": "30",
+    "sgram": "+ obj",
+    "sls": ["informal"],
+    "dt": [
+      ["text", "{bc}to notice (someone or something) "],
+      [
+        "vis",
+        [
+          {
+            "t": "Did you {it}get{/it} the way he looked at you?"
+          }
+        ]
+      ],
+      [
+        "uns",
         [
           [
-            "sense",
-            {
-              "sn": "1",
-              "dt": [
-                ["text", "{bc}to start doing a particular activity or action "],
-                [
-                  "vis",
-                  [
-                    {
-                      "t": "He took a break from painting to eat lunch, then {it}started in{/it} again."
-                    }
-                  ]
-                ],
-                [
-                  "uns",
-                  [
-                    [
-                      ["text", "often + {it}on{/it} "],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "She {it}started in on{/it} another book."
-                          }
-                        ]
-                      ]
-                    ]
-                  ]
-                ]
-              ]
-            }
-          ]
-        ],
-        [
-          [
-            "sense",
-            {
-              "sn": "2",
-              "phrasev": [
+            [
+              "text",
+              "often used to direct someone's attention to a person or thing that is seen as foolish, surprising, etc. "
+            ],
+            [
+              "vis",
+              [
                 {
-                  "pva": "start in on (someone)"
+                  "t": "Just {it}get{/it} him in his new pants!"
+                },
+                {
+                  "t": "She showed up at the party in—{phrase}get this{/phrase} —a $3,000 designer dress!"
                 }
-              ],
-              "dt": [
-                ["text", "{bc}to criticize (someone) about something "],
-                [
-                  "vis",
-                  [
-                    {
-                      "t": "My dad {it}started in on{/it} me about not having a job."
-                    }
-                  ]
-                ]
               ]
-            }
+            ]
           ]
         ]
       ]
-    }
-  ]
-}
+    ]
+  }
+]

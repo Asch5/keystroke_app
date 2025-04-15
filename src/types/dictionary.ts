@@ -51,10 +51,12 @@ export interface ProcessedWordData {
     subjectStatusLabels?: string | null;
     generalLabels?: string | null;
     grammaticalNote?: string | null;
+    usageNote?: string | null;
     isInShortDef?: boolean;
     examples: {
       example: string;
       languageCode: string;
+      grammaticalNote?: string | null;
     }[];
   }[];
   phrases: {
@@ -63,6 +65,7 @@ export interface ProcessedWordData {
     examples: {
       example: string;
       languageCode: string;
+      grammaticalNote?: string | null;
     }[];
   }[];
   stems: string[];

@@ -267,6 +267,7 @@ model Definition {
   subjectStatusLabels String?      @map("subject_status_labels") @db.VarChar(255)
   generalLabels       String?      @map("general_labels") @db.VarChar(255)
   grammaticalNote     String?      @map("grammatical_note") @db.VarChar(255)
+  usageNote           String?      @map("usage_note") @db.VarChar(255)
   isInShortDef        Boolean      @default(false) @map("is_in_short_def")
   createdAt           DateTime     @default(now()) @map("created_at")
   updatedAt           DateTime     @updatedAt @map("updated_at")
@@ -278,7 +279,7 @@ model Definition {
   listWords      ListWord[]
   userDictionary UserDictionary[]
 
-  @@unique([definition, partOfSpeech, languageCode, source, subjectStatusLabels, generalLabels, grammaticalNote, isInShortDef, plural])
+  @@unique([definition, partOfSpeech, languageCode, source, subjectStatusLabels, generalLabels, grammaticalNote, usageNote, isInShortDef, plural])
   @@index([partOfSpeech], map: "idx_definition_pos")
   @@index([frequencyUsing], map: "idx_definition_frequency")
   @@map("definitions")
@@ -306,6 +307,7 @@ model Phrase {
 model DefinitionExample {
   id           Int          @id @default(autoincrement())
   example      String       @db.Text
+  grammaticalNote String? @map("grammatical_note") @db.VarChar(255)
   languageCode LanguageCode @map("language_code")
   definitionId Int          @map("definition_id")
   createdAt    DateTime     @default(now()) @map("created_at")
@@ -324,6 +326,7 @@ model DefinitionExample {
 model PhraseExample {
   id           Int          @id @default(autoincrement())
   example      String       @db.Text
+  grammaticalNote String? @map("grammatical_note") @db.VarChar(255)
   languageCode LanguageCode @map("language_code")
   phraseId     Int          @map("phrase_id")
   createdAt    DateTime     @default(now()) @map("created_at")
@@ -357,6 +360,7 @@ model Audio {
   @@index([languageCode])
   @@index([isOrphaned]) // Index for faster cleanup queries
   @@map("audio")
+  @@unique([url])
 }
 
 model Image {

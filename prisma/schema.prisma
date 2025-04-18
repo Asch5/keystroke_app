@@ -94,17 +94,18 @@ enum PartOfSpeech {
   preposition
   conjunction
   interjection
+  phrase
   undefined
 }
 
 enum RelationshipType {
-  // Semantic relationships
   synonym
   antonym
   related
+  stem
   composition
   phrasal_verb
-  
+  phrase
   // English-specific inflections
   plural_en
   past_tense_en
@@ -221,7 +222,6 @@ model UserSettings {
   Core dictionary and content models including:
   - Word
   - Definition
-  - Phrase
   - Examples
   - Audio
   - Images
@@ -236,12 +236,12 @@ model Word {
   difficultyLevel DifficultyLevel @map("difficulty_level")
   additionalInfo  Json?           @default("{}")
   languageCode    LanguageCode    @map("language_code")
+  sourceEntityId  String?         @db.VarChar(255)
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
 
   // Relations
   wordDefinitions WordDefinition[] @relation("WordToDefinition")
-  phrases         Phrase[]         @relation("PhraseToWord")
   audioFiles      WordAudio[]      @relation("WordToAudio")
   relatedFrom     WordRelationship[] @relation("FromWord")
   relatedTo       WordRelationship[] @relation("ToWord")
@@ -285,25 +285,6 @@ model Definition {
   @@map("definitions")
 }
 
-model Phrase {
-  id           Int          @id @default(autoincrement())
-  phrase       String       @db.Text
-  definition   String       @db.Text
-  subjectStatusLabels String?      @map("subject_status_labels") @db.VarChar(255)
-  languageCode LanguageCode @map("language_code")
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-
-  // Relations
-  examples PhraseExample[] @relation("PhraseToExample")
-  words    Word[]          @relation("PhraseToWord")
-  audio    PhraseAudio[]
-
-  @@unique([phrase, languageCode])
-  @@index([languageCode], map: "idx_phrase_language")
-  @@map("phrases")
-}
-
 model DefinitionExample {
   id           Int          @id @default(autoincrement())
   example      String       @db.Text
@@ -323,25 +304,6 @@ model DefinitionExample {
   @@map("definition_examples")
 }
 
-model PhraseExample {
-  id           Int          @id @default(autoincrement())
-  example      String       @db.Text
-  grammaticalNote String? @map("grammatical_note") @db.VarChar(255)
-  languageCode LanguageCode @map("language_code")
-  phraseId     Int          @map("phrase_id")
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-
-  // Relations
-  phrase Phrase               @relation("PhraseToExample", fields: [phraseId], references: [id], onDelete: Cascade)
-  audio  PhraseExampleAudio[]
-
-  @@unique([phraseId, example])
-  @@index([phraseId], map: "idx_phrase_example_phrase")
-  @@index([languageCode], map: "idx_phrase_example_lang")
-  @@map("phrase_examples")
-}
-
 model Audio {
   id           Int          @id @default(autoincrement())
   url          String       @db.VarChar(255)
@@ -354,8 +316,6 @@ model Audio {
   // Relations
   words              WordAudio[]
   definitionExamples DefinitionExampleAudio[]
-  phraseExamples     PhraseExampleAudio[]
-  phrases            PhraseAudio[]
 
   @@index([languageCode])
   @@index([isOrphaned]) // Index for faster cleanup queries
@@ -908,39 +868,6 @@ model DefinitionExampleAudio {
   @@index([exampleId])
   @@index([audioId])
   @@map("definition_example_audio")
-}
-
-// Junction table for PhraseExample-Audio
-model PhraseExampleAudio {
-  exampleId Int      @map("example_id")
-  audioId   Int      @map("audio_id")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  // Relations
-  example PhraseExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
-  audio   Audio        @relation(fields: [audioId], references: [id], onDelete: Restrict) // Changed from Cascade
-
-  @@id([exampleId, audioId])
-  @@index([exampleId])
-  @@index([audioId])
-  @@map("phrase_example_audio")
-}
-
-// Junction table for Phrase-Audio
-model PhraseAudio {
-  phraseId  Int      @map("phrase_id")
-  audioId   Int      @map("audio_id")
-  isPrimary Boolean  @default(false) @map("is_primary")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  // Relations
-  phrase Phrase @relation(fields: [phraseId], references: [id], onDelete: Cascade)
-  audio  Audio  @relation(fields: [audioId], references: [id], onDelete: Restrict) // Changed from Cascade
-
-  @@id([phraseId, audioId])
-  @@index([phraseId])
-  @@index([audioId])
-  @@map("phrase_audio")
 }
 
 

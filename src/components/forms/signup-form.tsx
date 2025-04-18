@@ -3,163 +3,152 @@
 import { signUp, StateSignup } from '@/lib/actions/authActions';
 import { LANGUAGE_MAP_ARRAY } from '@/types/dictionary';
 import { useActionState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-// Language mapping based on LanguageCode enum
-
+// JSDoc comment for the component
+/**
+ * SignupForm component handles user registration with form state management.
+ * It uses shadcn/ui for styled and accessible form elements.
+ */
 export default function SignupForm() {
   const initialState: StateSignup = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(signUp, initialState);
-
   const languages = LANGUAGE_MAP_ARRAY;
 
   return (
-    <form action={formAction} className="max-w-sm mx-auto">
-      {state.message && (
-        <div
-          className="p-4 mb-5 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-          role="alert"
-        >
-          {state.message}
-        </div>
-      )}
-      <div className="mb-5">
-        <label
-          htmlFor="email"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Your email
-        </label>
-        <input
-          name="email"
-          type="email"
-          id="email"
-          className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-          placeholder="name@flowbite.com"
-          required
-        />
-      </div>
-      <div className="grid md:grid-cols-2 md:gap-6">
-        <div className="mb-5">
-          <label
-            htmlFor="baseLanguage"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Native Language
-          </label>
-          <select
-            name="baseLanguageId"
-            id="baseLanguage"
-            className={`shadow-xs bg-gray-50 border ${
-              state.errors?.baseLanguageId
-                ? 'border-red-500'
-                : 'border-gray-300'
-            } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light`}
-          >
-            <option value="">Select your native language</option>
-            {languages.map((lang) => (
-              <option key={`base-${lang.id}`} value={lang.id}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
-          {state.errors?.baseLanguageId && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-              {state.errors.baseLanguageId[0]}
-            </p>
+    <Card className="w-full max-w-sm mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl text-center">Register</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <form action={formAction} className="space-y-4">
+          {state.message && (
+            <Alert variant="destructive">
+              <AlertDescription>{state.message}</AlertDescription>
+            </Alert>
           )}
-        </div>
-
-        <div className="mb-5">
-          <label
-            htmlFor="targetLanguage"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Language to Learn
-          </label>
-          <select
-            name="targetLanguageId"
-            id="targetLanguage"
-            className={`shadow-xs bg-gray-50 border ${
-              state.errors?.targetLanguageId
-                ? 'border-red-500'
-                : 'border-gray-300'
-            } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light`}
-          >
-            <option value="">Select language to learn</option>
-            {languages.map((lang) => (
-              <option key={`target-${lang.id}`} value={lang.id}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
-          {state.errors?.targetLanguageId && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-              {state.errors.targetLanguageId[0]}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className="mb-5">
-        <label
-          htmlFor="password"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Password
-        </label>
-        <input
-          name="password"
-          type="password"
-          id="password"
-          className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-          required
-          placeholder="Enter minimum 8 characters"
-        />
-      </div>
-      <div className="mb-5">
-        <label
-          htmlFor="repeatPassword"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Repeat password
-        </label>
-        <input
-          name="repeatPassword"
-          type="password"
-          id="repeatPassword"
-          className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light"
-          required
-        />
-      </div>
-      <div className="flex items-start mb-5">
-        <div className="flex items-center h-5">
-          <input
-            id="terms"
-            type="checkbox"
-            value=""
-            className="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-            required
-          />
-        </div>
-        <label
-          htmlFor="terms"
-          className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-        >
-          I agree with the{' '}
-          <a
-            href="#"
-            className="text-blue-600 hover:underline dark:text-blue-500"
-          >
-            terms and conditions
-          </a>
-        </label>
-      </div>
-      <button
-        type="submit"
-        disabled={isPending}
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50"
-      >
-        {isPending ? 'Registering...' : 'Register new account'}
-      </button>
-    </form>
+          <div className="space-y-2">
+            <Label htmlFor="email">Your email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="name@flowbite.com"
+              disabled={isPending}
+              className={state.errors?.email ? 'border-destructive' : ''}
+            />
+            {state.errors?.email && (
+              <p className="text-sm text-destructive">
+                {state.errors.email[0]}
+              </p>
+            )}
+          </div>
+          <div className="grid md:grid-cols-2 md:gap-6 space-y-2 md:space-y-0">
+            <div className="space-y-2">
+              <Label htmlFor="baseLanguage">Native Language</Label>
+              <Select name="baseLanguageId" defaultValue="">
+                <SelectTrigger id="baseLanguage">
+                  <SelectValue placeholder="Select your native language" />
+                </SelectTrigger>
+                <SelectContent>
+                  {languages.map((lang) => (
+                    <SelectItem
+                      key={`base-${lang.id}`}
+                      value={lang.id.toString()}
+                    >
+                      {lang.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {state.errors?.baseLanguageId && (
+                <p className="text-sm text-destructive">
+                  {state.errors.baseLanguageId[0]}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="targetLanguage">Language to Learn</Label>
+              <Select name="targetLanguageId" defaultValue="">
+                <SelectTrigger id="targetLanguage">
+                  <SelectValue placeholder="Select language to learn" />
+                </SelectTrigger>
+                <SelectContent>
+                  {languages.map((lang) => (
+                    <SelectItem
+                      key={`target-${lang.id}`}
+                      value={lang.id.toString()}
+                    >
+                      {lang.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {state.errors?.targetLanguageId && (
+                <p className="text-sm text-destructive">
+                  {state.errors.targetLanguageId[0]}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter minimum 8 characters"
+              disabled={isPending}
+              className={state.errors?.password ? 'border-destructive' : ''}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="repeatPassword">Repeat password</Label>
+            <Input
+              id="repeatPassword"
+              name="repeatPassword"
+              type="password"
+              disabled={isPending}
+              className={
+                state.errors?.repeatPassword ? 'border-destructive' : ''
+              }
+            />
+          </div>
+          <div className="flex items-start space-x-2">
+            <Input
+              type="checkbox"
+              id="terms"
+              name="terms"
+              className="w-4 h-4"
+            />
+            <Label htmlFor="terms" className="text-sm">
+              I agree with the terms and conditions
+            </Label>
+          </div>
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Registering...
+              </>
+            ) : (
+              'Register new account'
+            )}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,87 +1,110 @@
-//import CardWrapper from '@/app/ui/dashboard/cards';
-//import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-//import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+'use client';
 
-import {
-  RevenueChartSkeleton,
-  LatestInvoicesSkeleton,
-  CardsSkeleton,
-} from '@/components/skeletons';
-import { geistSans } from '@/components/ui/fonts';
-// import AuthStatus from '@/components/AuthStatus';
-import { Suspense } from 'react';
-// import CardWrapper from '@/components/ui/dashboard/cards';
-import Link from 'next/link';
 import { ModeToggle } from '@/components/theme/theme-toggle';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Search } from 'lucide-react';
 
 export default function Page() {
   return (
-    <main>
-      <h1 className={`${geistSans.className} mb-4 text-xl md:text-2xl`}>
-        Vocabulary Bilder
-      </h1>
-      <div className="mb-4 flex justify-end ">
-        <ModeToggle />
+    <div className="flex-1 space-y-4">
+      <div className="flex items-center justify-between space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">
+          Vocabulary Builder
+        </h2>
+        <div className="flex items-center space-x-2">
+          <ModeToggle />
+        </div>
       </div>
-      <div className="mb-4 flex justify-start ">
-        <Link
-          href="/dashboard/dictionary"
-          className="max-w-md mx-auto w-full my-8"
-        >
-          <label
-            htmlFor="default-search"
-            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-          >
-            Search
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg
-                className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="search"
-              id="default-search"
-              className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search Mockups, Logos..."
-              required
-            />
-            <button
-              type="button"
-              className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Search
-            </button>
-          </div>
-        </Link>
-      </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
-          {/* <CardWrapper /> */}
-        </Suspense>
-      </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <RevenueChartSkeleton />
-        {/* <Suspense fallback={<RevenueChartSkeleton />}>
-                    <RevenueChart />
-                </Suspense> */}
 
-        <LatestInvoicesSkeleton />
-        {/* <LatestInvoices /> */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Words</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">0</div>
+            <p className="text-xs text-muted-foreground">
+              Words in your vocabulary
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Learned Words</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">0</div>
+            <p className="text-xs text-muted-foreground">
+              Words you&apos;ve mastered
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Learning Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">0%</div>
+            <p className="text-xs text-muted-foreground">
+              Of your learning goals
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Practice Sessions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">0</div>
+            <p className="text-xs text-muted-foreground">
+              Total practice sessions
+            </p>
+          </CardContent>
+        </Card>
       </div>
-    </main>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Search</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex w-full max-w-sm items-center space-x-2">
+            <Input type="text" placeholder="Search words..." />
+            <Button type="submit">
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4">
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Your learning activity will appear here
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="col-span-3">
+          <CardHeader>
+            <CardTitle>Learning Stats</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Your learning statistics will appear here
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }

@@ -2,31 +2,36 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import clsx from 'clsx';
 import { NavLink } from '@/types/nav';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 export default function NavLinks({ links }: { links: NavLink[] }) {
   const pathname = usePathname();
+
   return (
-    <>
+    <nav className="space-y-1">
       {links.map((link: NavLink) => {
         const LinkIcon = link.icon;
+        const isActive = pathname === link.href;
+
         return (
-          <Link
+          <Button
             key={link.name}
-            href={link.href}
-            className={clsx(
-              'flex justify-start place-items-center gap-1  py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700',
-              {
-                'bg-sky-100 text-blue-600': pathname === link.href,
-              },
+            variant={isActive ? 'secondary' : 'ghost'}
+            className={cn(
+              'w-full justify-start',
+              isActive && 'bg-muted font-medium',
             )}
+            asChild
           >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
-          </Link>
+            <Link href={link.href}>
+              <LinkIcon className="mr-2 h-4 w-4" />
+              {link.name}
+            </Link>
+          </Button>
         );
       })}
-    </>
+    </nav>
   );
 }

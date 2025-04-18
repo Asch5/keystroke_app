@@ -37,6 +37,7 @@ export interface ProcessedWordData {
     audioFiles?: string[] | null;
     etymology: string | null;
     phrasalVerbAnnotations?: string[] | null;
+    sourceEntityId?: string | null;
     relatedWords: {
       type: RelationshipType;
       word: string;

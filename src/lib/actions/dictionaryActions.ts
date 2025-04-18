@@ -10,6 +10,7 @@ import {
   RelationshipType,
   DifficultyLevel,
 } from '@prisma/client';
+import { JsonValue } from 'type-fest';
 
 type WordWithAudioAndDefinitions = Prisma.WordGetPayload<{
   include: {
@@ -120,6 +121,18 @@ type WordWithFullRelations = Prisma.WordGetPayload<{
     mistakes: true;
   };
 }>;
+
+// Define an interface for examples with audio
+interface ExampleWithAudio {
+  id: number;
+  example: string;
+  grammaticalNote: string | null;
+  audio?: Array<{
+    audio: {
+      url: string;
+    };
+  }>;
+}
 
 /**
  * Server action to fetch dictionary words
@@ -241,32 +254,93 @@ export type WordDetails = {
     etymology: string | null;
     plural: boolean;
     pluralForm: string | null;
+    pastTenseForm: string | null;
+    pastParticipleForm: string | null;
+    presentParticipleForm: string | null;
+    thirdPersonForm: string | null;
     difficultyLevel: DifficultyLevel;
     languageCode: LanguageCode;
     createdAt: Date;
     additionalInfo: Record<string, unknown>;
   };
   relatedWords: {
-    [RelationshipType.synonym]: Array<{ id: number; word: string }>;
-    [RelationshipType.antonym]: Array<{ id: number; word: string }>;
-    [RelationshipType.related]: Array<{ id: number; word: string }>;
-    [RelationshipType.composition]: Array<{ id: number; word: string }>;
-    [RelationshipType.plural_en]: Array<{ id: number; word: string }>;
-    [RelationshipType.phrasal_verb]: Array<{ id: number; word: string }>;
-    [RelationshipType.past_tense_en]: Array<{ id: number; word: string }>;
-    [RelationshipType.past_participle_en]: Array<{ id: number; word: string }>;
+    [RelationshipType.synonym]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
+    [RelationshipType.antonym]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
+    [RelationshipType.related]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
+    [RelationshipType.composition]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
+    [RelationshipType.plural_en]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
+    [RelationshipType.phrasal_verb]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
+    [RelationshipType.past_tense_en]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
+    [RelationshipType.past_participle_en]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
     [RelationshipType.present_participle_en]: Array<{
       id: number;
       word: string;
+      phonetic?: string | null;
+      audio?: string | null;
     }>;
-    [RelationshipType.third_person_en]: Array<{ id: number; word: string }>;
+    [RelationshipType.third_person_en]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
     [RelationshipType.alternative_spelling]: Array<{
       id: number;
       word: string;
+      phonetic?: string | null;
+      audio?: string | null;
     }>;
     [RelationshipType.variant_form_phrasal_verb_en]: Array<{
       id: number;
       word: string;
+      phonetic?: string | null;
+      audio?: string | null;
+    }>;
+    [RelationshipType.phrase]: Array<{
+      id: number;
+      word: string;
+      phonetic?: string | null;
+      audio?: string | null;
     }>;
   };
   definitions: Array<{
@@ -285,6 +359,7 @@ export type WordDetails = {
     examples: Array<{
       id: number;
       text: string;
+      grammaticalNote?: string | null;
       audio: string | null;
     }>;
   }>;
@@ -293,9 +368,13 @@ export type WordDetails = {
     text: string;
     definition: string;
     subjectStatusLabels: string | null;
+    partOfSpeech: PartOfSpeech;
+    grammaticalNote: string | null;
+    generalLabels: string | null;
     examples: Array<{
       id: number;
       text: string;
+      grammaticalNote?: string | null;
       audio: string | null;
     }>;
     audio: string | null;
@@ -304,8 +383,11 @@ export type WordDetails = {
     id: string;
     type: string;
     context: string | null;
-    mistakeData: Record<string, unknown>;
+    mistakeData: JsonValue;
     createdAt: Date;
+    updatedAt: Date;
+    userId: string;
+    wordId: number;
   }>;
 };
 
@@ -342,7 +424,15 @@ export async function getWordDetails(
                   include: {
                     definition: {
                       include: {
-                        examples: true,
+                        examples: {
+                          include: {
+                            audio: {
+                              include: {
+                                audio: true,
+                              },
+                            },
+                          },
+                        },
                       },
                     },
                   },
@@ -366,7 +456,15 @@ export async function getWordDetails(
                   include: {
                     definition: {
                       include: {
-                        examples: true,
+                        examples: {
+                          include: {
+                            audio: {
+                              include: {
+                                audio: true,
+                              },
+                            },
+                          },
+                        },
                       },
                     },
                   },
@@ -401,26 +499,6 @@ export async function getWordDetails(
             },
           },
         },
-        // Include all phrases with examples and audio
-        phrases: {
-          include: {
-            examples: {
-              include: {
-                // Include audio for phrase examples
-                audio: {
-                  include: {
-                    audio: true,
-                  },
-                },
-              },
-            },
-            audio: {
-              include: {
-                audio: true,
-              },
-            },
-          },
-        },
         // Include all audio files
         audioFiles: {
           include: {
@@ -447,7 +525,15 @@ export async function getWordDetails(
           acc[type] = [];
           return acc;
         },
-        {} as Record<RelationshipType, Array<{ id: number; word: string }>>,
+        {} as Record<
+          RelationshipType,
+          Array<{
+            id: number;
+            word: string;
+            phonetic?: string | null;
+            audio?: string | null;
+          }>
+        >,
       ),
     };
 
@@ -455,15 +541,28 @@ export async function getWordDetails(
     for (const relation of word.relatedFrom) {
       const relationType = relation.type as keyof typeof relatedWords;
       if (relationType in relatedWords) {
+        // Find primary audio for this related word
+        const primaryAudio =
+          relation.toWord.audioFiles.find((audio) => audio.isPrimary)?.audio
+            .url || null;
+
         relatedWords[relationType].push({
           id: relation.toWord.id,
           word: relation.toWord.word,
+          phonetic: relation.toWord.phonetic,
+          audio: primaryAudio,
         });
       } else {
         // If the relationship type is not in our predefined list, add it to 'related'
+        const primaryAudio =
+          relation.toWord.audioFiles.find((audio) => audio.isPrimary)?.audio
+            .url || null;
+
         relatedWords[RelationshipType.related].push({
           id: relation.toWord.id,
           word: relation.toWord.word,
+          phonetic: relation.toWord.phonetic,
+          audio: primaryAudio,
         });
       }
     }
@@ -472,15 +571,28 @@ export async function getWordDetails(
     for (const relation of word.relatedTo) {
       const relationType = relation.type as keyof typeof relatedWords;
       if (relationType in relatedWords) {
+        // Find primary audio for this related word
+        const primaryAudio =
+          relation.fromWord.audioFiles.find((audio) => audio.isPrimary)?.audio
+            .url || null;
+
         relatedWords[relationType].push({
           id: relation.fromWord.id,
           word: relation.fromWord.word,
+          phonetic: relation.fromWord.phonetic,
+          audio: primaryAudio,
         });
       } else {
         // If the relationship type is not in our predefined list, add it to 'related'
+        const primaryAudio =
+          relation.fromWord.audioFiles.find((audio) => audio.isPrimary)?.audio
+            .url || null;
+
         relatedWords[RelationshipType.related].push({
           id: relation.fromWord.id,
           word: relation.fromWord.word,
+          phonetic: relation.fromWord.phonetic,
+          audio: primaryAudio,
         });
       }
     }
@@ -501,34 +613,113 @@ export async function getWordDetails(
         grammaticalNote: def.grammaticalNote,
         usageNote: def.usageNote,
         isInShortDef: def.isInShortDef,
-        examples: def.examples.map((ex) => ({
-          id: ex.id,
-          text: ex.example,
-          grammaticalNote: ex.grammaticalNote,
-          audio: null, // We'll handle audio separately
-        })),
+        isPrimary: wd.isPrimary,
+        examples: def.examples.map((ex) => {
+          // Cast to our interface to handle audio
+          const exampleWithAudio = ex as unknown as ExampleWithAudio;
+          // Find audio URL for this example if available
+          const audioUrl =
+            exampleWithAudio.audio && exampleWithAudio.audio.length > 0
+              ? exampleWithAudio.audio[0]?.audio?.url
+              : null;
+
+          return {
+            id: ex.id,
+            text: ex.example,
+            grammaticalNote: ex.grammaticalNote,
+            audio: audioUrl || null, // Ensure null rather than undefined
+          };
+        }),
       };
     });
 
-    // Process phrases with all their details
-    const phrases = word.phrases.map((phrase) => ({
-      id: phrase.id,
-      text: phrase.phrase,
-      definition: phrase.definition,
-      subjectStatusLabels: phrase.subjectStatusLabels,
-      examples: phrase.examples.map((ex) => ({
-        id: ex.id,
-        text: ex.example,
-        audio: null, // We'll handle audio separately
-      })),
-      audio: null, // We'll handle audio separately
-    }));
+    // Get phrases (words with phrase relationship)
+    const phrases: WordDetails['phrases'] = [];
+
+    // Extract phrase relations
+    const phraseRelations = word.relatedFrom.filter(
+      (rel) => rel.type === RelationshipType.phrase,
+    );
+
+    // Get phrasal verb relations too
+    const phrasalVerbRelations = word.relatedFrom.filter(
+      (rel) => rel.type === RelationshipType.phrasal_verb,
+    );
+
+    // Process all phrase relations
+    const allPhraseRelations = [...phraseRelations, ...phrasalVerbRelations];
+
+    // For each phrase relation, get the word and its primary definition
+    for (const phraseRel of allPhraseRelations) {
+      const phraseWord = phraseRel.toWord;
+
+      // Find phrase definition (typically with partOfSpeech === 'phrase' or 'phrasal_verb')
+      const phraseDef = phraseWord.wordDefinitions.find(
+        (wd) =>
+          wd.definition.partOfSpeech === PartOfSpeech.phrase ||
+          wd.definition.partOfSpeech === PartOfSpeech.phrasal_verb,
+      )?.definition;
+
+      if (phraseDef) {
+        // Find audio for the phrase
+        const phraseAudio =
+          phraseWord.audioFiles.find((a) => a.isPrimary)?.audio.url || null;
+
+        phrases.push({
+          id: phraseWord.id,
+          text: phraseWord.word,
+          definition: phraseDef.definition,
+          subjectStatusLabels: phraseDef.subjectStatusLabels,
+          partOfSpeech: phraseDef.partOfSpeech,
+          grammaticalNote: phraseDef.grammaticalNote,
+          generalLabels: phraseDef.generalLabels,
+          examples: phraseDef.examples.map((ex) => {
+            // Cast to our interface to handle audio
+            const exampleWithAudio = ex as unknown as ExampleWithAudio;
+            // Find audio URL for this example if available
+            const audioUrl =
+              exampleWithAudio.audio && exampleWithAudio.audio.length > 0
+                ? exampleWithAudio.audio[0]?.audio?.url
+                : null;
+
+            return {
+              id: ex.id,
+              text: ex.example,
+              grammaticalNote: ex.grammaticalNote,
+              audio: audioUrl || null, // Ensure null rather than undefined
+            };
+          }),
+          audio: phraseAudio,
+        });
+      }
+    }
 
     // Find plural form (from related words)
     const pluralRelation = word.relatedFrom.find(
       (rel) => rel.type === RelationshipType.plural_en,
     );
     const pluralForm = pluralRelation ? pluralRelation.toWord.word : null;
+
+    // Find verb forms
+    const pastTenseForm =
+      word.relatedFrom.find(
+        (rel) => rel.type === RelationshipType.past_tense_en,
+      )?.toWord.word || null;
+
+    const pastParticipleForm =
+      word.relatedFrom.find(
+        (rel) => rel.type === RelationshipType.past_participle_en,
+      )?.toWord.word || null;
+
+    const presentParticipleForm =
+      word.relatedFrom.find(
+        (rel) => rel.type === RelationshipType.present_participle_en,
+      )?.toWord.word || null;
+
+    const thirdPersonForm =
+      word.relatedFrom.find(
+        (rel) => rel.type === RelationshipType.third_person_en,
+      )?.toWord.word || null;
 
     // Find all audio files
     const audioFiles = word.audioFiles.map((af) => ({
@@ -546,8 +737,11 @@ export async function getWordDetails(
           id: mistake.id,
           type: mistake.type,
           context: mistake.context,
-          mistakeData: mistake.mistakeData as Record<string, unknown>,
+          mistakeData: mistake.mistakeData as JsonValue,
           createdAt: mistake.createdAt,
+          updatedAt: mistake.updatedAt,
+          userId: mistake.userId,
+          wordId: mistake.wordId,
         }))
       : [];
 
@@ -562,6 +756,10 @@ export async function getWordDetails(
         etymology: word.etymology,
         plural: !!pluralForm,
         pluralForm,
+        pastTenseForm,
+        pastParticipleForm,
+        presentParticipleForm,
+        thirdPersonForm,
         difficultyLevel: word.difficultyLevel,
         languageCode: word.languageCode,
         createdAt: word.createdAt,

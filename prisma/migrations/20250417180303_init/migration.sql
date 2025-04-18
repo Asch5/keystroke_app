@@ -26,10 +26,10 @@ CREATE TYPE "SessionType" AS ENUM ('review', 'newLearning', 'practice', 'test', 
 CREATE TYPE "LanguageCode" AS ENUM ('en', 'ru', 'da', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ar');
 
 -- CreateEnum
-CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'undefined');
+CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'phrase', 'undefined');
 
 -- CreateEnum
-CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'composition', 'phrasal_verb', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant');
+CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant');
 
 -- CreateEnum
 CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'user');
@@ -86,6 +86,7 @@ CREATE TABLE "words" (
     "difficulty_level" "DifficultyLevel" NOT NULL,
     "additionalInfo" JSONB DEFAULT '{}',
     "language_code" "LanguageCode" NOT NULL,
+    "sourceEntityId" VARCHAR(255),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -114,19 +115,6 @@ CREATE TABLE "definitions" (
 );
 
 -- CreateTable
-CREATE TABLE "phrases" (
-    "id" SERIAL NOT NULL,
-    "phrase" TEXT NOT NULL,
-    "definition" TEXT NOT NULL,
-    "subject_status_labels" VARCHAR(255),
-    "language_code" "LanguageCode" NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "phrases_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "definition_examples" (
     "id" SERIAL NOT NULL,
     "example" TEXT NOT NULL,
@@ -137,19 +125,6 @@ CREATE TABLE "definition_examples" (
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "definition_examples_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "phrase_examples" (
-    "id" SERIAL NOT NULL,
-    "example" TEXT NOT NULL,
-    "grammatical_note" VARCHAR(255),
-    "language_code" "LanguageCode" NOT NULL,
-    "phrase_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "phrase_examples_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -529,33 +504,6 @@ CREATE TABLE "definition_example_audio" (
 );
 
 -- CreateTable
-CREATE TABLE "phrase_example_audio" (
-    "example_id" INTEGER NOT NULL,
-    "audio_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "phrase_example_audio_pkey" PRIMARY KEY ("example_id","audio_id")
-);
-
--- CreateTable
-CREATE TABLE "phrase_audio" (
-    "phrase_id" INTEGER NOT NULL,
-    "audio_id" INTEGER NOT NULL,
-    "is_primary" BOOLEAN NOT NULL DEFAULT false,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "phrase_audio_pkey" PRIMARY KEY ("phrase_id","audio_id")
-);
-
--- CreateTable
-CREATE TABLE "_PhraseToWord" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL,
-
-    CONSTRAINT "_PhraseToWord_AB_pkey" PRIMARY KEY ("A","B")
-);
-
--- CreateTable
 CREATE TABLE "_UserToList" (
     "A" UUID NOT NULL,
     "B" UUID NOT NULL,
@@ -599,13 +547,7 @@ CREATE INDEX "idx_definition_pos" ON "definitions"("part_of_speech");
 CREATE INDEX "idx_definition_frequency" ON "definitions"("frequency_using");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "definitions_definition_part_of_speech_language_code_source__key" ON "definitions"("definition", "part_of_speech", "language_code", "source", "subject_status_labels", "general_labels", "grammatical_note", "is_in_short_def", "plural");
-
--- CreateIndex
-CREATE INDEX "idx_phrase_language" ON "phrases"("language_code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "phrases_phrase_language_code_key" ON "phrases"("phrase", "language_code");
+CREATE UNIQUE INDEX "definitions_definition_part_of_speech_language_code_source__key" ON "definitions"("definition", "part_of_speech", "language_code", "source", "subject_status_labels", "general_labels", "grammatical_note", "usage_note", "is_in_short_def", "plural");
 
 -- CreateIndex
 CREATE INDEX "idx_definition_example_def" ON "definition_examples"("definition_id");
@@ -615,15 +557,6 @@ CREATE INDEX "idx_definition_example_lang" ON "definition_examples"("language_co
 
 -- CreateIndex
 CREATE UNIQUE INDEX "definition_examples_definition_id_example_key" ON "definition_examples"("definition_id", "example");
-
--- CreateIndex
-CREATE INDEX "idx_phrase_example_phrase" ON "phrase_examples"("phrase_id");
-
--- CreateIndex
-CREATE INDEX "idx_phrase_example_lang" ON "phrase_examples"("language_code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "phrase_examples_phrase_id_example_key" ON "phrase_examples"("phrase_id", "example");
 
 -- CreateIndex
 CREATE INDEX "audio_language_code_idx" ON "audio"("language_code");
@@ -761,21 +694,6 @@ CREATE INDEX "definition_example_audio_example_id_idx" ON "definition_example_au
 CREATE INDEX "definition_example_audio_audio_id_idx" ON "definition_example_audio"("audio_id");
 
 -- CreateIndex
-CREATE INDEX "phrase_example_audio_example_id_idx" ON "phrase_example_audio"("example_id");
-
--- CreateIndex
-CREATE INDEX "phrase_example_audio_audio_id_idx" ON "phrase_example_audio"("audio_id");
-
--- CreateIndex
-CREATE INDEX "phrase_audio_phrase_id_idx" ON "phrase_audio"("phrase_id");
-
--- CreateIndex
-CREATE INDEX "phrase_audio_audio_id_idx" ON "phrase_audio"("audio_id");
-
--- CreateIndex
-CREATE INDEX "_PhraseToWord_B_index" ON "_PhraseToWord"("B");
-
--- CreateIndex
 CREATE INDEX "_UserToList_B_index" ON "_UserToList"("B");
 
 -- CreateIndex
@@ -789,9 +707,6 @@ ALTER TABLE "definitions" ADD CONSTRAINT "definitions_image_id_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "definition_examples" ADD CONSTRAINT "definition_examples_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "phrase_examples" ADD CONSTRAINT "phrase_examples_phrase_id_fkey" FOREIGN KEY ("phrase_id") REFERENCES "phrases"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "user_dictionary" ADD CONSTRAINT "user_dictionary_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -903,24 +818,6 @@ ALTER TABLE "definition_example_audio" ADD CONSTRAINT "definition_example_audio_
 
 -- AddForeignKey
 ALTER TABLE "definition_example_audio" ADD CONSTRAINT "definition_example_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "phrase_example_audio" ADD CONSTRAINT "phrase_example_audio_example_id_fkey" FOREIGN KEY ("example_id") REFERENCES "phrase_examples"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "phrase_example_audio" ADD CONSTRAINT "phrase_example_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "phrase_audio" ADD CONSTRAINT "phrase_audio_phrase_id_fkey" FOREIGN KEY ("phrase_id") REFERENCES "phrases"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "phrase_audio" ADD CONSTRAINT "phrase_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_PhraseToWord" ADD CONSTRAINT "_PhraseToWord_A_fkey" FOREIGN KEY ("A") REFERENCES "phrases"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_PhraseToWord" ADD CONSTRAINT "_PhraseToWord_B_fkey" FOREIGN KEY ("B") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserToList" ADD CONSTRAINT "_UserToList_A_fkey" FOREIGN KEY ("A") REFERENCES "lists"("id") ON DELETE CASCADE ON UPDATE CASCADE;

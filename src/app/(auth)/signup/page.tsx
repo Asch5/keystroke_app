@@ -1,39 +1,30 @@
 import SignupForm from '@/components/forms/signup-form';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { Separator } from '@/components/ui/separator';
+import { ArrowRight } from 'lucide-react';
+
 export default function SignupPage() {
   return (
-    <main className="flex items-center justify-center md:h-screen">
-      <div className="relative sflex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
-        <h1 className="text-2xl font-bold text-center mb-5">Register</h1>
-        <Suspense fallback={<div>Loading...</div>}>
+    <main className="flex items-center justify-center min-h-screen bg-muted/40">
+      <div className="w-full max-w-md p-6 space-y-6">
+        <Suspense fallback={<div className="text-center">Loading...</div>}>
           <SignupForm />
         </Suspense>
-        <div className="flex flex-row items-center justify-start gap-2 pt-2">
-          <p className="text-sm font-medium text-gray-900 dark:text-white">
-            Already have an account?{' '}
-          </p>
-          <svg
-            className="w-4 h-4 text-gray-800 dark:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 14 10"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 5h12m0 0L9 1m4 4L9 9"
-            />
-          </svg>
-          <Link
-            href="/login"
-            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-          >
-            Log In
-          </Link>
+        <div className="text-center space-y-2">
+          <Separator />
+          <div className="flex items-center justify-center gap-2 pt-4">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?
+            </p>
+            <Link
+              href="/login"
+              className="inline-flex items-center text-sm font-medium text-primary hover:underline"
+            >
+              Log In
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </div>
     </main>

@@ -1,20 +1,40 @@
+'use client';
+
 import { Suspense } from 'react';
 import ProfileForm from '@/components/forms/profile-form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfileSettingsPage() {
   return (
-    <main className="flex items-center justify-center md:h-screen">
-      <div className="relative flex w-full max-w-[600px] flex-col space-y-2.5 p-4 md:-mt-32">
-        <h1 className="text-2xl font-bold text-center mb-5">
-          Complete Your Profile
-        </h1>
-        <p className="text-center text-gray-600 mb-6">
-          Please provide additional information to complete your profile.
-        </p>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ProfileForm />
-        </Suspense>
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex items-center justify-between space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">Profile Settings</h2>
       </div>
-    </main>
+      <Card className="max-w-[600px] mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">
+            Complete Your Profile
+          </CardTitle>
+          <p className="text-sm text-muted-foreground text-center">
+            Please provide additional information to complete your profile.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <Suspense
+            fallback={
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-full" />
+              </div>
+            }
+          >
+            <ProfileForm />
+          </Suspense>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

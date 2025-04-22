@@ -8,9 +8,15 @@ import {
   PartOfSpeech,
   SourceType,
   RelationshipType,
-  DifficultyLevel,
 } from '@prisma/client';
 import { JsonValue } from 'type-fest';
+import {
+  getWordFrequencyEnum,
+  getFrequencyPartOfSpeechEnum,
+  mapDifficultyLevelFromOrderIndex,
+  WordFrequency,
+  FrequencyPartOfSpeech,
+} from '@/lib/utils/frequencyUtils';
 
 type WordWithAudioAndDefinitions = Prisma.WordGetPayload<{
   include: {
@@ -168,32 +174,45 @@ export async function fetchDictionaryWords(
       },
     });
 
-    // Transform to match Word type
-    return (entries as WordWithAudioAndDefinitions[]).map((entry) => ({
-      id: String(entry.id),
-      text: entry.word || '',
-      translation: entry.wordDefinitions?.[0]?.definition?.definition || '',
-      languageId: entry.languageCode,
-      category: entry.wordDefinitions?.[0]?.definition?.partOfSpeech || '',
-      difficulty: mapDifficultyLevel(entry.difficultyLevel.toString()),
-      audioUrl: entry.audioFiles?.[0]?.audio?.url || '',
-      exampleSentence:
-        entry.wordDefinitions?.[0]?.definition?.examples?.[0]?.example || '',
-    }));
+    // Transform entries to match Word type and get their frequencies
+    const wordsWithFrequency = await Promise.all(
+      (entries as WordWithAudioAndDefinitions[]).map(async (entry) => {
+        // Get word frequency data
+        const frequencyData = await prisma.wordFrequencyData.findFirst({
+          where: {
+            wordId: entry.id,
+            partOfSpeech: PartOfSpeech.undefined,
+          },
+          orderBy: {
+            orderIndex: 'asc',
+          },
+        });
+
+        // Map the frequency to a difficulty level
+        const difficultyLevel = frequencyData
+          ? mapDifficultyLevelFromOrderIndex(frequencyData.orderIndex)
+          : 'medium';
+
+        return {
+          id: String(entry.id),
+          text: entry.word || '',
+          translation: entry.wordDefinitions?.[0]?.definition?.definition || '',
+          languageId: entry.languageCode,
+          category: entry.wordDefinitions?.[0]?.definition?.partOfSpeech || '',
+          difficulty: difficultyLevel,
+          audioUrl: entry.audioFiles?.[0]?.audio?.url || '',
+          exampleSentence:
+            entry.wordDefinitions?.[0]?.definition?.examples?.[0]?.example ||
+            '',
+        };
+      }),
+    );
+
+    return wordsWithFrequency;
   } catch (error) {
     console.error('Error fetching dictionary words:', error);
     throw new Error('Failed to fetch dictionary words');
   }
-}
-
-// Helper function to map difficulty levels (assuming input might be enum name)
-function mapDifficultyLevel(level?: string): 'easy' | 'medium' | 'hard' {
-  if (!level) return 'medium';
-
-  // Map CEFR levels to our difficulty scale
-  if (['A1', 'A2'].includes(level)) return 'easy';
-  if (['B1', 'B2'].includes(level)) return 'medium';
-  return 'hard'; // C1, C2 or unknown
 }
 
 /**
@@ -258,7 +277,7 @@ export type WordDetails = {
     pastParticipleForm: string | null;
     presentParticipleForm: string | null;
     thirdPersonForm: string | null;
-    difficultyLevel: DifficultyLevel;
+    wordFrequency: WordFrequency;
     languageCode: LanguageCode;
     createdAt: Date;
     additionalInfo: Record<string, unknown>;
@@ -348,7 +367,7 @@ export type WordDetails = {
     text: string;
     partOfSpeech: PartOfSpeech;
     image: { id: number; url: string; description: string | null } | null;
-    frequencyUsing: number;
+    frequencyPartOfSpeech: FrequencyPartOfSpeech;
     languageCode: LanguageCode;
     source: SourceType;
     subjectStatusLabels: string | null;
@@ -517,6 +536,31 @@ export async function getWordDetails(
       return null;
     }
 
+    // Get word frequency data
+    const wordFrequencyData = await prisma.wordFrequencyData.findFirst({
+      where: {
+        wordId: word.id,
+        partOfSpeech: PartOfSpeech.undefined,
+        language: languageCode,
+      },
+    });
+
+    // Map frequency to readable format using WordFrequency enum
+    const wordFrequencyEnum = wordFrequencyData
+      ? getWordFrequencyEnum(wordFrequencyData.orderIndex)
+      : WordFrequency.beyond_10000;
+
+    // Get part of speech frequency data for all definitions
+    const posFrequencies = await prisma.wordFrequencyData.findMany({
+      where: {
+        wordId: word.id,
+        language: languageCode,
+        partOfSpeech: {
+          not: PartOfSpeech.undefined,
+        },
+      },
+    });
+
     // Initialize related words object with all possible relationship types
     const relatedWords: WordDetails['relatedWords'] = {
       // Add all relationship types from the enum
@@ -598,40 +642,52 @@ export async function getWordDetails(
     }
 
     // Process definitions with all their details
-    const definitions = word.wordDefinitions.map((wd) => {
-      const def = wd.definition;
-      return {
-        id: def.id,
-        text: def.definition,
-        partOfSpeech: def.partOfSpeech,
-        image: def.image,
-        frequencyUsing: def.frequencyUsing,
-        languageCode: def.languageCode,
-        source: def.source,
-        subjectStatusLabels: def.subjectStatusLabels,
-        generalLabels: def.generalLabels,
-        grammaticalNote: def.grammaticalNote,
-        usageNote: def.usageNote,
-        isInShortDef: def.isInShortDef,
-        isPrimary: wd.isPrimary,
-        examples: def.examples.map((ex) => {
-          // Cast to our interface to handle audio
-          const exampleWithAudio = ex as unknown as ExampleWithAudio;
-          // Find audio URL for this example if available
-          const audioUrl =
-            exampleWithAudio.audio && exampleWithAudio.audio.length > 0
-              ? exampleWithAudio.audio[0]?.audio?.url
-              : null;
+    const definitions = await Promise.all(
+      word.wordDefinitions.map(async (wd) => {
+        const def = wd.definition;
 
-          return {
-            id: ex.id,
-            text: ex.example,
-            grammaticalNote: ex.grammaticalNote,
-            audio: audioUrl || null, // Ensure null rather than undefined
-          };
-        }),
-      };
-    });
+        // Find frequency data for this part of speech
+        const posFrequency = posFrequencies.find(
+          (f) => f.partOfSpeech === def.partOfSpeech,
+        );
+
+        const posFrequencyEnum = posFrequency
+          ? getFrequencyPartOfSpeechEnum(posFrequency.orderIndex)
+          : FrequencyPartOfSpeech.beyond_1000;
+
+        return {
+          id: def.id,
+          text: def.definition,
+          partOfSpeech: def.partOfSpeech,
+          image: def.image,
+          frequencyPartOfSpeech: posFrequencyEnum,
+          languageCode: def.languageCode,
+          source: def.source,
+          subjectStatusLabels: def.subjectStatusLabels,
+          generalLabels: def.generalLabels,
+          grammaticalNote: def.grammaticalNote,
+          usageNote: def.usageNote,
+          isInShortDef: def.isInShortDef,
+          isPrimary: wd.isPrimary,
+          examples: def.examples.map((ex) => {
+            // Cast to our interface to handle audio
+            const exampleWithAudio = ex as unknown as ExampleWithAudio;
+            // Find audio URL for this example if available
+            const audioUrl =
+              exampleWithAudio.audio && exampleWithAudio.audio.length > 0
+                ? exampleWithAudio.audio[0]?.audio?.url
+                : null;
+
+            return {
+              id: ex.id,
+              text: ex.example,
+              grammaticalNote: ex.grammaticalNote,
+              audio: audioUrl || null, // Ensure null rather than undefined
+            };
+          }),
+        };
+      }),
+    );
 
     // Get phrases (words with phrase relationship)
     const phrases: WordDetails['phrases'] = [];
@@ -760,7 +816,7 @@ export async function getWordDetails(
         pastParticipleForm,
         presentParticipleForm,
         thirdPersonForm,
-        difficultyLevel: word.difficultyLevel,
+        wordFrequency: wordFrequencyEnum,
         languageCode: word.languageCode,
         createdAt: word.createdAt,
         additionalInfo: (word.additionalInfo as Record<string, unknown>) || {},
@@ -778,4 +834,28 @@ export async function getWordDetails(
       `Failed to fetch word details: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
+}
+
+/**
+ * Determines the WordFrequency enum value based on the word's position in the frequency list
+ * This is an async wrapper for the utility function to meet Server Action requirements
+ * @param wordPosition The position of the word in the frequency list (1-based index)
+ * @returns The appropriate WordFrequency enum value
+ */
+export async function mapWordFrequency(
+  wordPosition: number,
+): Promise<WordFrequency> {
+  return getWordFrequencyEnum(wordPosition);
+}
+
+/**
+ * Determines the FrequencyPartOfSpeech enum value based on the part of speech position
+ * This is an async wrapper for the utility function to meet Server Action requirements
+ * @param positionInPartOfSpeech The position of the word among words with the same part of speech
+ * @returns The appropriate FrequencyPartOfSpeech enum value
+ */
+export async function mapFrequencyPartOfSpeech(
+  positionInPartOfSpeech: number,
+): Promise<FrequencyPartOfSpeech> {
+  return getFrequencyPartOfSpeechEnum(positionInPartOfSpeech);
 }

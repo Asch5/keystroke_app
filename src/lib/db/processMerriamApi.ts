@@ -283,6 +283,7 @@ export async function processAndSaveWord(
   const source = mapSourceType(apiResponse.meta.src);
   const partOfSpeech = mapPartOfSpeech(apiResponse.fl);
   const sourceEntityId = apiResponse.meta.uuid;
+
   //const section = apiResponse.meta.section;
   //const entrySource = apiResponse.meta.target.tsrc;
 
@@ -392,9 +393,10 @@ export async function processAndSaveWord(
 
   //!VRS Subwords handler for nouns
   if (apiResponse.vrs && Array.isArray(apiResponse.vrs)) {
-    apiResponse.vrs.forEach((variantItem) => {
+    apiResponse.vrs.forEach(async (variantItem) => {
       // Clean the variant form by removing asterisks
       const cleanedVariant = variantItem.va.replaceAll('*', '');
+
       const variantTypeDefinition = `Variant form of "${mainWordText} + ${variantItem.vl}"`;
       // Skip if the variant is the same as the main word
       if (cleanedVariant !== mainWordText) {
@@ -452,6 +454,8 @@ export async function processAndSaveWord(
             partOfSpeech: PartOfSpeech.verb,
             source: source,
             languageCode: language,
+            //mainWordText is the form of the base word
+
             isPlural: false,
             definition: definitionText,
             isInShortDef: false,
@@ -664,6 +668,7 @@ export async function processAndSaveWord(
                 partOfSpeech: PartOfSpeech.verb,
                 source: source,
                 languageCode: language,
+
                 isPlural: false,
                 definition: definition,
                 examples: [],
@@ -747,6 +752,7 @@ export async function processAndSaveWord(
           {
             partOfSpeech: PartOfSpeech.noun,
             source: source,
+
             languageCode: language,
             isPlural: false,
             definition: etymologySubWord || '',
@@ -888,6 +894,7 @@ export async function processAndSaveWord(
                             senseData.sphrasev?.phsls?.join(', ') ||
                             senseData.sls?.join(', ') ||
                             null,
+                          frequencyPartOfSpeech: null,
                           generalLabels: null,
                           grammaticalNote: null,
                           usageNote: phrasalVerbUsage,
@@ -930,6 +937,7 @@ export async function processAndSaveWord(
                           subWordsArray.push({
                             word: cleanPva,
                             languageCode: language,
+
                             definitions: [definitionData],
                             relationship: [
                               {
@@ -1016,6 +1024,7 @@ export async function processAndSaveWord(
                           source: source,
                           languageCode: language,
                           isPlural: false,
+                          frequencyPartOfSpeech: null,
                           subjectStatusLabels:
                             senseData.sphrasev?.phsls?.join(', ') ||
                             senseData.sls?.join(', ') ||
@@ -1159,6 +1168,7 @@ export async function processAndSaveWord(
             partOfSpeech: mapPartOfSpeech(uro.fl),
             source: source,
             languageCode: language,
+
             isPlural: false,
             definition: `Form of "${mainWordText}"`,
             subjectStatusLabels: null,
@@ -1197,6 +1207,7 @@ export async function processAndSaveWord(
               partOfSpeech: mapPartOfSpeech(uro.fl),
               source: source,
               languageCode: language,
+
               isPlural: inflection.type === RelationshipType.plural_en,
               definition: `${inflection.type === RelationshipType.plural_en ? 'Plural' : 'Inflected'} form of "${cleanUro}"`,
               subjectStatusLabels: null,
@@ -1330,6 +1341,7 @@ sourceWordText processing
                 partOfSpeech: currentPartOfSpeech,
                 source: source,
                 languageCode: language,
+
                 isPlural: false,
                 definition: cleanDefinitionText,
                 subjectStatusLabels,
@@ -1377,6 +1389,7 @@ sourceWordText processing
       const stemSubWord: SubWordData = {
         word: stem,
         languageCode: language,
+
         definitions: [],
         relationship: relationships,
         sourceData: [SOURCE_OF_WORD.STEM],
@@ -1401,7 +1414,6 @@ sourceWordText processing
             audio: processedData.word.audio || null,
             audioFiles: processedData.word.audioFiles || null,
             etymology: processedData.word.etymology || null,
-            difficultyLevel: DifficultyLevel.B1, // Default difficulty level
             sourceEntityId: processedData.word.sourceEntityId || null,
           },
         );
@@ -1440,7 +1452,6 @@ sourceWordText processing
                   usageNote: definitionData.usageNote || null,
                   isInShortDef: definitionData.isInShortDef || false,
                   plural: definitionData.isPlural || false,
-                  frequencyUsing: 0,
                 },
               }));
 
@@ -1522,7 +1533,6 @@ sourceWordText processing
               audio: subWord.audio || null,
               audioFiles: subWord.audioFiles || null,
               etymology: subWord.etymology || null,
-              difficultyLevel: DifficultyLevel.B1, // Default difficulty level
             },
           );
 
@@ -1602,7 +1612,6 @@ sourceWordText processing
                   usageNote: defData.usageNote || null,
                   isInShortDef: defData.isInShortDef || false,
                   plural: defData.isPlural || false,
-                  frequencyUsing: 0,
                 },
               }));
 
@@ -1693,7 +1702,6 @@ sourceWordText processing
                   usageNote: defData.usageNote || null,
                   isInShortDef: defData.isInShortDef || false,
                   plural: defData.isPlural || false,
-                  frequencyUsing: 0,
                 },
               }));
 
@@ -2344,7 +2352,6 @@ async function upsertWord(
   },
 ): Promise<Word> {
   // Set default values
-  const difficultyLevel = options?.difficultyLevel || DifficultyLevel.B1;
 
   // Create or update the word
   const word = await tx.word.upsert({
@@ -2359,7 +2366,6 @@ async function upsertWord(
       languageCode,
       phonetic: options?.phonetic || null,
       etymology: options?.etymology || null,
-      difficultyLevel,
       additionalInfo: {},
       sourceEntityId: options?.sourceEntityId || null,
     },

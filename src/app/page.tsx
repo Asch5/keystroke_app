@@ -3,10 +3,22 @@
 import { ModeToggle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Book, Brain, Globe, Rocket } from 'lucide-react';
+import {
+  ArrowRight,
+  Book,
+  Brain,
+  Globe,
+  Rocket,
+  ShieldCheck,
+} from 'lucide-react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { RoleGate } from '@/components/auth/RoleGate';
+import AuthStatus from '@/components/AuthStatus';
 
 export default function Home() {
+  const { data: session } = useSession();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -14,10 +26,24 @@ export default function Home() {
         <div className="container flex h-14 items-center justify-between">
           <h2 className="text-xl font-bold pl-2">Keystroke</h2>
           <div className="flex items-center gap-4">
+            <RoleGate allowedRoles={['admin']}>
+              <Link href="/admin">
+                <Button variant="outline" size="sm">
+                  <ShieldCheck className="mr-2 h-4 w-4" />
+                  Admin Panel
+                </Button>
+              </Link>
+            </RoleGate>
             <ModeToggle />
-            <Link href="/login">
-              <Button variant="ghost">Login</Button>
-            </Link>
+            {session ? (
+              <Link href="/dashboard">
+                <Button variant="ghost">Dashboard</Button>
+              </Link>
+            ) : (
+              <Link href="/login">
+                <Button variant="ghost">Login</Button>
+              </Link>
+            )}
           </div>
         </div>
       </nav>
@@ -49,6 +75,9 @@ export default function Home() {
             </Link>
           </div>
         </div>
+      </section>
+      <section className="container py-12 md:py-20">
+        <AuthStatus />
       </section>
 
       {/* Features Section */}

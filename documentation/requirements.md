@@ -221,3 +221,6 @@ https://www.loc.gov/standards/iso639-2/php/code_list.php
 Merriam-Webster's Learner's Dictionary with Audio
 API Product Description
 Designed to help advanced students master spoken and written English as it is actually used, this groundbreaking new dictionary provides in-depth and up-to-date coverage of basic English vocabulary, grammar, and usage. Outstanding features include nearly 100,000 words and phrases with 3,000 core vocabulary words identified. Includes more than 160,000 usage examples, more than 22,000 idioms, verbal collocations, and commonly used phrases. Perfect for ESL, EFL, ELL, and TEFL study and instruction.
+
+corpus:
+https://app.sketchengine.eu/#wordlist?corpname=preloaded%2Fententen21_tt31&tab=basic&lpos=-d&find=-d&wlattr=lempos_lc&include_nonwords=1&itemsPerPage=50&showresults=1&cols=%5B%22frq%22%5D&diaattr=&showtimelineabs=0&timelinesthreshold=5&corp_info=1

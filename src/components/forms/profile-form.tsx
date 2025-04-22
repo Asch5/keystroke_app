@@ -8,11 +8,23 @@ import { setUser } from '@/lib/redux/features/authSlice';
 import { useAppDispatch } from '@/lib/redux/store';
 import { useSession } from 'next-auth/react';
 import { LANGUAGE_MAP_ARRAY } from '@/types/dictionary';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 const arrTheme: Theme = ['light', 'dark'];
 
 export default function ProfileForm() {
   const languages = LANGUAGE_MAP_ARRAY;
-
   const dispatch = useAppDispatch();
   const { data: session } = useSession();
 
@@ -22,23 +34,23 @@ export default function ProfileForm() {
     success: false,
   });
 
-  // Function to manually refresh user data in Redux
   const refreshUserData = useCallback(async () => {
     if (session?.user?.email) {
       try {
         const user = await getUserByEmail(session.user.email);
         if (user) {
-          const userBasicData = {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            status: user.status,
-            baseLanguageCode: user.baseLanguageCode,
-            targetLanguageCode: user.targetLanguageCode,
-            profilePictureUrl: user.profilePictureUrl,
-          };
-          dispatch(setUser(userBasicData));
+          dispatch(
+            setUser({
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+              status: user.status,
+              baseLanguageCode: user.baseLanguageCode,
+              targetLanguageCode: user.targetLanguageCode,
+              profilePictureUrl: user.profilePictureUrl,
+            }),
+          );
         }
       } catch (error) {
         console.error('Error refreshing user data:', error);
@@ -53,158 +65,132 @@ export default function ProfileForm() {
   }, [state, refreshUserData]);
 
   return (
-    <form action={formAction} className="max-w-lg mx-auto">
+    <form action={formAction} className="space-y-4">
       {state.message && (
-        <div
-          className={`p-4 mb-5 text-sm rounded-lg ${
-            state.success
-              ? 'text-green-800 bg-green-50 dark:bg-gray-800 dark:text-green-400'
-              : 'text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400'
-          }`}
-          role="alert"
-        >
-          {state.message}
-        </div>
+        <Alert variant={state.success ? 'success' : 'destructive'}>
+          <AlertDescription>{state.message}</AlertDescription>
+        </Alert>
       )}
 
-      <div className="mb-5">
-        <label
-          htmlFor="name"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Your Name
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="name">Your Name</Label>
+        <Input
+          id="name"
           name="name"
           type="text"
-          id="name"
-          className={`shadow-xs bg-gray-50 border ${
-            state.errors?.name ? 'border-red-500' : 'border-gray-300'
-          } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light`}
           placeholder="John Doe"
+          disabled={isPending}
+          className={state.errors?.name ? 'border-destructive' : ''}
         />
         {state.errors?.name && (
-          <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-            {state.errors.name[0]}
-          </p>
+          <p className="text-sm text-destructive">{state.errors.name[0]}</p>
         )}
       </div>
 
-      <div className="grid md:grid-cols-2 md:gap-6">
-        <div className="mb-5">
-          <label
-            htmlFor="baseLanguage"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Native Language
-          </label>
-          <select
-            name="baseLanguageCode"
-            id="baseLanguageCode"
-            className={`shadow-xs bg-gray-50 border ${
-              state.errors?.baseLanguageCode
-                ? 'border-red-500'
-                : 'border-gray-300'
-            } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light`}
-          >
-            <option value="">Select your native language</option>
-            {languages.map((lang) => (
-              <option key={`base-${lang.id}`} value={lang.id}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="baseLanguageCode">Native Language</Label>
+          <Select name="baseLanguageCode" defaultValue="">
+            <SelectTrigger
+              id="baseLanguageCode"
+              className={
+                state.errors?.baseLanguageCode ? 'border-destructive' : ''
+              }
+            >
+              <SelectValue placeholder="Select your native language" />
+            </SelectTrigger>
+            <SelectContent>
+              {languages.map((lang) => (
+                <SelectItem key={`base-${lang.id}`} value={lang.id.toString()}>
+                  {lang.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {state.errors?.baseLanguageCode && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+            <p className="text-sm text-destructive">
               {state.errors.baseLanguageCode[0]}
             </p>
           )}
         </div>
 
-        <div className="mb-5">
-          <label
-            htmlFor="targetLanguage"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Language to Learn
-          </label>
-          <select
-            name="targetLanguageCode"
-            id="targetLanguageCode"
-            className={`shadow-xs bg-gray-50 border ${
-              state.errors?.targetLanguageCode
-                ? 'border-red-500'
-                : 'border-gray-300'
-            } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light`}
-          >
-            <option value="">Select language to learn</option>
-            {languages.map((lang) => (
-              <option key={`target-${lang.id}`} value={lang.id}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
+        <div className="space-y-2">
+          <Label htmlFor="targetLanguageCode">Language to Learn</Label>
+          <Select name="targetLanguageCode" defaultValue="">
+            <SelectTrigger
+              id="targetLanguageCode"
+              className={
+                state.errors?.targetLanguageCode ? 'border-destructive' : ''
+              }
+            >
+              <SelectValue placeholder="Select language to learn" />
+            </SelectTrigger>
+            <SelectContent>
+              {languages.map((lang) => (
+                <SelectItem
+                  key={`target-${lang.id}`}
+                  value={lang.id.toString()}
+                >
+                  {lang.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {state.errors?.targetLanguageCode && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+            <p className="text-sm text-destructive">
               {state.errors.targetLanguageCode[0]}
             </p>
           )}
         </div>
       </div>
-      <div className="mb-5">
-        <label
-          htmlFor="theme"
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Theme
-        </label>
-        <select
-          name="theme"
-          id="theme"
-          className={`shadow-xs bg-gray-50 border ${
-            state.errors?.theme ? 'border-red-500' : 'border-gray-300'
-          } text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-xs-light`}
-        >
-          <option value="">Select preferred theme</option>
-          {arrTheme.map((theme) => (
-            <option key={`theme-${theme}`} value={theme}>
-              {theme}
-            </option>
-          ))}
-        </select>
+
+      <div className="space-y-2">
+        <Label htmlFor="theme">Theme</Label>
+        <Select name="theme" defaultValue="">
+          <SelectTrigger
+            id="theme"
+            className={state.errors?.theme ? 'border-destructive' : ''}
+          >
+            <SelectValue placeholder="Select preferred theme" />
+          </SelectTrigger>
+          <SelectContent>
+            {arrTheme.map((theme) => (
+              <SelectItem key={`theme-${theme}`} value={theme}>
+                {theme.charAt(0).toUpperCase() + theme.slice(1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {state.errors?.theme && (
-          <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-            {state.errors.theme[0]}
-          </p>
-        )}
-      </div>
-      <div className="mb-5">
-        <label
-          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          htmlFor="file_input"
-        >
-          Upload file
-        </label>
-        <input
-          className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-          id="file_input"
-          type="file"
-          name="photo"
-        ></input>
-        {state.errors?.photo && (
-          <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-            {state.errors.photo[0]}
-          </p>
+          <p className="text-sm text-destructive">{state.errors.theme[0]}</p>
         )}
       </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 w-full"
-      >
-        {isPending ? 'Saving...' : 'Save Profile'}
-      </button>
+      <div className="space-y-2">
+        <Label htmlFor="photo">Profile Picture</Label>
+        <Input
+          id="photo"
+          name="photo"
+          type="file"
+          accept="image/*"
+          disabled={isPending}
+          className={state.errors?.photo ? 'border-destructive' : ''}
+        />
+        {state.errors?.photo && (
+          <p className="text-sm text-destructive">{state.errors.photo[0]}</p>
+        )}
+      </div>
+
+      <Button type="submit" className="w-full" disabled={isPending}>
+        {isPending ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Updating...
+          </>
+        ) : (
+          'Update Profile'
+        )}
+      </Button>
     </form>
   );
 }

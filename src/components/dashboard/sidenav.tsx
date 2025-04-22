@@ -2,16 +2,17 @@
 
 import { useSelector } from 'react-redux';
 import NavLinks from '@/components/dashboard/nav-links';
-import { PowerIcon } from '@heroicons/react/24/outline';
+import { PowerIcon, Menu } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { NavLink } from '@/types/nav';
-
+import { useState } from 'react';
 import { RootState } from '@/lib/redux/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-export default function SideNav({ links }: { links: NavLink[] }) {
+function SideNavContent({ links }: { links: NavLink[] }) {
   const user = useSelector((state: RootState) => state.auth.user);
 
   return (
@@ -42,5 +43,30 @@ export default function SideNav({ links }: { links: NavLink[] }) {
         </Button>
       </div>
     </div>
+  );
+}
+
+export default function SideNav({ links }: { links: NavLink[] }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      {/* Mobile Navigation */}
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild className="md:hidden">
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <Menu className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[240px] p-0">
+          <SideNavContent links={links} />
+        </SheetContent>
+      </Sheet>
+
+      {/* Desktop Navigation */}
+      <div className="hidden md:block h-full">
+        <SideNavContent links={links} />
+      </div>
+    </>
   );
 }

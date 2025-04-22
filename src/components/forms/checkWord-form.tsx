@@ -44,27 +44,12 @@ type DefinitionExample = {
 
 // Add a utility function to render text with {it} tags as italic
 function renderTextWithEmphasis(text: string): React.ReactNode {
-  // Handle {ldquo} and {rdquo} patterns first
+  // Early exit for empty text
+  if (!text || text.length === 0) return text;
+
+  // Handle {ldquo} and {rdquo} patterns first - simple string replacement
   if (text.includes('{ldquo}') || text.includes('{rdquo}')) {
-    return text
-      .replace(/\{ldquo\}/g, '"')
-      .replace(/\{rdquo\}/g, '"')
-      .split(/(\[=.*?\]|\{phrase\}.*?\{\/phrase\}|\{it\}.*?\{\/it\})/g)
-      .map((part, index) => {
-        // Process other patterns recursively
-        if (
-          part.startsWith('[=') ||
-          part.startsWith('{phrase}') ||
-          part.startsWith('{it}')
-        ) {
-          return (
-            <React.Fragment key={index}>
-              {renderTextWithEmphasis(part)}
-            </React.Fragment>
-          );
-        }
-        return <React.Fragment key={index}>{part}</React.Fragment>;
-      });
+    text = text.replace(/\{ldquo\}/g, '"').replace(/\{rdquo\}/g, '"');
   }
 
   // Split by equals sign first to handle multiple examples
@@ -84,83 +69,193 @@ function renderTextWithEmphasis(text: string): React.ReactNode {
     );
   }
 
-  // Handle {phrase}...{/phrase} pattern
-  if (text.includes('{phrase}')) {
-    const parts = text.split(/(\{phrase\}.*?\{\/phrase\})/g);
-    return (
-      <>
-        {parts.map((part, index) => {
-          if (part.startsWith('{phrase}') && part.endsWith('{/phrase}')) {
-            // Remove {phrase} and {/phrase} tags
-            const phrase = part.replace(/^\{phrase\}|\{\/phrase\}$/g, '');
-            return (
-              <span
-                key={index}
-                className="inline-block bg-primary/10 text-primary rounded-sm px-1 py-0.5 font-medium border border-primary/20"
-              >
-                {renderTextWithEmphasis(phrase)}
-              </span>
-            );
-          }
-          // Recursively process the remaining text for other patterns
-          return <span key={index}>{renderTextWithEmphasis(part)}</span>;
-        })}
-      </>
-    );
+  // Handle {phrase}...{/phrase} pattern - process without splitting if no phrase tags found
+  if (text.includes('{phrase}') && text.includes('{/phrase}')) {
+    try {
+      const parts = [];
+      let currentText = text;
+      let startIndex = currentText.indexOf('{phrase}');
+      let endIndex = -1;
+
+      while (startIndex !== -1) {
+        // Add text before the phrase tag
+        if (startIndex > 0) {
+          parts.push(currentText.substring(0, startIndex));
+        }
+
+        // Find matching end tag
+        endIndex = currentText.indexOf('{/phrase}', startIndex);
+        if (endIndex === -1) break; // No matching end tag found
+
+        // Extract phrase content without the tags
+        const phraseContent = currentText.substring(startIndex + 8, endIndex);
+        parts.push({
+          type: 'phrase',
+          content: phraseContent,
+        });
+
+        // Update remaining text
+        currentText = currentText.substring(endIndex + 9);
+        startIndex = currentText.indexOf('{phrase}');
+      }
+
+      // Add any remaining text
+      if (currentText.length > 0) {
+        parts.push(currentText);
+      }
+
+      return (
+        <>
+          {parts.map((part, index) => {
+            if (typeof part === 'string') {
+              return (
+                <React.Fragment key={index}>
+                  {renderTextWithEmphasis(part)}
+                </React.Fragment>
+              );
+            } else {
+              return (
+                <span
+                  key={index}
+                  className="inline-block bg-primary/10 text-primary rounded-sm px-1 py-0.5 font-medium border border-primary/20"
+                >
+                  {renderTextWithEmphasis(part.content)}
+                </span>
+              );
+            }
+          })}
+        </>
+      );
+    } catch (error) {
+      // Fallback in case of parsing error
+      console.error('Error parsing phrase tags:', error);
+      return text;
+    }
   }
 
-  // First handle [=...] pattern
-  if (text.includes('[=')) {
-    const parts = text.split(/(\[=.*?\])/g);
-    return (
-      <>
-        {parts.map((part, index) => {
-          if (part.startsWith('[=') && part.endsWith(']')) {
-            // Remove [= and ] from the text
-            const definition = part.slice(2, -1);
-            return (
-              <span
-                key={index}
-                className="inline-block bg-muted/30 text-muted-foreground rounded px-1.5 py-0.5 text-[0.9em] font-medium"
-              >
-                ({renderTextWithEmphasis(definition)})
-              </span>
-            );
-          }
-          // Recursively process the remaining text for other patterns
-          return <span key={index}>{renderTextWithEmphasis(part)}</span>;
-        })}
-      </>
-    );
+  // Handle [=...] pattern - process without splitting if no brackets found
+  if (text.includes('[=') && text.includes(']')) {
+    try {
+      const parts = [];
+      let currentText = text;
+      let startIndex = currentText.indexOf('[=');
+      let endIndex = -1;
+
+      while (startIndex !== -1) {
+        // Add text before the definition tag
+        if (startIndex > 0) {
+          parts.push(currentText.substring(0, startIndex));
+        }
+
+        // Find matching end bracket
+        endIndex = currentText.indexOf(']', startIndex);
+        if (endIndex === -1) break; // No matching end bracket found
+
+        // Extract definition content without the tags
+        const defContent = currentText.substring(startIndex + 2, endIndex);
+        parts.push({
+          type: 'definition',
+          content: defContent,
+        });
+
+        // Update remaining text
+        currentText = currentText.substring(endIndex + 1);
+        startIndex = currentText.indexOf('[=');
+      }
+
+      // Add any remaining text
+      if (currentText.length > 0) {
+        parts.push(currentText);
+      }
+
+      return (
+        <>
+          {parts.map((part, index) => {
+            if (typeof part === 'string') {
+              return (
+                <React.Fragment key={index}>
+                  {renderTextWithEmphasis(part)}
+                </React.Fragment>
+              );
+            } else {
+              return (
+                <span
+                  key={index}
+                  className="inline-block bg-muted/30 text-muted-foreground rounded px-1.5 py-0.5 text-[0.9em] font-medium"
+                >
+                  ({renderTextWithEmphasis(part.content)})
+                </span>
+              );
+            }
+          })}
+        </>
+      );
+    } catch (error) {
+      // Fallback in case of parsing error
+      console.error('Error parsing definition brackets:', error);
+      return text;
+    }
   }
 
   // Then handle {it} pattern
-  if (!text.includes('{it}')) return text;
+  if (text.includes('{it}') && text.includes('{/it}')) {
+    try {
+      const parts = [];
+      let currentText = text;
+      let startIndex = currentText.indexOf('{it}');
+      let endIndex = -1;
 
-  const parts = text.split(/(\{it\}|\{\/it\})/g);
-  let isItalic = false;
-
-  return (
-    <>
-      {parts.map((part, index) => {
-        if (part === '{it}') {
-          isItalic = true;
-          return null;
-        } else if (part === '{/it}') {
-          isItalic = false;
-          return null;
-        } else {
-          return isItalic ? (
-            <em className="font-bold text-red-500" key={index}>
-              {part}
-            </em>
-          ) : (
-            part
-          );
+      while (startIndex !== -1) {
+        // Add text before the italic tag
+        if (startIndex > 0) {
+          parts.push(currentText.substring(0, startIndex));
         }
-      })}
-    </>
-  );
+
+        // Find matching end tag
+        endIndex = currentText.indexOf('{/it}', startIndex);
+        if (endIndex === -1) break; // No matching end tag found
+
+        // Extract italic content without the tags
+        const italicContent = currentText.substring(startIndex + 4, endIndex);
+        parts.push({
+          type: 'italic',
+          content: italicContent,
+        });
+
+        // Update remaining text
+        currentText = currentText.substring(endIndex + 5);
+        startIndex = currentText.indexOf('{it}');
+      }
+
+      // Add any remaining text
+      if (currentText.length > 0) {
+        parts.push(currentText);
+      }
+
+      return (
+        <>
+          {parts.map((part, index) => {
+            if (typeof part === 'string') {
+              return <React.Fragment key={index}>{part}</React.Fragment>;
+            } else {
+              return (
+                <em className="font-bold text-red-500" key={index}>
+                  {part.content}
+                </em>
+              );
+            }
+          })}
+        </>
+      );
+    } catch (error) {
+      // Fallback in case of parsing error
+      console.error('Error parsing italic tags:', error);
+      return text;
+    }
+  }
+
+  // If none of the specific patterns are found, return the text as is
+  return text;
 }
 
 export default function CheckWordForm() {
@@ -358,14 +453,16 @@ export default function CheckWordForm() {
                   </div>
                 </div>
 
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">
-                    Difficulty Level
-                  </p>
-                  <Badge variant="outline" className="mt-1">
-                    {wordDetails.word.difficultyLevel}
-                  </Badge>
-                </div>
+                {wordDetails.word.wordFrequency && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Frequency Rank
+                    </p>
+                    <Badge variant="outline" className={`mt-1 `}>
+                      {String(wordDetails.word.wordFrequency).replace('_', ' ')}
+                    </Badge>
+                  </div>
+                )}
 
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">

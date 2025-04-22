@@ -48,17 +48,35 @@ export const dictionaryNavLinks: NavLink[] = [
 export const adminNavLinks: NavLink[] = [
   {
     name: 'Users',
-    href: '/dashboard/admin/users',
+    href: '/admin/users',
     icon: UserGroupIcon,
   },
   {
     name: 'Languages',
-    href: '/dashboard/admin/languages',
+    href: '/admin/languages',
     icon: LanguageIcon,
   },
   {
     name: 'Dictionaries',
-    href: '/dashboard/admin/dictionaries',
+    href: '/admin/dictionaries',
+    icon: BookOpenIcon,
+  },
+];
+
+export const adminDictionariesNavLinks: NavLink[] = [
+  {
+    name: 'Check Word',
+    href: '/admin/dictionaries/check-word',
+    icon: BookOpenIcon,
+  },
+  {
+    name: 'Add New Word',
+    href: '/admin/dictionaries/add-new-word',
+    icon: BookOpenIcon,
+  },
+  {
+    name: 'Frequency',
+    href: '/admin/dictionaries/frequency',
     icon: BookOpenIcon,
   },
 ];

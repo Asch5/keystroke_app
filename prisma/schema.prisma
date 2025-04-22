@@ -42,14 +42,13 @@ enum AchievementType {
   CONSISTENT_PRACTICE
 }
 
-//--- Learning Related Enums ---
+// Adding the missing DifficultyLevel enum
 enum DifficultyLevel {
-  A1
-  A2
-  B1
-  B2
-  C1
-  C2
+  beginner
+  elementary
+  intermediate
+  advanced
+  proficient
 }
 
 enum LearningStatus {
@@ -144,6 +143,7 @@ enum SourceType {
   user
 }
 
+
 // =========================================
 // 3. CORE MODELS
 // =========================================
@@ -233,7 +233,6 @@ model Word {
   phonetic        String?         @db.VarChar(100)
   etymology       String?         @db.Text
   category        String?         @db.VarChar(255)
-  difficultyLevel DifficultyLevel @map("difficulty_level")
   additionalInfo  Json?           @default("{}")
   languageCode    LanguageCode    @map("language_code")
   sourceEntityId  String?         @db.VarChar(255)
@@ -251,7 +250,6 @@ model Word {
   @@unique([word, languageCode])
   @@index([word], map: "idx_word_search")
   @@index([languageCode], map: "idx_word_language")
-  @@index([difficultyLevel], map: "idx_word_difficulty")
   @@map("words")
 }
 
@@ -260,7 +258,6 @@ model Definition {
   definition          String       @db.Text
   partOfSpeech        PartOfSpeech @map("part_of_speech")
   plural              Boolean      @default(false)
-  frequencyUsing      Int          @default(0) @map("frequency_using") @db.SmallInt
   imageId             Int?         @map("image_id")
   source              SourceType
   languageCode        LanguageCode @map("language_code")
@@ -281,7 +278,6 @@ model Definition {
 
   @@unique([definition, partOfSpeech, languageCode, source, subjectStatusLabels, generalLabels, grammaticalNote, usageNote, isInShortDef, plural])
   @@index([partOfSpeech], map: "idx_definition_pos")
-  @@index([frequencyUsing], map: "idx_definition_frequency")
   @@map("definitions")
 }
 
@@ -347,6 +343,19 @@ model Translation {
   @@unique([entityType, entityId, languageCode])
   @@index([entityType, entityId])
   @@map("translations")
+}
+
+model WordFrequencyData {
+  id         Int      @id @default(autoincrement())
+  orderIndex Int      
+  wordId     Int      @map("word_id")
+  partOfSpeech PartOfSpeech @map("part_of_speech")
+  frequency  Int      // Absolute frequency or rank
+  language   LanguageCode
+  
+  
+  @@index([wordId, language])
+  @@unique([orderIndex, language, wordId, partOfSpeech])
 }
 
 
@@ -468,7 +477,7 @@ model List {
   updatedAt          DateTime              @default(now()) @updatedAt @map("updated_at")
   tags               String[]
   coverImageUrl      String?               @db.VarChar(255)
-  difficultyLevel    DifficultyLevel       @map("difficultyLevel")
+  difficultyLevel    DifficultyLevel       @map("difficulty_level")
   wordCount          Int                   @default(0) @map("wordCount")
   learnedWordCount   Int                   @default(0) @map("learned_word_count")
   lastModified       DateTime              @default(now()) @map("last_modified")

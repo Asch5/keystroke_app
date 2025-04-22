@@ -14,7 +14,7 @@ CREATE TYPE "ContentStatus" AS ENUM ('DRAFT', 'PENDING_REVIEW', 'APPROVED', 'REJ
 CREATE TYPE "AchievementType" AS ENUM ('STREAK', 'WORDS_LEARNED', 'PERFECT_SCORE', 'SPEED_LEARNING', 'CONSISTENT_PRACTICE');
 
 -- CreateEnum
-CREATE TYPE "DifficultyLevel" AS ENUM ('A1', 'A2', 'B1', 'B2', 'C1', 'C2');
+CREATE TYPE "DifficultyLevel" AS ENUM ('beginner', 'elementary', 'intermediate', 'advanced', 'proficient');
 
 -- CreateEnum
 CREATE TYPE "LearningStatus" AS ENUM ('notStarted', 'inProgress', 'learned', 'needsReview', 'difficult');
@@ -83,7 +83,6 @@ CREATE TABLE "words" (
     "phonetic" VARCHAR(100),
     "etymology" TEXT,
     "category" VARCHAR(255),
-    "difficulty_level" "DifficultyLevel" NOT NULL,
     "additionalInfo" JSONB DEFAULT '{}',
     "language_code" "LanguageCode" NOT NULL,
     "sourceEntityId" VARCHAR(255),
@@ -99,7 +98,6 @@ CREATE TABLE "definitions" (
     "definition" TEXT NOT NULL,
     "part_of_speech" "PartOfSpeech" NOT NULL,
     "plural" BOOLEAN NOT NULL DEFAULT false,
-    "frequency_using" SMALLINT NOT NULL DEFAULT 0,
     "image_id" INTEGER,
     "source" "SourceType" NOT NULL,
     "language_code" "LanguageCode" NOT NULL,
@@ -162,6 +160,18 @@ CREATE TABLE "translations" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "translations_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "WordFrequencyData" (
+    "id" SERIAL NOT NULL,
+    "orderIndex" INTEGER NOT NULL,
+    "word_id" INTEGER NOT NULL,
+    "part_of_speech" "PartOfSpeech" NOT NULL,
+    "frequency" INTEGER NOT NULL,
+    "language" "LanguageCode" NOT NULL,
+
+    CONSTRAINT "WordFrequencyData_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -237,7 +247,7 @@ CREATE TABLE "lists" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "tags" TEXT[],
     "coverImageUrl" VARCHAR(255),
-    "difficultyLevel" "DifficultyLevel" NOT NULL,
+    "difficulty_level" "DifficultyLevel" NOT NULL,
     "wordCount" INTEGER NOT NULL DEFAULT 0,
     "learned_word_count" INTEGER NOT NULL DEFAULT 0,
     "last_modified" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -535,16 +545,10 @@ CREATE INDEX "idx_word_search" ON "words"("word");
 CREATE INDEX "idx_word_language" ON "words"("language_code");
 
 -- CreateIndex
-CREATE INDEX "idx_word_difficulty" ON "words"("difficulty_level");
-
--- CreateIndex
 CREATE UNIQUE INDEX "words_word_language_code_key" ON "words"("word", "language_code");
 
 -- CreateIndex
 CREATE INDEX "idx_definition_pos" ON "definitions"("part_of_speech");
-
--- CreateIndex
-CREATE INDEX "idx_definition_frequency" ON "definitions"("frequency_using");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "definitions_definition_part_of_speech_language_code_source__key" ON "definitions"("definition", "part_of_speech", "language_code", "source", "subject_status_labels", "general_labels", "grammatical_note", "usage_note", "is_in_short_def", "plural");
@@ -577,6 +581,12 @@ CREATE INDEX "translations_entityType_entityId_idx" ON "translations"("entityTyp
 CREATE UNIQUE INDEX "translations_entityType_entityId_languageCode_key" ON "translations"("entityType", "entityId", "languageCode");
 
 -- CreateIndex
+CREATE INDEX "WordFrequencyData_word_id_language_idx" ON "WordFrequencyData"("word_id", "language");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "WordFrequencyData_orderIndex_language_word_id_part_of_speec_key" ON "WordFrequencyData"("orderIndex", "language", "word_id", "part_of_speech");
+
+-- CreateIndex
 CREATE INDEX "idx_learning_status" ON "user_dictionary"("user_id", "learning_status");
 
 -- CreateIndex
@@ -607,7 +617,7 @@ CREATE INDEX "idx_list_words_order" ON "list_words"("list_id", "order_index");
 CREATE INDEX "idx_lists_language" ON "lists"("base_language_code", "target_language_code");
 
 -- CreateIndex
-CREATE INDEX "idx_list_difficulty" ON "lists"("difficultyLevel");
+CREATE INDEX "idx_list_difficulty" ON "lists"("difficulty_level");
 
 -- CreateIndex
 CREATE INDEX "idx_public_lists" ON "lists"("is_public", "base_language_code", "target_language_code");

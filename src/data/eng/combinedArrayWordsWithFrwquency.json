@@ -1,0 +1,2218 @@
+[
+  {
+    "word": "the",
+    "orderIndexGeneralWord": 1,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 604,
+        "freauencyGeneral": 5223025
+      }
+    }
+  },
+  {
+    "word": "of",
+    "orderIndexGeneralWord": 2,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "and",
+    "orderIndexGeneralWord": 3,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "to",
+    "orderIndexGeneralWord": 4,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "in",
+    "orderIndexGeneralWord": 5,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 149,
+        "freauencyGeneral": 2313142
+      }
+    }
+  },
+  {
+    "word": "a",
+    "orderIndexGeneralWord": 6,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 538,
+        "freauencyGeneral": 5676422
+      }
+    }
+  },
+  {
+    "word": "is",
+    "orderIndexGeneralWord": 7,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "was",
+    "orderIndexGeneralWord": 8,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "that",
+    "orderIndexGeneralWord": 9,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 101,
+        "freauencyGeneral": 3817034
+      }
+    }
+  },
+  {
+    "word": "for",
+    "orderIndexGeneralWord": 10,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "as",
+    "orderIndexGeneralWord": 11,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 5,
+        "freauencyGeneral": 71795581
+      }
+    }
+  },
+  {
+    "word": "with",
+    "orderIndexGeneralWord": 12,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "by",
+    "orderIndexGeneralWord": 13,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 359,
+        "freauencyGeneral": 515800
+      }
+    }
+  },
+  {
+    "word": "on",
+    "orderIndexGeneralWord": 14,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 143,
+        "freauencyGeneral": 2386195
+      }
+    }
+  },
+  {
+    "word": "are",
+    "orderIndexGeneralWord": 15,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "from",
+    "orderIndexGeneralWord": 16,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "be",
+    "orderIndexGeneralWord": 17,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 1,
+        "freauencyGeneral": 1926522470
+      }
+    }
+  },
+  {
+    "word": "or",
+    "orderIndexGeneralWord": 18,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "his",
+    "orderIndexGeneralWord": 19,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "were",
+    "orderIndexGeneralWord": 20,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "it",
+    "orderIndexGeneralWord": 21,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "an",
+    "orderIndexGeneralWord": 22,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "at",
+    "orderIndexGeneralWord": 23,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "not",
+    "orderIndexGeneralWord": 24,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 1,
+        "freauencyGeneral": 336729400
+      }
+    }
+  },
+  {
+    "word": "which",
+    "orderIndexGeneralWord": 25,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "have",
+    "orderIndexGeneralWord": 26,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 2,
+        "freauencyGeneral": 537088084
+      }
+    }
+  },
+  {
+    "word": "he",
+    "orderIndexGeneralWord": 27,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "had",
+    "orderIndexGeneralWord": 28,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "this",
+    "orderIndexGeneralWord": 29,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 296,
+        "freauencyGeneral": 748382
+      }
+    }
+  },
+  {
+    "word": "has",
+    "orderIndexGeneralWord": 30,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "also",
+    "orderIndexGeneralWord": 31,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 2,
+        "freauencyGeneral": 100666925
+      }
+    }
+  },
+  {
+    "word": "their",
+    "orderIndexGeneralWord": 32,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "but",
+    "orderIndexGeneralWord": 33,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 240,
+        "freauencyGeneral": 1015649
+      }
+    }
+  },
+  {
+    "word": "one",
+    "orderIndexGeneralWord": 34,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 414,
+        "freauencyGeneral": 7314459
+      }
+    }
+  },
+  {
+    "word": "can",
+    "orderIndexGeneralWord": 35,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "its",
+    "orderIndexGeneralWord": 36,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "on the",
+    "orderIndexGeneralWord": 37,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "other",
+    "orderIndexGeneralWord": 38,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 1,
+        "freauencyGeneral": 85067492
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 98,
+        "freauencyGeneral": 16094185
+      }
+    }
+  },
+  {
+    "word": "been",
+    "orderIndexGeneralWord": 39,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "more",
+    "orderIndexGeneralWord": 40,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 3,
+        "freauencyGeneral": 71211000
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 9,
+        "freauencyGeneral": 55085261
+      }
+    }
+  },
+  {
+    "word": "they",
+    "orderIndexGeneralWord": 41,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "used",
+    "orderIndexGeneralWord": 42,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "first",
+    "orderIndexGeneralWord": 43,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 5,
+        "freauencyGeneral": 53484951
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 46,
+        "freauencyGeneral": 10365943
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 833,
+        "freauencyGeneral": 3891630
+      }
+    }
+  },
+  {
+    "word": "all",
+    "orderIndexGeneralWord": 44,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 20,
+        "freauencyGeneral": 28324419
+      }
+    }
+  },
+  {
+    "word": "two",
+    "orderIndexGeneralWord": 45,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "citation",
+    "orderIndexGeneralWord": 46,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "than",
+    "orderIndexGeneralWord": 47,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "into",
+    "orderIndexGeneralWord": 48,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "would",
+    "orderIndexGeneralWord": 49,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "only",
+    "orderIndexGeneralWord": 50,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 45,
+        "freauencyGeneral": 13936686
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 10,
+        "freauencyGeneral": 54246502
+      }
+    }
+  },
+  {
+    "word": "time",
+    "orderIndexGeneralWord": 51,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 1,
+        "freauencyGeneral": 100714557
+      }
+    }
+  },
+  {
+    "word": "who",
+    "orderIndexGeneralWord": 52,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "most",
+    "orderIndexGeneralWord": 53,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 18,
+        "freauencyGeneral": 23879933
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 16,
+        "freauencyGeneral": 32887769
+      }
+    }
+  },
+  {
+    "word": "may",
+    "orderIndexGeneralWord": 54,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 195,
+        "freauencyGeneral": 11454729
+      }
+    }
+  },
+  {
+    "word": "such",
+    "orderIndexGeneralWord": 55,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 7,
+        "freauencyGeneral": 40306197
+      }
+    }
+  },
+  {
+    "word": "some",
+    "orderIndexGeneralWord": 56,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 234,
+        "freauencyGeneral": 1039842
+      }
+    }
+  },
+  {
+    "word": "many",
+    "orderIndexGeneralWord": 57,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 6,
+        "freauencyGeneral": 52131299
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 268,
+        "freauencyGeneral": 832024
+      }
+    }
+  },
+  {
+    "word": "when",
+    "orderIndexGeneralWord": 58,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "after",
+    "orderIndexGeneralWord": 59,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 357,
+        "freauencyGeneral": 528764
+      }
+    }
+  },
+  {
+    "word": "between",
+    "orderIndexGeneralWord": 60,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 872,
+        "freauencyGeneral": 77887
+      }
+    }
+  },
+  {
+    "word": "over",
+    "orderIndexGeneralWord": 61,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 112,
+        "freauencyGeneral": 3223335
+      }
+    }
+  },
+  {
+    "word": "these",
+    "orderIndexGeneralWord": 62,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "her",
+    "orderIndexGeneralWord": 63,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "about",
+    "orderIndexGeneralWord": 64,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 18,
+        "freauencyGeneral": 29292457
+      }
+    }
+  },
+  {
+    "word": "there",
+    "orderIndexGeneralWord": 65,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 21,
+        "freauencyGeneral": 27190997
+      }
+    }
+  },
+  {
+    "word": "use",
+    "orderIndexGeneralWord": 66,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 5,
+        "freauencyGeneral": 103311995
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 62,
+        "freauencyGeneral": 20843915
+      }
+    }
+  },
+  {
+    "word": "no",
+    "orderIndexGeneralWord": 67,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 42,
+        "freauencyGeneral": 11336816
+      }
+    }
+  },
+  {
+    "word": "them",
+    "orderIndexGeneralWord": 68,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "new",
+    "orderIndexGeneralWord": 69,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 4,
+        "freauencyGeneral": 70658523
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 37,
+        "freauencyGeneral": 24873193
+      }
+    }
+  },
+  {
+    "word": "him",
+    "orderIndexGeneralWord": 70,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "will",
+    "orderIndexGeneralWord": 71,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 851,
+        "freauencyGeneral": 3831715
+      }
+    }
+  },
+  {
+    "word": "out",
+    "orderIndexGeneralWord": 72,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 50,
+        "freauencyGeneral": 9385275
+      }
+    }
+  },
+  {
+    "word": "during",
+    "orderIndexGeneralWord": 73,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "made",
+    "orderIndexGeneralWord": 74,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "both",
+    "orderIndexGeneralWord": 75,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "then",
+    "orderIndexGeneralWord": 76,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 7,
+        "freauencyGeneral": 58533357
+      }
+    }
+  },
+  {
+    "word": "often",
+    "orderIndexGeneralWord": 77,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 27,
+        "freauencyGeneral": 16992693
+      }
+    }
+  },
+  {
+    "word": "so",
+    "orderIndexGeneralWord": 78,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 3,
+        "freauencyGeneral": 94541082
+      }
+    }
+  },
+  {
+    "word": "any",
+    "orderIndexGeneralWord": 79,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 334,
+        "freauencyGeneral": 578512
+      }
+    }
+  },
+  {
+    "word": "being",
+    "orderIndexGeneralWord": 80,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 613,
+        "freauencyGeneral": 1031553
+      }
+    }
+  },
+  {
+    "word": "such as",
+    "orderIndexGeneralWord": 81,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "where",
+    "orderIndexGeneralWord": 82,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "number",
+    "orderIndexGeneralWord": 83,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 21,
+        "freauencyGeneral": 31150939
+      }
+    }
+  },
+  {
+    "word": "could",
+    "orderIndexGeneralWord": 84,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "main",
+    "orderIndexGeneralWord": 85,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 56,
+        "freauencyGeneral": 11062568
+      }
+    }
+  },
+  {
+    "word": "p.",
+    "orderIndexGeneralWord": 86,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "through",
+    "orderIndexGeneralWord": 87,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 397,
+        "freauencyGeneral": 431921
+      }
+    }
+  },
+  {
+    "word": "system",
+    "orderIndexGeneralWord": 88,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 9,
+        "freauencyGeneral": 38403655
+      }
+    }
+  },
+  {
+    "word": "people",
+    "orderIndexGeneralWord": 89,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 3,
+        "freauencyGeneral": 68191684
+      }
+    }
+  },
+  {
+    "word": "known",
+    "orderIndexGeneralWord": 90,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "each",
+    "orderIndexGeneralWord": 91,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 728,
+        "freauencyGeneral": 115361
+      }
+    }
+  },
+  {
+    "word": "while",
+    "orderIndexGeneralWord": 92,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 960,
+        "freauencyGeneral": 3351140
+      }
+    }
+  },
+  {
+    "word": "if",
+    "orderIndexGeneralWord": 93,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "called",
+    "orderIndexGeneralWord": 94,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "convert",
+    "orderIndexGeneralWord": 95,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 351,
+        "freauencyGeneral": 3140676
+      }
+    }
+  },
+  {
+    "word": "same",
+    "orderIndexGeneralWord": 96,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 11,
+        "freauencyGeneral": 33771034
+      }
+    }
+  },
+  {
+    "word": "later",
+    "orderIndexGeneralWord": 97,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 35,
+        "freauencyGeneral": 14089206
+      }
+    }
+  },
+  {
+    "word": "three",
+    "orderIndexGeneralWord": 98,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "because",
+    "orderIndexGeneralWord": 99,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 320,
+        "freauencyGeneral": 623732
+      }
+    }
+  },
+  {
+    "word": "well",
+    "orderIndexGeneralWord": 100,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 6,
+        "freauencyGeneral": 62423918
+      }
+    }
+  },
+  {
+    "word": "work",
+    "orderIndexGeneralWord": 101,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 17,
+        "freauencyGeneral": 49239393
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 10,
+        "freauencyGeneral": 38400130
+      }
+    }
+  },
+  {
+    "word": "before",
+    "orderIndexGeneralWord": 102,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 89,
+        "freauencyGeneral": 4665496
+      }
+    }
+  },
+  {
+    "word": "the same",
+    "orderIndexGeneralWord": 103,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "under",
+    "orderIndexGeneralWord": 104,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 624,
+        "freauencyGeneral": 158742
+      }
+    }
+  },
+  {
+    "word": "part",
+    "orderIndexGeneralWord": 105,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 8,
+        "freauencyGeneral": 38911464
+      }
+    }
+  },
+  {
+    "word": "very",
+    "orderIndexGeneralWord": 106,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 202,
+        "freauencyGeneral": 3594704
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 12,
+        "freauencyGeneral": 47821945
+      }
+    }
+  },
+  {
+    "word": "different",
+    "orderIndexGeneralWord": 107,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 13,
+        "freauencyGeneral": 27670808
+      }
+    }
+  },
+  {
+    "word": "became",
+    "orderIndexGeneralWord": 108,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "year",
+    "orderIndexGeneralWord": 109,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 2,
+        "freauencyGeneral": 91960185
+      }
+    }
+  },
+  {
+    "word": "did",
+    "orderIndexGeneralWord": 110,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "large",
+    "orderIndexGeneralWord": 111,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 16,
+        "freauencyGeneral": 25625263
+      }
+    }
+  },
+  {
+    "word": "example",
+    "orderIndexGeneralWord": 112,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 73,
+        "freauencyGeneral": 19869919
+      }
+    }
+  },
+  {
+    "word": "several",
+    "orderIndexGeneralWord": 113,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 27,
+        "freauencyGeneral": 17824147
+      }
+    }
+  },
+  {
+    "word": "city",
+    "orderIndexGeneralWord": 114,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 32,
+        "freauencyGeneral": 27466220
+      }
+    }
+  },
+  {
+    "word": "early",
+    "orderIndexGeneralWord": 115,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 36,
+        "freauencyGeneral": 14938563
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 108,
+        "freauencyGeneral": 3397713
+      }
+    }
+  },
+  {
+    "word": "until",
+    "orderIndexGeneralWord": 116,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "much",
+    "orderIndexGeneralWord": 117,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 39,
+        "freauencyGeneral": 14691986
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 22,
+        "freauencyGeneral": 26915614
+      }
+    }
+  },
+  {
+    "word": "government",
+    "orderIndexGeneralWord": 118,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 41,
+        "freauencyGeneral": 24282530
+      }
+    }
+  },
+  {
+    "word": "found",
+    "orderIndexGeneralWord": 119,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 390,
+        "freauencyGeneral": 2740130
+      }
+    }
+  },
+  {
+    "word": "own",
+    "orderIndexGeneralWord": 120,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 239,
+        "freauencyGeneral": 5318574
+      },
+      "adjective": {
+        "orderIndexPartOfspeech": 14,
+        "freauencyGeneral": 27648170
+      }
+    }
+  },
+  {
+    "word": "since",
+    "orderIndexGeneralWord": 121,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 189,
+        "freauencyGeneral": 1629956
+      }
+    }
+  },
+  {
+    "word": "she",
+    "orderIndexGeneralWord": 122,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "even",
+    "orderIndexGeneralWord": 123,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 11,
+        "freauencyGeneral": 48702679
+      }
+    }
+  },
+  {
+    "word": "form",
+    "orderIndexGeneralWord": 124,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 178,
+        "freauencyGeneral": 7229525
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 94,
+        "freauencyGeneral": 16454225
+      }
+    }
+  },
+  {
+    "word": "power",
+    "orderIndexGeneralWord": 125,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 577,
+        "freauencyGeneral": 1592785
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 55,
+        "freauencyGeneral": 21994630
+      }
+    }
+  },
+  {
+    "word": "do",
+    "orderIndexGeneralWord": 126,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 3,
+        "freauencyGeneral": 232811297
+      }
+    }
+  },
+  {
+    "word": "those",
+    "orderIndexGeneralWord": 127,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "around",
+    "orderIndexGeneralWord": 128,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 80,
+        "freauencyGeneral": 5657843
+      }
+    }
+  },
+  {
+    "word": "state",
+    "orderIndexGeneralWord": 129,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 189,
+        "freauencyGeneral": 6690134
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 13,
+        "freauencyGeneral": 37311751
+      }
+    }
+  },
+  {
+    "word": "including",
+    "orderIndexGeneralWord": 130,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "set",
+    "orderIndexGeneralWord": 131,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 44,
+        "freauencyGeneral": 22633983
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 296,
+        "freauencyGeneral": 8921139
+      }
+    }
+  },
+  {
+    "word": "high",
+    "orderIndexGeneralWord": 132,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 10,
+        "freauencyGeneral": 34153889
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 439,
+        "freauencyGeneral": 352860
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 632,
+        "freauencyGeneral": 5060511
+      }
+    }
+  },
+  {
+    "word": "life",
+    "orderIndexGeneralWord": 133,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 12,
+        "freauencyGeneral": 37769446
+      }
+    }
+  },
+  {
+    "word": "against",
+    "orderIndexGeneralWord": 134,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "second",
+    "orderIndexGeneralWord": 135,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 29,
+        "freauencyGeneral": 16915669
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 251,
+        "freauencyGeneral": 894072
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 556,
+        "freauencyGeneral": 5569655
+      }
+    }
+  },
+  {
+    "word": "century",
+    "orderIndexGeneralWord": 136,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 373,
+        "freauencyGeneral": 7883746
+      }
+    }
+  },
+  {
+    "word": "within",
+    "orderIndexGeneralWord": 137,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "world",
+    "orderIndexGeneralWord": 138,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 6,
+        "freauencyGeneral": 40141537
+      }
+    }
+  },
+  {
+    "word": "still",
+    "orderIndexGeneralWord": 139,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 14,
+        "freauencyGeneral": 34609984
+      }
+    }
+  },
+  {
+    "word": "end",
+    "orderIndexGeneralWord": 140,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 109,
+        "freauencyGeneral": 10460566
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 69,
+        "freauencyGeneral": 20420140
+      }
+    }
+  },
+  {
+    "word": "using",
+    "orderIndexGeneralWord": 141,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "small",
+    "orderIndexGeneralWord": 142,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 17,
+        "freauencyGeneral": 24132605
+      }
+    }
+  },
+  {
+    "word": "name",
+    "orderIndexGeneralWord": 143,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 166,
+        "freauencyGeneral": 7499454
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 47,
+        "freauencyGeneral": 23093827
+      }
+    }
+  },
+  {
+    "word": "what",
+    "orderIndexGeneralWord": 144,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "now",
+    "orderIndexGeneralWord": 145,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 8,
+        "freauencyGeneral": 57163262
+      }
+    }
+  },
+  {
+    "word": "usually",
+    "orderIndexGeneralWord": 146,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 57,
+        "freauencyGeneral": 8657142
+      }
+    }
+  },
+  {
+    "word": "American",
+    "orderIndexGeneralWord": 147,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 68,
+        "freauencyGeneral": 9802527
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 504,
+        "freauencyGeneral": 5957407
+      }
+    }
+  },
+  {
+    "word": "without",
+    "orderIndexGeneralWord": 148,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "however",
+    "orderIndexGeneralWord": 149,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 23,
+        "freauencyGeneral": 26798197
+      }
+    }
+  },
+  {
+    "word": "began",
+    "orderIndexGeneralWord": 150,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "like",
+    "orderIndexGeneralWord": 151,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 56,
+        "freauencyGeneral": 19457534
+      },
+      "adjective": {
+        "orderIndexPartOfspeech": 371,
+        "freauencyGeneral": 1925916
+      }
+    }
+  },
+  {
+    "word": "as well",
+    "orderIndexGeneralWord": 152,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "area",
+    "orderIndexGeneralWord": 153,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 20,
+        "freauencyGeneral": 31212106
+      }
+    }
+  },
+  {
+    "word": "make",
+    "orderIndexGeneralWord": 154,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 4,
+        "freauencyGeneral": 118240907
+      }
+    }
+  },
+  {
+    "word": "common",
+    "orderIndexGeneralWord": 155,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 63,
+        "freauencyGeneral": 10059452
+      }
+    }
+  },
+  {
+    "word": "the most",
+    "orderIndexGeneralWord": 156,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "water",
+    "orderIndexGeneralWord": 157,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 51,
+        "freauencyGeneral": 22872980
+      }
+    }
+  },
+  {
+    "word": "United States",
+    "orderIndexGeneralWord": 158,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "another",
+    "orderIndexGeneralWord": 159,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "way",
+    "orderIndexGeneralWord": 160,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 287,
+        "freauencyGeneral": 772114
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 5,
+        "freauencyGeneral": 52977320
+      }
+    }
+  },
+  {
+    "word": "due",
+    "orderIndexGeneralWord": 161,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 47,
+        "freauencyGeneral": 12913633
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 224,
+        "freauencyGeneral": 1150060
+      }
+    }
+  },
+  {
+    "word": "must",
+    "orderIndexGeneralWord": 162,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "long",
+    "orderIndexGeneralWord": 163,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 23,
+        "freauencyGeneral": 18767300
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 53,
+        "freauencyGeneral": 9061212
+      }
+    }
+  },
+  {
+    "word": "less",
+    "orderIndexGeneralWord": 164,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 69,
+        "freauencyGeneral": 9706519
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 68,
+        "freauencyGeneral": 6639861
+      }
+    }
+  },
+  {
+    "word": "four",
+    "orderIndexGeneralWord": 165,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "death",
+    "orderIndexGeneralWord": 166,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 174,
+        "freauencyGeneral": 12238191
+      }
+    }
+  },
+  {
+    "word": "said",
+    "orderIndexGeneralWord": 167,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "film",
+    "orderIndexGeneralWord": 168,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 754,
+        "freauencyGeneral": 1071672
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 110,
+        "freauencyGeneral": 15515997
+      }
+    }
+  },
+  {
+    "word": "order",
+    "orderIndexGeneralWord": 169,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 283,
+        "freauencyGeneral": 4355164
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 68,
+        "freauencyGeneral": 20447753
+      }
+    }
+  },
+  {
+    "word": "due to",
+    "orderIndexGeneralWord": 170,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "back",
+    "orderIndexGeneralWord": 171,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 420,
+        "freauencyGeneral": 2492553
+      },
+      "adjective": {
+        "orderIndexPartOfspeech": 291,
+        "freauencyGeneral": 2467357
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 15,
+        "freauencyGeneral": 34258075
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 577,
+        "freauencyGeneral": 5416807
+      }
+    }
+  },
+  {
+    "word": "public",
+    "orderIndexGeneralWord": 172,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 33,
+        "freauencyGeneral": 15781994
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 352,
+        "freauencyGeneral": 8100326
+      }
+    }
+  },
+  {
+    "word": "does",
+    "orderIndexGeneralWord": 173,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "left",
+    "orderIndexGeneralWord": 174,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 400,
+        "freauencyGeneral": 1786483
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 395,
+        "freauencyGeneral": 435708
+      }
+    }
+  },
+  {
+    "word": "based",
+    "orderIndexGeneralWord": 175,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "few",
+    "orderIndexGeneralWord": 176,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 15,
+        "freauencyGeneral": 26861265
+      }
+    }
+  },
+  {
+    "word": "become",
+    "orderIndexGeneralWord": 177,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 23,
+        "freauencyGeneral": 32738278
+      }
+    }
+  },
+  {
+    "word": "known as",
+    "orderIndexGeneralWord": 178,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "s",
+    "orderIndexGeneralWord": 179,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 563,
+        "freauencyGeneral": 1135618
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 672,
+        "freauencyGeneral": 135239
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 294,
+        "freauencyGeneral": 8950943
+      }
+    }
+  },
+  {
+    "word": "given",
+    "orderIndexGeneralWord": 180,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "country",
+    "orderIndexGeneralWord": 181,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 39,
+        "freauencyGeneral": 24593573
+      }
+    }
+  },
+  {
+    "word": "major",
+    "orderIndexGeneralWord": 182,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 51,
+        "freauencyGeneral": 11654812
+      }
+    }
+  },
+  {
+    "word": "British",
+    "orderIndexGeneralWord": 183,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 173,
+        "freauencyGeneral": 4245677
+      }
+    }
+  },
+  {
+    "word": "place",
+    "orderIndexGeneralWord": 184,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 153,
+        "freauencyGeneral": 8504799
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 27,
+        "freauencyGeneral": 29334448
+      }
+    }
+  },
+  {
+    "word": "group",
+    "orderIndexGeneralWord": 185,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 18,
+        "freauencyGeneral": 31406816
+      }
+    }
+  },
+  {
+    "word": "considered",
+    "orderIndexGeneralWord": 186,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "among",
+    "orderIndexGeneralWord": 187,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "game",
+    "orderIndexGeneralWord": 188,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 19,
+        "freauencyGeneral": 31362520
+      }
+    }
+  },
+  {
+    "word": "point",
+    "orderIndexGeneralWord": 189,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 247,
+        "freauencyGeneral": 5193195
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 33,
+        "freauencyGeneral": 27343634
+      }
+    }
+  },
+  {
+    "word": "used to",
+    "orderIndexGeneralWord": 190,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "period",
+    "orderIndexGeneralWord": 191,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 191,
+        "freauencyGeneral": 11558147
+      }
+    }
+  },
+  {
+    "word": "support",
+    "orderIndexGeneralWord": 192,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 59,
+        "freauencyGeneral": 18339744
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 95,
+        "freauencyGeneral": 16332106
+      }
+    }
+  },
+  {
+    "word": "war",
+    "orderIndexGeneralWord": 193,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 119,
+        "freauencyGeneral": 14983511
+      }
+    }
+  },
+  {
+    "word": "music",
+    "orderIndexGeneralWord": 194,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 108,
+        "freauencyGeneral": 15683537
+      }
+    }
+  },
+  {
+    "word": "down",
+    "orderIndexGeneralWord": 195,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adverb": {
+        "orderIndexPartOfspeech": 45,
+        "freauencyGeneral": 10691546
+      }
+    }
+  },
+  {
+    "word": "million",
+    "orderIndexGeneralWord": 196,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "important",
+    "orderIndexGeneralWord": 197,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 25,
+        "freauencyGeneral": 18636472
+      }
+    }
+  },
+  {
+    "word": "systems",
+    "orderIndexGeneralWord": 198,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "control",
+    "orderIndexGeneralWord": 199,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 227,
+        "freauencyGeneral": 5579892
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 122,
+        "freauencyGeneral": 14896567
+      }
+    }
+  },
+  {
+    "word": "should",
+    "orderIndexGeneralWord": 200,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "took",
+    "orderIndexGeneralWord": 201,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": false
+  },
+  {
+    "word": "day",
+    "orderIndexGeneralWord": 202,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 4,
+        "freauencyGeneral": 54858922
+      }
+    }
+  },
+  {
+    "word": "family",
+    "orderIndexGeneralWord": 203,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 29,
+        "freauencyGeneral": 27937812
+      }
+    }
+  },
+  {
+    "word": "language",
+    "orderIndexGeneralWord": 204,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "noun": {
+        "orderIndexPartOfspeech": 219,
+        "freauencyGeneral": 10855722
+      }
+    }
+  },
+  {
+    "word": "last",
+    "orderIndexGeneralWord": 205,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 464,
+        "freauencyGeneral": 2225097
+      },
+      "adjective": {
+        "orderIndexPartOfspeech": 12,
+        "freauencyGeneral": 32422705
+      },
+      "adverb": {
+        "orderIndexPartOfspeech": 279,
+        "freauencyGeneral": 791965
+      }
+    }
+  },
+  {
+    "word": "original",
+    "orderIndexGeneralWord": 206,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 52,
+        "freauencyGeneral": 11480703
+      }
+    }
+  },
+  {
+    "word": "result",
+    "orderIndexGeneralWord": 207,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 205,
+        "freauencyGeneral": 6181160
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 67,
+        "freauencyGeneral": 20480424
+      }
+    }
+  },
+  {
+    "word": "political",
+    "orderIndexGeneralWord": 208,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "adjective": {
+        "orderIndexPartOfspeech": 62,
+        "freauencyGeneral": 10135199
+      }
+    }
+  },
+  {
+    "word": "line",
+    "orderIndexGeneralWord": 209,
+    "freauencyGeneral": null,
+    "isPartOfSpeech": true,
+    "partOfSpeech": {
+      "verb": {
+        "orderIndexPartOfspeech": 739,
+        "freauencyGeneral": 1100196
+      },
+      "noun": {
+        "orderIndexPartOfspeech": 57,
+        "freauencyGeneral": 21394512
+      }
+    }
+  }
+]

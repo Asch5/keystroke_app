@@ -26,13 +26,13 @@ CREATE TYPE "SessionType" AS ENUM ('review', 'newLearning', 'practice', 'test', 
 CREATE TYPE "LanguageCode" AS ENUM ('en', 'ru', 'da', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ar');
 
 -- CreateEnum
-CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'phrase', 'undefined');
+CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'phrase', 'sentence', 'undefined');
 
 -- CreateEnum
 CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant');
 
 -- CreateEnum
-CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'user');
+CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'user', 'admin');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -82,7 +82,6 @@ CREATE TABLE "words" (
     "word" VARCHAR(255) NOT NULL,
     "phonetic" VARCHAR(100),
     "etymology" TEXT,
-    "category" VARCHAR(255),
     "additionalInfo" JSONB DEFAULT '{}',
     "language_code" "LanguageCode" NOT NULL,
     "sourceEntityId" VARCHAR(255),
@@ -97,7 +96,7 @@ CREATE TABLE "definitions" (
     "id" SERIAL NOT NULL,
     "definition" TEXT NOT NULL,
     "part_of_speech" "PartOfSpeech" NOT NULL,
-    "plural" BOOLEAN NOT NULL DEFAULT false,
+    "isPlural" BOOLEAN NOT NULL DEFAULT false,
     "image_id" INTEGER,
     "source" "SourceType" NOT NULL,
     "language_code" "LanguageCode" NOT NULL,
@@ -551,7 +550,7 @@ CREATE UNIQUE INDEX "words_word_language_code_key" ON "words"("word", "language_
 CREATE INDEX "idx_definition_pos" ON "definitions"("part_of_speech");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "definitions_definition_part_of_speech_language_code_source__key" ON "definitions"("definition", "part_of_speech", "language_code", "source", "subject_status_labels", "general_labels", "grammatical_note", "usage_note", "is_in_short_def", "plural");
+CREATE UNIQUE INDEX "definitions_definition_part_of_speech_language_code_source__key" ON "definitions"("definition", "part_of_speech", "language_code", "source", "subject_status_labels", "general_labels", "grammatical_note", "usage_note", "is_in_short_def", "isPlural");
 
 -- CreateIndex
 CREATE INDEX "idx_definition_example_def" ON "definition_examples"("definition_id");

@@ -17,6 +17,13 @@ import {
   WordFrequency,
   FrequencyPartOfSpeech,
 } from '@/lib/utils/frequencyUtils';
+import {
+  WordUpdateData,
+  UpdateWordResult,
+  DefinitionUpdateData,
+  ExampleUpdateData,
+  AudioUpdateData,
+} from '@/types/dictionary';
 
 type WordWithAudioAndDefinitions = Prisma.WordGetPayload<{
   include: {
@@ -271,7 +278,7 @@ export type WordDetails = {
       isPrimary: boolean;
     }>;
     etymology: string | null;
-    plural: boolean;
+    isPlural: boolean;
     pluralForm: string | null;
     pastTenseForm: string | null;
     pastParticipleForm: string | null;
@@ -371,6 +378,7 @@ export type WordDetails = {
     languageCode: LanguageCode;
     source: SourceType;
     subjectStatusLabels: string | null;
+    isPlural: boolean;
     generalLabels: string | null;
     grammaticalNote: string | null;
     usageNote: string | null;
@@ -664,11 +672,11 @@ export async function getWordDetails(
           languageCode: def.languageCode,
           source: def.source,
           subjectStatusLabels: def.subjectStatusLabels,
+          isPlural: def.isPlural,
           generalLabels: def.generalLabels,
           grammaticalNote: def.grammaticalNote,
           usageNote: def.usageNote,
           isInShortDef: def.isInShortDef,
-          isPrimary: wd.isPrimary,
           examples: def.examples.map((ex) => {
             // Cast to our interface to handle audio
             const exampleWithAudio = ex as unknown as ExampleWithAudio;
@@ -810,7 +818,7 @@ export async function getWordDetails(
         audio: primaryAudio,
         audioFiles,
         etymology: word.etymology,
-        plural: !!pluralForm,
+        isPlural: !!pluralForm,
         pluralForm,
         pastTenseForm,
         pastParticipleForm,
@@ -858,4 +866,521 @@ export async function mapFrequencyPartOfSpeech(
   positionInPartOfSpeech: number,
 ): Promise<FrequencyPartOfSpeech> {
   return getFrequencyPartOfSpeechEnum(positionInPartOfSpeech);
+}
+
+/**
+ * Checks if a word exists in the database by comparing sourceEntityId with UUID from Merriam-Webster
+ * @param uuid The UUID from the Merriam-Webster API response
+ * @returns The word record if found, null otherwise
+ */
+export async function checkWordExistsByUuid(
+  uuid: string,
+): Promise<Prisma.WordGetPayload<{ select: object }> | null> {
+  try {
+    // Create the sourceEntityId format as it appears in the database
+    const sourceEntityIdLearners = `merriam_learners-${uuid}`;
+    const sourceEntityIdIntermediate = `merriam_intermediate-${uuid}`;
+
+    // Look for a word with this sourceEntityId
+    const existingWord = await prisma.word.findFirst({
+      where: {
+        sourceEntityId: {
+          in: [sourceEntityIdLearners, sourceEntityIdIntermediate],
+        },
+      },
+    });
+
+    return existingWord;
+  } catch (error) {
+    console.error('Error checking word existence by UUID:', error);
+    throw new Error('Failed to check word existence by UUID');
+  }
+}
+
+/**
+ * Fetch a word by its ID
+ * @param wordId ID of the word to fetch
+ * @returns The word record or null if not found
+ */
+export async function fetchWordById(wordId: string) {
+  try {
+    const id = parseInt(wordId);
+    if (isNaN(id)) {
+      throw new Error('Invalid word ID');
+    }
+
+    const word = await prisma.word.findUnique({
+      where: { id },
+      select: { word: true },
+    });
+
+    return word;
+  } catch (error) {
+    console.error('Error fetching word by ID:', error);
+    throw new Error(
+      `Failed to fetch word: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+//*
+
+//! BLOCK UPDATE DATA
+
+//*
+
+export async function updateWordDetails(
+  wordId: string,
+  data: WordUpdateData,
+): Promise<UpdateWordResult> {
+  try {
+    const id = parseInt(wordId);
+    if (isNaN(id)) {
+      throw new Error('Invalid word ID');
+    }
+
+    // Start a transaction to ensure all updates succeed or fail together
+    return await prisma.$transaction(async (tx) => {
+      // 1. Update basic word information
+      const updatedWord = await tx.word.update({
+        where: { id },
+        data: {
+          word: data.word,
+          phonetic: data.phonetic ?? null,
+          etymology: data.etymology ?? null,
+          updatedAt: new Date(),
+        },
+      });
+
+      // 2. Update definitions if provided
+      if (data.definitions && data.definitions.length > 0) {
+        for (const defData of data.definitions) {
+          if (defData.id) {
+            // Update existing definition
+            await tx.definition.update({
+              where: { id: defData.id },
+              data: {
+                definition: defData.definition,
+                partOfSpeech: defData.partOfSpeech,
+                imageId: defData.imageId,
+                isPlural: defData.isPlural,
+                source: defData.source,
+                languageCode: defData.languageCode,
+                subjectStatusLabels: defData.subjectStatusLabels,
+                generalLabels: defData.generalLabels,
+                grammaticalNote: defData.grammaticalNote,
+                usageNote: defData.usageNote,
+                isInShortDef: defData.isInShortDef,
+                updatedAt: new Date(),
+              },
+            });
+          } else {
+            // Create new definition and link to word
+            const newDef = await tx.definition.create({
+              data: {
+                definition: defData.definition,
+                partOfSpeech: defData.partOfSpeech,
+                imageId: defData.imageId,
+                source: defData.source,
+                languageCode: defData.languageCode,
+                subjectStatusLabels: defData.subjectStatusLabels,
+                generalLabels: defData.generalLabels,
+                grammaticalNote: defData.grammaticalNote,
+                usageNote: defData.usageNote,
+                isInShortDef: defData.isInShortDef,
+              },
+            });
+
+            // Link the new definition to the word
+            await tx.wordDefinition.create({
+              data: {
+                wordId: id,
+                definitionId: newDef.id,
+                isPrimary: false, // Set as needed
+              },
+            });
+          }
+        }
+      }
+
+      // 3. Update examples if provided
+      if (data.examples) {
+        for (const [definitionId, examples] of Object.entries(data.examples)) {
+          const defId = parseInt(definitionId);
+
+          for (const example of examples as Array<{
+            id: number;
+            example: string;
+            grammaticalNote: string | null;
+          }>) {
+            if (example.id) {
+              // Update existing example
+              await tx.definitionExample.update({
+                where: { id: example.id },
+                data: {
+                  example: example.example,
+                  grammaticalNote: example.grammaticalNote,
+                  updatedAt: new Date(),
+                },
+              });
+            } else {
+              // Create new example
+              await tx.definitionExample.create({
+                data: {
+                  example: example.example,
+                  grammaticalNote: example.grammaticalNote,
+                  definitionId: defId,
+                  languageCode:
+                    (
+                      await tx.definition.findUnique({
+                        where: { id: defId },
+                        select: { languageCode: true },
+                      })
+                    )?.languageCode || 'en',
+                },
+              });
+            }
+          }
+        }
+      }
+
+      // 4. Update audio files if provided
+      if (data.audioFiles && data.audioFiles.length > 0) {
+        for (const audioData of data.audioFiles) {
+          if (audioData.id) {
+            // Update existing audio
+            await tx.audio.update({
+              where: { id: audioData.id },
+              data: {
+                url: audioData.url,
+                source: audioData.source,
+                languageCode: audioData.languageCode,
+                updatedAt: new Date(),
+              },
+            });
+          } else {
+            // Create new audio and link to word
+            const newAudio = await tx.audio.create({
+              data: {
+                url: audioData.url,
+                source: audioData.source,
+                languageCode: audioData.languageCode,
+              },
+            });
+
+            // Link the new audio to the word
+            await tx.wordAudio.create({
+              data: {
+                wordId: id,
+                audioId: newAudio.id,
+                isPrimary: false, // Set as needed
+              },
+            });
+          }
+        }
+      }
+
+      // 5. Handle related words if provided
+      if (data.relatedWords) {
+        for (const [relationTypeStr, words] of Object.entries(
+          data.relatedWords,
+        )) {
+          const relationType = relationTypeStr as RelationshipType;
+
+          for (const relatedWord of words as Array<{
+            id: number;
+            word: string;
+            phonetic: string | null;
+          }>) {
+            // Check if the related word exists by text
+            let toWordId: number;
+
+            if (relatedWord.id) {
+              toWordId = relatedWord.id;
+            } else {
+              // Try to find or create the related word
+              const existingWord = await tx.word.findFirst({
+                where: { word: relatedWord.word },
+              });
+
+              if (existingWord) {
+                toWordId = existingWord.id;
+              } else {
+                // Create new word if it doesn't exist
+                const newWord = await tx.word.create({
+                  data: {
+                    word: relatedWord.word,
+                    phonetic: relatedWord.phonetic ?? null,
+                    languageCode: updatedWord.languageCode,
+                  },
+                });
+                toWordId = newWord.id;
+              }
+            }
+
+            // Create relationship if it doesn't exist
+            await tx.wordRelationship.upsert({
+              where: {
+                fromWordId_toWordId_type: {
+                  fromWordId: id,
+                  toWordId: toWordId,
+                  type: relationType,
+                },
+              },
+              update: {}, // No updates needed
+              create: {
+                fromWordId: id,
+                toWordId: toWordId,
+                type: relationType,
+              },
+            });
+          }
+        }
+      }
+
+      return {
+        success: true,
+        data: {
+          id: updatedWord.id,
+          word: updatedWord.word,
+          phonetic: updatedWord.phonetic,
+          etymology: updatedWord.etymology,
+        },
+      };
+    });
+  } catch (error) {
+    console.error('Error updating word details:', error);
+    return {
+      success: false,
+      error: `Failed to update word: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
+export async function updateDefinition(
+  definitionId: string,
+  data: DefinitionUpdateData,
+) {
+  try {
+    const id = parseInt(definitionId);
+    if (isNaN(id)) {
+      throw new Error('Invalid definition ID');
+    }
+
+    const definition = await prisma.definition.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!definition) {
+      throw new Error('Definition not found');
+    }
+
+    const updated = await prisma.definition.update({
+      where: { id },
+      data: {
+        definition: data.definition,
+        partOfSpeech: data.partOfSpeech,
+        imageId: data.imageId,
+        source: data.source,
+        languageCode: data.languageCode,
+        subjectStatusLabels: data.subjectStatusLabels,
+        generalLabels: data.generalLabels,
+        grammaticalNote: data.grammaticalNote,
+        usageNote: data.usageNote,
+        isInShortDef: data.isInShortDef,
+      },
+    });
+
+    return updated;
+  } catch (error) {
+    console.error('Error updating definition:', error);
+    throw new Error(
+      `Failed to update definition: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+export async function updateExample(
+  exampleId: string,
+  data: ExampleUpdateData,
+) {
+  try {
+    const id = parseInt(exampleId);
+    if (isNaN(id)) {
+      throw new Error('Invalid example ID');
+    }
+
+    const example = await prisma.definitionExample.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!example) {
+      throw new Error('Example not found');
+    }
+
+    const updated = await prisma.definitionExample.update({
+      where: { id },
+      data: {
+        example: data.example,
+        grammaticalNote: data.grammaticalNote,
+      },
+    });
+
+    return updated;
+  } catch (error) {
+    console.error('Error updating example:', error);
+    throw new Error(
+      `Failed to update example: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+export async function updateAudio(audioId: string, data: AudioUpdateData) {
+  try {
+    const id = parseInt(audioId);
+    if (isNaN(id)) {
+      throw new Error('Invalid audio ID');
+    }
+
+    const audio = await prisma.audio.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!audio) {
+      throw new Error('Audio not found');
+    }
+
+    const updated = await prisma.audio.update({
+      where: { id },
+      data: {
+        url: data.url,
+        source: data.source,
+        languageCode: data.languageCode,
+      },
+    });
+
+    return updated;
+  } catch (error) {
+    console.error('Error updating audio:', error);
+    throw new Error(
+      `Failed to update audio: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+//create audio for example
+
+export async function createAudioForExample(
+  exampleId: string,
+  data: AudioUpdateData,
+) {
+  try {
+    const id = parseInt(exampleId);
+    if (isNaN(id)) {
+      throw new Error('Invalid example ID');
+    }
+
+    const example = await prisma.definitionExample.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!example) {
+      throw new Error('Example not found');
+    }
+
+    const createdAudio = await prisma.audio.create({
+      data: {
+        url: data.url,
+        source: data.source,
+        languageCode: data.languageCode,
+      },
+    });
+
+    return createdAudio;
+  } catch (error) {
+    console.error('Error creating audio for example:', error);
+    throw new Error(
+      `Failed to create audio for example: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+//create audio for word
+
+export async function createAudioForWord(
+  wordId: string,
+  data: AudioUpdateData,
+) {
+  try {
+    const id = parseInt(wordId);
+    if (isNaN(id)) {
+      throw new Error('Invalid word ID');
+    }
+
+    const word = await prisma.word.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!word) {
+      throw new Error('Word not found');
+    }
+
+    const createdAudio = await prisma.audio.create({
+      data: {
+        url: data.url,
+        source: data.source,
+        languageCode: data.languageCode,
+      },
+    });
+
+    return createdAudio;
+  } catch (error) {
+    console.error('Error creating audio for word:', error);
+    throw new Error(
+      `Failed to create audio for word: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}
+
+//create audio for definition
+
+export async function createAudioForDefinition(
+  definitionId: string,
+  data: AudioUpdateData,
+) {
+  try {
+    const id = parseInt(definitionId);
+    if (isNaN(id)) {
+      throw new Error('Invalid definition ID');
+    }
+
+    const definition = await prisma.definition.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!definition) {
+      throw new Error('Definition not found');
+    }
+
+    const createdAudio = await prisma.audio.create({
+      data: {
+        url: data.url,
+        source: data.source,
+        languageCode: data.languageCode,
+      },
+    });
+
+    return createdAudio;
+  } catch (error) {
+    console.error('Error creating audio for definition:', error);
+    throw new Error(
+      `Failed to create audio for definition: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
 }

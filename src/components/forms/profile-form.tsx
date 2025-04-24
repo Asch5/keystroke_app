@@ -67,7 +67,7 @@ export default function ProfileForm() {
   return (
     <form action={formAction} className="space-y-4">
       {state.message && (
-        <Alert variant={state.success ? 'success' : 'destructive'}>
+        <Alert variant={state.success ? 'default' : 'destructive'}>
           <AlertDescription>{state.message}</AlertDescription>
         </Alert>
       )}

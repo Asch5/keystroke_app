@@ -1,7 +1,70 @@
-import { LanguageCode, RelationshipType } from '@prisma/client';
+import {
+  PartOfSpeech,
+  RelationshipType,
+  LanguageCode,
+  SourceType,
+} from '@prisma/client';
 
-// Types for dictionary-related data structures
-const LANGUAGE_MAP: Record<LanguageCode, string> = {
+//! Type definitions for dictionary operations
+
+export interface DefinitionUpdateData {
+  id?: number;
+  definition: string;
+  partOfSpeech: PartOfSpeech;
+  imageId: number | null;
+  isPlural: boolean;
+  source: SourceType;
+  languageCode: LanguageCode;
+  subjectStatusLabels: string | null;
+  generalLabels: string | null;
+  grammaticalNote: string | null;
+  usageNote: string | null;
+  isInShortDef: boolean;
+}
+
+export interface ExampleUpdateData {
+  id?: number;
+  example: string;
+  grammaticalNote: string | null;
+}
+
+export interface AudioUpdateData {
+  id?: number;
+  url: string;
+  source: SourceType;
+  languageCode: LanguageCode;
+  isPrimary?: boolean;
+}
+
+export interface RelatedWordUpdateData {
+  id?: number;
+  word: string;
+  phonetic: string | null;
+}
+
+export interface WordUpdateData {
+  word: string;
+  phonetic: string | null;
+  etymology: string | null;
+  definitions?: DefinitionUpdateData[];
+  audioFiles?: AudioUpdateData[];
+  examples?: Record<number, ExampleUpdateData[]>;
+  relatedWords?: Record<RelationshipType, RelatedWordUpdateData[]>;
+}
+
+export interface UpdateWordResult {
+  success: boolean;
+  data?: {
+    id: number;
+    word: string;
+    phonetic?: string | null;
+    etymology?: string | null;
+  };
+  error?: string;
+}
+
+//! Types for dictionary-related data structures
+export const LANGUAGE_MAP: Record<LanguageCode, string> = {
   en: 'English',
   ru: 'Russian',
   da: 'Danish',
@@ -16,18 +79,12 @@ const LANGUAGE_MAP: Record<LanguageCode, string> = {
   ar: 'Arabic',
 } as const;
 
-// const LANGUAGE_MAP_ARRAY = Object.entries(LANGUAGE_MAP).map(([code, name]) => ({
-//     id: code,
-//     name,
-// }));
-
-const LANGUAGE_MAP_ARRAY = [
+export const LANGUAGE_MAP_ARRAY = [
   { id: 'en', name: 'English' },
   { id: 'ru', name: 'Russian' },
   { id: 'da', name: 'Danish' },
-];
+] as const;
 
-// src/types/dictionary.ts
 export interface ProcessedWordData {
   word: {
     word: string;
@@ -71,5 +128,3 @@ export interface ProcessedWordData {
   }[];
   stems: string[];
 }
-
-export { LANGUAGE_MAP, LANGUAGE_MAP_ARRAY };

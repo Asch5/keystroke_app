@@ -27,7 +27,7 @@ export default function AdminLayout({
   return (
     <RoleGate allowedRoles={['admin']} fallback={<Fallback />}>
       <div className="flex h-screen flex-col md:flex-row">
-        <div className="border-r bg-background w-[250px] min-w-[250px]">
+        <div>
           <SideNav links={getNavigationLinks(pathname)} />
         </div>
         <main className="flex-1">

@@ -94,6 +94,7 @@ enum PartOfSpeech {
   conjunction
   interjection
   phrase
+  sentence
   undefined
 }
 
@@ -106,12 +107,12 @@ enum RelationshipType {
   phrasal_verb
   phrase
   // English-specific inflections
-  plural_en
-  past_tense_en
-  past_participle_en
-  present_participle_en
-  third_person_en
-  variant_form_phrasal_verb_en
+  plural_en //word -> words
+  past_tense_en //begin -> began
+  past_participle_en //begin -> begun
+  present_participle_en //begin -> beginning
+  third_person_en //begin -> begins
+  variant_form_phrasal_verb_en //begin -> begin with
 
   
   // Danish-specific inflections
@@ -141,6 +142,7 @@ enum SourceType {
   merriam_learners
   merriam_intermediate
   user
+  admin
 }
 
 
@@ -232,7 +234,6 @@ model Word {
   word            String          @db.VarChar(255)
   phonetic        String?         @db.VarChar(100)
   etymology       String?         @db.Text
-  category        String?         @db.VarChar(255)
   additionalInfo  Json?           @default("{}")
   languageCode    LanguageCode    @map("language_code")
   sourceEntityId  String?         @db.VarChar(255)
@@ -257,7 +258,7 @@ model Definition {
   id                  Int          @id @default(autoincrement())
   definition          String       @db.Text
   partOfSpeech        PartOfSpeech @map("part_of_speech")
-  plural              Boolean      @default(false)
+  isPlural            Boolean      @default(false)
   imageId             Int?         @map("image_id")
   source              SourceType
   languageCode        LanguageCode @map("language_code")
@@ -276,7 +277,7 @@ model Definition {
   listWords      ListWord[]
   userDictionary UserDictionary[]
 
-  @@unique([definition, partOfSpeech, languageCode, source, subjectStatusLabels, generalLabels, grammaticalNote, usageNote, isInShortDef, plural])
+  @@unique([definition, partOfSpeech, languageCode, source, subjectStatusLabels, generalLabels, grammaticalNote, usageNote, isInShortDef, isPlural])
   @@index([partOfSpeech], map: "idx_definition_pos")
   @@map("definitions")
 }

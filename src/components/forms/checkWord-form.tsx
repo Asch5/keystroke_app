@@ -453,17 +453,6 @@ export default function CheckWordForm() {
                   </div>
                 </div>
 
-                {wordDetails.word.wordFrequency && (
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      Frequency Rank
-                    </p>
-                    <Badge variant="outline" className={`mt-1 `}>
-                      {String(wordDetails.word.wordFrequency).replace('_', ' ')}
-                    </Badge>
-                  </div>
-                )}
-
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">
                     Language
@@ -471,6 +460,83 @@ export default function CheckWordForm() {
                   <Badge variant="outline" className="mt-1">
                     {wordDetails.word.languageCode}
                   </Badge>
+                </div>
+              </div>
+
+              {/* Add this within the Word metadata in a grid section */}
+              <div className="col-span-2 mt-4">
+                <p className="text-sm font-medium text-muted-foreground mb-2">
+                  Frequency Rankings
+                </p>
+                <div className="bg-muted/10 p-3 rounded-md">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div>
+                      <p className="text-xs text-muted-foreground font-medium">
+                        Overall Word Rank
+                      </p>
+                      <Badge variant="outline" className={`mt-1`}>
+                        {String(wordDetails.word.wordFrequency).replace(
+                          '_',
+                          ' ',
+                        )}
+                      </Badge>
+                    </div>
+
+                    {/* {wordDetails.definitions.some(
+                      (d) => d.frequencyPartOfSpeech,
+                    ) && (
+                      <div>
+                        <p className="text-xs text-muted-foreground font-medium">
+                          Part of Speech Rankings
+                        </p>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {Array.from(
+                            new Set(
+                              wordDetails.definitions
+                                .map((d) =>
+                                  d.frequencyPartOfSpeech && d.partOfSpeech
+                                    ? {
+                                        pos: d.partOfSpeech,
+                                        freq: d.frequencyPartOfSpeech,
+                                      }
+                                    : null,
+                                )
+                                .filter(Boolean),
+                            ),
+                          ).map(
+                            (posFreq) =>
+                              posFreq && (
+                                <div
+                                  key={String(posFreq.pos)}
+                                  className="flex items-center gap-1"
+                                >
+                                  <Badge>
+                                    {String(posFreq.pos).replace('_', ' ')}
+                                  </Badge>
+                                  <Badge variant="outline">
+                                    {String(posFreq.freq).replace('_', ' ')}
+                                  </Badge>
+                                </div>
+                              ),
+                          )}
+                        </div>
+                      </div>
+                    )} */}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Rankings indicate how common the word is in typical usage.
+                    Lower numbers indicate more common words.
+                    <span className="block mt-1">
+                      <span className="inline-block w-3 h-3 rounded-full bg-green-100 mr-1"></span>{' '}
+                      Very Common
+                      <span className="inline-block w-3 h-3 rounded-full bg-yellow-100 mx-1 ml-2"></span>{' '}
+                      Common
+                      <span className="inline-block w-3 h-3 rounded-full bg-amber-50 mx-1 ml-2"></span>{' '}
+                      Less Common
+                      <span className="inline-block w-3 h-3 rounded-full bg-gray-100 mx-1 ml-2"></span>{' '}
+                      Rare
+                    </span>
+                  </p>
                 </div>
               </div>
 
@@ -798,6 +864,13 @@ export default function CheckWordForm() {
                                         {def.subjectStatusLabels && (
                                           <Badge variant="outline">
                                             {def.subjectStatusLabels}
+                                          </Badge>
+                                        )}
+                                        {def.frequencyPartOfSpeech && (
+                                          <Badge variant="outline">
+                                            {String(
+                                              def.frequencyPartOfSpeech,
+                                            ).replace('_', ' ')}
                                           </Badge>
                                         )}
                                       </div>

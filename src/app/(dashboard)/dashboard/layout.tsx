@@ -8,7 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen flex-col md:flex-row">
-      <div className="border-r bg-background w-[250px] min-w-[250px]">
+      <div>
         <SideNav links={dictionaryNavLinks} />
       </div>
       <main className="flex-1">

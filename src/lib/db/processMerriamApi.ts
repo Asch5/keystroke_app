@@ -97,6 +97,7 @@ export interface MerriamWebsterVariant {
 export interface MerriamWebsterDefinitionSense {
   sn?: string;
   sgram?: string;
+  bnote?: string;
   dt: Array<[string, unknown]>;
   sdsense?: MerriamWebsterDefinitionSense;
   phrasev?: Array<{ pva?: string }>;
@@ -752,9 +753,8 @@ export async function processAndSaveWord(
           {
             partOfSpeech: PartOfSpeech.noun,
             source: source,
-
             languageCode: language,
-            isPlural: false,
+            isPlural: true,
             definition: etymologySubWord || '',
             examples: [],
           },
@@ -1316,6 +1316,7 @@ sourceWordText processing
 
               // Process grammatical notes
               const grammaticalNote = senseData.sgram;
+              const bnote = senseData.bnote;
 
               const generalLabels = senseData.lbs?.join(', ') || '';
 
@@ -1345,8 +1346,12 @@ sourceWordText processing
                 isPlural: false,
                 definition: cleanDefinitionText,
                 subjectStatusLabels,
-                generalLabels: `${mainLbs}${mainLbs && generalLabels ? ' | ' : ''}${generalLabels}`,
-                grammaticalNote: grammaticalNote || null,
+                generalLabels: `${mainLbs || ''} ${
+                  mainLbs && generalLabels ? ' | ' : ''
+                }${generalLabels || ''}`,
+                grammaticalNote: `${grammaticalNote || ''} ${
+                  grammaticalNote && bnote ? ' | ' : ''
+                }"${bnote || ''}"`,
                 usageNote: extractedUsageNote || unsNoteText || null,
                 isInShortDef: shortDefTexts.has(normalizedDefinition),
                 examples,
@@ -1433,7 +1438,7 @@ sourceWordText processing
                 grammaticalNote: definitionData.grammaticalNote || null,
                 usageNote: definitionData.usageNote || null,
                 isInShortDef: definitionData.isInShortDef || false,
-                plural: definitionData.isPlural || false,
+                isPlural: definitionData.isPlural || false,
               },
             });
 
@@ -1451,7 +1456,7 @@ sourceWordText processing
                   grammaticalNote: definitionData.grammaticalNote || null,
                   usageNote: definitionData.usageNote || null,
                   isInShortDef: definitionData.isInShortDef || false,
-                  plural: definitionData.isPlural || false,
+                  isPlural: definitionData.isPlural || false,
                 },
               }));
 
@@ -1594,7 +1599,7 @@ sourceWordText processing
                 grammaticalNote: defData.grammaticalNote || null,
                 usageNote: defData.usageNote || null,
                 isInShortDef: defData.isInShortDef || false,
-                plural: defData.isPlural || false,
+                isPlural: defData.isPlural || false,
               },
             });
 
@@ -1611,7 +1616,7 @@ sourceWordText processing
                   grammaticalNote: defData.grammaticalNote || null,
                   usageNote: defData.usageNote || null,
                   isInShortDef: defData.isInShortDef || false,
-                  plural: defData.isPlural || false,
+                  isPlural: defData.isPlural || false,
                 },
               }));
 
@@ -1701,7 +1706,7 @@ sourceWordText processing
                   grammaticalNote: defData.grammaticalNote || null,
                   usageNote: defData.usageNote || null,
                   isInShortDef: defData.isInShortDef || false,
-                  plural: defData.isPlural || false,
+                  isPlural: defData.isPlural || false,
                 },
               }));
 
@@ -1848,12 +1853,10 @@ sourceWordText processing
 function cleanupDefinitionText(text: unknown): string {
   if (typeof text !== 'string') {
     console.warn('Non-string definition text encountered:', text);
-    return (
-      String(text || '')
-        // .replace(/{[^}]+}/g, '')
-        // .replace(/\s+/g, ' ')
-        .trim()
-    );
+    return String(text || '')
+      .replace(/{[^}]+}/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   // Skip if it's a cross-reference
@@ -1861,12 +1864,10 @@ function cleanupDefinitionText(text: unknown): string {
     return '';
   }
 
-  return (
-    text
-      // .replace(/{[^}]+}/g, '')
-      // .replace(/\s+/g, ' ')
-      .trim()
-  );
+  return text
+    .replace(/{[^}]+}/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function normalize(text: string): string {
@@ -2125,7 +2126,7 @@ function extractExamples(
 
           // Extract text from the note
           if (snoteItemType === 't' && typeof snoteItemContent === 'string') {
-            snoteText = cleanupDefinitionText(snoteItemContent);
+            snoteText = cleanupExampleText(snoteItemContent);
 
             // Add this as a usage text
             if (snoteText) {
@@ -2145,7 +2146,7 @@ function extractExamples(
               examples.push({
                 example: cleanedExample,
                 languageCode: language,
-                grammaticalNote: `${snoteText} ${currentWsgram ? `(${currentWsgram})` : ''}`,
+                grammaticalNote: `${snoteText || ''} ${currentWsgram ? `(${currentWsgram})` : ''}`,
               });
 
               snoteExamples.push(cleanedExample);
@@ -2222,7 +2223,7 @@ function processNestedExamples(
 
             // Extract usage text
             if (subType === 'text' && typeof subContent === 'string') {
-              usageText = cleanupDefinitionText(subContent);
+              usageText = cleanupExampleText(subContent);
             }
 
             // Process sense notes if they appear in nested content

@@ -79,4 +79,9 @@ export const adminDictionariesNavLinks: NavLink[] = [
     href: '/admin/dictionaries/frequency',
     icon: BookOpenIcon,
   },
+  {
+    name: 'Edit Word',
+    href: '/admin/dictionaries/edit-word',
+    icon: BookOpenIcon,
+  },
 ];

@@ -18,7 +18,7 @@ erDiagram
     Language ||--o{ UserList : "base language"
     Language ||--o{ UserList : "target language"
     Language ||--o{ UserDictionary : "base language"
-    Language ||--o{ UserDictionary : "target language"
+    Language ||--o{ UserDictionary : "target language"c
 
     Word ||--o{ MainDictionary : "has entries"
     Word ||--o{ WordComposition : "is part of"

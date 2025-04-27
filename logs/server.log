@@ -1,0 +1,336 @@
+[2025-04-25T18:57:10.651Z] [INFO] Processing word: type
+[2025-04-25T18:57:11.399Z] [INFO] Process in processMerriamApi.ts (definition section 1): Immediately creating image for the new definition 283 of word "type", fetching now...
+[2025-04-25T18:57:11.400Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 283
+[2025-04-25T18:57:11.937Z] [WARN] Definition with id 283 not found
+[2025-04-25T18:57:12.834Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 284
+[2025-04-25T18:57:12.832Z] [INFO] Process in processMerriamApi.ts (definition section 1): Immediately creating image for the new definition 284 of word "type", fetching now...
+[2025-04-25T18:57:12.887Z] [WARN] Definition with id 284 not found
+[2025-04-25T18:57:13.397Z] [INFO] Process in processMerriamApi.ts (definition section 1): Immediately creating image for the new definition 285 of word "type", fetching now...
+[2025-04-25T18:57:13.399Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 285
+[2025-04-25T18:57:13.472Z] [WARN] Definition with id 285 not found
+[2025-04-25T18:57:13.886Z] [INFO] Process in processMerriamApi.ts (definition section 1): Immediately creating image for the new definition 286 of word "type", fetching now...
+[2025-04-25T18:57:13.904Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 286
+[2025-04-25T18:57:13.978Z] [WARN] Definition with id 286 not found
+[2025-04-25T18:57:14.839Z] [INFO] Process in processMerriamApi.ts (subword section 1): Immediately creating image for the new subword definition 287 of word "types", fetching now...
+[2025-04-25T18:57:14.840Z] [INFO] Starting getOrCreateDefinitionImage for word: "types", definitionId: 287
+[2025-04-25T18:57:14.895Z] [WARN] Definition with id 287 not found
+[2025-04-25T18:57:58.554Z] [INFO] Process in dictionaryActions.ts: No image found for definition 283 of word "type", fetching now...
+[2025-04-25T18:57:58.554Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 283
+[2025-04-25T18:57:58.556Z] [INFO] Process in dictionaryActions.ts: No image found for definition 284 of word "type", fetching now...
+[2025-04-25T18:57:58.556Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 284
+[2025-04-25T18:57:58.559Z] [INFO] Process in dictionaryActions.ts: No image found for definition 285 of word "type", fetching now...
+[2025-04-25T18:57:58.560Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 285
+[2025-04-25T18:57:58.561Z] [INFO] Process in dictionaryActions.ts: No image found for definition 286 of word "type", fetching now...
+[2025-04-25T18:57:58.562Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 286
+[2025-04-25T18:57:58.628Z] [INFO] Found definition 283, creating search query for word: "type"
+[2025-04-25T18:57:58.630Z] [INFO] Search query: type noun particular kind group things people Context: {"word":"type","keyWords":["particular","kind","group","things","people"],"partOfSpeech":"noun"}
+[2025-04-25T18:57:58.631Z] [INFO] Searching Pexels API with query: "type noun particular kind group things people", page: 4 (attempt 1/3)
+[2025-04-25T18:57:58.637Z] [INFO] Search query: type noun particular kind person Context: {"word":"type","keyWords":["particular","kind","person"],"partOfSpeech":"noun"}
+[2025-04-25T18:57:58.638Z] [INFO] Searching Pexels API with query: "type noun particular kind person", page: 3 (attempt 1/3)
+[2025-04-25T18:57:58.644Z] [INFO] Found definition 285, creating search query for word: "type"
+[2025-04-25T18:57:58.645Z] [INFO] Search query: type noun printed letters Context: {"word":"type","keyWords":["printed","letters"],"partOfSpeech":"noun"}
+[2025-04-25T18:57:58.646Z] [INFO] Searching Pexels API with query: "type noun printed letters", page: 1 (attempt 1/3)
+[2025-04-25T18:57:58.636Z] [INFO] Found definition 284, creating search query for word: "type"
+[2025-04-25T18:57:58.651Z] [INFO] Found definition 286, creating search query for word: "type"
+[2025-04-25T18:57:58.652Z] [INFO] Searching Pexels API with query: "type noun small metal blocks used printing", page: 3 (attempt 1/3)
+[2025-04-25T18:57:58.651Z] [INFO] Search query: type noun small metal blocks used printing Context: {"word":"type","keyWords":["small","metal","blocks","used","printing"],"partOfSpeech":"noun"}
+[2025-04-25T18:57:59.066Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T18:57:59.069Z] [INFO] Creating image from Pexels photo for definitionId: 285 Context: {"photoId":3945341}
+[2025-04-25T18:57:59.067Z] [INFO] Creating image from Pexels photo ID: 3945341
+[2025-04-25T18:57:59.080Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T18:57:59.080Z] [INFO] Creating image from Pexels photo ID: 14017812
+[2025-04-25T18:57:59.081Z] [INFO] Creating image from Pexels photo for definitionId: 286 Context: {"photoId":14017812}
+[2025-04-25T18:57:59.122Z] [INFO] Checking if definition 285 exists
+[2025-04-25T18:57:59.161Z] [INFO] Checking if definition 286 exists
+[2025-04-25T18:57:59.202Z] [INFO] Definition 286 found
+[2025-04-25T18:57:59.202Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/14017812/pexels-photo-14017812.jpeg
+[2025-04-25T18:57:59.206Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T18:57:59.206Z] [INFO] Creating image from Pexels photo ID: 5520292
+[2025-04-25T18:57:59.208Z] [INFO] Creating image from Pexels photo for definitionId: 283 Context: {"photoId":5520292}
+[2025-04-25T18:57:59.212Z] [INFO] Definition 285 found
+[2025-04-25T18:57:59.213Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/3945341/pexels-photo-3945341.jpeg
+[2025-04-25T18:57:59.223Z] [INFO] Creating image from Pexels photo ID: 7214752
+[2025-04-25T18:57:59.223Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T18:57:59.224Z] [INFO] Creating image from Pexels photo for definitionId: 284 Context: {"photoId":7214752}
+[2025-04-25T18:57:59.313Z] [INFO] Updating definition 286 with imageId: 254
+[2025-04-25T18:57:59.310Z] [INFO] Image upserted with ID: 254
+[2025-04-25T18:57:59.318Z] [INFO] Updating definition 285 with imageId: 255
+[2025-04-25T18:57:59.317Z] [INFO] Image upserted with ID: 255
+[2025-04-25T18:57:59.401Z] [INFO] Definition 286 updated with imageId: 254
+[2025-04-25T18:57:59.400Z] [INFO] Definition 285 updated with imageId: 255
+[2025-04-25T18:57:59.440Z] [INFO] Image created successfully with ID: 255
+[2025-04-25T18:57:59.447Z] [INFO] Image created successfully with ID: 254
+[2025-04-25T18:57:59.448Z] [INFO] Successfully created image 254 for definition 286
+[2025-04-25T18:57:59.444Z] [INFO] Successfully created image 255 for definition 285
+[2025-04-25T18:57:59.553Z] [INFO] Checking if definition 283 exists
+[2025-04-25T18:57:59.599Z] [INFO] Checking if definition 284 exists
+[2025-04-25T18:57:59.651Z] [INFO] Definition 283 found
+[2025-04-25T18:57:59.652Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/5520292/pexels-photo-5520292.jpeg
+[2025-04-25T18:57:59.683Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/7214752/pexels-photo-7214752.jpeg
+[2025-04-25T18:57:59.682Z] [INFO] Definition 284 found
+[2025-04-25T18:57:59.747Z] [INFO] Image upserted with ID: 256
+[2025-04-25T18:57:59.748Z] [INFO] Updating definition 283 with imageId: 256
+[2025-04-25T18:57:59.768Z] [INFO] Image upserted with ID: 257
+[2025-04-25T18:57:59.769Z] [INFO] Updating definition 284 with imageId: 257
+[2025-04-25T18:57:59.844Z] [INFO] Definition 283 updated with imageId: 256
+[2025-04-25T18:57:59.881Z] [INFO] Definition 284 updated with imageId: 257
+[2025-04-25T18:57:59.893Z] [INFO] Image created successfully with ID: 256
+[2025-04-25T18:57:59.894Z] [INFO] Successfully created image 256 for definition 283
+[2025-04-25T18:57:59.921Z] [INFO] Image created successfully with ID: 257
+[2025-04-25T18:57:59.922Z] [INFO] Successfully created image 257 for definition 284
+[2025-04-25T18:59:14.274Z] [INFO] Process in dictionaryActions.ts: No image found for definition 287 of word "types", fetching now...
+[2025-04-25T18:59:14.275Z] [INFO] Starting getOrCreateDefinitionImage for word: "types", definitionId: 287
+[2025-04-25T18:59:14.329Z] [INFO] Found definition 287, creating search query for word: "types"
+[2025-04-25T18:59:14.334Z] [INFO] Search query: types noun plural form "type" Context: {"word":"types","keyWords":["plural","form","\"type\""],"partOfSpeech":"noun"}
+[2025-04-25T18:59:14.337Z] [INFO] Searching Pexels API with query: "types noun plural form type", page: 1 (attempt 1/3)
+[2025-04-25T18:59:14.714Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T18:59:14.715Z] [INFO] Creating image from Pexels photo ID: 7400332
+[2025-04-25T18:59:14.716Z] [INFO] Creating image from Pexels photo for definitionId: 287 Context: {"photoId":7400332}
+[2025-04-25T18:59:14.755Z] [INFO] Checking if definition 287 exists
+[2025-04-25T18:59:14.796Z] [INFO] Definition 287 found
+[2025-04-25T18:59:14.796Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/7400332/pexels-photo-7400332.jpeg
+[2025-04-25T18:59:14.852Z] [INFO] Image upserted with ID: 258
+[2025-04-25T18:59:14.852Z] [INFO] Updating definition 287 with imageId: 258
+[2025-04-25T18:59:14.904Z] [INFO] Definition 287 updated with imageId: 258
+[2025-04-25T18:59:14.954Z] [INFO] Image created successfully with ID: 258
+[2025-04-25T18:59:14.954Z] [INFO] Successfully created image 258 for definition 287
+[2025-04-25T19:59:16.829Z] [INFO] Processing word: type
+[2025-04-25T19:59:17.676Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 288 of word "type", fetching now...
+[2025-04-25T19:59:17.677Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 288
+[2025-04-25T19:59:18.033Z] [WARN] Definition with id 288 not found
+[2025-04-25T19:59:18.744Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 289 of word "type", fetching now...
+[2025-04-25T19:59:18.746Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 289
+[2025-04-25T19:59:18.789Z] [WARN] Definition with id 289 not found
+[2025-04-25T19:59:19.210Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 290 of word "type", fetching now...
+[2025-04-25T19:59:19.211Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 290
+[2025-04-25T19:59:19.251Z] [WARN] Definition with id 290 not found
+[2025-04-25T19:59:19.524Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 291 of word "type", fetching now...
+[2025-04-25T19:59:19.525Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 291
+[2025-04-25T19:59:19.574Z] [WARN] Definition with id 291 not found
+[2025-04-25T19:59:20.259Z] [INFO] Process in processMerriamApi.ts (subword section): Immediately creating image for the new subword definition 292 of word "types", fetching now...
+[2025-04-25T19:59:20.261Z] [INFO] Starting getOrCreateDefinitionImage for word: "types", definitionId: 292
+[2025-04-25T19:59:20.307Z] [WARN] Definition with id 292 not found
+[2025-04-25T19:59:32.834Z] [INFO] Process in dictionaryActions.ts: No image found for definition 288 of word "type", fetching now...
+[2025-04-25T19:59:32.836Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 288
+[2025-04-25T19:59:32.839Z] [INFO] Process in dictionaryActions.ts: No image found for definition 289 of word "type", fetching now...
+[2025-04-25T19:59:32.841Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 289
+[2025-04-25T19:59:32.843Z] [INFO] Process in dictionaryActions.ts: No image found for definition 290 of word "type", fetching now...
+[2025-04-25T19:59:32.845Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 290
+[2025-04-25T19:59:32.846Z] [INFO] Process in dictionaryActions.ts: No image found for definition 291 of word "type", fetching now...
+[2025-04-25T19:59:32.849Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 291
+[2025-04-25T19:59:32.914Z] [INFO] Search query: type noun particular kind group things people Context: {"word":"type","keyWords":["particular","kind","group","things","people"],"partOfSpeech":"noun"}
+[2025-04-25T19:59:32.912Z] [INFO] Found definition 288, creating search query for word: "type"
+[2025-04-25T19:59:32.915Z] [INFO] Searching Pexels API with query: "type noun particular kind group things people", page: 3 (attempt 1/3)
+[2025-04-25T19:59:32.928Z] [INFO] Found definition 289, creating search query for word: "type"
+[2025-04-25T19:59:32.929Z] [INFO] Search query: type noun particular kind person Context: {"word":"type","keyWords":["particular","kind","person"],"partOfSpeech":"noun"}
+[2025-04-25T19:59:32.931Z] [INFO] Found definition 290, creating search query for word: "type"
+[2025-04-25T19:59:32.932Z] [INFO] Search query: type noun printed letters Context: {"word":"type","keyWords":["printed","letters"],"partOfSpeech":"noun"}
+[2025-04-25T19:59:32.932Z] [INFO] Searching Pexels API with query: "type noun printed letters", page: 4 (attempt 1/3)
+[2025-04-25T19:59:32.940Z] [INFO] Found definition 291, creating search query for word: "type"
+[2025-04-25T19:59:32.941Z] [INFO] Search query: type noun small metal blocks used printing Context: {"word":"type","keyWords":["small","metal","blocks","used","printing"],"partOfSpeech":"noun"}
+[2025-04-25T19:59:32.942Z] [INFO] Searching Pexels API with query: "type noun small metal blocks used printing", page: 2 (attempt 1/3)
+[2025-04-25T19:59:32.929Z] [INFO] Searching Pexels API with query: "type noun particular kind person", page: 2 (attempt 1/3)
+[2025-04-25T19:59:33.425Z] [INFO] Creating image from Pexels photo ID: 7888064
+[2025-04-25T19:59:33.424Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T19:59:33.427Z] [INFO] Creating image from Pexels photo for definitionId: 290 Context: {"photoId":7888064}
+[2025-04-25T19:59:33.459Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T19:59:33.463Z] [INFO] Creating image from Pexels photo ID: 8117473
+[2025-04-25T19:59:33.459Z] [INFO] Creating image from Pexels photo ID: 234133
+[2025-04-25T19:59:33.460Z] [INFO] Creating image from Pexels photo for definitionId: 291 Context: {"photoId":234133}
+[2025-04-25T19:59:33.464Z] [INFO] Creating image from Pexels photo for definitionId: 288 Context: {"photoId":8117473}
+[2025-04-25T19:59:33.463Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T19:59:33.474Z] [INFO] Checking if definition 290 exists
+[2025-04-25T19:59:33.533Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T19:59:33.535Z] [INFO] Creating image from Pexels photo ID: 7610771
+[2025-04-25T19:59:33.536Z] [INFO] Creating image from Pexels photo for definitionId: 289 Context: {"photoId":7610771}
+[2025-04-25T19:59:33.541Z] [INFO] Checking if definition 291 exists
+[2025-04-25T19:59:33.561Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/7888064/pexels-photo-7888064.jpeg
+[2025-04-25T19:59:33.560Z] [INFO] Definition 290 found
+[2025-04-25T19:59:33.590Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/234133/pexels-photo-234133.jpeg
+[2025-04-25T19:59:33.588Z] [INFO] Definition 291 found
+[2025-04-25T19:59:33.660Z] [INFO] Image upserted with ID: 259
+[2025-04-25T19:59:33.660Z] [INFO] Updating definition 290 with imageId: 259
+[2025-04-25T19:59:33.676Z] [INFO] Updating definition 291 with imageId: 260
+[2025-04-25T19:59:33.676Z] [INFO] Image upserted with ID: 260
+[2025-04-25T19:59:33.754Z] [INFO] Definition 290 updated with imageId: 259
+[2025-04-25T19:59:33.763Z] [INFO] Definition 291 updated with imageId: 260
+[2025-04-25T19:59:33.808Z] [INFO] Image created successfully with ID: 259
+[2025-04-25T19:59:33.809Z] [INFO] Successfully created image 259 for definition 290
+[2025-04-25T19:59:33.821Z] [INFO] Image created successfully with ID: 260
+[2025-04-25T19:59:33.821Z] [INFO] Successfully created image 260 for definition 291
+[2025-04-25T19:59:33.839Z] [INFO] Checking if definition 288 exists
+[2025-04-25T19:59:33.876Z] [INFO] Checking if definition 289 exists
+[2025-04-25T19:59:33.922Z] [INFO] Definition 288 found
+[2025-04-25T19:59:33.924Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/8117473/pexels-photo-8117473.jpeg
+[2025-04-25T19:59:33.966Z] [INFO] Definition 289 found
+[2025-04-25T19:59:33.969Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/7610771/pexels-photo-7610771.jpeg
+[2025-04-25T19:59:34.009Z] [INFO] Image upserted with ID: 261
+[2025-04-25T19:59:34.010Z] [INFO] Updating definition 288 with imageId: 261
+[2025-04-25T19:59:34.060Z] [INFO] Updating definition 289 with imageId: 262
+[2025-04-25T19:59:34.059Z] [INFO] Image upserted with ID: 262
+[2025-04-25T19:59:34.098Z] [INFO] Definition 288 updated with imageId: 261
+[2025-04-25T19:59:34.136Z] [INFO] Image created successfully with ID: 261
+[2025-04-25T19:59:34.140Z] [INFO] Successfully created image 261 for definition 288
+[2025-04-25T19:59:34.145Z] [INFO] Definition 289 updated with imageId: 262
+[2025-04-25T19:59:34.194Z] [INFO] Successfully created image 262 for definition 289
+[2025-04-25T19:59:34.193Z] [INFO] Image created successfully with ID: 262
+[2025-04-25T20:10:54.470Z] [INFO] Processing word: type
+[2025-04-25T20:10:55.039Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 293 of word "type", fetching now...
+[2025-04-25T20:10:55.042Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 293
+[2025-04-25T20:10:55.433Z] [WARN] Definition with id 293 not found
+[2025-04-25T20:10:56.157Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 294 of word "type", fetching now...
+[2025-04-25T20:10:56.158Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 294
+[2025-04-25T20:10:56.204Z] [WARN] Definition with id 294 not found
+[2025-04-25T20:10:56.608Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 295
+[2025-04-25T20:10:56.607Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 295 of word "type", fetching now...
+[2025-04-25T20:10:56.654Z] [WARN] Definition with id 295 not found
+[2025-04-25T20:10:57.021Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 296
+[2025-04-25T20:10:57.020Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 296 of word "type", fetching now...
+[2025-04-25T20:10:57.083Z] [WARN] Definition with id 296 not found
+[2025-04-25T20:10:57.878Z] [INFO] Process in processMerriamApi.ts (subword section): Immediately creating image for the new subword definition 297 of word "types", fetching now...
+[2025-04-25T20:10:57.886Z] [INFO] Starting getOrCreateDefinitionImage for word: "types", definitionId: 297
+[2025-04-25T20:10:57.932Z] [WARN] Definition with id 297 not found
+[2025-04-25T20:11:05.019Z] [INFO] Process in dictionaryActions.ts: No image found for definition 293 of word "type", fetching now...
+[2025-04-25T20:11:05.020Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 293
+[2025-04-25T20:11:05.024Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 294
+[2025-04-25T20:11:05.026Z] [INFO] Process in dictionaryActions.ts: No image found for definition 295 of word "type", fetching now...
+[2025-04-25T20:11:05.032Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 295
+[2025-04-25T20:11:05.023Z] [INFO] Process in dictionaryActions.ts: No image found for definition 294 of word "type", fetching now...
+[2025-04-25T20:11:05.034Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 296
+[2025-04-25T20:11:05.034Z] [INFO] Process in dictionaryActions.ts: No image found for definition 296 of word "type", fetching now...
+[2025-04-25T20:11:05.086Z] [INFO] Found definition 293, creating search query for word: "type"
+[2025-04-25T20:11:05.087Z] [INFO] Search query: type noun particular kind group things people Context: {"word":"type","keyWords":["particular","kind","group","things","people"],"partOfSpeech":"noun"}
+[2025-04-25T20:11:05.094Z] [INFO] Found definition 294, creating search query for word: "type"
+[2025-04-25T20:11:05.088Z] [INFO] Searching Pexels API with query: "type noun particular kind group things people", page: 4 (attempt 1/3)
+[2025-04-25T20:11:05.100Z] [INFO] Searching Pexels API with query: "type noun particular kind person", page: 5 (attempt 1/3)
+[2025-04-25T20:11:05.099Z] [INFO] Search query: type noun particular kind person Context: {"word":"type","keyWords":["particular","kind","person"],"partOfSpeech":"noun"}
+[2025-04-25T20:11:05.103Z] [INFO] Found definition 295, creating search query for word: "type"
+[2025-04-25T20:11:05.103Z] [INFO] Search query: type noun printed letters Context: {"word":"type","keyWords":["printed","letters"],"partOfSpeech":"noun"}
+[2025-04-25T20:11:05.107Z] [INFO] Found definition 296, creating search query for word: "type"
+[2025-04-25T20:11:05.104Z] [INFO] Searching Pexels API with query: "type noun printed letters", page: 4 (attempt 1/3)
+[2025-04-25T20:11:05.108Z] [INFO] Search query: type noun small metal blocks used printing Context: {"word":"type","keyWords":["small","metal","blocks","used","printing"],"partOfSpeech":"noun"}
+[2025-04-25T20:11:05.108Z] [INFO] Searching Pexels API with query: "type noun small metal blocks used printing", page: 1 (attempt 1/3)
+[2025-04-25T20:11:05.444Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T20:11:05.446Z] [INFO] Creating image from Pexels photo for definitionId: 295 Context: {"photoId":7888064}
+[2025-04-25T20:11:05.445Z] [INFO] Creating image from Pexels photo ID: 7888064
+[2025-04-25T20:11:05.501Z] [INFO] Checking if definition 295 exists
+[2025-04-25T20:11:05.559Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T20:11:05.559Z] [INFO] Creating image from Pexels photo for definitionId: 293 Context: {"photoId":5520292}
+[2025-04-25T20:11:05.559Z] [INFO] Creating image from Pexels photo ID: 5520292
+[2025-04-25T20:11:05.588Z] [INFO] Definition 295 found
+[2025-04-25T20:11:05.588Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/7888064/pexels-photo-7888064.jpeg
+[2025-04-25T20:11:05.599Z] [INFO] Creating image from Pexels photo ID: 7585607
+[2025-04-25T20:11:05.599Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T20:11:05.599Z] [INFO] Creating image from Pexels photo for definitionId: 294 Context: {"photoId":7585607}
+[2025-04-25T20:11:05.603Z] [INFO] Checking if definition 293 exists
+[2025-04-25T20:11:05.624Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T20:11:05.625Z] [INFO] Creating image from Pexels photo ID: 31211181
+[2025-04-25T20:11:05.625Z] [INFO] Creating image from Pexels photo for definitionId: 296 Context: {"photoId":31211181}
+[2025-04-25T20:11:05.647Z] [INFO] Definition 293 found
+[2025-04-25T20:11:05.648Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/5520292/pexels-photo-5520292.jpeg
+[2025-04-25T20:11:05.683Z] [INFO] Updating definition 295 with imageId: 259
+[2025-04-25T20:11:05.683Z] [INFO] Image upserted with ID: 259
+[2025-04-25T20:11:05.742Z] [INFO] Updating definition 293 with imageId: 264
+[2025-04-25T20:11:05.741Z] [INFO] Image upserted with ID: 264
+[2025-04-25T20:11:05.775Z] [INFO] Definition 295 updated with imageId: 259
+[2025-04-25T20:11:05.821Z] [INFO] Image created successfully with ID: 259
+[2025-04-25T20:11:05.822Z] [INFO] Successfully created image 259 for definition 295
+[2025-04-25T20:11:05.834Z] [INFO] Definition 293 updated with imageId: 264
+[2025-04-25T20:11:05.875Z] [INFO] Image created successfully with ID: 264
+[2025-04-25T20:11:05.876Z] [INFO] Successfully created image 264 for definition 293
+[2025-04-25T20:11:05.953Z] [INFO] Checking if definition 294 exists
+[2025-04-25T20:11:05.966Z] [INFO] Checking if definition 296 exists
+[2025-04-25T20:11:06.051Z] [INFO] Definition 294 found
+[2025-04-25T20:11:06.052Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/7585607/pexels-photo-7585607.jpeg
+[2025-04-25T20:11:06.068Z] [INFO] Definition 296 found
+[2025-04-25T20:11:06.070Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/31211181/pexels-photo-31211181.jpeg
+[2025-04-25T20:11:06.154Z] [INFO] Image upserted with ID: 265
+[2025-04-25T20:11:06.154Z] [INFO] Updating definition 294 with imageId: 265
+[2025-04-25T20:11:06.165Z] [INFO] Image upserted with ID: 266
+[2025-04-25T20:11:06.166Z] [INFO] Updating definition 296 with imageId: 266
+[2025-04-25T20:11:06.247Z] [INFO] Definition 294 updated with imageId: 265
+[2025-04-25T20:11:06.272Z] [INFO] Definition 296 updated with imageId: 266
+[2025-04-25T20:11:06.285Z] [INFO] Image created successfully with ID: 265
+[2025-04-25T20:11:06.286Z] [INFO] Successfully created image 265 for definition 294
+[2025-04-25T20:11:06.320Z] [INFO] Successfully created image 266 for definition 296
+[2025-04-25T20:11:06.320Z] [INFO] Image created successfully with ID: 266
+[2025-04-25T20:16:18.157Z] [INFO] Processing word: type
+[2025-04-25T20:16:18.792Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 298 of word "type", fetching now...
+[2025-04-25T20:16:18.794Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 298
+[2025-04-25T20:16:19.227Z] [WARN] Definition with id 298 not found
+[2025-04-25T20:16:20.064Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 299
+[2025-04-25T20:16:20.061Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 299 of word "type", fetching now...
+[2025-04-25T20:16:20.113Z] [WARN] Definition with id 299 not found
+[2025-04-25T20:16:20.497Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 300 of word "type", fetching now...
+[2025-04-25T20:16:20.498Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 300
+[2025-04-25T20:16:20.545Z] [WARN] Definition with id 300 not found
+[2025-04-25T20:16:20.815Z] [INFO] Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition 301 of word "type", fetching now...
+[2025-04-25T20:16:20.817Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 301
+[2025-04-25T20:16:20.865Z] [WARN] Definition with id 301 not found
+[2025-04-25T20:16:21.798Z] [INFO] Process in processMerriamApi.ts (subword section): Immediately creating image for the new subword definition 302 of word "types", fetching now...
+[2025-04-25T20:16:21.799Z] [INFO] Starting getOrCreateDefinitionImage for word: "types", definitionId: 302
+[2025-04-25T20:16:21.848Z] [WARN] Definition with id 302 not found
+[2025-04-25T20:16:57.606Z] [INFO] Process in dictionaryActions.ts: No image found for definition 298 of word "type", fetching now...
+[2025-04-25T20:16:57.607Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 298
+[2025-04-25T20:16:57.610Z] [INFO] Process in dictionaryActions.ts: No image found for definition 299 of word "type", fetching now...
+[2025-04-25T20:16:57.612Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 299
+[2025-04-25T20:16:57.613Z] [INFO] Process in dictionaryActions.ts: No image found for definition 300 of word "type", fetching now...
+[2025-04-25T20:16:57.614Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 300
+[2025-04-25T20:16:57.615Z] [INFO] Process in dictionaryActions.ts: No image found for definition 301 of word "type", fetching now...
+[2025-04-25T20:16:57.620Z] [INFO] Starting getOrCreateDefinitionImage for word: "type", definitionId: 301
+[2025-04-25T20:16:57.667Z] [INFO] Found definition 298, creating search query for word: "type"
+[2025-04-25T20:16:57.669Z] [INFO] Search query: type noun particular kind group things people Context: {"word":"type","keyWords":["particular","kind","group","things","people"],"partOfSpeech":"noun"}
+[2025-04-25T20:16:57.670Z] [INFO] Searching Pexels API with query: "type noun particular kind group things people", page: 2 (attempt 1/3)
+[2025-04-25T20:16:57.673Z] [INFO] Found definition 299, creating search query for word: "type"
+[2025-04-25T20:16:57.674Z] [INFO] Search query: type noun particular kind person Context: {"word":"type","keyWords":["particular","kind","person"],"partOfSpeech":"noun"}
+[2025-04-25T20:16:57.675Z] [INFO] Searching Pexels API with query: "type noun particular kind person", page: 1 (attempt 1/3)
+[2025-04-25T20:16:57.678Z] [INFO] Search query: type noun printed letters Context: {"word":"type","keyWords":["printed","letters"],"partOfSpeech":"noun"}
+[2025-04-25T20:16:57.677Z] [INFO] Found definition 300, creating search query for word: "type"
+[2025-04-25T20:16:57.678Z] [INFO] Searching Pexels API with query: "type noun printed letters", page: 1 (attempt 1/3)
+[2025-04-25T20:16:57.680Z] [INFO] Found definition 301, creating search query for word: "type"
+[2025-04-25T20:16:57.681Z] [INFO] Search query: type noun small metal blocks used printing Context: {"word":"type","keyWords":["small","metal","blocks","used","printing"],"partOfSpeech":"noun"}
+[2025-04-25T20:16:57.681Z] [INFO] Searching Pexels API with query: "type noun small metal blocks used printing", page: 3 (attempt 1/3)
+[2025-04-25T20:16:57.980Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T20:16:57.981Z] [INFO] Creating image from Pexels photo ID: 14017812
+[2025-04-25T20:16:57.983Z] [INFO] Creating image from Pexels photo for definitionId: 301 Context: {"photoId":14017812}
+[2025-04-25T20:16:58.019Z] [INFO] Checking if definition 301 exists
+[2025-04-25T20:16:58.062Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T20:16:58.063Z] [INFO] Creating image from Pexels photo ID: 3945341
+[2025-04-25T20:16:58.063Z] [INFO] Creating image from Pexels photo for definitionId: 300 Context: {"photoId":3945341}
+[2025-04-25T20:16:58.118Z] [INFO] Definition 301 found
+[2025-04-25T20:16:58.119Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/14017812/pexels-photo-14017812.jpeg
+[2025-04-25T20:16:58.138Z] [INFO] Checking if definition 300 exists
+[2025-04-25T20:16:58.173Z] [INFO] Creating image from Pexels photo for definitionId: 299 Context: {"photoId":4064423}
+[2025-04-25T20:16:58.171Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T20:16:58.172Z] [INFO] Creating image from Pexels photo ID: 4064423
+[2025-04-25T20:16:58.181Z] [INFO] Creating image from Pexels photo ID: 7438102
+[2025-04-25T20:16:58.182Z] [INFO] Creating image from Pexels photo for definitionId: 298 Context: {"photoId":7438102}
+[2025-04-25T20:16:58.181Z] [INFO] Pexels search returned 1 photos
+[2025-04-25T20:16:58.195Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/3945341/pexels-photo-3945341.jpeg
+[2025-04-25T20:16:58.194Z] [INFO] Definition 300 found
+[2025-04-25T20:16:58.207Z] [INFO] Image upserted with ID: 267
+[2025-04-25T20:16:58.208Z] [INFO] Updating definition 301 with imageId: 267
+[2025-04-25T20:16:58.294Z] [INFO] Image upserted with ID: 268
+[2025-04-25T20:16:58.294Z] [INFO] Updating definition 300 with imageId: 268
+[2025-04-25T20:16:58.297Z] [INFO] Definition 301 updated with imageId: 267
+[2025-04-25T20:16:58.337Z] [INFO] Successfully created image 267 for definition 301
+[2025-04-25T20:16:58.335Z] [INFO] Image created successfully with ID: 267
+[2025-04-25T20:16:58.398Z] [INFO] Definition 300 updated with imageId: 268
+[2025-04-25T20:16:58.454Z] [INFO] Successfully created image 268 for definition 300
+[2025-04-25T20:16:58.453Z] [INFO] Image created successfully with ID: 268
+[2025-04-25T20:16:58.547Z] [INFO] Checking if definition 299 exists
+[2025-04-25T20:16:58.556Z] [INFO] Checking if definition 298 exists
+[2025-04-25T20:16:58.641Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/4064423/pexels-photo-4064423.jpeg
+[2025-04-25T20:16:58.641Z] [INFO] Definition 299 found
+[2025-04-25T20:16:58.643Z] [INFO] Definition 298 found
+[2025-04-25T20:16:58.644Z] [INFO] Upserting image with URL: https://images.pexels.com/photos/7438102/pexels-photo-7438102.jpeg
+[2025-04-25T20:16:58.744Z] [INFO] Image upserted with ID: 269
+[2025-04-25T20:16:58.745Z] [INFO] Updating definition 299 with imageId: 269
+[2025-04-25T20:16:58.759Z] [INFO] Updating definition 298 with imageId: 270
+[2025-04-25T20:16:58.758Z] [INFO] Image upserted with ID: 270
+[2025-04-25T20:16:58.836Z] [INFO] Definition 299 updated with imageId: 269
+[2025-04-25T20:16:58.875Z] [INFO] Definition 298 updated with imageId: 270
+[2025-04-25T20:16:58.901Z] [INFO] Image created successfully with ID: 269
+[2025-04-25T20:16:58.903Z] [INFO] Successfully created image 269 for definition 299
+[2025-04-25T20:16:58.913Z] [INFO] Image created successfully with ID: 270
+[2025-04-25T20:16:58.913Z] [INFO] Successfully created image 270 for definition 298

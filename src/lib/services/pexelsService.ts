@@ -1,4 +1,5 @@
 import { env } from '@/env.mjs';
+import { createClient } from 'pexels';
 
 export interface PexelsPhoto {
   id: number;
@@ -7,7 +8,7 @@ export interface PexelsPhoto {
   url: string;
   photographer: string;
   photographer_url: string;
-  photographer_id: number;
+  photographer_id: string | number; // Accept either string or number to handle Pexels API inconsistency
   avg_color: string;
   src: {
     original: string;
@@ -23,11 +24,11 @@ export interface PexelsPhoto {
 }
 
 export interface PexelsSearchResponse {
-  total_results: number;
-  page: number;
-  per_page: number;
+  total_results?: number;
+  page?: number;
+  per_page?: number;
   photos: PexelsPhoto[];
-  next_page: string;
+  next_page?: string | number;
 }
 
 export interface PexelsSearchOptions {
@@ -39,18 +40,17 @@ export interface PexelsSearchOptions {
 }
 
 /**
- * Service for interacting with the Pexels API
+ * Service for interacting with the Pexels API using the official library
  */
 export class PexelsService {
-  private readonly apiKey: string;
-  private readonly baseUrl: string = 'https://api.pexels.com/v1';
+  private readonly client: ReturnType<typeof createClient>;
 
   constructor() {
     const apiKey = env.PEXELS_API_KEY;
     if (!apiKey) {
       throw new Error('Pexels API key is not configured');
     }
-    this.apiKey = apiKey;
+    this.client = createClient(apiKey);
   }
 
   /**
@@ -61,58 +61,57 @@ export class PexelsService {
     options: PexelsSearchOptions = {},
   ): Promise<PexelsSearchResponse> {
     try {
-      const searchParams = new URLSearchParams({
+      console.log(`Searching Pexels for: "${query}" with options:`, options);
+
+      const searchParams = {
         query,
         orientation: options.orientation || 'portrait',
         size: options.size || 'small',
         locale: options.locale || 'en-US',
-        page: options.page?.toString() || '1',
-        per_page: options.per_page?.toString() || '15',
-      });
+        page: options.page || 1,
+        per_page: options.per_page || 15,
+      };
 
-      const response = await fetch(
-        `${this.baseUrl}/search?${searchParams.toString()}`,
-        {
-          headers: {
-            Authorization: this.apiKey,
-          },
-          next: { revalidate: 3600 }, // Cache for 1 hour
-        },
-      );
+      const response = await this.client.photos.search(searchParams);
 
-      if (!response.ok) {
-        throw new Error(`Pexels API error: ${response.statusText}`);
+      // Check if there's an error in the response
+      if ('error' in response) {
+        throw new Error(`Pexels API error: ${response.error}`);
       }
 
-      const data = await response.json();
-      return data as PexelsSearchResponse;
+      console.log(
+        `Pexels search completed for: "${query}". Found photos: ${response.photos?.length || 0}`,
+      );
+
+      // Return the response directly - our interface is compatible
+      return response as PexelsSearchResponse;
     } catch (error) {
       console.error('Error searching Pexels images:', error);
-      throw error;
+      // Return empty response in case of error to avoid breaking the application
+      return { photos: [] };
     }
   }
 
   /**
    * Get a single photo by ID
    */
-  async getPhoto(id: number): Promise<PexelsPhoto> {
+  async getPhoto(id: number): Promise<PexelsPhoto | null> {
     try {
-      const response = await fetch(`${this.baseUrl}/photos/${id}`, {
-        headers: {
-          Authorization: this.apiKey,
-        },
-        next: { revalidate: 3600 }, // Cache for 1 hour
-      });
+      console.log(`Fetching Pexels photo with ID: ${id}`);
 
-      if (!response.ok) {
-        throw new Error(`Pexels API error: ${response.statusText}`);
+      const response = await this.client.photos.show({ id });
+
+      // Check if there's an error
+      if ('error' in response) {
+        throw new Error(`Pexels API error: ${response.error}`);
       }
 
-      const data = await response.json();
-      return data as PexelsPhoto;
+      console.log(`Successfully fetched Pexels photo ID: ${id}`);
+
+      return response as unknown as PexelsPhoto;
     } catch (error) {
       console.error('Error fetching Pexels photo:', error);
-      throw error;
+      return null;
     }
   }
 }

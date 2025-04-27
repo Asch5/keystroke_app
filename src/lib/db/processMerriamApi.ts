@@ -13,6 +13,9 @@ import {
   DifficultyLevel,
 } from '@prisma/client';
 import { getWordDetails } from '../actions/dictionaryActions';
+import { ImageService } from '@/lib/services/imageService';
+import { LogLevel } from '../utils/logUtils';
+import { serverLog } from '../utils/logUtils';
 
 /**Definitions:
  * generalLabels "lbs" - a property that stores general labels (like capitalization indicators, usage notes, etc.)
@@ -94,11 +97,21 @@ export interface MerriamWebsterVariant {
   va: string; // variant form
 }
 
+export interface MerriamWebsterDefinitionSen {
+  sn?: string;
+  sgram?: string;
+  lbs?: string[];
+  sls?: string[];
+  gram?: string;
+  bnote?: string;
+}
+
 export interface MerriamWebsterDefinitionSense {
   sn?: string;
   sgram?: string;
   bnote?: string;
   dt: Array<[string, unknown]>;
+  sen?: MerriamWebsterDefinitionSen;
   sdsense?: MerriamWebsterDefinitionSense;
   phrasev?: Array<{ pva?: string }>;
   sphrasev?: {
@@ -285,6 +298,7 @@ export async function processAndSaveWord(
   const partOfSpeech = mapPartOfSpeech(apiResponse.fl);
   const sourceEntityId = apiResponse.meta.uuid;
 
+  serverLog(`Processing word: ${mainWordText}`, LogLevel.INFO);
   //const section = apiResponse.meta.section;
   //const entrySource = apiResponse.meta.target.tsrc;
 
@@ -358,6 +372,29 @@ export async function processAndSaveWord(
     STEM = 'stem',
   }
 
+  interface SubWordDefinition {
+    partOfSpeech: PartOfSpeech;
+    source: string;
+    languageCode: string;
+    isPlural: boolean;
+    definition: string;
+    subjectStatusLabels?: string | null;
+    generalLabels?: string | null;
+    grammaticalNote?: string | null;
+    usageNote?: string | null;
+    isInShortDef?: boolean;
+    image?: {
+      id: number;
+      url: string;
+      description: string | null;
+    } | null;
+    examples: {
+      example: string;
+      languageCode: string;
+      grammaticalNote?: string | null;
+    }[];
+  }
+
   interface SubWordData {
     word: string;
     languageCode: string;
@@ -365,23 +402,7 @@ export async function processAndSaveWord(
     audio?: string | null;
     audioFiles?: string[] | null;
     etymology?: string | null;
-    definitions: {
-      partOfSpeech: PartOfSpeech;
-      source: string;
-      languageCode: string;
-      isPlural: boolean;
-      definition: string;
-      subjectStatusLabels?: string | null;
-      generalLabels?: string | null;
-      grammaticalNote?: string | null;
-      usageNote?: string | null;
-      isInShortDef?: boolean;
-      examples: {
-        example: string;
-        languageCode: string;
-        grammaticalNote?: string | null;
-      }[];
-    }[];
+    definitions: SubWordDefinition[];
     relationship: {
       fromWord: string;
       toWord: string;
@@ -1272,10 +1293,38 @@ sourceWordText processing
 
       if (defEntry.sseq) {
         for (const sseqItem of defEntry.sseq) {
+          // Store any 'sen' data that appears before a 'sense' within the same sseq item
+          let currentSenData: MerriamWebsterDefinitionSen | null = null;
+          // Extract sen data (either from the preceding 'sen' item or from within the sense itself)
+          let senGramaticalNote = '';
+          let senBnote = '';
+          let senLbs = '';
+          let senSubjectStatusLabels = '';
           for (const [senseType, senseData] of sseqItem) {
+            if (senseType === 'sen') {
+              // Store the sen data to apply to subsequent sense objects
+              currentSenData = senseData as MerriamWebsterDefinitionSen;
+              continue; // Skip processing until we find a sense to apply this to
+            }
+
             if (senseType === 'sense' || senseType === 'sdsense') {
               const dt = senseData.dt;
               if (!dt) continue;
+
+              // First check if we have sen data from a previous item in the sequence
+              if (currentSenData) {
+                senGramaticalNote = currentSenData.sgram || '';
+                senBnote = currentSenData.bnote || '';
+                senLbs = currentSenData.lbs?.join(', ') || '';
+                senSubjectStatusLabels = currentSenData.sls?.join(', ') || '';
+              }
+              // Then check if there's sen data attached to this sense directly
+              else if (senseData.sen) {
+                senGramaticalNote = senseData.sen.sgram || '';
+                senBnote = senseData.sen.bnote || '';
+                senLbs = senseData.sen.lbs?.join(', ') || '';
+                senSubjectStatusLabels = senseData.sen.sls?.join(', ') || '';
+              }
 
               // Extract definition text
               const definitionText = dt?.find(
@@ -1315,16 +1364,17 @@ sourceWordText processing
               }
 
               // Process grammatical notes
-              const grammaticalNote = senseData.sgram;
-              const bnote = senseData.bnote;
+              const grammaticalNote = senseData.sgram || '';
+              const bnote = senseData.bnote || '';
+              const mainGramNote = apiResponse.gram || '';
 
               const generalLabels = senseData.lbs?.join(', ') || '';
 
               // Process subject status labels
-              const subjectStatusLabels =
+              const mainSubjectStatusLabels =
                 senseData.sphrasev?.phsls?.join(', ') ||
                 senseData.sls?.join(', ') ||
-                null;
+                '';
 
               // Clean and normalize definition text
               const normalizedDefinition = normalize(cleanDefinitionText);
@@ -1345,17 +1395,29 @@ sourceWordText processing
 
                 isPlural: false,
                 definition: cleanDefinitionText,
-                subjectStatusLabels,
-                generalLabels: `${mainLbs || ''} ${
-                  mainLbs && generalLabels ? ' | ' : ''
-                }${generalLabels || ''}`,
-                grammaticalNote: `${grammaticalNote || ''} ${
-                  grammaticalNote && bnote ? ' | ' : ''
-                }"${bnote || ''}"`,
-                usageNote: extractedUsageNote || unsNoteText || null,
+                subjectStatusLabels:
+                  getStringFromArray([
+                    senSubjectStatusLabels,
+                    mainSubjectStatusLabels,
+                  ]) || '',
+                generalLabels:
+                  getStringFromArray([senLbs, mainLbs, generalLabels]) || '',
+                grammaticalNote:
+                  getStringFromArray([
+                    mainGramNote,
+                    senBnote,
+                    senGramaticalNote,
+                    grammaticalNote,
+                    bnote,
+                  ]) || '',
+                usageNote: extractedUsageNote || unsNoteText || '',
                 isInShortDef: shortDefTexts.has(normalizedDefinition),
                 examples,
               });
+
+              // Reset currentSenData after applying it to a sense
+              // This ensures sen data only applies to the next sense, not all subsequent ones
+              currentSenData = null;
             }
           }
         }
@@ -1369,9 +1431,6 @@ sourceWordText processing
       if (stem === mainWordText) continue;
 
       const isMorphologicalStem = isMorphologicalVariation(mainWordText, stem);
-      console.log('mainWordText', mainWordText);
-      console.log('stem', stem);
-      console.log('isMorphologicalStem', isMorphologicalStem);
 
       const relationships = [];
 
@@ -1405,6 +1464,9 @@ sourceWordText processing
   }
 
   try {
+    // Initialize the ImageService early to use throughout the transaction
+    const imageService = new ImageService();
+
     // Add a transaction to save the data to the database
     await prisma.$transaction(
       async (tx) => {
@@ -1442,9 +1504,10 @@ sourceWordText processing
               },
             });
 
-            const definition =
-              existingDefinition ||
-              (await tx.definition.create({
+            // If definition doesn't exist, create it and immediately fetch an image
+            let definition;
+            if (!existingDefinition) {
+              definition = await tx.definition.create({
                 data: {
                   definition: definitionData.definition,
                   partOfSpeech: definitionData.partOfSpeech as PartOfSpeech,
@@ -1458,7 +1521,61 @@ sourceWordText processing
                   isInShortDef: definitionData.isInShortDef || false,
                   isPlural: definitionData.isPlural || false,
                 },
-              }));
+              });
+
+              // Immediately create image for the new definition
+              serverLog(
+                `Process in processMerriamApi.ts (definition section): Immediately creating image for the new definition ${definition.id} of word "${mainWordText}", fetching now...`,
+                LogLevel.INFO,
+              );
+              const image = await imageService.getOrCreateDefinitionImage(
+                mainWordText,
+                definition.id,
+              );
+
+              if (image) {
+                // Update the definition with the image
+                definition = await tx.definition.update({
+                  where: { id: definition.id },
+                  data: { imageId: image.id },
+                });
+
+                // Add image data to the processed definition
+                definitionData.image = {
+                  id: image.id,
+                  url: image.url,
+                  description: image.description || null,
+                };
+              }
+            } else {
+              definition = existingDefinition;
+              // Check if existing definition needs an image
+              if (!definition.imageId) {
+                serverLog(
+                  `Process in processMerriamApi.ts (definition section): No image found for definition ${definition.id} of word "${mainWordText}", fetching now...`,
+                  LogLevel.INFO,
+                );
+                const image = await imageService.getOrCreateDefinitionImage(
+                  mainWordText,
+                  definition.id,
+                );
+
+                if (image) {
+                  // Update the definition with the image
+                  definition = await tx.definition.update({
+                    where: { id: definition.id },
+                    data: { imageId: image.id },
+                  });
+
+                  // Add image data to the processed definition
+                  definitionData.image = {
+                    id: image.id,
+                    url: image.url,
+                    description: image.description || null,
+                  };
+                }
+              }
+            }
 
             // Link definition to word
             await tx.wordDefinition.upsert({
@@ -1603,9 +1720,10 @@ sourceWordText processing
               },
             });
 
-            const subWordDef =
-              existingSubDef ||
-              (await tx.definition.create({
+            let subWordDef;
+            if (!existingSubDef) {
+              // Create a new definition if it doesn't exist
+              subWordDef = await tx.definition.create({
                 data: {
                   definition: defData.definition,
                   partOfSpeech: defData.partOfSpeech as PartOfSpeech,
@@ -1618,7 +1736,60 @@ sourceWordText processing
                   isInShortDef: defData.isInShortDef || false,
                   isPlural: defData.isPlural || false,
                 },
-              }));
+              });
+
+              // Immediately create image for the new subword definition
+              serverLog(
+                `Process in processMerriamApi.ts (subword section): Immediately creating image for the new subword definition ${subWordDef.id} of word "${subWord.word}", fetching now...`,
+                LogLevel.INFO,
+              );
+              const subWordImage =
+                await imageService.getOrCreateDefinitionImage(
+                  subWord.word,
+                  subWordDef.id,
+                );
+
+              if (subWordImage) {
+                // Update the definition with the image
+                subWordDef = await tx.definition.update({
+                  where: { id: subWordDef.id },
+                  data: { imageId: subWordImage.id },
+                });
+
+                // Add image data to the current definition object
+                defData.image = {
+                  id: subWordImage.id,
+                  url: subWordImage.url,
+                  description: subWordImage.description || null,
+                };
+              }
+            } else {
+              subWordDef = existingSubDef;
+
+              // Check if existing definition needs an image
+              if (!subWordDef.imageId) {
+                const subWordImage =
+                  await imageService.getOrCreateDefinitionImage(
+                    subWord.word,
+                    subWordDef.id,
+                  );
+
+                if (subWordImage) {
+                  // Update the definition with the image
+                  subWordDef = await tx.definition.update({
+                    where: { id: subWordDef.id },
+                    data: { imageId: subWordImage.id },
+                  });
+
+                  // Add image data to the current definition object
+                  defData.image = {
+                    id: subWordImage.id,
+                    url: subWordImage.url,
+                    description: subWordImage.description || null,
+                  };
+                }
+              }
+            }
 
             // Link definition to word
             await tx.wordDefinition.upsert({
@@ -1672,6 +1843,40 @@ sourceWordText processing
                   }),
                 );
               }
+              if (subWordDef) {
+                // Only get an image if the definition doesn't already have one
+                if (!subWordDef.imageId) {
+                  serverLog(
+                    `Process in processMerriamApi.ts (subword section): No image found for definition ${subWordDef.id} of word "${subWord.word}", fetching now...`,
+                    LogLevel.INFO,
+                  );
+                  const subWordImage =
+                    await imageService.getOrCreateDefinitionImage(
+                      subWord.word,
+                      subWordDef.id,
+                    );
+
+                  if (subWordImage) {
+                    // Update the definition with the image
+                    await tx.definition.update({
+                      where: { id: subWordDef.id },
+                      data: { imageId: subWordImage.id },
+                    });
+
+                    // Add image data to the current definition object
+                    const subWordDefMatch = subWord.definitions.find(
+                      (d) => d.definition === defData.definition,
+                    );
+                    if (subWordDefMatch) {
+                      subWordDefMatch.image = {
+                        id: subWordImage.id,
+                        url: subWordImage.url,
+                        description: subWordImage.description || null,
+                      };
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -1693,9 +1898,9 @@ sourceWordText processing
               },
             });
 
-            const phraseDef =
-              existingPhraseDef ||
-              (await tx.definition.create({
+            let phraseDef;
+            if (!existingPhraseDef) {
+              phraseDef = await tx.definition.create({
                 data: {
                   definition: defData.definition,
                   partOfSpeech: defData.partOfSpeech as PartOfSpeech,
@@ -1708,7 +1913,55 @@ sourceWordText processing
                   isInShortDef: defData.isInShortDef || false,
                   isPlural: defData.isPlural || false,
                 },
-              }));
+              });
+
+              // Immediately create image for the new phrase definition
+              const phraseImage = await imageService.getOrCreateDefinitionImage(
+                phraseData.word,
+                phraseDef.id,
+              );
+
+              if (phraseImage) {
+                // Update the definition with the image
+                phraseDef = await tx.definition.update({
+                  where: { id: phraseDef.id },
+                  data: { imageId: phraseImage.id },
+                });
+
+                // Add image data to the processed definition
+                defData.image = {
+                  id: phraseImage.id,
+                  url: phraseImage.url,
+                  description: phraseImage.description || null,
+                };
+              }
+            } else {
+              phraseDef = existingPhraseDef;
+
+              // Check if existing definition needs an image
+              if (!phraseDef.imageId) {
+                const phraseImage =
+                  await imageService.getOrCreateDefinitionImage(
+                    phraseData.word,
+                    phraseDef.id,
+                  );
+
+                if (phraseImage) {
+                  // Update the definition with the image
+                  phraseDef = await tx.definition.update({
+                    where: { id: phraseDef.id },
+                    data: { imageId: phraseImage.id },
+                  });
+
+                  // Add image data to the processed definition
+                  defData.image = {
+                    id: phraseImage.id,
+                    url: phraseImage.url,
+                    description: phraseImage.description || null,
+                  };
+                }
+              }
+            }
 
             // Create the phrase as a word
             const phraseWord = await upsertWord(
@@ -1820,6 +2073,22 @@ sourceWordText processing
                     },
                   ),
                 );
+              }
+            }
+
+            // Create image for the phrase definition if it doesn't already have one
+            if (phraseDef && !phraseDef.imageId) {
+              const phraseImage = await imageService.getOrCreateDefinitionImage(
+                phraseData.word,
+                phraseDef.id,
+              );
+
+              if (phraseImage) {
+                // Update the definition with the image
+                await tx.definition.update({
+                  where: { id: phraseDef.id },
+                  data: { imageId: phraseImage.id },
+                });
               }
             }
           }
@@ -2116,7 +2385,7 @@ function extractExamples(
     // Handle snote (supplementary notes), which contain text and examples
     else if (type === 'snote' && Array.isArray(content)) {
       // Extract the note text and examples
-      let snoteText = '';
+      let snoteText: string | null = null;
       const snoteExamples: string[] = [];
 
       // Process the snote content
@@ -2146,7 +2415,10 @@ function extractExamples(
               examples.push({
                 example: cleanedExample,
                 languageCode: language,
-                grammaticalNote: `${snoteText || ''} ${currentWsgram ? `(${currentWsgram})` : ''}`,
+                grammaticalNote: getStringFromArray([
+                  currentWsgram || '',
+                  snoteText || '',
+                ]),
               });
 
               snoteExamples.push(cleanedExample);
@@ -2537,4 +2809,18 @@ function isIrregularVariation(baseWord: string, stem: string): boolean {
       ([word, variations]) => word === stem && variations.has(baseWord),
     )
   );
+}
+
+function getStringFromArray(array: string[]): string {
+  const filteredArray = array.filter(
+    (val) => val !== null && val !== undefined && val.trim() !== '',
+  );
+
+  if (filteredArray.length > 1) {
+    return filteredArray.join(' | '); // No need to trim here
+  } else if (filteredArray.length === 1) {
+    return filteredArray[0] || ''; // No need to trim here
+  } else {
+    return ''; // Return an empty string if no valid entries
+  }
 }

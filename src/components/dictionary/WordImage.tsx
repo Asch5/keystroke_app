@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { ImageIcon, SearchIcon, Loader2 } from 'lucide-react';
 
 interface WordImageProps {
-  imageId?: number;
+  imageId?: number | undefined;
   definitionId: number;
   onImageSelect?: (imageId: number) => void;
   className?: string;
@@ -33,6 +33,11 @@ export function WordImage({
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<ImageMetadata[]>([]);
+
+  console.log('imageId', imageId);
+  console.log('definitionId', definitionId);
+  console.log('onImageSelect', onImageSelect);
+  console.log('className', className);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;

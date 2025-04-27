@@ -24,6 +24,16 @@ import {
   ExampleUpdateData,
   AudioUpdateData,
 } from '@/types/dictionary';
+import { ImageService } from '@/lib/services/imageService';
+import { LogLevel } from '../utils/logUtils';
+import { serverLog } from '../utils/logUtils';
+
+// Add type definition for image data
+interface ImageData {
+  id: number;
+  url: string;
+  description: string | null;
+}
 
 type WordWithAudioAndDefinitions = Prisma.WordGetPayload<{
   include: {
@@ -94,7 +104,13 @@ type WordWithFullRelations = Prisma.WordGetPayload<{
       include: {
         definition: {
           include: {
-            image: true;
+            image: {
+              select: {
+                id: true;
+                url: true;
+                description: true;
+              };
+            };
             examples: {
               include: {
                 audio: {
@@ -373,7 +389,7 @@ export type WordDetails = {
     id: number;
     text: string;
     partOfSpeech: PartOfSpeech;
-    image: { id: number; url: string; description: string | null } | null;
+    image: ImageData | null;
     frequencyPartOfSpeech: FrequencyPartOfSpeech;
     languageCode: LanguageCode;
     source: SourceType;
@@ -451,6 +467,13 @@ export async function getWordDetails(
                   include: {
                     definition: {
                       include: {
+                        image: {
+                          select: {
+                            id: true,
+                            url: true,
+                            description: true,
+                          },
+                        },
                         examples: {
                           include: {
                             audio: {
@@ -483,6 +506,13 @@ export async function getWordDetails(
                   include: {
                     definition: {
                       include: {
+                        image: {
+                          select: {
+                            id: true,
+                            url: true,
+                            description: true,
+                          },
+                        },
                         examples: {
                           include: {
                             audio: {
@@ -511,7 +541,13 @@ export async function getWordDetails(
           include: {
             definition: {
               include: {
-                image: true,
+                image: {
+                  select: {
+                    id: true,
+                    url: true,
+                    description: true,
+                  },
+                },
                 examples: {
                   include: {
                     // Include audio for examples
@@ -543,6 +579,9 @@ export async function getWordDetails(
       );
       return null;
     }
+
+    // Initialize ImageService
+    const imageService = new ImageService();
 
     // Get word frequency data
     const wordFrequencyData = await prisma.wordFrequencyData.findFirst({
@@ -654,6 +693,58 @@ export async function getWordDetails(
       word.wordDefinitions.map(async (wd) => {
         const def = wd.definition;
 
+        // If no image exists for the definition, try to get one
+        let imageData = def.image;
+        if (!imageData) {
+          console.log(
+            `No image found for definition ${def.id} of word "${cleanWordText}", fetching now...`,
+          );
+          serverLog(
+            `Process in dictionaryActions.ts: No image found for definition ${def.id} of word "${cleanWordText}", fetching now...`,
+            LogLevel.INFO,
+          );
+
+          try {
+            const image = await imageService.getOrCreateDefinitionImage(
+              cleanWordText,
+              def.id,
+            );
+
+            if (image) {
+              console.log(
+                `Image fetched successfully for definition ${def.id}: ${image.id}`,
+              );
+
+              imageData = {
+                id: image.id,
+                url: image.url,
+                description: image.description || null, // Ensure null instead of undefined
+              };
+
+              // Update the definition with the new image
+              await prisma.definition.update({
+                where: { id: def.id },
+                data: { imageId: image.id },
+              });
+
+              console.log(
+                `Updated definition ${def.id} with imageId ${image.id}`,
+              );
+            } else {
+              console.log(`Failed to fetch image for definition ${def.id}`);
+            }
+          } catch (error) {
+            console.error(
+              `Error getting image for definition ${def.id}:`,
+              error,
+            );
+          }
+        } else {
+          console.log(
+            `Image already exists for definition ${def.id}: ${imageData.id}`,
+          );
+        }
+
         // Find frequency data for this part of speech
         const posFrequency = posFrequencies.find(
           (f) => f.partOfSpeech === def.partOfSpeech,
@@ -667,7 +758,7 @@ export async function getWordDetails(
           id: def.id,
           text: def.definition,
           partOfSpeech: def.partOfSpeech,
-          image: def.image,
+          image: imageData,
           frequencyPartOfSpeech: posFrequencyEnum,
           languageCode: def.languageCode,
           source: def.source,

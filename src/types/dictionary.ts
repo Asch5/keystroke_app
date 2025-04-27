@@ -111,6 +111,11 @@ export interface ProcessedWordData {
     grammaticalNote?: string | null;
     usageNote?: string | null;
     isInShortDef?: boolean;
+    image?: {
+      id: number;
+      url: string;
+      description: string | null;
+    } | null;
     examples: {
       example: string;
       languageCode: string;

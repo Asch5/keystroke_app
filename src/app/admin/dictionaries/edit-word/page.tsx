@@ -1,3 +1,5 @@
+import { WordImage } from '@/components/dictionary/WordImage';
+
 export default function EditWordPage() {
-  return <div>EditWordPage</div>;
+  return <WordImage definitionId={0} />;
 }

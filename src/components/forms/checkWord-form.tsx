@@ -25,6 +25,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Badge } from '../ui/badge';
 import React from 'react';
+import Image from 'next/image';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 const formSchema = z.object({
   wordText: z.string().min(1, 'Please enter a word'),
@@ -877,6 +880,52 @@ export default function CheckWordForm() {
                                       <h4 className="text-lg font-medium mb-3">
                                         {def.text}
                                       </h4>
+                                      <div className="mb-4">
+                                        {def.image?.url ? (
+                                          <Dialog>
+                                            <DialogTrigger asChild>
+                                              <div className="cursor-pointer hover:opacity-90 transition-opacity">
+                                                <AspectRatio
+                                                  ratio={10 / 7}
+                                                  className="bg-muted"
+                                                >
+                                                  <Image
+                                                    src={def.image.url}
+                                                    alt={
+                                                      def.image.description ||
+                                                      def.text
+                                                    }
+                                                    fill
+                                                    className="rounded-md object-cover"
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                  />
+                                                </AspectRatio>
+                                              </div>
+                                            </DialogTrigger>
+                                            <DialogContent className="max-w-screen-lg w-full p-0">
+                                              <AspectRatio ratio={16 / 9}>
+                                                <Image
+                                                  src={def.image.url}
+                                                  alt={
+                                                    def.image.description ||
+                                                    def.text
+                                                  }
+                                                  fill
+                                                  className="object-contain"
+                                                  sizes="100vw"
+                                                  priority
+                                                />
+                                              </AspectRatio>
+                                            </DialogContent>
+                                          </Dialog>
+                                        ) : (
+                                          <div className="rounded-md border-2 border-dashed border-muted p-6 text-center">
+                                            <p className="text-sm text-muted-foreground">
+                                              No image available
+                                            </p>
+                                          </div>
+                                        )}
+                                      </div>
                                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                                         {def.generalLabels && (
                                           <div className="col-span-full">
@@ -910,22 +959,6 @@ export default function CheckWordForm() {
                                                 def.usageNote,
                                               )}
                                             </p>
-                                          </div>
-                                        )}
-                                        {def.image && (
-                                          <div>
-                                            <p className="text-sm font-medium text-muted-foreground">
-                                              Image
-                                            </p>
-                                            <a
-                                              href={def.image.url}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="text-primary hover:underline"
-                                            >
-                                              {def.image.description ||
-                                                'View image'}
-                                            </a>
                                           </div>
                                         )}
                                       </div>

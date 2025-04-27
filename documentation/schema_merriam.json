@@ -1,118 +1,43 @@
 [
   {
-    "word": [
+    "type": [
       {
         "meta": {
-          "id": "word:1",
-          "uuid": "32037143-e6a0-450f-9f85-8aa50a207782",
+          "id": "type:1",
+          "uuid": "cb585bce-8f54-46f7-a025-b059d4a3e880",
           "src": "learners",
           "section": "alpha",
           "target": {
-            "tuuid": "5797b71b-4c8a-4d3d-8232-30986bc15da9",
+            "tuuid": "b8a1e225-3efb-45df-857f-a230bfd1d9b6",
             "tsrc": "collegiate"
           },
           "highlight": "yes",
           "stems": [
-            "word",
-            "good word",
-            "in a word",
-            "in so many words",
-            "of few words",
-            "of one's word",
-            "of her word",
-            "of his word",
-            "of their word",
-            "upon my word",
-            "words",
-            "actions speak louder than words",
-            "a picture is worth a thousand words",
-            "at a loss for words",
-            "a word in someone's ear",
-            "a word in someones ear",
-            "a word to the wise",
-            "by word of mouth",
-            "eat your words",
-            "from the word go",
-            "get a word in edgewise",
-            "hang on someone's every word",
-            "hang on someones every word",
-            "in other words",
-            "in as many words",
-            "in words of one syllable",
-            "lost for words",
-            "mark my words",
-            "mum's the word",
-            "mums the word",
-            "play with words",
-            "put words in/into someone's mouth",
-            "put words in someone's mouth",
-            "put words into someone's mouth",
-            "put words in/into someones mouth",
-            "put words in someones mouth",
-            "put words into someones mouth",
-            "say the word",
-            "take the words right out of someone's mouth",
-            "take the words right out of someones mouth",
-            "the last/final word",
-            "the final word",
-            "the last word",
-            "(upon) my word",
-            "my word",
-            "war of words",
-            "word for word",
-            "word of honor",
-            "in every sense of the word",
-            "big words",
-            "words fail me",
-            "have a word with you",
-            "word of warning",
-            "don't say/breathe a word",
-            "don't breathe a word",
-            "don't say a word",
-            "dont say/breathe a word",
-            "dont breathe a word",
-            "dont say a word",
-            "man of few words",
-            "say a few words",
-            "spread the word",
-            "sent word",
-            "word has it",
-            "put/got the word out",
-            "got the word out",
-            "put the word out",
-            "give you my word",
-            "keep your word",
-            "man of his word",
-            "his word is his bond",
-            "go back on my word",
-            "take my word for it",
-            "true to her word",
-            "had words",
-            "have a word in your ear",
-            "what's the good word",
-            "whats the good word",
-            "not in so many words",
-            "have the last word"
+            "type",
+            "types",
+            "revert to type",
+            "not her type",
+            "not the type"
           ],
           "app-shortdef": {
-            "hw": "word:1",
+            "hw": "type:1",
             "fl": "noun",
             "def": [
-              "{bc} a sound or combination of sounds that has a meaning and is spoken or written",
-              "{bc} a brief remark or conversation {bc} something that a person says",
-              "{bc} an order or command"
+              "{bc} a particular kind or group of things or people",
+              "{bc} a particular kind of person",
+              "{bc} printed letters"
             ]
           },
           "offensive": false
         },
         "hom": 1,
         "hwi": {
-          "hw": "word",
+          "hw": "type",
           "prs": [
             {
-              "ipa": "ˈwɚd",
+              "ipa": "ˈtaɪp",
               "sound": {
-                "audio": "word0001"
+                "audio": "type0001"
               }
             }
           ]
@@ -121,7 +46,7 @@
         "ins": [
           {
             "il": "plural",
-            "if": "words"
+            "if": "types"
           }
         ],
         "def": [
@@ -136,37 +61,37 @@
                     "dt": [
                       [
                         "text",
-                        "{bc}a sound or combination of sounds that has a meaning and is spoken or written "
+                        "{bc}a particular kind or group of things or people "
                       ],
                       [
                         "vis",
                         [
                           {
-                            "t": "How do you spell that {it}word{/it}?"
+                            "t": "What {it}type{/it} [={it}sort{/it}] of food do you like?"
                           },
                           {
-                            "t": "{ldquo}Please{rdquo} is a useful {it}word{/it}."
+                            "t": "We were not prepared to face this {it}type{/it} of crisis."
                           },
                           {
-                            "t": "Our teacher often used {it}words{/it} I didn't know."
+                            "t": "We studied various {it}types{/it} of trees."
                           },
                           {
-                            "t": "What is the French {it}word{/it} for car?"
+                            "t": "a seedless {it}type{/it} of orange"
                           },
                           {
-                            "t": "She was a genius {phrase}in every sense of the word{/phrase}. [=she was truly a genius]"
+                            "t": "Allergies of this {it}type{/it} [={it}kind{/it}] are common."
                           },
                           {
-                            "t": "You don't need to use {phrase}big words{/phrase} [=difficult words used to try to impress people] to make your point."
+                            "t": "He only likes two {it}types{/it} of music."
                           },
                           {
-                            "t": "{phrase}Words fail me{/phrase}. [=I don't know what to say]"
+                            "t": "She likes all {it}types{/it} of books."
                           }
                         ]
                       ],
                       [
                         "text",
-                        "{dx}see also {dxt|buzzword||} {dxt|four-letter word||} {dxt|function word||} {dxt|password||} {dxt|swearword||} {dxt|watchword||} {dxt|weasel word||}{/dx}"
+                        "{dx}see also {dxt|blood type||}{/dx}"
                       ]
                     ]
                   }
@@ -181,34 +106,22 @@
                     "dt": [
                       [
                         "text",
-                        "{bc}a brief remark or conversation {bc}something that a person says "
+                        "{bc}a particular kind of person "
                       ],
                       [
                         "vis",
                         [
                           {
-                            "t": "You can't believe a {it}word{/it} (of what) she says. [=you can't believe anything she says]"
+                            "t": "She's a real outdoors {it}type{/it}. [=she loves hiking, camping, etc., in the outdoors]"
                           },
                           {
-                            "t": "Describe the experience in your own {it}words{/it}."
+                            "t": "The dinner guests were mostly urban {it}types{/it}. [=people who lived in the city]"
                           },
                           {
-                            "t": "The lawyer used Joe's {it}words{/it} against him."
+                            "t": "He's {phrase}not her type{/phrase}. [=he is not the kind of man she is attracted to]"
                           },
                           {
-                            "t": "Could I {phrase}have a word with you{/phrase}? [=could I talk with you briefly?]"
-                          },
-                          {
-                            "t": "They gave me a {phrase}word of warning{/phrase} [=they told me about] about the slippery roads."
-                          },
-                          {
-                            "t": "{phrase}Don't say/breathe a word{/phrase} [=don't talk] about this to anyone."
-                          },
-                          {
-                            "t": "My grandfather was a {phrase}man of few words{/phrase}. [=a man who did not talk very much]"
-                          },
-                          {
-                            "t": "I've been asked to {phrase}say a few words{/phrase} [=make a short speech or statement] about the new play."
+                            "t": "Her mother is {phrase}not the type{/phrase} to complain. [=she does not often complain]"
                           }
                         ]
                       ]
@@ -218,142 +131,46 @@
               ],
               [
                 [
-                  "sense",
+                  "sen",
                   {
                     "sn": "3",
-                    "sgram": "singular",
-                    "dt": [
-                      ["text", "{bc}an order or command "],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "She gave the {it}word{/it} to begin."
-                          },
-                          {
-                            "t": "We will wait for your {it}word{/it} before we serve dinner."
-                          }
-                        ]
-                      ]
-                    ]
+                    "sgram": "noncount"
                   }
-                ]
-              ],
-              [
+                ],
                 [
                   "sense",
                   {
-                    "sn": "4",
-                    "sgram": "singular",
+                    "sn": "a",
                     "dt": [
-                      ["text", "{bc}news or information "],
                       [
-                        "vis",
-                        [
-                          {
-                            "t": "(Is there) Any {it}word{/it} on how they are?"
-                          },
-                          {
-                            "t": "If {it}word{/it} of this gets out, we're all in trouble."
-                          },
-                          {
-                            "t": "What's the {it}word{/it}?"
-                          },
-                          {
-                            "t": "There is still no {it}word{/it} from the hospital."
-                          },
-                          {
-                            "t": "{phrase}Spread the word{/phrase} [=tell the others] that we're leaving in five minutes."
-                          },
-                          {
-                            "t": "They {phrase}sent word{/phrase} [=sent a message] that they'd be late."
-                          },
-                          {
-                            "t": "{phrase}Word has it{/phrase} [=I have heard] that the neighbors are moving next month."
-                          },
-                          {
-                            "t": "The police {phrase}put/got the word out{/phrase} that they were looking for him. [=the police let people know that they were looking for him]"
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ],
-              [
-                [
-                  "sense",
-                  {
-                    "sn": "5",
-                    "sgram": "singular",
-                    "dt": [
-                      ["text", "{bc}a promise to do something "],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "I'll be there. I {phrase}give you my word{/phrase}. [=I promise]"
-                          },
-                          {
-                            "t": "You'd better {phrase}keep your word{/phrase}. [=keep your promise to do something]"
-                          },
-                          {
-                            "t": "He is a {phrase}man of his word{/phrase}. = {phrase}His word is his bond{/phrase}. [=he always keeps his promises]"
-                          },
-                          {
-                            "t": "I told her I'd help. I can't {phrase}go back on my word{/phrase}. [=I can't break my promise]"
-                          },
-                          {
-                            "t": "You'll have to {phrase}take my word for it{/phrase}. [=you'll have to believe me]"
-                          },
-                          {
-                            "t": "She was {phrase}true to her word{/phrase}. [=she did what she said she would do]"
-                          }
-                        ]
+                        "text",
+                        "{bc}printed letters "
                       ],
-                      ["text", "{dx}see also {dxt|word of honor||(below)}{/dx}"]
-                    ]
-                  }
-                ]
-              ],
-              [
-                [
-                  "sense",
-                  {
-                    "sn": "6",
-                    "bnote": "words",
-                    "sgram": "plural",
-                    "dt": [
-                      ["text", "{bc}angry remarks "],
                       [
                         "vis",
                         [
                           {
-                            "t": "{it}Words{/it} were exchanged [=people said angry things to each other] and a fight broke out."
-                          },
-                          {
-                            "t": "He {phrase}had words{/phrase} [=had an argument] with his boss."
+                            "t": "italic {it}type{/it}"
                           }
                         ]
                       ]
                     ]
                   }
-                ]
-              ],
-              [
+                ],
                 [
                   "sense",
                   {
-                    "sn": "7",
-                    "bnote": "the Word",
-                    "sls": ["religion"],
+                    "sn": "b",
                     "dt": [
-                      ["text", "{bc}stories and lessons of the Bible "],
+                      [
+                        "text",
+                        "{bc}small metal blocks that are used for printing letters and numbers on paper "
+                      ],
                       [
                         "vis",
                         [
                           {
-                            "t": "{it}the Word{/it} of God"
+                            "t": "lead {it}type{/it}"
                           }
                         ]
                       ]
@@ -366,349 +183,7 @@
         ],
         "dros": [
           {
-            "drp": "actions speak louder than words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|action||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "a picture is worth a thousand words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|worth:1||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "at a loss for words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|loss||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "a word in someone's ear",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "sls": ["chiefly British"],
-                        "dt": [
-                          [
-                            "text",
-                            "{bc}a remark that is made privately to someone "
-                          ],
-                          [
-                            "vis",
-                            [
-                              {
-                                "t": "May I {phrase}have a word in your ear{/phrase} [=may I speak to you privately] before you leave?"
-                              }
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "a word to the wise",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          [
-                            "uns",
-                            [
-                              [
-                                [
-                                  "text",
-                                  "used to say that you are about to give someone advice or a warning "
-                                ],
-                                [
-                                  "vis",
-                                  [
-                                    {
-                                      "t": "{it}A word to the wise{/it}: never sign a contract without reading it first."
-                                    }
-                                  ]
-                                ]
-                              ]
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "by word of mouth",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          ["text", "{bc}by being told by another person "],
-                          [
-                            "vis",
-                            [
-                              {
-                                "t": "We found this hotel {it}by word of mouth{/it}."
-                              }
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "eat your words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|eat||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "from the word go",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "sls": ["informal"],
-                        "dt": [
-                          ["text", "{bc}from the beginning "],
-                          [
-                            "vis",
-                            [
-                              {
-                                "t": "The show was a success {it}from the word go{/it}."
-                              },
-                              {
-                                "t": "We were in trouble ({it}right{/it}) {it}from the word go{/it}."
-                              }
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "get a word in edgewise",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|edgewise||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "good word",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          ["text", "{bc}a favorable comment "],
-                          [
-                            "vis",
-                            [
-                              {
-                                "t": "Please put in a {it}good word{/it} for me [=say something good about me] when you talk to the boss."
-                              },
-                              {
-                                "t": "({it}US, informal{/it}) I haven't seen you in ages! {phrase}What's the good word{/phrase}? [={it}how's it going?; how are you?{/it}]"
-                              }
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "hang on someone's every word",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|hang:1||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "in a word",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          ["text", "{bc}very briefly {bc}in short"],
-                          [
-                            "uns",
-                            [
-                              [
-                                [
-                                  "text",
-                                  "used to indicate that you are saying something by using only one word or by using as few words as possible "
-                                ],
-                                [
-                                  "vis",
-                                  [
-                                    {
-                                      "t": "Our answer, {it}in a word{/it}, is no."
-                                    }
-                                  ]
-                                ]
-                              ]
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "in other words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          [
-                            "uns",
-                            [
-                              [
-                                [
-                                  "text",
-                                  "used to introduce a statement that repeats what has been said in a different and usually a simpler or more exact way "
-                                ],
-                                [
-                                  "vis",
-                                  [
-                                    {
-                                      "t": "{ldquo}She said the movie was a bit predictable.{rdquo} {ldquo}{it}In other words{/it}, she didn't like it.{rdquo}"
-                                    },
-                                    {
-                                      "t": "So, {it}in other words{/it}, you're saying that you forgot to do it."
-                                    }
-                                  ]
-                                ]
-                              ]
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "in so many words",
-            "vrs": [
-              {
-                "vl": "also",
-                "va": "in as many words"
-              }
-            ],
+            "drp": "revert to type",
             "def": [
               {
                 "sseq": [
@@ -719,219 +194,521 @@
                         "dt": [
                           [
                             "text",
-                            "{bc}in exactly those words or in exactly that way"
-                          ],
+                            "{dx}see {dxt|revert||}{/dx}"
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "shortdef": [
+          "a particular kind or group of things or people",
+          "a particular kind of person",
+          "printed letters"
+        ]
+      },
+      {
+        "meta": {
+          "id": "type:2",
+          "uuid": "06004b48-a6a6-455e-a16c-0aaedd3351a4",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "4af48069-b7bb-449a-ac32-9f7602ff9a5e",
+            "tsrc": "collegiate"
+          },
+          "highlight": "yes",
+          "stems": [
+            "type",
+            "typable",
+            "typeable",
+            "typed",
+            "types",
+            "typing"
+          ],
+          "app-shortdef": {
+            "hw": "type:2",
+            "fl": "verb",
+            "def": [
+              "{bc} to write with a computer keyboard or typewriter",
+              "{it}technical{/it} {bc} to find out what group something is in"
+            ]
+          },
+          "offensive": false
+        },
+        "hom": 2,
+        "hwi": {
+          "hw": "type",
+          "altprs": [
+            {
+              "ipa": "ˈtaɪp"
+            }
+          ]
+        },
+        "fl": "verb",
+        "ins": [
+          {
+            "if": "types"
+          },
+          {
+            "if": "typed"
+          },
+          {
+            "if": "typ*ing"
+          }
+        ],
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}to write with a computer keyboard or typewriter "
+                      ],
+                      [
+                        "wsgram",
+                        "no obj"
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "How fast can you {it}type{/it}?"
+                          },
+                          {
+                            "t": "I never learned how to {it}type{/it}."
+                          }
+                        ]
+                      ],
+                      [
+                        "wsgram",
+                        "+ obj"
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "{it}Type{/it} your name here."
+                          },
+                          {
+                            "t": "She asked her secretary to {it}type{/it} a memo."
+                          }
+                        ]
+                      ],
+                      [
+                        "uns",
+                        [
                           [
-                            "uns",
                             [
+                              "text",
+                              "sometimes + {it}up{/it} "
+                            ],
+                            [
+                              "vis",
                               [
-                                [
-                                  "text",
-                                  "usually used in negative statements "
-                                ],
-                                [
-                                  "vis",
-                                  [
-                                    {
-                                      "t": "{ldquo}Did he say he wouldn't do it?{rdquo} {ldquo}{phrase}Not in so many words{/phrase}, but that was the impression I got.{rdquo}"
-                                    }
-                                  ]
-                                ]
+                                {
+                                  "t": "Can you {it}type{/it} this {it}up{/it} for me?"
+                                }
                               ]
                             ]
                           ]
                         ]
-                      }
+                      ]
                     ]
-                  ]
+                  }
                 ]
-              }
-            ]
-          },
-          {
-            "drp": "in words of one syllable",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          ["text", "{bc}in clear and simple terms "],
-                          [
-                            "vis",
-                            [
-                              {
-                                "t": "We explained our views to the press {it}in words of one syllable{/it}."
-                              }
-                            ]
-                          ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "sgram": "+ obj",
+                    "sls": [
+                      "technical"
+                    ],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}to find out what group something is in "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "The lab will {it}type{/it} this blood sample. [=the lab will determine what type of blood the sample is]"
+                          }
                         ]
-                      }
+                      ]
                     ]
-                  ]
+                  }
                 ]
-              }
+              ]
+            ]
+          }
+        ],
+        "uros": [
+          {
+            "ure": "typing",
+            "fl": "noun",
+            "gram": "noncount",
+            "utxt": [
+              [
+                "vis",
+                [
+                  {
+                    "t": "genetic {it}typing{/it}"
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "to write with a computer keyboard or typewriter —sometimes + up",
+          "to find out what group something is in"
+        ]
+      },
+      {
+        "meta": {
+          "id": "blood type",
+          "uuid": "b9f0e39b-1996-4046-befc-ade4b611a452",
+          "src": "learners",
+          "section": "alpha",
+          "stems": [
+            "blood type",
+            "blood types",
+            "blood group"
+          ],
+          "app-shortdef": {
+            "hw": "blood type",
+            "fl": "noun",
+            "def": [
+              "{it}chiefly US{/it} {bc} one of the eight different blood categories into which humans are separated"
             ]
           },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "blood type"
+        },
+        "fl": "noun",
+        "ins": [
           {
-            "drp": "lost for words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|lost:2||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
+            "il": "plural",
+            "ifc": "~ types",
+            "if": "blood types"
+          }
+        ],
+        "gram": "count",
+        "def": [
           {
-            "drp": "mark my words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|mark:2||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "mum's the word",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|mum:1||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "play with words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [["text", "{dx}see {dxt|play:1||}{/dx}"]]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "put words in/into someone's mouth",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sls": [
+                      "chiefly US"
+                    ],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}one of the eight different blood categories into which humans are separated "
+                      ],
+                      [
+                        "snote",
+                        [
                           [
-                            "text",
-                            "{bc}to suggest that someone said or meant something that he or she did not say or mean "
+                            "t",
+                            "These categories of blood are labeled A, B, AB, or O and each of these is either Rh-positive or Rh-negative."
                           ],
                           [
                             "vis",
                             [
                               {
-                                "t": "Don't {it}put words in my mouth{/it}. I wasn't defending his actions, despite what you may think."
+                                "t": "Her {it}blood type{/it} is B negative."
                               }
                             ]
                           ]
                         ]
-                      }
+                      ],
+                      [
+                        "ca",
+                        {
+                          "intro": "called also",
+                          "cats": [
+                            {
+                              "cat": "blood group"
+                            }
+                          ]
+                        }
+                      ]
                     ]
-                  ]
+                  }
                 ]
-              }
+              ]
             ]
+          }
+        ],
+        "shortdef": [
+          "one of the eight different blood categories into which humans are separated —called also blood group"
+        ]
+      },
+      {
+        "meta": {
+          "id": "touch-type",
+          "uuid": "46e32036-75d5-4d05-a3a7-3c8a6c273ba1",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "437f4acf-f0ae-4738-89ae-50b88b09edf1",
+            "tsrc": "collegiate"
           },
-          {
-            "drp": "say the word",
+          "stems": [
+            "touch-type",
+            "touch typist",
+            "touch-typed",
+            "touch-types",
+            "touch-typing"
+          ],
+          "app-shortdef": {
+            "hw": "touch-type",
+            "fl": "verb",
             "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          ["text", "{bc}to give an order "],
-                          [
-                            "vis",
-                            [
-                              {
-                                "t": "When you want to leave (just) {it}say the word{/it}."
-                              }
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
+              "{bc} to type without looking at the keyboard"
             ]
           },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "touch-type",
+          "prs": [
+            {
+              "ipa": "ˈtʌtʃˌtaɪp",
+              "sound": {
+                "audio": "toucht02"
+              }
+            }
+          ]
+        },
+        "fl": "verb",
+        "ins": [
           {
-            "drp": "take the words right out of someone's mouth",
+            "ifc": "-types",
+            "if": "touch-types"
+          },
+          {
+            "ifc": "-typed",
+            "if": "touch-typed"
+          },
+          {
+            "ifc": "-typ*ing",
+            "if": "touch-typ*ing"
+          }
+        ],
+        "gram": "no obj",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}to type without looking at the keyboard "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "The class taught him how to {it}touch-type{/it}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "to type without looking at the keyboard"
+        ]
+      },
+      {
+        "meta": {
+          "id": "another:2",
+          "uuid": "d53afc7b-894e-4fc6-9dc2-23dbd3dcdfea",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "58ecf452-01ed-4d21-9d27-9a8140caa09c",
+            "tsrc": "collegiate"
+          },
+          "highlight": "yes",
+          "stems": [
+            "another",
+            "one after another",
+            "at one time or another",
+            "for one/some reason or another",
+            "for one reason or another",
+            "for some reason or another",
+            "one way or another",
+            "of one kind/sort/type or another",
+            "of one kind or another",
+            "of one sort or another",
+            "of one type or another",
+            "one thing and another"
+          ],
+          "app-shortdef": {
+            "hw": "another:2",
+            "fl": "pronoun",
             "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
+              "{bc} one more of the same kind {bc} another one",
+              "{bc} one that is different {bc} someone or something else"
+            ]
+          },
+          "offensive": false
+        },
+        "hom": 2,
+        "hwi": {
+          "hw": "another",
+          "altprs": [
+            {
+              "ipa": "əˈnʌðɚ"
+            }
+          ]
+        },
+        "fl": "pronoun",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}one more of the same kind {bc}another one "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "I've had one drink, but I think I'll have {it}another{/it}."
+                          },
+                          {
+                            "t": "One copy of the letter was sent out, and {it}another{/it} was placed in the files."
+                          },
+                          {
+                            "t": "One thief carried a gun, {it}another{/it} (carried) a knife."
+                          },
+                          {
+                            "t": "This cup is chipped. Could you please bring me {it}another{/it}?"
+                          },
+                          {
+                            "t": "We had dinner at {it}another{/it} of the city's many Italian restaurants."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}one that is different {bc}someone or something else "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She's not comfortable living in {it}another's{/it} house. [=in another person's house]"
+                          },
+                          {
+                            "t": "Complaining about problems is one thing, but finding solutions to them is {it}another{/it}. [=it is more difficult to find solutions to problems than to complain about them]"
+                          },
+                          {
+                            "t": "The family seems to move from one city to {it}another{/it}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "3",
+                    "dt": [
+                      [
+                        "uns",
+                        [
                           [
-                            "text",
-                            "{bc}to say exactly what someone was thinking "
-                          ],
-                          [
-                            "vis",
                             [
-                              {
-                                "t": "I agree! You {it}took the words right out of my mouth{/it}!"
-                              }
+                              "text",
+                              "used in phrases with {it}one{/it} or (less commonly) {it}some{/it} to refer to something that is not specified "
+                            ],
+                            [
+                              "vis",
+                              [
+                                {
+                                  "t": "We all do foolish things {phrase}at one time or another{/phrase}. [={it}sometimes{/it}, {it}on occasion{/it}]"
+                                },
+                                {
+                                  "t": "They had to change their plans {phrase}for one/some reason or another{/phrase}. [=for some reason]"
+                                },
+                                {
+                                  "t": "He vowed that he would succeed (in) {phrase}one way or another{/phrase}. [=vowed that he would find a way to succeed]"
+                                },
+                                {
+                                  "t": "a lock {phrase}of one kind/sort/type or another{/phrase} [=some kind/sort/type of lock]"
+                                },
+                                {
+                                  "t": "What with {phrase}one thing and another{/phrase}, we still haven't finished. [=we still haven't finished because of various things that have happened]"
+                                }
+                              ]
                             ]
                           ]
                         ]
-                      }
+                      ],
+                      [
+                        "text",
+                        "{dx}see also {dxt|one another||}{/dx}"
+                      ]
                     ]
-                  ]
+                  }
                 ]
-              }
+              ]
             ]
-          },
+          }
+        ],
+        "dros": [
           {
-            "drp": "the last/final word",
+            "drp": "one after another",
             "def": [
               {
                 "sseq": [
@@ -943,16 +720,16 @@
                         "dt": [
                           [
                             "text",
-                            "{bc}the final thing said in an argument or a discussion "
+                            "{bc}in a continuing series "
                           ],
                           [
                             "vis",
                             [
                               {
-                                "t": "Your mother's decision is {it}the final word{/it} on the matter."
+                                "t": "The buses kept arriving, {it}one after another{/it}."
                               },
                               {
-                                "t": "Why do you always have to {phrase}have the last word{/phrase}? [=to be the last person to speak]"
+                                "t": "{it}One{/it} person {it}after another{/it} walked out of the concert."
                               }
                             ]
                           ]
@@ -966,12 +743,180 @@
                       {
                         "sn": "2",
                         "dt": [
-                          ["text", "{bc}the power to make a final decision "],
+                          [
+                            "text",
+                            "{bc}each one in a continuing series "
+                          ],
                           [
                             "vis",
                             [
                               {
-                                "t": "The judge will have {it}the last word{/it} [={it}the final say{/it}] on the divorce agreement."
+                                "t": "{it}One after another{/it} of her friends got married and moved away."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "shortdef": [
+          "one more of the same kind : another one",
+          "one that is different : someone or something else",
+          "—used in phrases with one or (less commonly) some to refer to something that is not specified"
+        ]
+      },
+      {
+        "meta": {
+          "id": "blood group",
+          "uuid": "db55e66b-ccbc-45fc-a284-4d66bf1ae1ac",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "c933e9e0-1184-449e-a088-ef91d39e83d4",
+            "tsrc": "collegiate"
+          },
+          "stems": [
+            "blood group",
+            "blood groups",
+            "blood type"
+          ],
+          "app-shortdef": [],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "blood group"
+        },
+        "fl": "noun",
+        "ins": [
+          {
+            "il": "plural",
+            "ifc": "~ groups",
+            "if": "blood groups"
+          }
+        ],
+        "gram": "count",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}{sx|blood type||}"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "blood type"
+        ]
+      },
+      {
+        "meta": {
+          "id": "revert",
+          "uuid": "8063da70-3f1c-46d8-9fa3-9a0287f254c9",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "980c3306-4c45-4741-a69c-c53946a3b853",
+            "tsrc": "collegiate"
+          },
+          "stems": [
+            "revert",
+            "reverts",
+            "reverted",
+            "reverting",
+            "revert to",
+            "reverted to normal",
+            "reverted to form",
+            "revert to type"
+          ],
+          "app-shortdef": {
+            "hw": "revert",
+            "fl": "verb",
+            "def": [
+              "{bc} to go back or return to (an earlier state, condition, situation, etc.)",
+              "{it}law{/it}, {it}of property{/it} {bc} to be given to (a former owner or a former owner's heir)"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "re*vert",
+          "prs": [
+            {
+              "ipa": "rɪˈvɚt",
+              "sound": {
+                "audio": "revert01"
+              }
+            }
+          ]
+        },
+        "fl": "verb",
+        "ins": [
+          {
+            "ifc": "-verts",
+            "if": "re*verts"
+          },
+          {
+            "ifc": "-vert*ed",
+            "if": "re*vert*ed"
+          },
+          {
+            "ifc": "-vert*ing",
+            "if": "re*vert*ing"
+          }
+        ],
+        "dros": [
+          {
+            "drp": "revert to",
+            "gram": "phrasal verb",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sphrasev": {
+                          "phrs": [
+                            {
+                              "pva": "revert to (something)"
+                            }
+                          ]
+                        },
+                        "sn": "1",
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}to go back or return to (an earlier state, condition, situation, etc.) "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "She has {it}reverted{/it} (back) {it}to{/it} her old habits."
+                              },
+                              {
+                                "t": "My blood pressure has {phrase}reverted to normal{/phrase}. [=has returned to normal; has become normal again]"
+                              },
+                              {
+                                "t": "After playing badly in the last two games, he seems to have {phrase}reverted to form{/phrase}. [=he is now playing as well as he usually does]"
+                              },
+                              {
+                                "t": "({it}chiefly Brit{/it}) After this one atypical comedy, will he {phrase}revert to type{/phrase} [=will he do what he usually does] in his next film?"
                               }
                             ]
                           ]
@@ -983,817 +928,27 @@
                     [
                       "sense",
                       {
-                        "sn": "3",
-                        "sls": ["informal"],
+                        "sn": "2",
+                        "phrasev": [
+                          {
+                            "pva": "revert to (someone or something)"
+                          }
+                        ],
+                        "sls": [
+                          "law",
+                          "of property"
+                        ],
                         "dt": [
                           [
                             "text",
-                            "{bc}the most modern or best one of its kind "
+                            "{bc}to be given to (a former owner or a former owner's heir) "
                           ],
                           [
                             "vis",
                             [
                               {
-                                "t": "This is {it}the last word{/it} in wireless phones."
-                              },
-                              {
-                                "t": "The van's design is {it}the last word{/it} in safety."
+                                "t": "The estate {it}reverted to{/it} a distant cousin."
                               }
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "(upon) my word",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "sls": ["somewhat old-fashioned"],
-                        "dt": [
-                          [
-                            "uns",
-                            [
-                              [
-                                ["text", "used to express surprise "],
-                                [
-                                  "vis",
-                                  [
-                                    {
-                                      "t": "{it}My word{/it}, what a beautiful dress!"
-                                    }
-                                  ]
-                                ]
-                              ]
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "war of words",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          [
-                            "text",
-                            "{bc}an argument in which people or groups criticize and disagree with each other publicly and repeatedly for usually a long time "
-                          ],
-                          [
-                            "vis",
-                            [
-                              {
-                                "t": "Rival groups have engaged in a {it}war of words{/it} over the new law."
-                              }
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "word for word",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          ["text", "{bc}in the exact words "],
-                          [
-                            "vis",
-                            [
-                              {
-                                "t": "He gave the same speech {it}word for word{/it} [={it}verbatim{/it}] yesterday."
-                              }
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          },
-          {
-            "drp": "word of honor",
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          [
-                            "snote",
-                            [
-                              [
-                                "t",
-                                "Your {it}word of honor{/it} is your promise that you will do something, that something is true, etc."
-                              ],
-                              [
-                                "vis",
-                                [
-                                  {
-                                    "t": "I give you my {it}word of honor{/it} that I will pay the money back."
-                                  }
-                                ]
-                              ]
-                            ]
-                          ]
-                        ]
-                      }
-                    ]
-                  ]
-                ]
-              }
-            ]
-          }
-        ],
-        "shortdef": [
-          "a sound or combination of sounds that has a meaning and is spoken or written",
-          "a brief remark or conversation : something that a person says",
-          "an order or command"
-        ]
-      },
-      {
-        "meta": {
-          "id": "word:2",
-          "uuid": "bb70bc6e-84e5-429e-9cfc-993fa8ca89f9",
-          "src": "learners",
-          "section": "alpha",
-          "target": {
-            "tuuid": "f9399ba2-4fb4-4f05-851f-64ef0f346533",
-            "tsrc": "collegiate"
-          },
-          "stems": ["word", "worded", "wording", "words"],
-          "app-shortdef": {
-            "hw": "word:2",
-            "fl": "verb",
-            "def": [
-              "{bc} to say (something) in a particular way by choosing which words to use"
-            ]
-          },
-          "offensive": false
-        },
-        "hom": 2,
-        "hwi": {
-          "hw": "word",
-          "altprs": [
-            {
-              "ipa": "ˈwɚd"
-            }
-          ]
-        },
-        "fl": "verb",
-        "ins": [
-          {
-            "if": "words"
-          },
-          {
-            "if": "word*ed"
-          },
-          {
-            "if": "word*ing"
-          }
-        ],
-        "gram": "+ obj",
-        "def": [
-          {
-            "sseq": [
-              [
-                [
-                  "sense",
-                  {
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}to say (something) in a particular way by choosing which words to use "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "They {it}worded{/it} [={it}phrased{/it}] their request with great care."
-                          },
-                          {
-                            "t": "Could we {it}word{/it} the headline differently?"
-                          }
-                        ]
-                      ],
-                      [
-                        "uns",
-                        [
-                          [
-                            ["text", "often used as {it}(be) worded{/it} "],
-                            [
-                              "vis",
-                              [
-                                {
-                                  "t": "Their request {it}was worded{/it} very carefully."
-                                },
-                                {
-                                  "t": "a carefully {it}worded{/it} statement"
-                                }
-                              ]
-                            ]
-                          ]
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ]
-            ]
-          }
-        ],
-        "shortdef": [
-          "to say (something) in a particular way by choosing which words to use —often used as (be) worded"
-        ]
-      },
-      {
-        "meta": {
-          "id": "word-perfect",
-          "uuid": "01dc28b1-200a-4ab4-b7ef-4791ba73facb",
-          "src": "learners",
-          "section": "alpha",
-          "stems": ["word-perfect"],
-          "app-shortdef": {
-            "hw": "word-perfect",
-            "fl": "adjective",
-            "def": ["{it}British{/it} {bc} correct in every detail"]
-          },
-          "offensive": false
-        },
-        "hwi": {
-          "hw": "word-perfect"
-        },
-        "fl": "adjective",
-        "def": [
-          {
-            "sseq": [
-              [
-                [
-                  "sense",
-                  {
-                    "sls": ["British"],
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}correct in every detail {bc}{sx|letter-perfect||} "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "All the actors should be congratulated on a {it}word-perfect{/it} performance."
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ]
-            ]
-          }
-        ],
-        "shortdef": ["correct in every detail : letter-perfect"]
-      },
-      {
-        "meta": {
-          "id": "word processing",
-          "uuid": "44df5659-e3bd-4b75-a42c-ab75ed3b488e",
-          "src": "learners",
-          "section": "alpha",
-          "target": {
-            "tuuid": "e22824b4-d330-4fe1-b619-a57a33f71fe9",
-            "tsrc": "collegiate"
-          },
-          "stems": ["word processing", "word process", "word processings"],
-          "app-shortdef": {
-            "hw": "word processing",
-            "fl": "noun",
-            "def": [
-              "{bc} the production of printed pages of writing (such as business letters) that can be stored and printed by using computer equipment"
-            ]
-          },
-          "offensive": false
-        },
-        "hwi": {
-          "hw": "word processing"
-        },
-        "fl": "noun",
-        "gram": "noncount",
-        "def": [
-          {
-            "sseq": [
-              [
-                [
-                  "sense",
-                  {
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}the production of printed pages of writing (such as business letters) that can be stored and printed by using computer equipment "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "These terminals are used mostly for {it}word processing{/it}."
-                          },
-                          {
-                            "t": "{it}word processing{/it} software"
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ]
-            ]
-          }
-        ],
-        "shortdef": [
-          "the production of printed pages of writing (such as business letters) that can be stored and printed by using computer equipment"
-        ]
-      },
-      {
-        "meta": {
-          "id": "word processor",
-          "uuid": "c192177b-a203-45fd-9a10-b7c128ecc663",
-          "src": "learners",
-          "section": "alpha",
-          "target": {
-            "tuuid": "1f0a7ffe-c0b3-4831-b9bc-2aa268d5e1ba",
-            "tsrc": "collegiate"
-          },
-          "stems": ["word processor", "word processors"],
-          "app-shortdef": {
-            "hw": "word processor",
-            "fl": "noun",
-            "def": [
-              "{bc} a computer used for creating, storing, and printing text {bc} a computer used for word processing",
-              "{bc} software used on a computer to perform word processing"
-            ]
-          },
-          "offensive": false
-        },
-        "hwi": {
-          "hw": "word processor"
-        },
-        "fl": "noun",
-        "ins": [
-          {
-            "il": "plural",
-            "ifc": "~ -sors",
-            "if": "word processors"
-          }
-        ],
-        "gram": "count",
-        "def": [
-          {
-            "sseq": [
-              [
-                [
-                  "sense",
-                  {
-                    "sn": "1",
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}a computer used for creating, storing, and printing text {bc}a computer used for word processing "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "At work she sits in front of her {it}word processor{/it} all day."
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ],
-              [
-                [
-                  "sense",
-                  {
-                    "sn": "2",
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}software used on a computer to perform word processing "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "She closed down her {it}word processor{/it} and opened her e-mail program."
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ]
-            ]
-          }
-        ],
-        "shortdef": [
-          "a computer used for creating, storing, and printing text : a computer used for word processing",
-          "software used on a computer to perform word processing"
-        ]
-      },
-      {
-        "meta": {
-          "id": "code word",
-          "uuid": "687573c9-98fa-43f2-9bac-8a881d75670e",
-          "src": "learners",
-          "section": "alpha",
-          "target": {
-            "tuuid": "5a2ad283-feb7-4e49-8dce-c784ff9ed3ed",
-            "tsrc": "collegiate"
-          },
-          "stems": ["code word", "code words"],
-          "app-shortdef": {
-            "hw": "code word",
-            "fl": "noun",
-            "def": [
-              "{bc} a word or phrase that has a secret meaning or that is used instead of another word or phrase to avoid speaking directly"
-            ]
-          },
-          "offensive": false
-        },
-        "hwi": {
-          "hw": "code word"
-        },
-        "fl": "noun",
-        "ins": [
-          {
-            "il": "plural",
-            "ifc": "~ words",
-            "if": "code words"
-          }
-        ],
-        "gram": "count",
-        "def": [
-          {
-            "sseq": [
-              [
-                [
-                  "sense",
-                  {
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}a word or phrase that has a secret meaning or that is used instead of another word or phrase to avoid speaking directly "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "The {it}code word{/it} {ldquo}conflict{rdquo} has been used for what some people are calling a war."
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ]
-            ]
-          }
-        ],
-        "shortdef": [
-          "a word or phrase that has a secret meaning or that is used instead of another word or phrase to avoid speaking directly"
-        ]
-      },
-      {
-        "meta": {
-          "id": "dirty word",
-          "uuid": "1cd76ed3-6046-4c63-bbbd-906fdb12a777",
-          "src": "learners",
-          "section": "alpha",
-          "target": {
-            "tuuid": "1d4c58b6-ee38-48a3-b108-dbb994452847",
-            "tsrc": "collegiate"
-          },
-          "stems": ["dirty word", "dirty words"],
-          "app-shortdef": {
-            "hw": "dirty word",
-            "fl": "noun",
-            "def": [
-              "{bc} an offensive word",
-              "{bc} a word, subject, or idea that is disliked by some people"
-            ]
-          },
-          "offensive": false
-        },
-        "hwi": {
-          "hw": "dirty word"
-        },
-        "fl": "noun",
-        "ins": [
-          {
-            "il": "plural",
-            "ifc": "~ words",
-            "if": "dirty words"
-          }
-        ],
-        "def": [
-          {
-            "sseq": [
-              [
-                [
-                  "sense",
-                  {
-                    "sn": "1",
-                    "sgram": "count",
-                    "dt": [
-                      ["text", "{bc}an offensive word "],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "The movie is just a lot of sex, violence, and {it}dirty words{/it}."
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ],
-              [
-                [
-                  "sense",
-                  {
-                    "sn": "2",
-                    "sgram": "singular",
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}a word, subject, or idea that is disliked by some people "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "They regard {ldquo}taxes{rdquo} as a {it}dirty word{/it}."
-                          },
-                          {
-                            "t": "Politics is a {it}dirty word{/it} [=they don't talk about politics] in their home."
-                          },
-                          {
-                            "t": "The way he acts, you'd think compassion was a {it}dirty word{/it}."
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ]
-            ]
-          }
-        ],
-        "shortdef": [
-          "an offensive word",
-          "a word, subject, or idea that is disliked by some people"
-        ]
-      },
-      {
-        "meta": {
-          "id": "four-letter word",
-          "uuid": "1117598e-e1c7-4238-bd90-6708e010f573",
-          "src": "learners",
-          "section": "alpha",
-          "target": {
-            "tuuid": "37dd7645-2a6b-497b-973d-638d5f21213d",
-            "tsrc": "collegiate"
-          },
-          "stems": ["four-letter word", "four-letter words"],
-          "app-shortdef": {
-            "hw": "four-letter word",
-            "fl": "noun",
-            "def": [
-              "{bc} an offensive word and especially an offensive word that has four letters",
-              "{bc} a word, subject, or idea that is disliked by some people"
-            ]
-          },
-          "offensive": false
-        },
-        "hwi": {
-          "hw": "four-letter word"
-        },
-        "fl": "noun",
-        "ins": [
-          {
-            "il": "plural",
-            "ifc": "~ words",
-            "if": "four-letter words"
-          }
-        ],
-        "gram": "count",
-        "def": [
-          {
-            "sseq": [
-              [
-                [
-                  "sense",
-                  {
-                    "sn": "1",
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}an offensive word and especially an offensive word that has four letters {bc}{sx|dirty word||1} "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "a book that contains a lot of {it}four-letter words{/it}"
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ],
-              [
-                [
-                  "sense",
-                  {
-                    "sn": "2",
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}a word, subject, or idea that is disliked by some people {bc}{sx|dirty word||2} "
-                      ],
-                      [
-                        "vis",
-                        [
-                          {
-                            "t": "{ldquo}Tax{rdquo} is a {it}four-letter word{/it} as far as he's concerned."
-                          }
-                        ]
-                      ]
-                    ]
-                  }
-                ]
-              ]
-            ]
-          }
-        ],
-        "shortdef": [
-          "an offensive word and especially an offensive word that has four letters : dirty word",
-          "a word, subject, or idea that is disliked by some people : dirty word"
-        ]
-      },
-      {
-        "meta": {
-          "id": "function word",
-          "uuid": "2c6e8b03-468a-4394-b5d9-0da3fe1e6b5c",
-          "src": "learners",
-          "section": "alpha",
-          "target": {
-            "tuuid": "680b66e8-9663-4d0e-85a9-3d5ec46b1e41",
-            "tsrc": "collegiate"
-          },
-          "stems": ["function word", "function words"],
-          "app-shortdef": {
-            "hw": "function word",
-            "fl": "noun",
-            "def": [
-              "{it}linguistics{/it} {bc} a word (such as a preposition or a conjunction) that is used mainly to show grammatical relationships between other words"
-            ]
-          },
-          "offensive": false
-        },
-        "hwi": {
-          "hw": "function word"
-        },
-        "fl": "noun",
-        "ins": [
-          {
-            "il": "plural",
-            "ifc": "~ words",
-            "if": "function words"
-          }
-        ],
-        "gram": "count",
-        "def": [
-          {
-            "sseq": [
-              [
-                [
-                  "sense",
-                  {
-                    "sls": ["linguistics"],
-                    "dt": [
-                      [
-                        "text",
-                        "{bc}a word (such as a preposition or a conjunction) that is used mainly to show grammatical relationships between other words"
-                      ]
-                    ]
-                  }
-                ]
-              ]
-            ]
-          }
-        ],
-        "shortdef": [
-          "a word (such as a preposition or a conjunction) that is used mainly to show grammatical relationships between other words"
-        ]
-      },
-      {
-        "meta": {
-          "id": "f-word",
-          "uuid": "d1c4c458-a037-482b-ae25-e8dc8d2079c3",
-          "src": "learners",
-          "section": "alpha",
-          "stems": ["f-word", "the f-word"],
-          "app-shortdef": {
-            "hw": "f-word",
-            "fl": "noun",
-            "def": [
-              "used as a way to refer to the offensive word {ldquo}fuck{rdquo} without saying it or writing it"
-            ]
-          },
-          "offensive": false
-        },
-        "hwi": {
-          "hw": "f-word",
-          "prs": [
-            {
-              "ipa": "ˈɛfˌwɚd",
-              "sound": {
-                "audio": "fword01ld"
-              }
-            }
-          ]
-        },
-        "fl": "noun",
-        "dros": [
-          {
-            "drp": "the f-word",
-            "vrs": [
-              {
-                "vl": "or",
-                "va": "the F-word"
-              }
-            ],
-            "def": [
-              {
-                "sseq": [
-                  [
-                    [
-                      "sense",
-                      {
-                        "dt": [
-                          [
-                            "uns",
-                            [
-                              [
-                                [
-                                  "text",
-                                  "used as a way to refer to the offensive word {ldquo}fuck{rdquo} without saying it or writing it "
-                                ],
-                                [
-                                  "vis",
-                                  [
-                                    {
-                                      "t": "He got in trouble for using {it}the f-word{/it} on television."
-                                    }
-                                  ]
-                                ]
-                              ]
                             ]
                           ]
                         ]
@@ -1806,6 +961,1567 @@
           }
         ],
         "shortdef": []
+      },
+      {
+        "meta": {
+          "id": "silent",
+          "uuid": "95e68937-ca82-4cb3-99d2-7de250d64d03",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "43b55f56-91df-4f6c-bdc3-bcb292b10c1e",
+            "tsrc": "collegiate"
+          },
+          "highlight": "yes",
+          "stems": [
+            "silent",
+            "silently",
+            "fell silent",
+            "the strong, silent type",
+            "right to remain silent"
+          ],
+          "app-shortdef": {
+            "hw": "silent",
+            "fl": "adjective",
+            "def": [
+              "{bc} not speaking or making noise",
+              "{bc} tending not to talk much",
+              "{bc} not having or making any sound or noise"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "si*lent",
+          "prs": [
+            {
+              "ipa": "ˈsaɪlənt",
+              "sound": {
+                "audio": "silent01"
+              }
+            }
+          ]
+        },
+        "fl": "adjective",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}not speaking or making noise {bc}{sx|quiet||} "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She was {it}silent{/it} for a few minutes as she thought about how to answer him."
+                          },
+                          {
+                            "t": "Please be {it}silent{/it}."
+                          },
+                          {
+                            "t": "The crowd {phrase}fell silent{/phrase} as the horrible news was read aloud."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "lbs": [
+                      "always used before a noun"
+                    ],
+                    "sgram": "more ~; most ~",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}tending not to talk much "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "My father was a very {it}silent{/it} man."
+                          },
+                          {
+                            "t": "He was {phrase}the strong, silent type{/phrase}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "3",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}not having or making any sound or noise "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "He said he would call me, but the phone was {it}silent{/it} all day."
+                          },
+                          {
+                            "t": "The radio went {it}silent{/it}. [={it}dead{/it}]"
+                          },
+                          {
+                            "t": "A long, {it}silent{/it} pause followed her reply."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "4",
+                    "lbs": [
+                      "always used before a noun"
+                    ],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}done, felt, or expressed without speaking "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She offered a {it}silent{/it} prayer of thanks for her family's safety."
+                          },
+                          {
+                            "t": "They nodded their heads in {it}silent{/it} agreement."
+                          },
+                          {
+                            "t": "He turned his back on the president in {it}silent{/it} protest."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "5",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}giving no information about something or refusing to discuss something "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "History books are {it}silent{/it} about this shameful incident in our nation's past."
+                          },
+                          {
+                            "t": "The president remained {it}silent{/it} on the issue of funding."
+                          },
+                          {
+                            "t": "You have the {phrase}right to remain silent{/phrase}. [=the legal right not to say anything when you are arrested]"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "6",
+                    "sls": [
+                      "grammar"
+                    ],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}written in the spelling of a word but not pronounced "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "There is a {it}silent{/it} {ldquo}e{rdquo} in {ldquo}cane.{rdquo}"
+                          },
+                          {
+                            "t": "The {ldquo}b{rdquo} in {ldquo}debt{rdquo} is {it}silent{/it}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sen",
+                  {
+                    "sn": "7",
+                    "lbs": [
+                      "always used before a noun"
+                    ],
+                    "sls": [
+                      "of movies"
+                    ]
+                  }
+                ],
+                [
+                  "sense",
+                  {
+                    "sn": "a",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}not having spoken dialogue "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "{it}silent{/it} movies/films"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "sense",
+                  {
+                    "sn": "b",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}of or relating to movies that have no spoken dialogue "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "filmmakers of the {it}silent{/it} era"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "uros": [
+          {
+            "ure": "si*lent*ly",
+            "fl": "adverb",
+            "utxt": [
+              [
+                "vis",
+                [
+                  {
+                    "t": "She sat {it}silently{/it} beside me."
+                  },
+                  {
+                    "t": "The tiger moved {it}silently{/it} through the jungle."
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "not speaking or making noise : quiet",
+          "tending not to talk much",
+          "not having or making any sound or noise"
+        ]
+      }
+    ]
+  },
+  {
+    "type": [
+      {
+        "meta": {
+          "id": "type:1",
+          "uuid": "cb585bce-8f54-46f7-a025-b059d4a3e880",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "b8a1e225-3efb-45df-857f-a230bfd1d9b6",
+            "tsrc": "collegiate"
+          },
+          "highlight": "yes",
+          "stems": [
+            "type",
+            "types",
+            "revert to type",
+            "not her type",
+            "not the type"
+          ],
+          "app-shortdef": {
+            "hw": "type:1",
+            "fl": "noun",
+            "def": [
+              "{bc} a particular kind or group of things or people",
+              "{bc} a particular kind of person",
+              "{bc} printed letters"
+            ]
+          },
+          "offensive": false
+        },
+        "hom": 1,
+        "hwi": {
+          "hw": "type",
+          "prs": [
+            {
+              "ipa": "ˈtaɪp",
+              "sound": {
+                "audio": "type0001"
+              }
+            }
+          ]
+        },
+        "fl": "noun",
+        "ins": [
+          {
+            "il": "plural",
+            "if": "types"
+          }
+        ],
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "sgram": "count",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a particular kind or group of things or people "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "What {it}type{/it} [={it}sort{/it}] of food do you like?"
+                          },
+                          {
+                            "t": "We were not prepared to face this {it}type{/it} of crisis."
+                          },
+                          {
+                            "t": "We studied various {it}types{/it} of trees."
+                          },
+                          {
+                            "t": "a seedless {it}type{/it} of orange"
+                          },
+                          {
+                            "t": "Allergies of this {it}type{/it} [={it}kind{/it}] are common."
+                          },
+                          {
+                            "t": "He only likes two {it}types{/it} of music."
+                          },
+                          {
+                            "t": "She likes all {it}types{/it} of books."
+                          }
+                        ]
+                      ],
+                      [
+                        "text",
+                        "{dx}see also {dxt|blood type||}{/dx}"
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "sgram": "count",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a particular kind of person "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She's a real outdoors {it}type{/it}. [=she loves hiking, camping, etc., in the outdoors]"
+                          },
+                          {
+                            "t": "The dinner guests were mostly urban {it}types{/it}. [=people who lived in the city]"
+                          },
+                          {
+                            "t": "He's {phrase}not her type{/phrase}. [=he is not the kind of man she is attracted to]"
+                          },
+                          {
+                            "t": "Her mother is {phrase}not the type{/phrase} to complain. [=she does not often complain]"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sen",
+                  {
+                    "sn": "3",
+                    "sgram": "noncount"
+                  }
+                ],
+                [
+                  "sense",
+                  {
+                    "sn": "a",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}printed letters "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "italic {it}type{/it}"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "sense",
+                  {
+                    "sn": "b",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}small metal blocks that are used for printing letters and numbers on paper "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "lead {it}type{/it}"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "dros": [
+          {
+            "drp": "revert to type",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "dt": [
+                          [
+                            "text",
+                            "{dx}see {dxt|revert||}{/dx}"
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "shortdef": [
+          "a particular kind or group of things or people",
+          "a particular kind of person",
+          "printed letters"
+        ]
+      },
+      {
+        "meta": {
+          "id": "type:2",
+          "uuid": "06004b48-a6a6-455e-a16c-0aaedd3351a4",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "4af48069-b7bb-449a-ac32-9f7602ff9a5e",
+            "tsrc": "collegiate"
+          },
+          "highlight": "yes",
+          "stems": [
+            "type",
+            "typable",
+            "typeable",
+            "typed",
+            "types",
+            "typing"
+          ],
+          "app-shortdef": {
+            "hw": "type:2",
+            "fl": "verb",
+            "def": [
+              "{bc} to write with a computer keyboard or typewriter",
+              "{it}technical{/it} {bc} to find out what group something is in"
+            ]
+          },
+          "offensive": false
+        },
+        "hom": 2,
+        "hwi": {
+          "hw": "type",
+          "altprs": [
+            {
+              "ipa": "ˈtaɪp"
+            }
+          ]
+        },
+        "fl": "verb",
+        "ins": [
+          {
+            "if": "types"
+          },
+          {
+            "if": "typed"
+          },
+          {
+            "if": "typ*ing"
+          }
+        ],
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}to write with a computer keyboard or typewriter "
+                      ],
+                      [
+                        "wsgram",
+                        "no obj"
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "How fast can you {it}type{/it}?"
+                          },
+                          {
+                            "t": "I never learned how to {it}type{/it}."
+                          }
+                        ]
+                      ],
+                      [
+                        "wsgram",
+                        "+ obj"
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "{it}Type{/it} your name here."
+                          },
+                          {
+                            "t": "She asked her secretary to {it}type{/it} a memo."
+                          }
+                        ]
+                      ],
+                      [
+                        "uns",
+                        [
+                          [
+                            [
+                              "text",
+                              "sometimes + {it}up{/it} "
+                            ],
+                            [
+                              "vis",
+                              [
+                                {
+                                  "t": "Can you {it}type{/it} this {it}up{/it} for me?"
+                                }
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "sgram": "+ obj",
+                    "sls": [
+                      "technical"
+                    ],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}to find out what group something is in "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "The lab will {it}type{/it} this blood sample. [=the lab will determine what type of blood the sample is]"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "uros": [
+          {
+            "ure": "typing",
+            "fl": "noun",
+            "gram": "noncount",
+            "utxt": [
+              [
+                "vis",
+                [
+                  {
+                    "t": "genetic {it}typing{/it}"
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "to write with a computer keyboard or typewriter —sometimes + up",
+          "to find out what group something is in"
+        ]
+      },
+      {
+        "meta": {
+          "id": "blood type",
+          "uuid": "b9f0e39b-1996-4046-befc-ade4b611a452",
+          "src": "learners",
+          "section": "alpha",
+          "stems": [
+            "blood type",
+            "blood types",
+            "blood group"
+          ],
+          "app-shortdef": {
+            "hw": "blood type",
+            "fl": "noun",
+            "def": [
+              "{it}chiefly US{/it} {bc} one of the eight different blood categories into which humans are separated"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "blood type"
+        },
+        "fl": "noun",
+        "ins": [
+          {
+            "il": "plural",
+            "ifc": "~ types",
+            "if": "blood types"
+          }
+        ],
+        "gram": "count",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sls": [
+                      "chiefly US"
+                    ],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}one of the eight different blood categories into which humans are separated "
+                      ],
+                      [
+                        "snote",
+                        [
+                          [
+                            "t",
+                            "These categories of blood are labeled A, B, AB, or O and each of these is either Rh-positive or Rh-negative."
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "Her {it}blood type{/it} is B negative."
+                              }
+                            ]
+                          ]
+                        ]
+                      ],
+                      [
+                        "ca",
+                        {
+                          "intro": "called also",
+                          "cats": [
+                            {
+                              "cat": "blood group"
+                            }
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "one of the eight different blood categories into which humans are separated —called also blood group"
+        ]
+      },
+      {
+        "meta": {
+          "id": "touch-type",
+          "uuid": "46e32036-75d5-4d05-a3a7-3c8a6c273ba1",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "437f4acf-f0ae-4738-89ae-50b88b09edf1",
+            "tsrc": "collegiate"
+          },
+          "stems": [
+            "touch-type",
+            "touch typist",
+            "touch-typed",
+            "touch-types",
+            "touch-typing"
+          ],
+          "app-shortdef": {
+            "hw": "touch-type",
+            "fl": "verb",
+            "def": [
+              "{bc} to type without looking at the keyboard"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "touch-type",
+          "prs": [
+            {
+              "ipa": "ˈtʌtʃˌtaɪp",
+              "sound": {
+                "audio": "toucht02"
+              }
+            }
+          ]
+        },
+        "fl": "verb",
+        "ins": [
+          {
+            "ifc": "-types",
+            "if": "touch-types"
+          },
+          {
+            "ifc": "-typed",
+            "if": "touch-typed"
+          },
+          {
+            "ifc": "-typ*ing",
+            "if": "touch-typ*ing"
+          }
+        ],
+        "gram": "no obj",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}to type without looking at the keyboard "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "The class taught him how to {it}touch-type{/it}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "to type without looking at the keyboard"
+        ]
+      },
+      {
+        "meta": {
+          "id": "another:2",
+          "uuid": "d53afc7b-894e-4fc6-9dc2-23dbd3dcdfea",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "58ecf452-01ed-4d21-9d27-9a8140caa09c",
+            "tsrc": "collegiate"
+          },
+          "highlight": "yes",
+          "stems": [
+            "another",
+            "one after another",
+            "at one time or another",
+            "for one/some reason or another",
+            "for one reason or another",
+            "for some reason or another",
+            "one way or another",
+            "of one kind/sort/type or another",
+            "of one kind or another",
+            "of one sort or another",
+            "of one type or another",
+            "one thing and another"
+          ],
+          "app-shortdef": {
+            "hw": "another:2",
+            "fl": "pronoun",
+            "def": [
+              "{bc} one more of the same kind {bc} another one",
+              "{bc} one that is different {bc} someone or something else"
+            ]
+          },
+          "offensive": false
+        },
+        "hom": 2,
+        "hwi": {
+          "hw": "another",
+          "altprs": [
+            {
+              "ipa": "əˈnʌðɚ"
+            }
+          ]
+        },
+        "fl": "pronoun",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}one more of the same kind {bc}another one "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "I've had one drink, but I think I'll have {it}another{/it}."
+                          },
+                          {
+                            "t": "One copy of the letter was sent out, and {it}another{/it} was placed in the files."
+                          },
+                          {
+                            "t": "One thief carried a gun, {it}another{/it} (carried) a knife."
+                          },
+                          {
+                            "t": "This cup is chipped. Could you please bring me {it}another{/it}?"
+                          },
+                          {
+                            "t": "We had dinner at {it}another{/it} of the city's many Italian restaurants."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}one that is different {bc}someone or something else "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She's not comfortable living in {it}another's{/it} house. [=in another person's house]"
+                          },
+                          {
+                            "t": "Complaining about problems is one thing, but finding solutions to them is {it}another{/it}. [=it is more difficult to find solutions to problems than to complain about them]"
+                          },
+                          {
+                            "t": "The family seems to move from one city to {it}another{/it}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "3",
+                    "dt": [
+                      [
+                        "uns",
+                        [
+                          [
+                            [
+                              "text",
+                              "used in phrases with {it}one{/it} or (less commonly) {it}some{/it} to refer to something that is not specified "
+                            ],
+                            [
+                              "vis",
+                              [
+                                {
+                                  "t": "We all do foolish things {phrase}at one time or another{/phrase}. [={it}sometimes{/it}, {it}on occasion{/it}]"
+                                },
+                                {
+                                  "t": "They had to change their plans {phrase}for one/some reason or another{/phrase}. [=for some reason]"
+                                },
+                                {
+                                  "t": "He vowed that he would succeed (in) {phrase}one way or another{/phrase}. [=vowed that he would find a way to succeed]"
+                                },
+                                {
+                                  "t": "a lock {phrase}of one kind/sort/type or another{/phrase} [=some kind/sort/type of lock]"
+                                },
+                                {
+                                  "t": "What with {phrase}one thing and another{/phrase}, we still haven't finished. [=we still haven't finished because of various things that have happened]"
+                                }
+                              ]
+                            ]
+                          ]
+                        ]
+                      ],
+                      [
+                        "text",
+                        "{dx}see also {dxt|one another||}{/dx}"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "dros": [
+          {
+            "drp": "one after another",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "1",
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}in a continuing series "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "The buses kept arriving, {it}one after another{/it}."
+                              },
+                              {
+                                "t": "{it}One{/it} person {it}after another{/it} walked out of the concert."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "2",
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}each one in a continuing series "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "{it}One after another{/it} of her friends got married and moved away."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "shortdef": [
+          "one more of the same kind : another one",
+          "one that is different : someone or something else",
+          "—used in phrases with one or (less commonly) some to refer to something that is not specified"
+        ]
+      },
+      {
+        "meta": {
+          "id": "blood group",
+          "uuid": "db55e66b-ccbc-45fc-a284-4d66bf1ae1ac",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "c933e9e0-1184-449e-a088-ef91d39e83d4",
+            "tsrc": "collegiate"
+          },
+          "stems": [
+            "blood group",
+            "blood groups",
+            "blood type"
+          ],
+          "app-shortdef": [],
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "blood group"
+        },
+        "fl": "noun",
+        "ins": [
+          {
+            "il": "plural",
+            "ifc": "~ groups",
+            "if": "blood groups"
+          }
+        ],
+        "gram": "count",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}{sx|blood type||}"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "blood type"
+        ]
+      },
+      {
+        "meta": {
+          "id": "revert",
+          "uuid": "8063da70-3f1c-46d8-9fa3-9a0287f254c9",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "980c3306-4c45-4741-a69c-c53946a3b853",
+            "tsrc": "collegiate"
+          },
+          "stems": [
+            "revert",
+            "reverts",
+            "reverted",
+            "reverting",
+            "revert to",
+            "reverted to normal",
+            "reverted to form",
+            "revert to type"
+          ],
+          "app-shortdef": {
+            "hw": "revert",
+            "fl": "verb",
+            "def": [
+              "{bc} to go back or return to (an earlier state, condition, situation, etc.)",
+              "{it}law{/it}, {it}of property{/it} {bc} to be given to (a former owner or a former owner's heir)"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "re*vert",
+          "prs": [
+            {
+              "ipa": "rɪˈvɚt",
+              "sound": {
+                "audio": "revert01"
+              }
+            }
+          ]
+        },
+        "fl": "verb",
+        "ins": [
+          {
+            "ifc": "-verts",
+            "if": "re*verts"
+          },
+          {
+            "ifc": "-vert*ed",
+            "if": "re*vert*ed"
+          },
+          {
+            "ifc": "-vert*ing",
+            "if": "re*vert*ing"
+          }
+        ],
+        "dros": [
+          {
+            "drp": "revert to",
+            "gram": "phrasal verb",
+            "def": [
+              {
+                "sseq": [
+                  [
+                    [
+                      "sense",
+                      {
+                        "sphrasev": {
+                          "phrs": [
+                            {
+                              "pva": "revert to (something)"
+                            }
+                          ]
+                        },
+                        "sn": "1",
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}to go back or return to (an earlier state, condition, situation, etc.) "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "She has {it}reverted{/it} (back) {it}to{/it} her old habits."
+                              },
+                              {
+                                "t": "My blood pressure has {phrase}reverted to normal{/phrase}. [=has returned to normal; has become normal again]"
+                              },
+                              {
+                                "t": "After playing badly in the last two games, he seems to have {phrase}reverted to form{/phrase}. [=he is now playing as well as he usually does]"
+                              },
+                              {
+                                "t": "({it}chiefly Brit{/it}) After this one atypical comedy, will he {phrase}revert to type{/phrase} [=will he do what he usually does] in his next film?"
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      "sense",
+                      {
+                        "sn": "2",
+                        "phrasev": [
+                          {
+                            "pva": "revert to (someone or something)"
+                          }
+                        ],
+                        "sls": [
+                          "law",
+                          "of property"
+                        ],
+                        "dt": [
+                          [
+                            "text",
+                            "{bc}to be given to (a former owner or a former owner's heir) "
+                          ],
+                          [
+                            "vis",
+                            [
+                              {
+                                "t": "The estate {it}reverted to{/it} a distant cousin."
+                              }
+                            ]
+                          ]
+                        ]
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "shortdef": []
+      },
+      {
+        "meta": {
+          "id": "silent",
+          "uuid": "95e68937-ca82-4cb3-99d2-7de250d64d03",
+          "src": "learners",
+          "section": "alpha",
+          "target": {
+            "tuuid": "43b55f56-91df-4f6c-bdc3-bcb292b10c1e",
+            "tsrc": "collegiate"
+          },
+          "highlight": "yes",
+          "stems": [
+            "silent",
+            "silently",
+            "fell silent",
+            "the strong, silent type",
+            "right to remain silent"
+          ],
+          "app-shortdef": {
+            "hw": "silent",
+            "fl": "adjective",
+            "def": [
+              "{bc} not speaking or making noise",
+              "{bc} tending not to talk much",
+              "{bc} not having or making any sound or noise"
+            ]
+          },
+          "offensive": false
+        },
+        "hwi": {
+          "hw": "si*lent",
+          "prs": [
+            {
+              "ipa": "ˈsaɪlənt",
+              "sound": {
+                "audio": "silent01"
+              }
+            }
+          ]
+        },
+        "fl": "adjective",
+        "def": [
+          {
+            "sseq": [
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}not speaking or making noise {bc}{sx|quiet||} "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She was {it}silent{/it} for a few minutes as she thought about how to answer him."
+                          },
+                          {
+                            "t": "Please be {it}silent{/it}."
+                          },
+                          {
+                            "t": "The crowd {phrase}fell silent{/phrase} as the horrible news was read aloud."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "2",
+                    "lbs": [
+                      "always used before a noun"
+                    ],
+                    "sgram": "more ~; most ~",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}tending not to talk much "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "My father was a very {it}silent{/it} man."
+                          },
+                          {
+                            "t": "He was {phrase}the strong, silent type{/phrase}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "3",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}not having or making any sound or noise "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "He said he would call me, but the phone was {it}silent{/it} all day."
+                          },
+                          {
+                            "t": "The radio went {it}silent{/it}. [={it}dead{/it}]"
+                          },
+                          {
+                            "t": "A long, {it}silent{/it} pause followed her reply."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "4",
+                    "lbs": [
+                      "always used before a noun"
+                    ],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}done, felt, or expressed without speaking "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "She offered a {it}silent{/it} prayer of thanks for her family's safety."
+                          },
+                          {
+                            "t": "They nodded their heads in {it}silent{/it} agreement."
+                          },
+                          {
+                            "t": "He turned his back on the president in {it}silent{/it} protest."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "5",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}giving no information about something or refusing to discuss something "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "History books are {it}silent{/it} about this shameful incident in our nation's past."
+                          },
+                          {
+                            "t": "The president remained {it}silent{/it} on the issue of funding."
+                          },
+                          {
+                            "t": "You have the {phrase}right to remain silent{/phrase}. [=the legal right not to say anything when you are arrested]"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "6",
+                    "sls": [
+                      "grammar"
+                    ],
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}written in the spelling of a word but not pronounced "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "There is a {it}silent{/it} {ldquo}e{rdquo} in {ldquo}cane.{rdquo}"
+                          },
+                          {
+                            "t": "The {ldquo}b{rdquo} in {ldquo}debt{rdquo} is {it}silent{/it}."
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ],
+              [
+                [
+                  "sen",
+                  {
+                    "sn": "7",
+                    "lbs": [
+                      "always used before a noun"
+                    ],
+                    "sls": [
+                      "of movies"
+                    ]
+                  }
+                ],
+                [
+                  "sense",
+                  {
+                    "sn": "a",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}not having spoken dialogue "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "{it}silent{/it} movies/films"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "sense",
+                  {
+                    "sn": "b",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}of or relating to movies that have no spoken dialogue "
+                      ],
+                      [
+                        "vis",
+                        [
+                          {
+                            "t": "filmmakers of the {it}silent{/it} era"
+                          }
+                        ]
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "uros": [
+          {
+            "ure": "si*lent*ly",
+            "fl": "adverb",
+            "utxt": [
+              [
+                "vis",
+                [
+                  {
+                    "t": "She sat {it}silently{/it} beside me."
+                  },
+                  {
+                    "t": "The tiger moved {it}silently{/it} through the jungle."
+                  }
+                ]
+              ]
+            ]
+          }
+        ],
+        "shortdef": [
+          "not speaking or making noise : quiet",
+          "tending not to talk much",
+          "not having or making any sound or noise"
+        ]
       }
     ]
   }

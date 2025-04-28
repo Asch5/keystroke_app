@@ -24,6 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Upload } from 'lucide-react';
+import { DatabaseCleanupDialog } from '../DatabaseCleanupDialog';
 
 interface ProcessedWord {
   word: string;
@@ -35,7 +36,7 @@ export default function AddNewWordForm() {
   const [loading, setLoading] = useState(false);
   const [word, setWord] = useState('');
   const [dictionaryType, setDictionaryType] = useState('learners');
-  const [processOneWordOnly, setProcessOneWordOnly] = useState(false);
+  const [processOneWordOnly, setProcessOneWordOnly] = useState(true);
   const [processedWords, setProcessedWords] = useState<ProcessedWord[]>([]);
   const [fileUploading, setFileUploading] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState('');
@@ -464,6 +465,7 @@ export default function AddNewWordForm() {
           </CardContent>
         </Card>
       )}
+      <DatabaseCleanupDialog />
     </div>
   );
 }

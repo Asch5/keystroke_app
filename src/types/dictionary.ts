@@ -85,6 +85,12 @@ export const LANGUAGE_MAP_ARRAY = [
   { id: 'da', name: 'Danish' },
 ] as const;
 
+export interface DefinitionExampleOfProcessWordData {
+  example: string;
+  languageCode: string;
+  grammaticalNote?: string | null;
+}
+
 export interface ProcessedWordData {
   word: {
     word: string;
@@ -125,11 +131,7 @@ export interface ProcessedWordData {
   phrases: {
     phrase: string;
     definition: string;
-    examples: {
-      example: string;
-      languageCode: string;
-      grammaticalNote?: string | null;
-    }[];
+    examples: DefinitionExampleOfProcessWordData[];
   }[];
   stems: string[];
 }

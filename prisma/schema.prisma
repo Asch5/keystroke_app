@@ -334,7 +334,7 @@ model Image {
 
 model Translation {
   id           Int          @id @default(autoincrement())
-  entityType   String       // e.g., "definition", "phrase", "example"
+  entityType   String       // e.g., "definition", "example"
   entityId     Int
   languageCode LanguageCode
   content      String       @db.Text

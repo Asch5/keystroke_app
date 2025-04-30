@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   PartOfSpeech,
   RelationshipType,
@@ -16,7 +17,6 @@ import { WordUpdateData, ExampleUpdateData } from '@/types/dictionary';
 import { Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { toast } from 'sonner';
 
 // UI Components
 import { Button } from '@/components/ui/button';
@@ -46,8 +46,10 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Skeleton } from '@/components/ui/skeleton';
-import { PlusCircle, Trash2, Save, Loader2 } from 'lucide-react';
+import { PlusCircle, Trash2, Save, Loader2, ImageIcon } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { WordImage } from '@/components/dictionary/wordImage';
+import { toast } from 'sonner';
 
 // Form validation schema
 const wordFormSchema = z.object({
@@ -176,6 +178,17 @@ export default function WordEditForm({
   // Populate form when wordDetails changes
   useEffect(() => {
     if (wordDetails) {
+      console.log('Word details:', JSON.stringify(wordDetails, null, 2));
+      console.log(
+        'Definitions with images:',
+        wordDetails.definitions.map((def) => ({
+          id: def.id,
+          text: def.text.substring(0, 30),
+          imageId: def.image?.id,
+          hasImage: !!def.image,
+        })),
+      );
+
       form.reset({
         word: wordDetails.word.text,
         phonetic: wordDetails.word.phonetic || '',
@@ -265,39 +278,26 @@ export default function WordEditForm({
         ),
       };
 
-      // Show optimistic UI update
-      toast.promise(
-        // Use server action to save data
-        new Promise(async (resolve, reject) => {
-          try {
-            // Call server action to update word
-            const result = await updateWordDetails(wordId, updateData);
+      // Use server action to save data
+      try {
+        const result = await updateWordDetails(wordId, updateData);
 
-            if (result.success) {
-              resolve({
-                success: true,
-                data: result.data,
-              });
-            } else {
-              reject(new Error(result.error || 'Failed to save word'));
-            }
-          } catch (error) {
-            console.error('Error in save operation:', error);
-            reject(error);
-          }
-        }),
-        {
-          loading: 'Saving word updates...',
-          success: 'Word updated successfully!',
-          error: (err) =>
-            `Failed to save word: ${err.message || 'Unknown error'}`,
-        },
-      );
+        if (result.success) {
+          toast.success('Word updated successfully!');
 
-      // Redirect after successful save
-      setTimeout(() => {
-        router.push('/admin/dictionaries');
-      }, 1500);
+          // Redirect after successful save
+          setTimeout(() => {
+            router.push('/admin/dictionaries');
+          }, 1500);
+        } else {
+          throw new Error(result.error || 'Failed to save word');
+        }
+      } catch (error) {
+        console.error('Error in save operation:', error);
+        toast.error(
+          `Failed to save word: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        );
+      }
     } catch (error) {
       console.error('Error saving word:', error);
       toast.error(
@@ -403,9 +403,10 @@ export default function WordEditForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid grid-cols-4 mb-8">
+          <TabsList className="grid grid-cols-5 mb-8">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
             <TabsTrigger value="definitions">Definitions</TabsTrigger>
+            <TabsTrigger value="images">Images</TabsTrigger>
             <TabsTrigger value="related">Related Words</TabsTrigger>
             <TabsTrigger value="audio">Audio</TabsTrigger>
           </TabsList>
@@ -761,6 +762,118 @@ export default function WordEditForm({
                       <PlusCircle className="h-4 w-4 mr-2" />
                       Add First Definition
                     </Button>
+                  </div>
+                )}
+              </>
+            )}
+          </TabsContent>
+
+          {/* Images Tab */}
+          <TabsContent value="images" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium">Definition Images</h3>
+            </div>
+
+            {isLoading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-12 w-full rounded-md" />
+                <Skeleton className="h-12 w-full rounded-md" />
+              </div>
+            ) : (
+              <>
+                <Accordion type="multiple" className="w-full">
+                  {form.watch('definitions').map((definition, defIndex) => (
+                    <AccordionItem
+                      key={defIndex}
+                      value={`image-def-${defIndex}`}
+                    >
+                      <AccordionTrigger>
+                        Definition {defIndex + 1}:{' '}
+                        {definition.text.substring(0, 40)}
+                        {definition.text.length > 40 ? '...' : ''}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4 pt-4">
+                          <div className="flex justify-between items-center">
+                            <h4 className="text-sm font-medium">
+                              Current Image
+                            </h4>
+                            {definition.id && (
+                              <WordImage
+                                mainWord={wordDetails?.word?.text}
+                                definitionId={definition.id}
+                                definitionText={definition.text}
+                                definitionExamples={definition.examples.map(
+                                  (example) => example.text,
+                                )}
+                                className="w-full h-full"
+                                onImageSelect={(newImageId) => {
+                                  console.log(
+                                    `Image updated to ID: ${newImageId} for definition ${definition.id}`,
+                                  );
+                                  toast.success(
+                                    `Image has been updated for definition ${defIndex + 1}`,
+                                  );
+                                }}
+                              />
+                            )}
+                          </div>
+
+                          {/* Debug the image data */}
+                          <div className="text-xs text-muted-foreground mb-2">
+                            Definition ID: {definition.id || 'Not saved yet'} |
+                            Image ID:{' '}
+                            {wordDetails?.definitions[defIndex]?.image?.id ||
+                              'None'}
+                          </div>
+
+                          {/* Display current image from database */}
+                          <div className="w-full max-w-xs mx-auto">
+                            {definition.id ? (
+                              <div className="border rounded-lg p-4">
+                                {wordDetails?.definitions[defIndex]?.image
+                                  ?.id ? (
+                                  <div className="relative aspect-square w-full overflow-hidden rounded-lg h-64">
+                                    <Image
+                                      src={`/api/images/${wordDetails.definitions[defIndex].image.id}`}
+                                      alt="Word illustration"
+                                      fill
+                                      className="object-cover"
+                                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-col items-center justify-center h-64 bg-muted/20 rounded-lg">
+                                    <ImageIcon className="h-12 w-12 text-muted-foreground/40 mb-2" />
+                                    <p className="text-sm text-muted-foreground text-center">
+                                      No image selected for this definition.
+                                      <br />
+                                      Click &quot;Change Image&quot; to add one.
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="text-center p-4 border border-dashed rounded-md">
+                                <p className="text-muted-foreground text-sm">
+                                  Save the word first to add an image to this
+                                  definition.
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+
+                {form.watch('definitions').length === 0 && (
+                  <div className="text-center p-6 border border-dashed rounded-md">
+                    <p className="text-muted-foreground">
+                      No definitions added yet. Add definitions first to attach
+                      images.
+                    </p>
                   </div>
                 )}
               </>

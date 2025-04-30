@@ -7,7 +7,7 @@ const { auth } = NextAuth(edgeAuthConfig);
 
 // Define path permissions for different roles
 const rolePermissions = {
-  admin: ['/dashboard', '/users', '/settings', '/profile', '/admin'],
+  admin: ['/'],
   user: ['/dashboard', '/profile', '/dictionary', '/settings', '/api-test'],
   editor: ['/dashboard', '/content', '/profile'],
 } as const;

@@ -17,7 +17,7 @@ export default function LoginPage() {
     <main className="flex items-center justify-center min-h-screen bg-muted/40">
       <div className="w-full max-w-md p-6 space-y-6">
         {showRegistrationSuccess && (
-          <Alert variant="success" className="mb-4">
+          <Alert variant="default" className="mb-4">
             <AlertDescription>
               Registration successful! Please login with your credentials.
             </AlertDescription>

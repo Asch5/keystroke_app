@@ -4,6 +4,7 @@ import { PexelsService } from './pexelsService';
 import { Definition } from '@/types/definition';
 import { Image } from '@prisma/client';
 import { serverLog, LogLevel } from '@/lib/utils/logUtils';
+import { normalizeText } from '../utils/wordsFormators';
 
 export interface ImageMetadata {
   id: number;
@@ -290,7 +291,7 @@ export class ImageService {
 
       if (!definition) {
         serverLog(
-          `Definition with id ${definitionId} not found`,
+          `FROM getOrCreateDefinitionImage: Definition with id ${definitionId} not found`,
           LogLevel.WARN,
         );
         return null;
@@ -299,14 +300,14 @@ export class ImageService {
       // If the definition already has an image, return it
       if (definition.image) {
         serverLog(
-          `Found existing image for definition ${definitionId}: ${definition.image.id}`,
+          `FROM getOrCreateDefinitionImage: Found existing image for definition ${definitionId}: ${definition.image.id}`,
           LogLevel.INFO,
         );
         return this.transformImageToMetadata(definition.image);
       }
 
       serverLog(
-        `Found definition ${definitionId}, creating search query for word: "${word}"`,
+        `FROM getOrCreateDefinitionImage: Found definition ${definitionId}, creating search query for word: "${word}"`,
         LogLevel.INFO,
       );
 
@@ -511,11 +512,28 @@ export class ImageService {
     const word = definition.word || definition.definition.split(' ')[0] || '';
 
     // Extract key concepts from definition
-    const keyWords = this.extractKeywords(definition.definition);
+    const keyWords = this.extractKeywords(normalizeText(definition.definition));
     const partOfSpeech = definition.partOfSpeech;
 
     // Create base query based on part of speech
     const query = `${word} ${partOfSpeech} ${keyWords.join(' ')}`;
+    serverLog(
+      `FROM createSearchQueryFromDefinition: Search query: ${query}`,
+      LogLevel.INFO,
+      {
+        word,
+        keyWords,
+        partOfSpeech,
+      },
+    );
+    const normalizedQuery = this.normalizeSearchQuery(query);
+    serverLog(
+      `FROM createSearchQueryFromDefinition: Normalized search query: ${normalizedQuery}`,
+      LogLevel.INFO,
+      {
+        normalizedQuery,
+      },
+    );
     // switch (partOfSpeech) {
     //   case PartOfSpeech.noun:
     //     query = this.createNounSearchQuery(word, keyWords, definition, labels);
@@ -540,13 +558,9 @@ export class ImageService {
     //   default:
     //     query = this.createDefaultSearchQuery(word, keyWords);
     // }
-    serverLog(`Search query: ${query}`, LogLevel.INFO, {
-      word,
-      keyWords,
-      partOfSpeech,
-    });
+
     // Clean up and normalize the query
-    return this.normalizeSearchQuery(query);
+    return normalizedQuery;
   }
 
   private extractKeywords(text: string): string[] {

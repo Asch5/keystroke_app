@@ -107,9 +107,11 @@ export interface ProcessedWordData {
     }[];
   };
   definitions: {
-    partOfSpeech: string;
+    id?: number | null;
+    partOfSpeech: PartOfSpeech;
     source: string;
     languageCode: string;
+    imageId?: number | null;
     isPlural: boolean;
     definition: string;
     subjectStatusLabels?: string | null;

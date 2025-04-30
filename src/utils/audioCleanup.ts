@@ -16,10 +16,6 @@ export async function markOrphanedAudioRecords() {
       SELECT DISTINCT audio_id FROM word_audio
       UNION
       SELECT DISTINCT audio_id FROM definition_example_audio
-      UNION
-      SELECT DISTINCT audio_id FROM phrase_example_audio
-      UNION
-      SELECT DISTINCT audio_id FROM phrase_audio
     )
     AND is_orphaned = false;
   `;

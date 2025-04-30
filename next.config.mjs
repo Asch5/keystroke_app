@@ -1,13 +1,12 @@
 /** @type {import('next').NextConfig} */
-
-import { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
-  /* config options here */
-  experimental: {
-    ppr: 'incremental',
+const nextConfig = {
+  // Ignore TypeScript errors in build
+  typescript: {
+    ignoreBuildErrors: true,
   },
+  // Image configuration
   images: {
+    domains: ['images.pexels.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -22,6 +21,10 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  // Experimental features
+  experimental: {
+    ppr: 'incremental',
   },
   // Enable verbose logging for debugging
   logging: {

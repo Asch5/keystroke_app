@@ -18,8 +18,9 @@ import {
 } from '@prisma/client';
 import { getWordDetails } from '../actions/dictionaryActions';
 //import { ImageService } from '@/lib/services/imageService';
-import { LogLevel } from '../utils/logUtils';
-import { serverLog } from '../utils/logUtils';
+import { LogLevel, serverLog } from '../utils/logUtils';
+
+import { ImageService } from '../services/imageService';
 
 /**Definitions:
  * generalLabels "lbs" - a property that stores general labels (like capitalization indicators, usage notes, etc.)
@@ -153,6 +154,11 @@ export interface MerriamWebsterResponse {
     offensive: boolean;
     syns?: string[][];
     ants?: string[][];
+    'app-shortdef'?: {
+      hw: string;
+      fl: string;
+      def: string[];
+    };
   };
   hwi: {
     hw: string;
@@ -190,6 +196,7 @@ export interface MerriamWebsterResponse {
   }>;
   gram?: string;
   lbs?: string[];
+
   shortdef?: string[] | string;
 }
 
@@ -303,7 +310,7 @@ export async function processAndSaveWord(
   const language = LanguageCode.en; // Hardcoded because we are using the English dictionary API
   const source = mapSourceType(apiResponse.meta.src);
   const sourceEntityId = apiResponse.meta.id;
-  const partOfSpeech = mapPartOfSpeech(apiResponse.fl);
+  const partOfSpeech = mapPartOfSpeech(apiResponse.fl) as PartOfSpeech;
   const sourceEntityUuid = apiResponse.meta.uuid;
 
   serverLog(
@@ -386,6 +393,7 @@ export async function processAndSaveWord(
   }
 
   interface SubWordDefinition {
+    id?: number | null;
     partOfSpeech: PartOfSpeech;
     source: string;
     languageCode: string;
@@ -413,6 +421,7 @@ export async function processAndSaveWord(
     word: string;
     languageCode: string;
     phonetic?: string | null;
+    imageId?: number | null;
     audio?: string | null;
     audioFiles?: string[] | null;
     etymology?: string | null;
@@ -442,7 +451,16 @@ export async function processAndSaveWord(
           phonetic: null,
           audio: null,
           etymology: variantTypeDefinition,
-          definitions: [],
+          definitions: [
+            {
+              partOfSpeech: partOfSpeech,
+              source: source,
+              languageCode: language,
+              isPlural: false,
+              definition: variantTypeDefinition,
+              examples: [],
+            },
+          ],
           relationship: [
             {
               fromWord: 'main' as RelationshipFromTo,
@@ -1322,7 +1340,7 @@ export async function processAndSaveWord(
         etymology: `Form of "${mainWordText}"`,
         definitions: [
           {
-            partOfSpeech: mapPartOfSpeech(uro.fl),
+            partOfSpeech: mapPartOfSpeech(uro.fl) as PartOfSpeech,
             source: source,
             languageCode: language,
 
@@ -1409,15 +1427,24 @@ sourceWordText processing
 
 */
   //!shortdef Short Definitions handler
-  const shortDefTexts = new Set<string>();
-  if (apiResponse.shortdef && Array.isArray(apiResponse.shortdef)) {
+
+  const artShortDefTexts = new Set<string>();
+  // First check app-shortdef (from Advanced English Learner's Dictionary)
+  if (
+    apiResponse.meta['app-shortdef']?.def &&
+    Array.isArray(apiResponse.meta['app-shortdef'].def)
+  ) {
+    apiResponse.meta['app-shortdef'].def.forEach((shortDef) => {
+      if (typeof shortDef === 'string') {
+        artShortDefTexts.add(cleanupDefinitionText(shortDef));
+      }
+    });
+  }
+  // Fall back to regular shortdef property if app-shortdef is not available
+  else if (apiResponse.shortdef && Array.isArray(apiResponse.shortdef)) {
     apiResponse.shortdef.forEach((shortDef) => {
       if (typeof shortDef === 'string') {
-        serverLog(
-          `Process in processMerriamApi.ts (shortdef section): shortDef: ${cleanupExampleText(shortDef)}`,
-          LogLevel.INFO,
-        );
-        shortDefTexts.add(cleanupExampleText(shortDef));
+        artShortDefTexts.add(cleanupDefinitionText(formatWithBC(shortDef)));
       }
     });
   }
@@ -1551,7 +1578,9 @@ sourceWordText processing
                     bnote,
                   ]) || null,
                 usageNote: extractedUsageNote || unsNoteText || null,
-                isInShortDef: shortDefTexts.has(cleanDefinitionText),
+                isInShortDef: artShortDefTexts.has(
+                  cleanupDefinitionText(cleanDefinitionText),
+                ),
                 examples,
               });
               serverLog(
@@ -1671,6 +1700,14 @@ sourceWordText processing
                   isPlural: definitionData.isPlural || false,
                 },
               });
+              processedData.definitions = processedData.definitions.map(
+                (def) => {
+                  if (def.definition === definitionData.definition) {
+                    return { ...def, id: definition?.id || null };
+                  }
+                  return def;
+                },
+              );
             }
 
             //! Link definition to word
@@ -1804,6 +1841,12 @@ sourceWordText processing
                   isInShortDef: defData.isInShortDef || false,
                   isPlural: defData.isPlural || false,
                 },
+              });
+              subWord.definitions = subWord.definitions.map((def) => {
+                if (def.definition === defData.definition) {
+                  return { ...def, id: subWordDef?.id || null };
+                }
+                return def;
               });
               // Check if existing definition needs an image
             }
@@ -1953,179 +1996,6 @@ sourceWordText processing
               );
             }
           }
-
-          //! 4. Process phrases from words with phrase relationship type
-          // const phraseWords = subWordsArray.filter((word) =>
-          //   word.relationship.some((rel) => rel.type === RelationshipType.phrase),
-          // );
-
-          // for (const phraseData of phraseWords) {
-          //   // Process each definition for the phrase word
-          //   for (const defData of phraseData.definitions) {
-          //     // Find or create the definition
-          //     const existingPhraseDef = await tx.definition.findFirst({
-          //       where: {
-          //         definition: defData.definition,
-          //         partOfSpeech: defData.partOfSpeech as PartOfSpeech,
-          //         languageCode: defData.languageCode as LanguageCode,
-          //         source: defData.source as SourceType,
-          //         subjectStatusLabels: defData.subjectStatusLabels || null,
-          //         generalLabels: defData.generalLabels || null,
-          //         grammaticalNote: defData.grammaticalNote || null,
-          //         usageNote: defData.usageNote || null,
-          //         isInShortDef: defData.isInShortDef || false,
-          //         isPlural: defData.isPlural || false,
-          //       },
-          //     });
-
-          //     let phraseDef: Definition | null = existingPhraseDef;
-          //     if (!phraseDef) {
-          //       phraseDef = await tx.definition.create({
-          //         data: {
-          //           definition: defData.definition,
-          //           partOfSpeech: defData.partOfSpeech as PartOfSpeech,
-          //           languageCode: defData.languageCode as LanguageCode,
-          //           source: defData.source as SourceType,
-          //           subjectStatusLabels: defData.subjectStatusLabels || null,
-          //           generalLabels: defData.generalLabels || null,
-          //           grammaticalNote: defData.grammaticalNote || null,
-          //           usageNote: defData.usageNote || null,
-          //           isInShortDef: defData.isInShortDef || false,
-          //           isPlural: defData.isPlural || false,
-          //         },
-          //       });
-          //     }
-
-          //     //! Create the phrase as a word
-          //     const phraseWord = await upsertWord(
-          //       tx,
-          //       source,
-          //       phraseData.word,
-          //       phraseData.languageCode as LanguageCode,
-          //       {
-          //         ...(phraseData.phonetic !== undefined && {
-          //           phonetic: phraseData.phonetic,
-          //         }),
-          //         ...(phraseData.audioFiles !== undefined && {
-          //           audioFiles: phraseData.audioFiles,
-          //         }),
-          //         ...(phraseData.etymology !== undefined && {
-          //           etymology: phraseData.etymology,
-          //         }),
-          //       },
-          //     );
-
-          //     // Link the phrase definition to the phrase word
-          //     await tx.wordDefinition.upsert({
-          //       where: {
-          //         wordId_definitionId: {
-          //           wordId: phraseWord.id,
-          //           definitionId: phraseDef.id,
-          //         },
-          //       },
-          //       create: {
-          //         wordId: phraseWord.id,
-          //         definitionId: phraseDef.id,
-          //         isPrimary: true,
-          //       },
-          //       update: {},
-          //     });
-
-          //     // Create all relationships for this phrase
-          //     for (const relationship of phraseData.relationship) {
-          //       const fromWord =
-          //         relationship.fromWord === mainWordText
-          //           ? mainWord
-          //           : await upsertWord(
-          //               tx,
-          //               source,
-          //               relationship.fromWord,
-          //               language,
-          //             );
-
-          //       const toWord =
-          //         relationship.toWord === phraseData.word
-          //           ? phraseWord
-          //           : await upsertWord(tx, source, relationship.toWord, language);
-
-          //       await tx.wordRelationship.upsert({
-          //         where: {
-          //           fromWordId_toWordId_type: {
-          //             fromWordId: fromWord.id,
-          //             toWordId: toWord.id,
-          //             type: relationship.type as RelationshipType,
-          //           },
-          //         },
-          //         create: {
-          //           fromWordId: fromWord.id,
-          //           toWordId: toWord.id,
-          //           type: relationship.type as RelationshipType,
-          //         },
-          //         update: {},
-          //       });
-          //     }
-
-          //     // Create examples for the phrase definition
-          //     if (defData.examples.length > 0) {
-          //       // Process examples in smaller batches to avoid timeouts
-          //       const batchSize = 10;
-          //       const exampleBatches = [];
-
-          //       // Split examples into batches
-          //       for (let i = 0; i < defData.examples.length; i += batchSize) {
-          //         exampleBatches.push(defData.examples.slice(i, i + batchSize));
-          //       }
-
-          //       // Process each batch
-          //       for (const batch of exampleBatches) {
-          //         // Use Promise.all for parallel processing within each batch
-          //         await Promise.all(
-          //           batch.map(
-          //             async (example: {
-          //               example: string;
-          //               languageCode: string;
-          //               grammaticalNote?: string | null;
-          //             }) => {
-          //               return tx.definitionExample.upsert({
-          //                 where: {
-          //                   definitionId_example: {
-          //                     definitionId: phraseDef.id,
-          //                     example: example.example,
-          //                   },
-          //                 },
-          //                 create: {
-          //                   example: example.example,
-          //                   languageCode: example.languageCode as LanguageCode,
-          //                   definitionId: phraseDef.id,
-          //                   grammaticalNote: example.grammaticalNote || null,
-          //                 },
-          //                 update: {
-          //                   grammaticalNote: example.grammaticalNote || null,
-          //                 },
-          //               });
-          //             },
-          //           ),
-          //         );
-          //       }
-          //     }
-
-          //     // Create image for the phrase definition if it doesn't already have one
-          //     if (phraseDef && !phraseDef.imageId) {
-          //       const phraseImage = await imageService.getOrCreateDefinitionImage(
-          //         phraseData.word,
-          //         phraseDef.id,
-          //       );
-
-          //       if (phraseImage) {
-          //         // Update the definition with the image
-          //         await tx.definition.update({
-          //           where: { id: phraseDef.id },
-          //           data: { imageId: phraseImage.id },
-          //         });
-          //       }
-          //     }
-          //   }
-          // }
         }
       },
       {
@@ -2134,6 +2004,94 @@ sourceWordText processing
         isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted, // Less strict than RepeatableRead for better performance
       },
     );
+
+    // Fetch all definitions from the database for the main word and related words
+    // This ensures we have the correct IDs assigned by the database
+    const allWordIds = [mainWordText, ...subWordsArray.map((sw) => sw.word)];
+
+    // First get all the word IDs from the database
+    const dbWords = await prisma.word.findMany({
+      where: {
+        word: {
+          in: allWordIds,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const wordIds = dbWords.map((w) => w.id);
+
+    // Then get all definitions linked to those words
+    // Use wordDefinition to find the needed definitions
+    const wordDefs = await prisma.wordDefinition.findMany({
+      where: {
+        wordId: {
+          in: wordIds,
+        },
+      },
+      select: {
+        definition: {
+          include: {
+            image: true,
+          },
+        },
+      },
+    });
+
+    // Use a Map to deduplicate definitions by ID
+    const definitionsMap = new Map();
+    wordDefs.forEach((wd) => {
+      if (wd.definition && !definitionsMap.has(wd.definition.id)) {
+        definitionsMap.set(wd.definition.id, wd.definition);
+      }
+    });
+
+    const dbDefinitions = Array.from(definitionsMap.values());
+
+    serverLog(
+      `Process in processMerriamApi.ts: Found ${dbDefinitions.length} unique definitions in database for word "${mainWordText}" and related words`,
+      LogLevel.INFO,
+    );
+
+    // Process images outside the transaction to avoid long-running transactions
+    if (dbDefinitions.length > 0) {
+      // Filter out only definitions with valid IDs that need images
+      const definitionsToProcess = dbDefinitions
+        .filter((def) => !def.imageId)
+        .map((def) => ({ id: def.id }));
+
+      serverLog(
+        `Process in processMerriamApi.ts: Found ${definitionsToProcess.length} definitions that need images of ${dbDefinitions.length} total definitions`,
+        LogLevel.INFO,
+      );
+
+      if (definitionsToProcess.length > 0) {
+        await processImagesForDefinitions(definitionsToProcess, mainWordText);
+      }
+    }
+
+    // Update processedData with database definitions for consistent return value
+    const dbDefinitionMap = new Map(dbDefinitions.map((def) => [def.id, def]));
+
+    // Update the main definitions with data from DB
+    processedData.definitions = processedData.definitions.map((def) => {
+      if (def.id && dbDefinitionMap.has(def.id)) {
+        const dbDef = dbDefinitionMap.get(def.id);
+        return {
+          ...def,
+          image: dbDef?.image
+            ? {
+                id: dbDef.image.id,
+                url: dbDef.image.url,
+                description: dbDef.image.description,
+              }
+            : null,
+        };
+      }
+      return def;
+    });
 
     return processedData;
   } catch (error) {
@@ -2153,25 +2111,87 @@ sourceWordText processing
   }
 }
 
-// function cleanupDefinitionText(text: unknown): string {
-//   if (typeof text !== 'string') {
-//     console.warn('Non-string definition text encountered:', text);
-//     return String(text || '')
-//       .replace(/{[^}]+}/g, '')
-//       .replace(/\s+/g, ' ')
-//       .trim();
-//   }
+/**
+ * Process images for definitions outside the transaction
+ * @param definitions The definitions needing images
+ * @param wordText The main word text
+ */
+async function processImagesForDefinitions(
+  definitions: Array<{ id: number }>,
+  wordText: string,
+): Promise<void> {
+  if (!definitions.length) return;
 
-//   // Skip if it's a cross-reference
-//   if (text.startsWith('{dx}')) {
-//     return '';
-//   }
+  const imageService = new ImageService();
 
-//   return text
-//     .replace(/{[^}]+}/g, '')
-//     .replace(/\s+/g, ' ')
-//     .trim();
-// }
+  // Process in batches of 5 to limit concurrent requests
+  const batchSize = 5;
+  const batches = [];
+
+  for (let i = 0; i < definitions.length; i += batchSize) {
+    batches.push(definitions.slice(i, i + batchSize));
+  }
+
+  for (const batch of batches) {
+    await Promise.all(
+      batch.map(async (definition) => {
+        try {
+          serverLog(
+            `FROM processImagesForDefinitions: Processing image for definition ${definition.id} of word "${wordText}"`,
+            LogLevel.INFO,
+          );
+
+          const image = await imageService.getOrCreateDefinitionImage(
+            wordText,
+            definition.id,
+          );
+
+          if (image) {
+            await prisma.definition.update({
+              where: { id: definition.id },
+              data: { imageId: image.id },
+            });
+          } else {
+            serverLog(
+              `FROM processImagesForDefinitions: No image found for definition ${definition.id}`,
+              LogLevel.WARN,
+            );
+          }
+        } catch (error) {
+          serverLog(
+            `FROM processImagesForDefinitions: Error processing image for definition ${definition.id}: ${error instanceof Error ? error.message : String(error)}`,
+            LogLevel.ERROR,
+          );
+        }
+      }),
+    );
+
+    // Small delay between batches to avoid rate limiting
+    if (batches.length > 1) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+  }
+}
+
+function cleanupDefinitionText(text: unknown): string {
+  if (typeof text !== 'string') {
+    console.warn('Non-string definition text encountered:', text);
+    return String(text || '')
+      .replace(/{[^}]+}/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // Skip if it's a cross-reference
+  if (text.startsWith('{dx}')) {
+    return '';
+  }
+
+  return text
+    .replace(/{[^}]+}/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 // function normalize(text: string): string {
 //   return text
@@ -2197,6 +2217,16 @@ function cleanupExampleText(text: unknown): string {
         .trim()
     );
   }
+
+  // Skip if it's a cross-reference
+  if (
+    text.startsWith('{dx}') ||
+    text.startsWith('{bc}{sx|') ||
+    text.startsWith('{sx|')
+  ) {
+    return '';
+  }
+
   return (
     text
       // .replace(/{(?!it}|\/it})([^}]+)}/g, '') // Keep {it} and {/it} tags but remove others
@@ -2807,4 +2837,16 @@ function getStringFromArray(
   } else {
     return null; // Return an empty string if no valid entries
   }
+}
+
+function formatWithBC(text: unknown): string {
+  if (typeof text !== 'string') {
+    console.warn('Input is not a string:', text);
+    return '';
+  }
+
+  return text
+    .split(':') // Split the sentence by colon
+    .map((part) => `{bc}${part.trim()}`) // Add {bc} to each part
+    .join(' '); // Join the parts back with a space
 }

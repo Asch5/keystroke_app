@@ -890,7 +890,7 @@ export default function CheckWordForm() {
                                                   className="bg-muted"
                                                 >
                                                   <Image
-                                                    src={def.image.url}
+                                                    src={`/api/images/${def.image.id}`}
                                                     alt={
                                                       def.image.description ||
                                                       def.text

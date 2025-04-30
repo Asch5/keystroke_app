@@ -33,8 +33,8 @@ export function useSetUserDataToRedux() {
             email: user.email,
             role: user.role,
             status: user.status,
-            baseLanguageId: user.baseLanguageId,
-            targetLanguageId: user.targetLanguageId,
+            baseLanguageCode: user.baseLanguageCode,
+            targetLanguageCode: user.targetLanguageCode,
             profilePictureUrl: user.profilePictureUrl,
           };
 

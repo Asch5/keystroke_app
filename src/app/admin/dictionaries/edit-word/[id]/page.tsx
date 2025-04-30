@@ -7,7 +7,7 @@ import { WordDetails } from '@/lib/actions/dictionaryActions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import WordEditForm from '@/components/forms/WordEditForm';
+import WordEditForm from '@/components/forms/wordEdit-form';
 
 export default function EditWordPage() {
   const params = useParams();

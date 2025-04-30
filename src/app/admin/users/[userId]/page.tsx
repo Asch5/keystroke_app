@@ -9,7 +9,9 @@ export default async function UserDetailsPage({
 }: {
   params: { userId: string };
 }) {
-  const user = await getUserDetails(params.userId).catch(() => null);
+  // Convert userId to string explicitly to ensure type safety
+  const userId = String(params.userId);
+  const user = await getUserDetails(userId).catch(() => null);
 
   if (!user) {
     notFound();

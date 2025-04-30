@@ -67,10 +67,10 @@ export default function AddNewWordForm() {
         if (processOneWordOnly) {
           // Check if the main word already exists
           const firstEntry = result.data[0];
+          const mainId = firstEntry?.meta?.id;
           const mainUuid = firstEntry?.meta?.uuid;
-
-          if (mainUuid) {
-            const existingWord = await checkWordExistsByUuid(mainUuid);
+          if (mainId && mainUuid) {
+            const existingWord = await checkWordExistsByUuid(mainId, mainUuid);
 
             if (existingWord) {
               toast.info(
@@ -114,10 +114,10 @@ export default function AddNewWordForm() {
 
           for (const entry of result.data) {
             const uuid = entry?.meta?.uuid;
-            const wordId = entry?.meta?.id || wordToProcess;
+            const wordId = entry?.meta?.id;
 
             if (uuid) {
-              const exists = await checkWordExistsByUuid(uuid);
+              const exists = await checkWordExistsByUuid(wordId, uuid);
               existsMap.set(wordId, !!exists);
 
               if (exists) {

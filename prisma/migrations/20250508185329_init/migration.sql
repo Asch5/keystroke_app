@@ -26,13 +26,19 @@ CREATE TYPE "SessionType" AS ENUM ('review', 'newLearning', 'practice', 'test', 
 CREATE TYPE "LanguageCode" AS ENUM ('en', 'ru', 'da', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ar');
 
 -- CreateEnum
-CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'phrase', 'sentence', 'undefined');
+CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'phrase', 'sentence', 'numeral', 'article', 'exclamation', 'abbreviation', 'undefined');
 
 -- CreateEnum
-CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant');
+CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'adverb_comparative_da', 'adverb_superlative_da', 'pronoun_accusative_da', 'pronoun_genitive_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant', 'translation');
 
 -- CreateEnum
-CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'user', 'admin');
+CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'helsinki_nlp', 'danish_dictionary', 'user', 'admin');
+
+-- CreateEnum
+CREATE TYPE "EntityType" AS ENUM ('definition', 'example');
+
+-- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('masculine', 'feminine', 'common', 'neuter');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -103,6 +109,7 @@ CREATE TABLE "definitions" (
     "subject_status_labels" VARCHAR(255),
     "general_labels" VARCHAR(255),
     "grammatical_note" VARCHAR(255),
+    "gender" "Gender",
     "usage_note" VARCHAR(255),
     "is_in_short_def" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -151,10 +158,11 @@ CREATE TABLE "images" (
 -- CreateTable
 CREATE TABLE "translations" (
     "id" SERIAL NOT NULL,
-    "entityType" TEXT NOT NULL,
+    "entityType" "EntityType" NOT NULL,
     "entityId" INTEGER NOT NULL,
     "languageCode" "LanguageCode" NOT NULL,
     "content" TEXT NOT NULL,
+    "source" "SourceType" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -487,6 +495,7 @@ CREATE TABLE "word_relationships" (
     "from_word_id" INTEGER NOT NULL,
     "to_word_id" INTEGER NOT NULL,
     "relationship_type" "RelationshipType" NOT NULL,
+    "definition_id" INTEGER,
     "order_index" INTEGER,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -688,7 +697,7 @@ CREATE INDEX "idx_word_relationship_from" ON "word_relationships"("from_word_id"
 CREATE INDEX "idx_word_relationship_to" ON "word_relationships"("to_word_id", "relationship_type");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "word_relationships_from_word_id_to_word_id_relationship_typ_key" ON "word_relationships"("from_word_id", "to_word_id", "relationship_type");
+CREATE INDEX "idx_word_relationship_definition" ON "word_relationships"("definition_id");
 
 -- CreateIndex
 CREATE INDEX "word_audio_word_id_idx" ON "word_audio"("word_id");
@@ -815,6 +824,9 @@ ALTER TABLE "word_relationships" ADD CONSTRAINT "word_relationships_from_word_id
 
 -- AddForeignKey
 ALTER TABLE "word_relationships" ADD CONSTRAINT "word_relationships_to_word_id_fkey" FOREIGN KEY ("to_word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "word_relationships" ADD CONSTRAINT "word_relationships_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "word_audio" ADD CONSTRAINT "word_audio_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;

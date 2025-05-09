@@ -137,3 +137,43 @@ export interface ProcessedWordData {
   }[];
   stems: string[];
 }
+
+//frequency request
+export interface FrequencyRequest {
+  word: string;
+  languageCode: LanguageCode;
+}
+
+// Example response from the frequency API
+//  {
+//   "word": "have",
+//   "languageCode": "en",
+//   "orderIndexGeneralWord": 54,
+//   "frequencyGeneral": null,
+//   "isPartOfSpeech": true,
+//   "partOfSpeech": {
+//     "verb": {
+//       "orderIndexPartOfspeech": 2,
+//       "frequencyGeneral": 45309447
+//     },
+//     "noun": {
+//       "orderIndexPartOfspeech": 252,
+//       "frequencyGeneral": 504864
+//     }
+//   }
+// },
+
+// frequency response
+export interface FrequencyResponse {
+  word: string;
+  languageCode: LanguageCode;
+  orderIndexGeneralWord: number;
+  frequencyGeneral: number | null;
+  isPartOfSpeech: boolean;
+  partOfSpeech: {
+    [key in PartOfSpeech]?: {
+      orderIndexPartOfspeech: number;
+      frequencyGeneral: number;
+    };
+  };
+}

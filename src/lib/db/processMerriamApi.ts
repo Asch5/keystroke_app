@@ -17,17 +17,16 @@ import {
   Definition,
 } from '@prisma/client';
 import { getWordDetails } from '../actions/dictionaryActions';
-//import { ImageService } from '@/lib/services/imageService';
 import { LogLevel, serverLog } from '../utils/logUtils';
-
 import { ImageService } from '../services/imageService';
+import { processTranslationsForWord } from './wordTranslationProcessor';
 
 /**Definitions:
- * generalLabels "lbs" - a property that stores general labels (like capitalization indicators, usage notes, etc.)
+ * generalLabels "lbs" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs. (like capitalization indicators, usage notes, etc.)
  *
- * subjectStatusLabels "sls" - a property that stores subject status labels (like plural, singular, etc.)
+ * subjectStatusLabels "sls" - A subject/status label describes the subject area (eg, "computing") or regional/usage status (eg, "British", "formal", "slang") of a headword or a particular sense of a headword. A set of one or more subject/status labels is contained in an sls.
  *
- * grammaticalNote "gram" - a property that stores grammatical notes (like phrasal verb, irregular verb, count, etc.)
+ * grammaticalNote "gram" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs.
  *
  * phonetic "ipa" - a property that stores the International Phonetic Alphabet (IPA) representation of the word's pronunciation.
  *
@@ -1636,16 +1635,9 @@ sourceWordText processing
   }
 
   try {
-    // Initialize the ImageService early to use throughout the transaction
-    //const imageService = new ImageService();
+    // Initialize the services
 
     // Add a transaction to save the data to the database
-    // serverLog(
-    //   `Process in processMerriamApi.ts (porocessing data): ${JSON.stringify(
-    //     processedData,
-    //   )}`,
-    //   LogLevel.INFO,
-    // );
     await prisma.$transaction(
       async (tx) => {
         //! 1. Create or update the main Word
@@ -1721,7 +1713,7 @@ sourceWordText processing
               create: {
                 wordId: mainWord.id,
                 definitionId: definition.id,
-                isPrimary: true,
+                isPrimary: false,
               },
               update: {},
             });
@@ -1862,7 +1854,7 @@ sourceWordText processing
               create: {
                 wordId: subWordEntity.id,
                 definitionId: subWordDef.id,
-                isPrimary: true,
+                isPrimary: false,
               },
               update: {},
             });
@@ -1997,11 +1989,32 @@ sourceWordText processing
             }
           }
         }
+
+        //! Process translations after creating the main word and definitions
+        await processTranslationsForWord(
+          tx,
+          mainWord.id,
+          mainWordText,
+          {
+            phonetic: processedData.word.phonetic,
+            stems: processedData.stems,
+            definitions: processedData.definitions.map((def) => ({
+              id: def.id || 0,
+              partOfSpeech: def.partOfSpeech,
+              definition: def.definition,
+              examples: def.examples.map((ex, idx) => ({
+                id: idx + 1,
+                example: ex.example,
+              })),
+            })),
+          },
+          source as SourceType,
+        );
       },
       {
-        maxWait: 60000, // 60 seconds max wait time (increased from 10 seconds)
-        timeout: 120000, // 120 seconds timeout (increased from 30 seconds)
-        isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted, // Less strict than RepeatableRead for better performance
+        maxWait: 60000,
+        timeout: 120000,
+        isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted,
       },
     );
 

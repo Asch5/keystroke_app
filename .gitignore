@@ -47,5 +47,6 @@ prisma/generated
 
 # Documentation
 documentation/
+documentation/*.json
 documentation/schema_merriam.json
 

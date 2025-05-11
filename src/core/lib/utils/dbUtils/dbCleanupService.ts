@@ -1,4 +1,7 @@
-import { cleanupAudio, scheduleAudioCleanup } from '@/core/lib/utils/audioCleanup';
+import {
+  cleanupAudio,
+  scheduleAudioCleanup,
+} from '@/core/lib/utils/dbUtils/audioCleanup';
 
 /**
  * Service to manage database cleanup operations

@@ -3,7 +3,7 @@ import { PexelsService } from '@/core/lib/services/pexelsService';
 import { Definition } from '@/core/types/definition';
 import { Image } from '@prisma/client';
 import { serverLog, LogLevel } from '@/core/lib/utils/logUtils';
-import { normalizeText } from '@/core/lib/utils/wordsFormators';
+import { normalizeText } from '@/core/lib/utils/commonDictUtils/wordsFormators';
 import { prisma } from '@/core/lib/prisma';
 
 export interface ImageMetadata {

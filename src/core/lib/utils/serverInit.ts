@@ -1,4 +1,4 @@
-import { DbCleanupService } from '@/core/lib/utils/dbCleanupService';
+import { DbCleanupService } from '@/core/lib/utils/dbUtils/dbCleanupService';
 
 let isInitialized = false;
 

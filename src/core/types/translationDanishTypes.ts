@@ -115,7 +115,10 @@ export type PartOfSpeechForStems =
   | 'num.'
   | 'interj.';
 
-export type GenderTypeDanish = 'fælleskøn' | 'intetkøn';
+export type GenderTypeDanish =
+  | 'fælleskøn'
+  | 'intetkøn'
+  | 'fælleskønellerintetkøn';
 
 export type DetailCategoryDanish =
   | 'SPROGBRUG' // language break

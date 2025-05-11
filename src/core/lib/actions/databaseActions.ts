@@ -1,6 +1,6 @@
 'use server';
 
-import { cleanTablesExceptUser } from '@/core/lib/utils/cleanUpTables';
+import { cleanTablesExceptUser } from '@/core/lib/utils/dbUtils/cleanUpTables';
 
 export async function cleanupDatabase() {
   try {

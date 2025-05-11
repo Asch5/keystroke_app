@@ -19,7 +19,7 @@ import {
   extractGrammaticalNote,
   extractGeneralLabels,
   extractSubjectStatusLabels,
-} from '@/core/lib/utils/mapDaEng';
+} from '@/core/lib/utils/daishDictionary/mapDaEng';
 import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
 
 /**

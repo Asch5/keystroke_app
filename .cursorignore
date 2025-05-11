@@ -50,3 +50,7 @@ prisma/generated
 documentation/*.json
 documentation/schema_merriam.json
 
+# tests
+tests/
+scripts/
+

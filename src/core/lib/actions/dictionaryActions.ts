@@ -16,7 +16,7 @@ import {
   mapDifficultyLevelFromOrderIndex,
   WordFrequency,
   FrequencyPartOfSpeech,
-} from '@/core/lib/utils/frequencyUtils';
+} from '@/core/lib/utils/commonDictUtils/frequencyUtils';
 import {
   WordUpdateData,
   UpdateWordResult,
@@ -46,6 +46,11 @@ type WordWithAudioAndDefinitions = Prisma.WordGetPayload<{
         };
       };
     };
+    audioFiles: {
+      include: {
+        audio: true;
+      };
+    };
   };
 }>;
 
@@ -53,22 +58,93 @@ type WordWithFullRelations = Prisma.WordGetPayload<{
   include: {
     relatedFrom: {
       include: {
-        toWord: true;
+        toWord: {
+          include: {
+            wordDefinitions: {
+              include: {
+                definition: {
+                  include: {
+                    examples: true;
+                  };
+                };
+              };
+            };
+            audioFiles: {
+              include: {
+                audio: true;
+              };
+            };
+          };
+        };
       };
     };
     relatedTo: {
       include: {
-        fromWord: true;
+        fromWord: {
+          include: {
+            wordDefinitions: {
+              include: {
+                definition: {
+                  include: {
+                    examples: true;
+                  };
+                };
+              };
+            };
+            audioFiles: {
+              include: {
+                audio: true;
+              };
+            };
+          };
+        };
       };
     };
     wordDefinitions: {
       include: {
         definition: {
           include: {
-            image: true;
-            examples: true;
+            image: {
+              select: {
+                id: true;
+                url: true;
+                description: true;
+              };
+            };
+            examples: {
+              include: {
+                audio: {
+                  include: {
+                    audio: true;
+                  };
+                };
+              };
+            };
           };
         };
+      };
+    };
+    phrases: {
+      include: {
+        examples: {
+          include: {
+            audio: {
+              include: {
+                audio: true;
+              };
+            };
+          };
+        };
+        audio: {
+          include: {
+            audio: true;
+          };
+        };
+      };
+    };
+    audioFiles: {
+      include: {
+        audio: true;
       };
     };
     mistakes: true;
@@ -109,6 +185,15 @@ export async function fetchDictionaryWords(
             },
           },
         },
+        audioFiles: {
+          include: {
+            audio: true,
+          },
+          where: {
+            isPrimary: true,
+          },
+          take: 1,
+        },
       },
     });
 
@@ -138,7 +223,7 @@ export async function fetchDictionaryWords(
           languageId: entry.languageCode,
           category: entry.wordDefinitions?.[0]?.definition?.partOfSpeech || '',
           difficulty: difficultyLevel,
-          audioUrl: '', // Adapt based on your actual schema
+          audioUrl: entry.audioFiles?.[0]?.audio?.url || '',
           exampleSentence:
             entry.wordDefinitions?.[0]?.definition?.examples?.[0]?.example ||
             '',
@@ -1069,9 +1154,15 @@ export async function updateWordDetails(
                 url: audioData.url,
                 source: audioData.source,
                 languageCode: audioData.languageCode,
-                entityType: EntityType.word,
-                entityId: id,
-                isPrimary: audioData.isPrimary,
+              },
+            });
+
+            // Link the new audio to the word
+            await tx.wordAudio.create({
+              data: {
+                wordId: id,
+                audioId: newAudio.id,
+                isPrimary: false, // Set as needed
               },
             });
           }
@@ -1295,8 +1386,6 @@ export async function createAudioForExample(
         url: data.url,
         source: data.source,
         languageCode: data.languageCode,
-        entityType: EntityType.example,
-        entityId: id,
       },
     });
 
@@ -1335,8 +1424,6 @@ export async function createAudioForWord(
         url: data.url,
         source: data.source,
         languageCode: data.languageCode,
-        entityType: EntityType.word,
-        entityId: id,
       },
     });
 
@@ -1375,8 +1462,6 @@ export async function createAudioForDefinition(
         url: data.url,
         source: data.source,
         languageCode: data.languageCode,
-        entityType: EntityType.definition,
-        entityId: id,
       },
     });
 

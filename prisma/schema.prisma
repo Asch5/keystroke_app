@@ -113,7 +113,9 @@ enum RelationshipType {
   composition
   phrasal_verb
   phrase
+
   // English-specific inflections
+
   plural_en //word -> words
   past_tense_en //begin -> began
   past_participle_en //begin -> begun
@@ -126,8 +128,9 @@ enum RelationshipType {
   definite_form_da
   plural_da
   plural_definite_da
-  common_gender_da
-  neuter_gender_da
+
+  common_gender_da //fælleskøn n-ord
+  neuter_gender_da //intetkøn t-ord
 
   //verbs
   present_tense_da

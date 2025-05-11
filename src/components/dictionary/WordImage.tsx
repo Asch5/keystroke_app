@@ -24,7 +24,7 @@ import { Input } from '@/components/ui/input';
 //import { Label } from '@/components/ui/label';
 import { ImageIcon, SearchIcon, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { normalizeText } from '@/core/lib/utils/wordsFormators';
+import { normalizeText } from '@/core/lib/utils/commonDictUtils/wordsFormators';
 
 interface WordImageProps {
   imageId?: number | undefined;

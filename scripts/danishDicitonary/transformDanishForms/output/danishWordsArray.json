@@ -1,0 +1,1329 @@
+[
+  {
+    "word": "først",
+    "phonetic": "ˈfɶɐ̯sd",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "par excellence",
+    "phonetic": "pɑεgsəˈlɑŋsə",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "pro persona",
+    "phonetic": "pʁopæɐ̯ˈsoːna",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "samtidig",
+    "phonetic": "ˈsɑmˌtiðˀi",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": [],
+    "variant": "2"
+  },
+  {
+    "word": "således",
+    "phonetic": "ˈsʌˌleðəs",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "altså",
+    "phonetic": "ˈalˀsʌ",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "ofte",
+    "phonetic": "ˈʌfdə",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": [
+      "-re",
+      "-st"
+    ]
+  },
+  {
+    "word": "frem",
+    "phonetic": "ˈfʁamˀ",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "stadig",
+    "phonetic": "ˈsdæːði",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": [],
+    "variant": "2"
+  },
+  {
+    "word": "stadig vækstadigvæk",
+    "phonetic": "ˈsdæːðiˌvεg",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "endnu",
+    "phonetic": "eˈnu",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "allerede",
+    "phonetic": "ˈaləˈʁεːðə",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "gud ske lovgudskelov",
+    "phonetic": "ˈgusgəˈlɒw",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": []
+  },
+  {
+    "word": "sous vide",
+    "phonetic": "suˈvid",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": [],
+    "variant": "2"
+  },
+  {
+    "word": "fast",
+    "phonetic": "ˈfasd",
+    "partOfSpeech": [
+      "adverbium"
+    ],
+    "forms": [],
+    "variant": "2"
+  },
+  {
+    "word": "først til mølle-principførst-til-mølle-princip",
+    "phonetic": "ˈfɶɐ̯sdteˈmølə-",
+    "partOfSpeech": [
+      "substantiv",
+      "intetkøn"
+    ],
+    "forms": [
+      "-pet"
+    ]
+  },
+  {
+    "word": "køre",
+    "phonetic": "ˈkøːʌ",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn (ellerintetkøn)"
+    ],
+    "forms": [],
+    "variant": "1"
+  },
+  {
+    "word": "par",
+    "phonetic": "ˈpɑ",
+    "partOfSpeech": [
+      "substantiv",
+      "intetkøn"
+    ],
+    "forms": [
+      "-ret",
+      "-",
+      "-rene"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "par",
+    "phonetic": "ˈpɑː",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [],
+    "variant": "2"
+  },
+  {
+    "word": "folk",
+    "phonetic": "ˈfʌlˀg",
+    "partOfSpeech": [
+      "substantiv",
+      "intetkøn"
+    ],
+    "forms": [
+      "-et",
+      "-",
+      "-ene"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "folk",
+    "phonetic": "ˈfɔwg",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "gør det selv-folk",
+    "phonetic": "",
+    "partOfSpeech": [
+      "substantiv",
+      "intetkøn"
+    ],
+    "forms": [
+      "-et",
+      "-",
+      "-ene"
+    ]
+  },
+  {
+    "word": "person",
+    "phonetic": "pæɐ̯ˈsoˀn",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-er",
+      "-erne"
+    ]
+  },
+  {
+    "word": "eksempel",
+    "phonetic": "εgˈsεmˀbəl",
+    "partOfSpeech": [
+      "substantiv",
+      "intetkøn"
+    ],
+    "forms": [
+      "eksemplet"
+    ]
+  },
+  {
+    "word": "følge",
+    "phonetic": "ˈføljə",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-n",
+      "-r",
+      "-rne"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "følge",
+    "phonetic": "ˈføljə",
+    "partOfSpeech": [
+      "substantiv",
+      "intetkøn"
+    ],
+    "forms": [
+      "-t",
+      "-r",
+      "-rne"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "forbindelse",
+    "phonetic": "fʌˈbenˀəlsə",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-n",
+      "-r",
+      "-rne"
+    ]
+  },
+  {
+    "word": "høj",
+    "phonetic": "ˈhʌjˀ",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-e",
+      "-ene"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "bog",
+    "phonetic": "ˈbɔˀw",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "bøger",
+      "bøgerne"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "bog",
+    "phonetic": "ˈbɔˀw",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-",
+      "-ene"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "gør det selv-bog",
+    "phonetic": "",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "..bøger",
+      "..bøgerne"
+    ]
+  },
+  {
+    "word": "pop op-bog",
+    "phonetic": "pʌbˈʌb-",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "..bøger",
+      "..bøgerne"
+    ]
+  },
+  {
+    "word": "nytårsdag",
+    "phonetic": "ˈnydʌsˈdæˀ",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-e",
+      "-ene"
+    ]
+  },
+  {
+    "word": "eg",
+    "phonetic": "ˈeˀj",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-e",
+      "-ene"
+    ]
+  },
+  {
+    "word": "egea",
+    "phonetic": "ˈeːjə",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-n",
+      "-r",
+      "-rne"
+    ],
+    "variant": "a"
+  },
+  {
+    "word": "egeb",
+    "phonetic": "ˈejˀʌ",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [],
+    "variant": "b"
+  },
+  {
+    "word": "grund",
+    "phonetic": "ˈgʁɔnˀ",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-e",
+      "-ene"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "plads",
+    "phonetic": "ˈplas",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-er",
+      "-erne"
+    ]
+  },
+  {
+    "word": "ske",
+    "phonetic": "ˈsgeˀ",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-er",
+      "-erne"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "lille fredaglillefredaglille-fredag",
+    "phonetic": "ˈliləˌfʁεˀda",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-e",
+      "-ene"
+    ]
+  },
+  {
+    "word": "lille juleaftenlillejuleaften",
+    "phonetic": "ˈliləˌjuːləˈɑfdən",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": []
+  },
+  {
+    "word": "ønske",
+    "phonetic": "ˈønsgə",
+    "partOfSpeech": [
+      "substantiv",
+      "intetkøn"
+    ],
+    "forms": [
+      "-t",
+      "-r",
+      "-rne"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "svær",
+    "phonetic": "ˈsvεˀɐ̯",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-",
+      "-ene"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "spørgsmål",
+    "phonetic": "ˈsbɶɐ̯sˌmɔˀl",
+    "partOfSpeech": [
+      "substantiv",
+      "intetkøn"
+    ],
+    "forms": [
+      "-et",
+      "-",
+      "-ene"
+    ]
+  },
+  {
+    "word": "sous vide",
+    "phonetic": "suˈvid",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-n",
+      "-r",
+      "-rne"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "privatsag",
+    "phonetic": "",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-er",
+      "-erne"
+    ]
+  },
+  {
+    "word": "sag",
+    "phonetic": "ˈsæˀj",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-er",
+      "-erne"
+    ]
+  },
+  {
+    "word": "verden",
+    "phonetic": "ˈvæɐ̯dən",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-"
+    ]
+  },
+  {
+    "word": "vise",
+    "phonetic": "ˈviːsə",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-n",
+      "-r",
+      "-rne"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "måned",
+    "phonetic": "ˈmɔːnəð",
+    "partOfSpeech": [
+      "substantiv",
+      "fælleskøn"
+    ],
+    "forms": [
+      "-en",
+      "-er",
+      "-erne"
+    ]
+  },
+  {
+    "word": "liden",
+    "phonetic": "ˈliːðən",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "lidet",
+      "mindre",
+      "mindst"
+    ]
+  },
+  {
+    "word": "mulig",
+    "phonetic": "ˈmuːli",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e"
+    ]
+  },
+  {
+    "word": "samtidig",
+    "phonetic": "ˈsɑmˌtiðˀi",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "forskellig",
+    "phonetic": "fʌˈsgεlˀi",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e"
+    ]
+  },
+  {
+    "word": "lang",
+    "phonetic": "ˈlɑŋˀ",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "længere",
+      "længst"
+    ]
+  },
+  {
+    "word": "fin",
+    "phonetic": "ˈfiˀn",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-est"
+    ]
+  },
+  {
+    "word": "vigtig",
+    "phonetic": "ˈvegdi",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-st"
+    ]
+  },
+  {
+    "word": "særlig",
+    "phonetic": "ˈsæɐ̯li",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e"
+    ]
+  },
+  {
+    "word": "høj",
+    "phonetic": "ˈhʌjˀ",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-est"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "første",
+    "phonetic": "ˈfɶɐ̯sdə",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-",
+      "-"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "tidlig",
+    "phonetic": "ˈtiðli",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-st"
+    ]
+  },
+  {
+    "word": "egen",
+    "phonetic": "ˈɑjən",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": []
+  },
+  {
+    "word": "grundgrundet",
+    "phonetic": "ˈgʁɔnˀ",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [],
+    "variant": "2"
+  },
+  {
+    "word": "gammel",
+    "phonetic": "ˈgɑməl",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "gamle",
+      "ældre",
+      "ældst"
+    ]
+  },
+  {
+    "word": "enkelt",
+    "phonetic": "ˈεŋˀgəld",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-",
+      "-e"
+    ]
+  },
+  {
+    "word": "enkel",
+    "phonetic": "ˈεŋˀgəl",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "enkle",
+      "enklere",
+      "enklest"
+    ]
+  },
+  {
+    "word": "sikker",
+    "phonetic": "ˈsegʌ",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "sikre",
+      "sikrere",
+      "sikrest"
+    ]
+  },
+  {
+    "word": "sen",
+    "phonetic": "ˈseˀn",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-est"
+    ]
+  },
+  {
+    "word": "ung",
+    "phonetic": "ˈɔŋˀ",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "yngre",
+      "yngst"
+    ]
+  },
+  {
+    "word": "stadig",
+    "phonetic": "ˈsdæːði",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "hurtig",
+    "phonetic": "ˈhoɐ̯di",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-st"
+    ]
+  },
+  {
+    "word": "samme",
+    "phonetic": "ˈsɑmə",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-",
+      "-"
+    ]
+  },
+  {
+    "word": "selv sammeselvsamme",
+    "phonetic": "",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-",
+      "-"
+    ]
+  },
+  {
+    "word": "lille",
+    "phonetic": "ˈlilə",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-",
+      "mindre",
+      "mindst"
+    ]
+  },
+  {
+    "word": "lille bittelillebitte",
+    "phonetic": "ˈliləˈbidə",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": []
+  },
+  {
+    "word": "klar",
+    "phonetic": "ˈklɑˀ",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-est"
+    ]
+  },
+  {
+    "word": "svær",
+    "phonetic": "ˈsvεˀɐ̯",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-est"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "sidste",
+    "phonetic": "ˈsisdə",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-",
+      "-"
+    ]
+  },
+  {
+    "word": "faktisk",
+    "phonetic": "ˈfɑgdisg",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-",
+      "-e"
+    ]
+  },
+  {
+    "word": "vid2",
+    "phonetic": "ˈviðˀ",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-est"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "fast",
+    "phonetic": "ˈfasd",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-",
+      "-e",
+      "-ere",
+      "(-est)"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "sådanså'n",
+    "phonetic": "ˈsʌdən",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-ne"
+    ]
+  },
+  {
+    "word": "vis3",
+    "phonetic": "ˈviˀs",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-est"
+    ],
+    "variant": "3"
+  },
+  {
+    "word": "rigtig",
+    "phonetic": "ˈʁεgdi",
+    "partOfSpeech": [
+      "adjektiv"
+    ],
+    "forms": [
+      "-t",
+      "-e",
+      "-ere",
+      "-st"
+    ]
+  },
+  {
+    "word": "køre",
+    "phonetic": "ˈkøːʌ",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "kørte",
+      "kørt"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "parre",
+    "phonetic": "ˈpɑːɑ",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ]
+  },
+  {
+    "word": "og el.",
+    "phonetic": "ˈviːðə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "ved",
+      "vidste",
+      "vidst"
+    ]
+  },
+  {
+    "word": "lange2",
+    "phonetic": "ˈlɑŋə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "følge",
+    "phonetic": "ˈføljə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "fulgte",
+      "fulgt"
+    ],
+    "variant": "3"
+  },
+  {
+    "word": "boge",
+    "phonetic": "ˈbɔːwə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ]
+  },
+  {
+    "word": "grunde1",
+    "phonetic": "ˈgʁɔnə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "grunde2",
+    "phonetic": "ˈgʁɔnə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "vælge",
+    "phonetic": "ˈvεljə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "valgte",
+      "valgt"
+    ]
+  },
+  {
+    "word": "fremme2",
+    "phonetic": "ˈfʁamə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "ligge",
+    "phonetic": "ˈlegə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "lå",
+      "-t"
+    ]
+  },
+  {
+    "word": "købe",
+    "phonetic": "ˈkøːbə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "købte",
+      "købt"
+    ]
+  },
+  {
+    "word": "ske",
+    "phonetic": "ˈsgeˀ",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-te",
+      "-t"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "sætte",
+    "phonetic": "ˈsεdə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "satte",
+      "sat"
+    ]
+  },
+  {
+    "word": "holde",
+    "phonetic": "ˈhʌlə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "holdt"
+    ]
+  },
+  {
+    "word": "ønske",
+    "phonetic": "ˈønsgə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "klare",
+    "phonetic": "ˈklɑːɑ",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ]
+  },
+  {
+    "word": "vide",
+    "phonetic": "ˈviːðə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "ved",
+      "vidste",
+      "vidst"
+    ],
+    "variant": "1"
+  },
+  {
+    "word": "vide",
+    "phonetic": "ˈviːðə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "faste2",
+    "phonetic": "ˈfæːsdə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "-de",
+      "-t"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "læse",
+    "phonetic": "ˈlεːsə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "læste",
+      "læst"
+    ]
+  },
+  {
+    "word": "vise",
+    "phonetic": "ˈviːsə",
+    "partOfSpeech": [
+      "verbum"
+    ],
+    "forms": [
+      "-r",
+      "viste",
+      "vist"
+    ],
+    "variant": "2"
+  },
+  {
+    "word": "par.",
+    "phonetic": "",
+    "partOfSpeech": [
+      "forkortelse"
+    ],
+    "forms": []
+  },
+  {
+    "word": "sen.",
+    "phonetic": "",
+    "partOfSpeech": [
+      "forkortelse"
+    ],
+    "forms": []
+  },
+  {
+    "word": "første1.",
+    "phonetic": "ˈfɶɐ̯sdə",
+    "partOfSpeech": [
+      "talord (ordenstal)"
+    ],
+    "forms": [],
+    "variant": "1"
+  },
+  {
+    "word": "frem forfremfor",
+    "phonetic": "ˈfʁamˀfʌ",
+    "partOfSpeech": [
+      "præposition"
+    ],
+    "forms": []
+  },
+  {
+    "word": "-ske",
+    "phonetic": "-sgə",
+    "partOfSpeech": [
+      "suffiks"
+    ],
+    "forms": []
+  },
+  {
+    "word": "-isk",
+    "phonetic": "-sg",
+    "partOfSpeech": [
+      "suffiks"
+    ],
+    "forms": []
+  },
+  {
+    "word": "-vis3",
+    "phonetic": "-ˌviˀs",
+    "partOfSpeech": [
+      "suffiks"
+    ],
+    "forms": [],
+    "variant": "3"
+  },
+  {
+    "word": "-fast",
+    "phonetic": "-ˌfasd",
+    "partOfSpeech": [
+      "sidsteled"
+    ],
+    "forms": []
+  }
+]

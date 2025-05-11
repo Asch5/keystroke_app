@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   selectUser,
   selectIsAuthenticated,
-} from '@/lib/redux/features/authSlice';
+} from '@/core/lib/redux/features/authSlice';
 import Image from 'next/image';
 
 export default function TestReduxComponent() {

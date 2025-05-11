@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { fetchDictionaryWords } from '@/lib/actions/dictionaryActions';
+import { fetchDictionaryWords } from '@/core/lib/actions/dictionaryActions';
 import { ColumnDef } from '@tanstack/react-table';
-import { Word } from '@/types/word';
+import { Word } from '@/core/types/word';
 import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

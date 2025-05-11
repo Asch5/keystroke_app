@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useActionState, useCallback } from 'react';
-import { updateUserProfile } from '@/lib/actions/userActions';
-import { getUserByEmail } from '@/lib/db/user';
-import { Theme } from '@/types/user';
-import { setUser } from '@/lib/redux/features/authSlice';
-import { useAppDispatch } from '@/lib/redux/store';
+import { updateUserProfile } from '@/core/lib/actions/userActions';
+import { getUserByEmail } from '@/core/lib/db/user';
+import { Theme } from '@/core/types/user';
+import { setUser } from '@/core/lib/redux/features/authSlice';
+import { useAppDispatch } from '@/core/lib/redux/store';
 import { useSession } from 'next-auth/react';
-import { LANGUAGE_MAP_ARRAY } from '@/types/dictionary';
+import { LANGUAGE_MAP_ARRAY } from '@/core/types/dictionary';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';

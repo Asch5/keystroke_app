@@ -46,7 +46,7 @@ prisma/generated
 .env*.local
 
 # Documentation
-documentation/
+
 documentation/*.json
 documentation/schema_merriam.json
 

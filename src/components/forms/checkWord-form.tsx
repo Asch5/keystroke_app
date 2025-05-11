@@ -1,7 +1,6 @@
-'use client';
 
 import { useState } from 'react';
-import { getWordDetails, WordDetails } from '@/lib/actions/dictionaryActions';
+import { getWordDetails, WordDetails } from '@/core/lib/actions/dictionaryActions';
 import { LanguageCode } from '@prisma/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

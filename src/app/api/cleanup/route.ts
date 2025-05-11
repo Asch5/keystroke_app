@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DbCleanupService } from '@/utils/dbCleanupService';
+import { DbCleanupService } from '@/core/lib/utils/dbCleanupService';
 
 /**
  * API route to trigger database cleanup tasks

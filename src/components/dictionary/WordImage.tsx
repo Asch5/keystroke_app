@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ImageMetadata } from '@/lib/services/imageService';
+import { ImageMetadata } from '@/core/lib/services/imageService';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -24,7 +24,7 @@ import { Input } from '@/components/ui/input';
 //import { Label } from '@/components/ui/label';
 import { ImageIcon, SearchIcon, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { normalizeText } from '@/lib/utils/wordsFormators';
+import { normalizeText } from '@/core/lib/utils/wordsFormators';
 
 interface WordImageProps {
   imageId?: number | undefined;

@@ -1,6 +1,6 @@
 //adapter only works in node environment
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/core/lib/prisma';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import type { NextAuthConfig } from 'next-auth';
@@ -102,4 +102,4 @@ export const authConfig: NextAuthConfig = {
 };
 
 // Create auth handlers with NextAuth
-export { handlers, auth, signIn, signOut } from '@/lib/auth/config';
+export { handlers, auth, signIn, signOut } from '@/core/lib/auth/config';

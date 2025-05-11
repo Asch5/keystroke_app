@@ -1,7 +1,7 @@
 'use client';
 
-import { signUp, StateSignup } from '@/lib/actions/authActions';
-import { LANGUAGE_MAP_ARRAY } from '@/types/dictionary';
+import { signUp, StateSignup } from '@/core/lib/actions/authActions';
+import { LANGUAGE_MAP_ARRAY } from '@/core/types/dictionary';
 import { useActionState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

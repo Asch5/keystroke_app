@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { NavLink } from '@/types/nav';
-import { cn } from '@/lib/utils';
+import { NavLink } from '@/core/types/nav';
+import { cn } from '@/core/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   Tooltip,

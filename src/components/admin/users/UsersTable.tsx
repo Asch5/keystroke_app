@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { UserWithStatsAndMeta } from '@/lib/db/user';
+import { UserWithStatsAndMeta } from '@/core/lib/db/user';
 import { formatDistance } from 'date-fns';
 
 export function UsersTable({

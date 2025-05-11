@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
-import { edgeAuthConfig } from '@/lib/auth/edge-config';
+import { edgeAuthConfig } from '@/core/lib/auth/edge-config';
 import type { NextRequest } from 'next/server';
 
 const { auth } = NextAuth(edgeAuthConfig);

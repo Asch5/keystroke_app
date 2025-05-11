@@ -5,11 +5,11 @@ import {
   getWordFromMerriamWebster,
   processAllWords,
   processOneWord,
-} from '@/lib/db/processMerriamApi';
+} from '@/core/lib/db/processMerriamApi';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { checkWordExistsByUuid } from '@/lib/actions/dictionaryActions';
+import { checkWordExistsByUuid } from '@/core/lib/actions/dictionaryActions';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+import { cn } from '@/core/lib/utils';
 import { Upload } from 'lucide-react';
 import { DatabaseCleanupDialog } from '../DatabaseCleanupDialog';
 

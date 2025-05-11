@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { PexelsService } from '@/lib/services/pexelsService';
-import { ImageService } from '@/lib/services/imageService';
-import { prisma } from '@/lib/prisma';
+import { PexelsService } from '@/core/lib/services/pexelsService';
+import { ImageService } from '@/core/lib/services/imageService';
+import { prisma } from '@/core/lib/prisma';
 
 export async function POST(request: Request) {
   // Ensure proper JSON content type in response

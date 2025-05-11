@@ -2,7 +2,7 @@
 
 import SideNav from '@/components/dashboard/sidenav';
 import { PageBreadcrumb } from '@/components/navigation/breadcrumb';
-import { dictionaryNavLinks } from '@/lib/data/navLinks';
+import { dictionaryNavLinks } from '@/core/lib/data/navLinks';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function Layout({ children }: { children: React.ReactNode }) {

@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { cleanupDatabase } from '@/lib/actions/databaseActions';
+import { cleanupDatabase } from '@/core/lib/actions/databaseActions';
 import { toast } from 'sonner';
 
 export function DatabaseCleanupDialog() {

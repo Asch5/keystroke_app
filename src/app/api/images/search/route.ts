@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PexelsService } from '@/lib/services/pexelsService';
+import { PexelsService } from '@/core/lib/services/pexelsService';
 //import { ImageService } from '@/lib/services/imageService';
 
 export async function GET(request: Request) {

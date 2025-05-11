@@ -1,11 +1,11 @@
 'use client';
 
-import { authenticate, StateAuth } from '@/lib/actions/authActions';
+import { authenticate, StateAuth } from '@/core/lib/actions/authActions';
 import { useActionState } from 'react';
-import { useAppDispatch } from '@/lib/redux/store';
+import { useAppDispatch } from '@/core/lib/redux/store';
 import { useEffect } from 'react';
-import { setUser } from '@/lib/redux/features/authSlice';
-import { UserBasicData } from '@/types/user';
+import { setUser } from '@/core/lib/redux/features/authSlice';
+import { UserBasicData } from '@/core/types/user';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

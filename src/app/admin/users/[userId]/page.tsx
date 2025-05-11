@@ -1,5 +1,5 @@
 // src/app/(dashboard)/dashboard/admin/users/[userId]/page.tsx
-import { getUserDetails } from '@/lib/db/user';
+import { getUserDetails } from '@/core/lib/db/user';
 import { formatDistance } from 'date-fns';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';

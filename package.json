@@ -2,6 +2,8 @@
   "name": "keystroke_app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "description": "Comprehensive AI-powered typing test and analysis tool with a full featured dictionary and word search. Were deep elaborated dictionaries with a deep analysis of the words and their meanings.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -87,12 +89,14 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
+    "module-alias": "^2.2.3",
     "patch-package": "^8.0.0",
     "postcss": "^8.5.3",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.5.3",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "type-fest": "^4.39.1",
     "typescript": "^5.8.2",
     "uuid": "^11.1.0"

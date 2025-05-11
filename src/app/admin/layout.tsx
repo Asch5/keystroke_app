@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { RoleGate } from '@/components/auth/RoleGate';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { getNavigationLinks } from '@/lib/utils/navigation';
+import { getNavigationLinks } from '@/core/lib/utils/navigation';
 import SideNav from '@/components/dashboard/sidenav';
 
 export default function AdminLayout({

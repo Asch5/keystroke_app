@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getWordDetails, fetchWordById } from '@/lib/actions/dictionaryActions';
-import { WordDetails } from '@/lib/actions/dictionaryActions';
+import { getWordDetails, fetchWordById } from '@/core/lib/actions/dictionaryActions';
+import { WordDetails } from '@/core/lib/actions/dictionaryActions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';

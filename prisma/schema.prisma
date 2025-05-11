@@ -93,13 +93,15 @@ enum PartOfSpeech {
   preposition // præposition
   conjunction // konjunktion
   interjection // interjektion
-  phrase // faste udtryk (fixed expressions)
-  sentence // sætning (not standard part of speech)
   numeral // talord
   article // artikel
   // Danish-specific part of speech
   exclamation // udråbsord
   abbreviation // forkortelse
+  suffix // suffiks
+  //--------------------------------
+  phrase // faste udtryk (fixed expressions)
+  sentence // sætning (not standard part of speech)
   undefined
 }
 
@@ -167,6 +169,9 @@ enum SourceType {
 enum EntityType {
   definition
   example
+  phrase
+  sentence
+  word
 }
 
 enum Gender {
@@ -271,7 +276,6 @@ model Word {
 
   // Relations
   wordDefinitions WordDefinition[]   @relation("WordToDefinition")
-  audioFiles      WordAudio[]        @relation("WordToAudio")
   relatedFrom     WordRelationship[] @relation("FromWord")
   relatedTo       WordRelationship[] @relation("ToWord")
   mistakes        LearningMistake[]
@@ -322,8 +326,7 @@ model DefinitionExample {
   updatedAt       DateTime     @updatedAt @map("updated_at")
 
   // Relations
-  definition Definition               @relation("DefinitionToExample", fields: [definitionId], references: [id], onDelete: Cascade)
-  audio      DefinitionExampleAudio[]
+  definition Definition @relation("DefinitionToExample", fields: [definitionId], references: [id], onDelete: Cascade)
 
   @@unique([definitionId, example])
   @@index([definitionId], map: "idx_definition_example_def")
@@ -333,20 +336,19 @@ model DefinitionExample {
 
 model Audio {
   id           Int          @id @default(autoincrement())
+  entityType   EntityType
+  entityId     Int
   url          String       @db.VarChar(255)
   source       SourceType
   languageCode LanguageCode @map("language_code")
+  isPrimary    Boolean      @default(false) @map("is_primary")
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
-  isOrphaned   Boolean      @default(false) @map("is_orphaned") // Flag to mark records for cleanup
 
-  // Relations
-  words              WordAudio[]
-  definitionExamples DefinitionExampleAudio[]
-
-  @@unique([url])
+  @@unique([entityType, entityId, languageCode, url])
+  @@unique([entityType, entityId, languageCode, isPrimary], name: "primary_audio_unique")
+  @@index([entityType, entityId])
   @@index([languageCode])
-  @@index([isOrphaned]) // Index for faster cleanup queries
   @@map("audio")
 }
 
@@ -871,37 +873,4 @@ model WordRelationship {
   @@index([toWordId, type], map: "idx_word_relationship_to")
   @@index([definitionId], map: "idx_word_relationship_definition")
   @@map("word_relationships")
-}
-
-// Junction table for Word-Audio
-model WordAudio {
-  wordId    Int      @map("word_id")
-  audioId   Int      @map("audio_id")
-  isPrimary Boolean  @default(false) @map("is_primary")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  // Relations
-  word  Word  @relation("WordToAudio", fields: [wordId], references: [id], onDelete: Cascade)
-  audio Audio @relation(fields: [audioId], references: [id], onDelete: Restrict) // Changed from Cascade
-
-  @@id([wordId, audioId])
-  @@index([wordId])
-  @@index([audioId])
-  @@map("word_audio")
-}
-
-// Junction table for DefinitionExample-Audio
-model DefinitionExampleAudio {
-  exampleId Int      @map("example_id")
-  audioId   Int      @map("audio_id")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  // Relations
-  example DefinitionExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
-  audio   Audio             @relation(fields: [audioId], references: [id], onDelete: Restrict) // Changed from Cascade
-
-  @@id([exampleId, audioId])
-  @@index([exampleId])
-  @@index([audioId])
-  @@map("definition_example_audio")
 }

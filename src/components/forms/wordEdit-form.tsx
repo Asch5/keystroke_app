@@ -12,8 +12,8 @@ import {
 import {
   WordDetails,
   updateWordDetails,
-} from '@/lib/actions/dictionaryActions';
-import { WordUpdateData, ExampleUpdateData } from '@/types/dictionary';
+} from '@/core/lib/actions/dictionaryActions';
+import { WordUpdateData, ExampleUpdateData } from '@/core/types/dictionary';
 import { Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -48,7 +48,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { PlusCircle, Trash2, Save, Loader2, ImageIcon } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import { WordImage } from '@/components/dictionary/wordImage';
+import { WordImage } from '@/components/dictionary/WordImage';
 import { toast } from 'sonner';
 
 // Form validation schema

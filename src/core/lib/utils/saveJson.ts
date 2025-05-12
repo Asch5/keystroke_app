@@ -7,6 +7,7 @@ export async function saveJson(data: unknown, name: string) {
     const documentationPath = path.resolve(
       process.cwd(),
       'documentation',
+      'JSON',
       'schema_merriam.json',
     );
 

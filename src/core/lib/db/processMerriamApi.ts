@@ -4,7 +4,7 @@ import { prisma } from '@/core/lib/prisma';
 import {
   DefinitionExampleOfProcessWordData,
   ProcessedWordData,
-} from '@/core/types/dictionary';
+} from '@/core/types/dictionary'; // Extended interface to include ID for database trackinginterface DefinitionExampleWithId extends DefinitionExampleOfProcessWordData {  id?: number | null;}
 import { saveJson } from '@/core/lib/utils/saveJson';
 import {
   LanguageCode,
@@ -19,7 +19,7 @@ import {
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 import { LogLevel, serverLog } from '@/core/lib/utils/logUtils';
 import { ImageService } from '@/core/lib/services/imageService';
-import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
+//import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**Definitions:
  * generalLabels "lbs" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs. (like capitalization indicators, usage notes, etc.)
@@ -360,7 +360,7 @@ export async function processAndSaveWord(
         apiResponse.hwi.prs?.[0]?.mw ||
         apiResponse.hwi.altprs?.[0]?.ipa ||
         apiResponse.hwi.altprs?.[0]?.mw ||
-        checkedWordDetails?.word?.phonetic ||
+        // checkedWordDetails?.word?.phonetic ||
         null,
       audio: audio || checkedWordDetails?.word?.audio || null,
       audioFiles:
@@ -1558,7 +1558,6 @@ sourceWordText processing
                 partOfSpeech: currentPartOfSpeech,
                 source: source,
                 languageCode: language,
-
                 isPlural: false,
                 definition: cleanDefinitionText,
                 subjectStatusLabels:
@@ -1655,6 +1654,15 @@ sourceWordText processing
           },
         );
 
+        // Create WordDetails for the main word with the default part of speech
+        const mainWordDetails = await upsertWordDetails(
+          tx,
+          mainWord.id,
+          partOfSpeech,
+          null,
+          false,
+        );
+
         //! 2. Process and save definitions
         for (const definitionData of processedData.definitions) {
           try {
@@ -1662,36 +1670,33 @@ sourceWordText processing
             const existingDefinition = await tx.definition.findFirst({
               where: {
                 definition: definitionData.definition,
-                partOfSpeech: definitionData.partOfSpeech as PartOfSpeech,
-                languageCode: definitionData.languageCode as LanguageCode,
                 source: definitionData.source as SourceType,
+                languageCode: definitionData.languageCode as LanguageCode,
                 subjectStatusLabels: definitionData.subjectStatusLabels || null,
                 generalLabels: definitionData.generalLabels || null,
                 grammaticalNote: definitionData.grammaticalNote || null,
                 usageNote: definitionData.usageNote || null,
                 isInShortDef: definitionData.isInShortDef || false,
-                isPlural: definitionData.isPlural || false,
               },
             });
 
-            // If definition doesn't exist, create it and immediately fetch an image
+            // If definition doesn't exist, create it
             let definition: Definition | null = existingDefinition;
             if (!definition) {
               definition = await tx.definition.create({
                 data: {
                   definition: definitionData.definition,
-                  partOfSpeech: definitionData.partOfSpeech as PartOfSpeech,
-                  languageCode: definitionData.languageCode as LanguageCode,
                   source: definitionData.source as SourceType,
+                  languageCode: definitionData.languageCode as LanguageCode,
                   subjectStatusLabels:
                     definitionData.subjectStatusLabels || null,
                   generalLabels: definitionData.generalLabels || null,
                   grammaticalNote: definitionData.grammaticalNote || null,
                   usageNote: definitionData.usageNote || null,
                   isInShortDef: definitionData.isInShortDef || false,
-                  isPlural: definitionData.isPlural || false,
                 },
               });
+
               processedData.definitions = processedData.definitions.map(
                 (def) => {
                   if (def.definition === definitionData.definition) {
@@ -1702,16 +1707,16 @@ sourceWordText processing
               );
             }
 
-            //! Link definition to word
+            //! Link definition to word details
             await tx.wordDefinition.upsert({
               where: {
-                wordId_definitionId: {
-                  wordId: mainWord.id,
+                wordDetailsId_definitionId: {
+                  wordDetailsId: mainWordDetails.id,
                   definitionId: definition.id,
                 },
               },
               create: {
-                wordId: mainWord.id,
+                wordDetailsId: mainWordDetails.id,
                 definitionId: definition.id,
                 isPrimary: false,
               },
@@ -1722,9 +1727,12 @@ sourceWordText processing
             if (definitionData.examples && definitionData.examples.length > 0) {
               // Process examples in smaller batches to avoid timeouts
               const batchSize = 10;
-              const exampleBatches: Array<
-                DefinitionExampleOfProcessWordData[]
-              > = [];
+              // Safe type assertion to avoid 'any' warning
+              const exampleBatches =
+                [] as DefinitionExampleOfProcessWordData[][];
+
+              // Create a map to store created example IDs by their text
+              const exampleIdsMap: Map<string, number> = new Map();
 
               // Split examples into batches
               for (
@@ -1740,9 +1748,9 @@ sourceWordText processing
               // Process each batch
               for (const batch of exampleBatches) {
                 // Use Promise.all for parallel processing within each batch
-                await Promise.all(
+                const createdExamples = await Promise.all(
                   batch.map(async (example) => {
-                    return tx.definitionExample.upsert({
+                    const createdExample = await tx.definitionExample.upsert({
                       where: {
                         definitionId_example: {
                           definitionId: definition.id,
@@ -1759,8 +1767,34 @@ sourceWordText processing
                         grammaticalNote: example.grammaticalNote || null,
                       },
                     });
+                    return {
+                      originalExample: example.example,
+                      created: createdExample,
+                    };
                   }),
                 );
+
+                // Store the created example IDs in the map
+                for (const { originalExample, created } of createdExamples) {
+                  exampleIdsMap.set(originalExample, created.id);
+                }
+              }
+
+              // Update the processedData with example IDs
+              const currentDefinitionIndex =
+                processedData.definitions.findIndex(
+                  (def) => def.definition === definitionData.definition,
+                );
+
+              if (
+                currentDefinitionIndex !== -1 &&
+                processedData.definitions[currentDefinitionIndex]
+              ) {
+                const def = processedData.definitions[currentDefinitionIndex];
+                def.examples = def.examples.map((example) => ({
+                  ...example,
+                  id: exampleIdsMap.get(example.example) || null,
+                }));
               }
             }
           } catch (error) {
@@ -1788,7 +1822,7 @@ sourceWordText processing
             },
           );
 
-          //mutate an object in the subWordsArray
+          // Update the ID in the subWordsArray
           subWordsArray = subWordsArray.map((word) => {
             if (word.word === subWord.word) {
               return {
@@ -1805,15 +1839,13 @@ sourceWordText processing
             const existingSubDef = await tx.definition.findFirst({
               where: {
                 definition: defData.definition,
-                partOfSpeech: defData.partOfSpeech as PartOfSpeech,
-                languageCode: defData.languageCode as LanguageCode,
                 source: defData.source as SourceType,
+                languageCode: defData.languageCode as LanguageCode,
                 subjectStatusLabels: defData.subjectStatusLabels || null,
                 generalLabels: defData.generalLabels || null,
                 grammaticalNote: defData.grammaticalNote || null,
                 usageNote: defData.usageNote || null,
                 isInShortDef: defData.isInShortDef || false,
-                isPlural: defData.isPlural || false,
               },
             });
 
@@ -1823,36 +1855,43 @@ sourceWordText processing
               subWordDef = await tx.definition.create({
                 data: {
                   definition: defData.definition,
-                  partOfSpeech: defData.partOfSpeech as PartOfSpeech,
-                  languageCode: defData.languageCode as LanguageCode,
                   source: defData.source as SourceType,
+                  languageCode: defData.languageCode as LanguageCode,
                   subjectStatusLabels: defData.subjectStatusLabels || null,
                   generalLabels: defData.generalLabels || null,
                   grammaticalNote: defData.grammaticalNote || null,
                   usageNote: defData.usageNote || null,
                   isInShortDef: defData.isInShortDef || false,
-                  isPlural: defData.isPlural || false,
                 },
               });
+
               subWord.definitions = subWord.definitions.map((def) => {
                 if (def.definition === defData.definition) {
                   return { ...def, id: subWordDef?.id || null };
                 }
                 return def;
               });
-              // Check if existing definition needs an image
             }
 
-            // Link definition to word
+            // Create WordDetails for the subword based on part of speech
+            const subWordDetails = await upsertWordDetails(
+              tx,
+              subWordEntity.id,
+              defData.partOfSpeech as PartOfSpeech,
+              null,
+              defData.isPlural,
+            );
+
+            // Link definition to word details
             await tx.wordDefinition.upsert({
               where: {
-                wordId_definitionId: {
-                  wordId: subWordEntity.id,
+                wordDetailsId_definitionId: {
+                  wordDetailsId: subWordDetails.id,
                   definitionId: subWordDef.id,
                 },
               },
               create: {
-                wordId: subWordEntity.id,
+                wordDetailsId: subWordDetails.id,
                 definitionId: subWordDef.id,
                 isPrimary: false,
               },
@@ -1900,12 +1939,6 @@ sourceWordText processing
         }
 
         //! Create relationships between words
-        // serverLog(
-        //   `Process in processMerriamApi.ts: subWordsArray: ${JSON.stringify(
-        //     subWordsArray,
-        //   )}`,
-        //   LogLevel.INFO,
-        // );
         for (const subWord of subWordsArray) {
           if (subWord.relationship.length > 0) {
             // Process relationships in batches
@@ -1956,30 +1989,119 @@ sourceWordText processing
                         : subWord.id!;
                     }
 
-                    return tx.wordRelationship.upsert({
+                    const fromWordId = getWordId(
+                      relation.fromWord,
+                      mainWord,
+                      subWord,
+                    );
+                    const toWordId = getWordId(
+                      relation.toWord,
+                      mainWord,
+                      subWord,
+                    );
+                    const relationType = relation.type as RelationshipType;
+
+                    // Fix type checking with manual array includes
+                    const isGeneralRelation =
+                      (
+                        [
+                          RelationshipType.synonym,
+                          RelationshipType.antonym,
+                          RelationshipType.related,
+                          RelationshipType.composition,
+                          RelationshipType.alternative_spelling,
+                        ] as RelationshipType[]
+                      ).indexOf(relationType) !== -1;
+
+                    const isGrammaticalRelation =
+                      (
+                        [
+                          RelationshipType.past_tense_en,
+                          RelationshipType.past_participle_en,
+                          RelationshipType.present_participle_en,
+                          RelationshipType.third_person_en,
+                          RelationshipType.plural_en,
+                          RelationshipType.stem,
+                          RelationshipType.phrasal_verb,
+                          RelationshipType.phrase,
+                          RelationshipType.variant_form_phrasal_verb_en,
+                        ] as RelationshipType[]
+                      ).indexOf(relationType) !== -1;
+
+                    if (isGeneralRelation) {
+                      // Use WordToWordRelationship for semantic relationships
+                      return tx.wordToWordRelationship.upsert({
+                        where: {
+                          fromWordId_toWordId_type: {
+                            fromWordId,
+                            toWordId,
+                            type: relationType,
+                          },
+                        },
+                        create: {
+                          fromWordId,
+                          toWordId,
+                          type: relationType,
+                          // Use null instead of undefined for description
+                          description: getRelationshipDescription(relationType),
+                        },
+                        update: {},
+                      });
+                    } else if (isGrammaticalRelation) {
+                      // For grammatical relationships
+                      const posFromWord = getPosForRelation(relationType);
+                      const posToWord = getPosForRelation(relationType);
+
+                      const fromWordDetails = await upsertWordDetails(
+                        tx,
+                        fromWordId,
+                        posFromWord,
+                        null,
+                        relationType === RelationshipType.plural_en,
+                      );
+
+                      const toWordDetails = await upsertWordDetails(
+                        tx,
+                        toWordId,
+                        posToWord,
+                        null,
+                        false,
+                      );
+
+                      // Use WordDetailsRelationship for grammatical relationships
+                      return tx.wordDetailsRelationship.upsert({
+                        where: {
+                          fromWordDetailsId_toWordDetailsId_type: {
+                            fromWordDetailsId: fromWordDetails.id,
+                            toWordDetailsId: toWordDetails.id,
+                            type: relationType,
+                          },
+                        },
+                        create: {
+                          fromWordDetailsId: fromWordDetails.id,
+                          toWordDetailsId: toWordDetails.id,
+                          type: relationType,
+                          // Use null instead of undefined for description
+                          description: getRelationshipDescription(relationType),
+                        },
+                        update: {},
+                      });
+                    }
+
+                    // Default fallback to Word-to-Word for any other relationship types
+                    return tx.wordToWordRelationship.upsert({
                       where: {
                         fromWordId_toWordId_type: {
-                          fromWordId: getWordId(
-                            relation.fromWord,
-                            mainWord,
-                            subWord,
-                          ),
-                          toWordId: getWordId(
-                            relation.toWord,
-                            mainWord,
-                            subWord,
-                          ),
-                          type: relation.type as RelationshipType,
+                          fromWordId,
+                          toWordId,
+                          type: relationType,
                         },
                       },
                       create: {
-                        fromWordId: getWordId(
-                          relation.fromWord,
-                          mainWord,
-                          subWord,
-                        ),
-                        toWordId: getWordId(relation.toWord, mainWord, subWord),
-                        type: relation.type as RelationshipType,
+                        fromWordId,
+                        toWordId,
+                        type: relationType,
+                        description: `Relationship type: ${relationType}`,
                       },
                       update: {},
                     });
@@ -1991,23 +2113,24 @@ sourceWordText processing
         }
 
         //! Process translations after creating the main word and definitions
-        await processTranslationsForWord(tx, mainWord.id, mainWordText, {
-          phonetic: processedData.word.phonetic,
-          stems: processedData.stems,
-          definitions: processedData.definitions.map((def) => ({
-            id: def.id || 0,
-            partOfSpeech: def.partOfSpeech,
-            definition: def.definition,
-            examples: def.examples.map((ex, idx) => ({
-              id: idx + 1,
-              example: ex.example,
-            })),
-          })),
-        });
+        // await processTranslationsForWord(tx, mainWord.id, mainWordText, {
+        //   phonetic: processedData.word.phonetic,
+        //   stems: processedData.stems,
+        //   definitions: processedData.definitions.map((def) => ({
+        //     id: def.id || 0,
+        //     partOfSpeech: def.partOfSpeech,
+        //     definition: def.definition,
+        //     examples: def.examples.map((ex) => ({
+        //       // Always use 0 as fallback to ensure a valid number type
+        //       id: 0,
+        //       example: ex.example,
+        //     })),
+        //   })),
+        // });
       },
       {
         maxWait: 60000,
-        timeout: 120000,
+        timeout: 200000,
         isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted,
       },
     );
@@ -2030,29 +2153,35 @@ sourceWordText processing
 
     const wordIds = dbWords.map((w) => w.id);
 
-    // Then get all definitions linked to those words
-    // Use wordDefinition to find the needed definitions
-    const wordDefs = await prisma.wordDefinition.findMany({
+    // Then get all definitions linked to those words through WordDetails and WordDefinition
+    const wordDetailsDefinitions = await prisma.wordDetails.findMany({
       where: {
         wordId: {
           in: wordIds,
         },
       },
       select: {
-        definition: {
-          include: {
-            image: true,
+        definitions: {
+          select: {
+            definition: {
+              include: {
+                image: true,
+              },
+            },
           },
         },
       },
     });
 
-    // Use a Map to deduplicate definitions by ID
+    // Extract unique definitions from the nested structure
     const definitionsMap = new Map();
-    wordDefs.forEach((wd) => {
-      if (wd.definition && !definitionsMap.has(wd.definition.id)) {
-        definitionsMap.set(wd.definition.id, wd.definition);
-      }
+    wordDetailsDefinitions.forEach((wd) => {
+      wd.definitions.forEach((d) => {
+        const def = d.definition;
+        if (def && !definitionsMap.has(def.id)) {
+          definitionsMap.set(def.id, def);
+        }
+      });
     });
 
     const dbDefinitions = Array.from(definitionsMap.values());
@@ -2628,6 +2757,41 @@ function processNestedExamples(
   };
 }
 
+/**
+ * Processes and links audio files for a word
+ * @param tx Transaction client
+ * @param wordDetailsId Word details ID to link audio to
+ * @param audioFiles Array of audio file URLs
+ * @param isPrimary Whether this is the primary audio for the word
+ */
+async function processAudioForWord(
+  tx: Prisma.TransactionClient,
+  wordDetailsId: number,
+  audioFiles: string[],
+  isPrimary: boolean = false,
+): Promise<void> {
+  for (const [index, audioUrl] of audioFiles.entries()) {
+    // Create the audio record
+    const audio = await tx.audio.create({
+      data: {
+        url: audioUrl,
+        source: SourceType.merriam_learners,
+        languageCode: LanguageCode.en,
+      },
+    });
+
+    // Link audio to word details
+    await tx.wordDetailsAudio.create({
+      data: {
+        wordDetailsId,
+        audioId: audio.id,
+        isPrimary: isPrimary && index === 0, // Only first audio file is primary if isPrimary is true
+      },
+    });
+  }
+}
+
+// Update the upsertWord function to use the new audio processing
 async function upsertWord(
   tx: Prisma.TransactionClient,
   source: SourceType,
@@ -2642,9 +2806,7 @@ async function upsertWord(
     sourceEntityId?: string | null;
   },
 ): Promise<Word> {
-  // Set default values
-
-  // Create or update the word
+  // Create word record
   const word = await tx.word.upsert({
     where: {
       word_languageCode: {
@@ -2652,94 +2814,60 @@ async function upsertWord(
         languageCode,
       },
     },
+    update: {
+      etymology: options?.etymology ?? null,
+      sourceEntityId: options?.sourceEntityId ?? null,
+      updatedAt: new Date(),
+    },
     create: {
       word: wordText,
       languageCode,
-      phonetic: options?.phonetic || null,
-      etymology: options?.etymology || null,
-      additionalInfo: {},
-      sourceEntityId: options?.sourceEntityId || null,
-    },
-    update: {
-      // Use proper field update operations for nullable fields
-      ...(options?.phonetic !== undefined && {
-        phonetic: { set: options.phonetic },
-      }),
-      ...(options?.etymology !== undefined && {
-        etymology: { set: options.etymology },
-      }),
-      ...(options?.difficultyLevel !== undefined && {
-        difficultyLevel: { set: options.difficultyLevel },
-      }),
-      ...(options?.sourceEntityId !== undefined && {
-        sourceEntityId: { set: options.sourceEntityId },
-      }),
+      etymology: options?.etymology ?? null,
+      sourceEntityId: options?.sourceEntityId ?? null,
     },
   });
 
-  // Handle audio files if provided
-  if (options?.audioFiles && options.audioFiles.length > 0) {
-    // Filter out any undefined or null audio URLs
-    const validAudioFiles = options.audioFiles.filter((url) => url);
+  // Create word details with phonetic
+  const wordDetails = await upsertWordDetails(tx, word.id, null, null);
 
-    if (validAudioFiles.length > 0) {
-      // Process in batches of 10
-      const batchSize = 10;
-      const audioBatches = [];
-
-      // Split into batches
-      for (let i = 0; i < validAudioFiles.length; i += batchSize) {
-        audioBatches.push(validAudioFiles.slice(i, i + batchSize));
-      }
-
-      // Process each batch
-      for (let batchIndex = 0; batchIndex < audioBatches.length; batchIndex++) {
-        const batch = audioBatches[batchIndex];
-
-        // Skip if batch is undefined
-        if (!batch) continue;
-
-        // Create all audio records in parallel
-        await Promise.all(
-          batch.map(async (audioUrl, index) => {
-            // Determine if this is a primary audio (first in the first batch)
-            const isPrimary = batchIndex === 0 && index === 0;
-
-            // Ensure audioUrl is not undefined or null
-            if (!audioUrl) {
-              throw new Error('Audio URL cannot be null or undefined');
-            }
-
-            // Create or update the Audio record with entity reference
-            await tx.audio.upsert({
-              where: {
-                // Since we changed the unique constraint to include url, we need to specify all fields
-                entityType_entityId_languageCode_url: {
-                  entityType: 'word',
-                  entityId: word.id,
-                  languageCode,
-                  url: audioUrl,
-                },
-              },
-              create: {
-                entityType: 'word',
-                entityId: word.id,
-                url: audioUrl,
-                source: source,
-                languageCode,
-                isPrimary,
-              },
-              update: {
-                isPrimary,
-              },
-            });
-          }),
-        );
-      }
-    }
+  // Process audio files if present
+  if (options?.audioFiles?.length) {
+    await processAudioForWord(tx, wordDetails.id, options.audioFiles, true);
   }
 
   return word;
+}
+
+/**
+ * Create or update a WordDetails record
+ * This is needed to establish relationships between words based on part of speech
+ */
+async function upsertWordDetails(
+  tx: Prisma.TransactionClient,
+  wordId: number,
+  partOfSpeech: PartOfSpeech | null,
+  variant: string | null,
+  isPlural: boolean = false,
+): Promise<{ id: number; wordId: number; partOfSpeech: PartOfSpeech }> {
+  // Use the provided part of speech or default to noun
+  const pos = partOfSpeech || PartOfSpeech.noun;
+
+  // Create or find the WordDetails record
+  const wordDetails = await tx.wordDetails.upsert({
+    where: {
+      wordId_partOfSpeech_variant: {
+        wordId,
+        partOfSpeech: pos,
+        variant: variant || '',
+      },
+    },
+    create: { wordId, partOfSpeech: pos, variant: variant || '', isPlural },
+    update: {
+      isPlural,
+    },
+  });
+
+  return wordDetails;
 }
 
 /**
@@ -2841,3 +2969,94 @@ function formatWithBC(text: unknown): string {
     .map((part) => `{bc}${part.trim()}`) // Add {bc} to each part
     .join(' '); // Join the parts back with a space
 }
+
+/**
+ * Helper function to determine the appropriate part of speech for a relationship
+ */
+function getPosForRelation(relationType: RelationshipType): PartOfSpeech {
+  switch (relationType) {
+    case RelationshipType.past_tense_en:
+    case RelationshipType.past_participle_en:
+    case RelationshipType.present_participle_en:
+    case RelationshipType.third_person_en:
+      return PartOfSpeech.verb;
+    case RelationshipType.plural_en:
+      return PartOfSpeech.noun;
+    case RelationshipType.phrasal_verb:
+    case RelationshipType.variant_form_phrasal_verb_en:
+      return PartOfSpeech.phrasal_verb;
+    case RelationshipType.phrase:
+      return PartOfSpeech.phrase;
+    default:
+      return PartOfSpeech.noun;
+  }
+}
+
+/**
+ * Helper function to generate a human-readable description for a relationship type
+ */
+function getRelationshipDescription(
+  relationType: RelationshipType,
+): string | null {
+  switch (relationType) {
+    case RelationshipType.synonym:
+      return 'Synonym relationship';
+    case RelationshipType.antonym:
+      return 'Antonym relationship';
+    case RelationshipType.related:
+      return 'Related term';
+    case RelationshipType.past_tense_en:
+      return 'Past tense form';
+    case RelationshipType.past_participle_en:
+      return 'Past participle form';
+    case RelationshipType.present_participle_en:
+      return 'Present participle form';
+    case RelationshipType.third_person_en:
+      return 'Third person singular form';
+    case RelationshipType.plural_en:
+      return 'Plural form';
+    case RelationshipType.stem:
+      return 'Stem relationship';
+    case RelationshipType.phrasal_verb:
+      return 'Phrasal verb';
+    case RelationshipType.phrase:
+      return 'Phrase';
+    case RelationshipType.variant_form_phrasal_verb_en:
+      return 'Variant form of phrasal verb';
+    default:
+      return null;
+  }
+}
+
+/**
+ * Categorizes relationships into grammatical or general types
+ * @param relationType The type of relationship to categorize
+ * @returns Whether the relationship is grammatical (true) or general (false)
+ */
+// function isGrammaticalRelationship(relationType: RelationshipType): boolean {
+//   const grammaticalTypes = new Set([
+//     'past_tense_en',
+//     'plural_en',
+//     'past_participle_en',
+//     'present_participle_en',
+//     'third_person_en',
+//     'variant_form_phrasal_verb_en',
+//     'definite_form_da',
+//     'plural_da',
+//     'plural_definite_da',
+//     'present_tense_da',
+//     'past_tense_da',
+//     'past_participle_da',
+//     'imperative_da',
+//     'adjective_neuter_da',
+//     'adjective_plural_da',
+//     'comparative_da',
+//     'superlative_da',
+//     'adverb_comparative_da',
+//     'adverb_superlative_da',
+//     'pronoun_accusative_da',
+//     'pronoun_genitive_da',
+//   ]);
+
+//   return grammaticalTypes.has(relationType);
+// }

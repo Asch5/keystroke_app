@@ -1,7 +1,11 @@
+'use client';
 
 import { useState } from 'react';
-import { getWordDetails, WordDetails } from '@/core/lib/actions/dictionaryActions';
-import { LanguageCode } from '@prisma/client';
+import {
+  getWordDetails,
+  type WordDetails,
+} from '@/core/lib/actions/dictionaryActions';
+import { LanguageCode, PartOfSpeech } from '@prisma/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -419,9 +423,9 @@ export default function CheckWordForm() {
                 </Button>
               )}
             </CardTitle>
-            {wordDetails.word.phonetic && (
+            {wordDetails.word.phoneticGeneral && (
               <p className="text-center text-muted-foreground">
-                {wordDetails.word.phonetic}
+                {wordDetails.word.phoneticGeneral}
               </p>
             )}
           </CardHeader>
@@ -444,11 +448,17 @@ export default function CheckWordForm() {
                   </p>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {Array.from(
-                      new Set(
-                        wordDetails.definitions.map((d) => d.partOfSpeech),
+                      new Set<PartOfSpeech>(
+                        wordDetails.definitions.map(
+                          (d: Definition) => d.partOfSpeech,
+                        ),
                       ),
-                    ).map((pos) => (
-                      <Badge key={pos} variant="outline" className="capitalize">
+                    ).map((pos: PartOfSpeech) => (
+                      <Badge
+                        key={pos.toString()}
+                        variant="outline"
+                        className="capitalize"
+                      >
                         {pos.toString().replace('_', ' ')}
                       </Badge>
                     ))}
@@ -649,15 +659,16 @@ export default function CheckWordForm() {
               )}
 
               {/* Word Variants Section */}
-              {(wordDetails.relatedWords.alternative_spelling.length > 0 ||
-                wordDetails.relatedWords.variant_form_phrasal_verb_en.length >
-                  0) && (
+              {((wordDetails.relatedWords.alternative_spelling ?? []).length >
+                0 ||
+                (wordDetails.relatedWords.variant_form_phrasal_verb_en ?? [])
+                  .length > 0) && (
                 <div className="col-span-2">
                   <p className="text-sm font-medium text-muted-foreground mb-2">
                     Alternative Forms
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {wordDetails.relatedWords.alternative_spelling.map(
+                    {(wordDetails.relatedWords.alternative_spelling ?? []).map(
                       (variant: WordVariant) => (
                         <div
                           key={variant.id}
@@ -685,37 +696,35 @@ export default function CheckWordForm() {
                         </div>
                       ),
                     )}
-                    {wordDetails.relatedWords.variant_form_phrasal_verb_en.map(
-                      (variant: WordVariant) => (
-                        <div
-                          key={variant.id}
-                          className="flex items-center gap-1"
+                    {(
+                      wordDetails.relatedWords.variant_form_phrasal_verb_en ??
+                      []
+                    ).map((variant: WordVariant) => (
+                      <div key={variant.id} className="flex items-center gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => navigateToRelatedWord(variant.word)}
                         >
+                          {variant.word}
+                        </Button>
+                        {variant.audio && (
                           <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => navigateToRelatedWord(variant.word)}
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 p-0 rounded-full"
+                            onClick={() => {
+                              new Audio(variant.audio || '').play();
+                            }}
                           >
-                            {variant.word}
+                            🔊
                           </Button>
-                          {variant.audio && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-6 w-6 p-0 rounded-full"
-                              onClick={() => {
-                                new Audio(variant.audio || '').play();
-                              }}
-                            >
-                              🔊
-                            </Button>
-                          )}
-                          <span className="text-xs text-muted-foreground">
-                            (phrasal verb form)
-                          </span>
-                        </div>
-                      ),
-                    )}
+                        )}
+                        <span className="text-xs text-muted-foreground">
+                          (phrasal verb form)
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -727,21 +736,23 @@ export default function CheckWordForm() {
                     Pronunciations
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {wordDetails.word.audioFiles.map((audio, index) => (
-                      <Button
-                        key={audio.id}
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          new Audio(audio.url).play();
-                        }}
-                      >
-                        {audio.isPrimary
-                          ? 'Primary'
-                          : `Pronunciation ${index + 1}`}{' '}
-                        🔊
-                      </Button>
-                    ))}
+                    {wordDetails.word.audioFiles.map(
+                      (audio: AudioFile, index: number) => (
+                        <Button
+                          key={audio.id}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            new Audio(audio.url).play();
+                          }}
+                        >
+                          {audio.isPrimary
+                            ? 'Primary'
+                            : `Pronunciation ${index + 1}`}{' '}
+                          🔊
+                        </Button>
+                      ),
+                    )}
                   </div>
                 </div>
               )}
@@ -787,17 +798,21 @@ export default function CheckWordForm() {
                 <AccordionContent>
                   {/* Group definitions by part of speech */}
                   {(() => {
-                    // Group definitions by part of speech
-                    const defsByPartOfSpeech = wordDetails.definitions.reduce(
-                      (acc, def) => {
-                        const pos = def.partOfSpeech;
+                    const defsByPartOfSpeech = wordDetails.definitions.reduce<
+                      Record<PartOfSpeech, Definition[]>
+                    >(
+                      (
+                        acc: Record<PartOfSpeech, Definition[]>,
+                        def: Definition,
+                      ) => {
+                        const pos: PartOfSpeech = def.partOfSpeech;
                         if (!acc[pos]) {
                           acc[pos] = [];
                         }
                         acc[pos].push(def);
                         return acc;
                       },
-                      {} as Record<string, typeof wordDetails.definitions>,
+                      {} as Record<PartOfSpeech, Definition[]>,
                     );
 
                     // Order the parts of speech in a logical sequence
@@ -835,16 +850,16 @@ export default function CheckWordForm() {
                               {pos.replace('_', ' ')}
                             </h3>
                             <div className="space-y-6">
-                              {(defsByPartOfSpeech[pos] || [])
+                              {(defsByPartOfSpeech[pos as PartOfSpeech] || [])
                                 // Sort definitions: primary/shortDef ones first
-                                .sort((a, b) => {
+                                .sort((a: Definition, b: Definition) => {
                                   if (a.isInShortDef && !b.isInShortDef)
                                     return -1;
                                   if (!a.isInShortDef && b.isInShortDef)
                                     return 1;
                                   return 0;
                                 })
-                                .map((def, index) => (
+                                .map((def: Definition, index: number) => (
                                   <Card
                                     key={def.id}
                                     className={`border-l-4 ${
@@ -1085,16 +1100,21 @@ export default function CheckWordForm() {
                     <div className="space-y-6">
                       {/* Group phrases by part of speech */}
                       {(() => {
-                        const phrasesByType = wordDetails.phrases.reduce(
-                          (acc, phrase) => {
-                            const type = phrase.partOfSpeech;
+                        const phrasesByType = wordDetails.phrases.reduce<
+                          Record<PartOfSpeech, Phrase[]>
+                        >(
+                          (
+                            acc: Record<PartOfSpeech, Phrase[]>,
+                            phrase: Phrase,
+                          ) => {
+                            const type: PartOfSpeech = phrase.partOfSpeech;
                             if (!acc[type]) {
                               acc[type] = [];
                             }
                             acc[type].push(phrase);
                             return acc;
                           },
-                          {} as Record<string, typeof wordDetails.phrases>,
+                          {} as Record<PartOfSpeech, Phrase[]>,
                         );
 
                         return Object.entries(phrasesByType).map(
@@ -1178,35 +1198,42 @@ export default function CheckWordForm() {
                                         </p>
                                         <div className="bg-muted/20 p-3 rounded">
                                           <ol className="list-decimal pl-6 space-y-2">
-                                            {phrase.examples.map((ex) => (
-                                              <li
-                                                key={ex.id}
-                                                className="text-sm"
-                                              >
-                                                {renderTextWithEmphasis(
-                                                  ex.text,
-                                                )}
-                                                {ex.audio && (
-                                                  <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="h-6 w-6 p-0 rounded-full ml-2"
-                                                    onClick={() => {
-                                                      new Audio(
-                                                        ex.audio || '',
-                                                      ).play();
-                                                    }}
-                                                  >
-                                                    🔊
-                                                  </Button>
-                                                )}
-                                                {ex.grammaticalNote && (
-                                                  <p className="text-xs text-muted-foreground mt-1 ml-1">
-                                                    ({ex.grammaticalNote})
-                                                  </p>
-                                                )}
-                                              </li>
-                                            ))}
+                                            {phrase.examples.map(
+                                              (ex: {
+                                                id: number;
+                                                text: string;
+                                                grammaticalNote?: string | null;
+                                                audio: string | null;
+                                              }) => (
+                                                <li
+                                                  key={ex.id}
+                                                  className="text-sm"
+                                                >
+                                                  {renderTextWithEmphasis(
+                                                    ex.text,
+                                                  )}
+                                                  {ex.audio && (
+                                                    <Button
+                                                      variant="ghost"
+                                                      size="sm"
+                                                      className="h-6 w-6 p-0 rounded-full ml-2"
+                                                      onClick={() => {
+                                                        new Audio(
+                                                          ex.audio || '',
+                                                        ).play();
+                                                      }}
+                                                    >
+                                                      🔊
+                                                    </Button>
+                                                  )}
+                                                  {ex.grammaticalNote && (
+                                                    <p className="text-xs text-muted-foreground mt-1 ml-1">
+                                                      ({ex.grammaticalNote})
+                                                    </p>
+                                                  )}
+                                                </li>
+                                              ),
+                                            )}
                                           </ol>
                                         </div>
                                       </div>
@@ -1359,3 +1386,16 @@ type WordVariant = {
   type?: string;
   details?: string;
 };
+
+// Add AudioFile type
+type AudioFile = {
+  id: number;
+  url: string;
+  isPrimary: boolean;
+};
+
+// Add Definition type
+type Definition = WordDetails['definitions'][0];
+
+// Add Phrase type
+type Phrase = WordDetails['phrases'][0];

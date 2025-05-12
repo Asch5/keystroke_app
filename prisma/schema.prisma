@@ -114,8 +114,14 @@ enum RelationshipType {
   phrasal_verb
   phrase
 
-  // English-specific inflections
+  alternative_spelling
+  abbreviation
+  derived_form
+  dialect_variant
 
+  translation
+
+  // English-specific inflections
   plural_en //word -> words
   past_tense_en //begin -> began
   past_participle_en //begin -> begun
@@ -124,13 +130,9 @@ enum RelationshipType {
   variant_form_phrasal_verb_en //begin -> begin with
 
   // Danish-specific inflections
-
   definite_form_da
   plural_da
   plural_definite_da
-
-  common_gender_da //fælleskøn n-ord
-  neuter_gender_da //intetkøn t-ord
 
   //verbs
   present_tense_da
@@ -149,14 +151,6 @@ enum RelationshipType {
 
   pronoun_accusative_da
   pronoun_genitive_da
-
-  // Generic
-  alternative_spelling
-  abbreviation
-  derived_form
-  dialect_variant
-
-  translation
 }
 
 enum SourceType {
@@ -167,14 +161,6 @@ enum SourceType {
   danish_dictionary
   user
   admin
-}
-
-enum EntityType {
-  definition
-  example
-  phrase
-  sentence
-  word
 }
 
 enum Gender {
@@ -267,21 +253,24 @@ model UserSettings {
  */
 
 model Word {
-  id             Int          @id @default(autoincrement())
-  word           String       @db.VarChar(255)
-  phonetic       String?      @db.VarChar(100)
-  etymology      String?      @db.Text
-  additionalInfo Json?        @default("{}")
-  languageCode   LanguageCode @map("language_code")
-  sourceEntityId String?      @db.VarChar(255)
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
+  id               Int          @id @default(autoincrement())
+  word             String       @db.VarChar(255)
+  phoneticGeneral  String?      @db.VarChar(100)
+  frequencyGeneral Int?         @map("frequency_general")
+  etymology        String?      @db.Text
+  additionalInfo   Json?        @default("{}")
+  languageCode     LanguageCode @map("language_code")
+  sourceEntityId   String?      @db.VarChar(255)
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
 
   // Relations
-  wordDefinitions WordDefinition[]   @relation("WordToDefinition")
-  relatedFrom     WordRelationship[] @relation("FromWord")
-  relatedTo       WordRelationship[] @relation("ToWord")
-  mistakes        LearningMistake[]
+  details             WordDetails[]
+  mistakes            LearningMistake[]
+  // Added relationship fields
+  relatedFromWords    WordToWordRelationship[]       @relation("FromWord")
+  relatedToWords      WordToWordRelationship[]       @relation("ToWord")
+  linkedByDefinitions DefinitionToWordRelationship[] @relation("WordLinkedByDefinitions")
 
   @@unique([word, languageCode])
   @@index([word], map: "idx_word_search")
@@ -289,11 +278,36 @@ model Word {
   @@map("words")
 }
 
+model WordDetails {
+  id           Int          @id @default(autoincrement())
+  wordId       Int          @map("word_id")
+  partOfSpeech PartOfSpeech @map("part_of_speech")
+  variant      String?      @db.VarChar(100)
+  phonetic     String?      @db.VarChar(100)
+  forms        String?      @db.VarChar(100) //-t, -e, -ere, -est
+  frequency    Int?         @map("frequency")
+  isPlural     Boolean      @default(false)
+
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  // Renamed relations for consistency with model name
+  definitions WordDefinition[]          @relation("WordDetailsToDefinition")
+  relatedFrom WordDetailsRelationship[] @relation("FromWordDetails")
+  relatedTo   WordDetailsRelationship[] @relation("ToWordDetails")
+  audioLinks  WordDetailsAudio[]
+  mistakes    LearningMistake[] // Added relation to consolidated mistake model
+
+  // Variant is nullable, so we need to handle this carefully
+  // This unique constraint means:
+  // - For each word + partOfSpeech combination, there can be only one "base" form (null variant)
+  // - For each word + partOfSpeech combination, each variant must be unique
+  @@unique([wordId, partOfSpeech, variant])
+  @@map("word_details")
+}
+
 model Definition {
   id                  Int          @id @default(autoincrement())
   definition          String       @db.Text
-  partOfSpeech        PartOfSpeech @map("part_of_speech")
-  isPlural            Boolean      @default(false)
   imageId             Int?         @map("image_id")
   source              SourceType
   languageCode        LanguageCode @map("language_code")
@@ -307,15 +321,20 @@ model Definition {
   updatedAt           DateTime     @updatedAt @map("updated_at")
 
   // Relations
-  words            WordDefinition[]    @relation("DefinitionToWord")
-  image            Image?              @relation(fields: [imageId], references: [id])
-  examples         DefinitionExample[] @relation("DefinitionToExample")
+  wordDetails      WordDefinition[]               @relation("DefinitionToWordDetails")
+  image            Image?                         @relation(fields: [imageId], references: [id])
+  examples         DefinitionExample[]            @relation("DefinitionToExample")
   listWords        ListWord[]
   userDictionary   UserDictionary[]
-  WordRelationship WordRelationship[]
+  audioLinks       DefinitionAudio[]
+  translationLinks DefinitionTranslation[]
+  relatedFromDefs  DefinitionRelationship[]       @relation("FromDefinition")
+  relatedToDefs    DefinitionRelationship[]       @relation("ToDefinition")
+  wordLinks        DefinitionToWordRelationship[] @relation("DefinitionToWordLinks")
+  mistakes         LearningMistake[] // Added relation to consolidated mistake model
 
-  @@unique([definition, partOfSpeech, languageCode, source, subjectStatusLabels, generalLabels, grammaticalNote, usageNote, isInShortDef, isPlural])
-  @@index([partOfSpeech], map: "idx_definition_pos")
+  // Simplified uniqueness constraint focusing on core attributes
+  @@unique([definition, languageCode, source])
   @@map("definitions")
 }
 
@@ -329,7 +348,9 @@ model DefinitionExample {
   updatedAt       DateTime     @updatedAt @map("updated_at")
 
   // Relations
-  definition Definition @relation("DefinitionToExample", fields: [definitionId], references: [id], onDelete: Cascade)
+  definition       Definition           @relation("DefinitionToExample", fields: [definitionId], references: [id], onDelete: Cascade)
+  audioLinks       ExampleAudio[]
+  translationLinks ExampleTranslation[]
 
   @@unique([definitionId, example])
   @@index([definitionId], map: "idx_definition_example_def")
@@ -337,21 +358,20 @@ model DefinitionExample {
   @@map("definition_examples")
 }
 
+// Audio and Translation models might simplify
 model Audio {
   id           Int          @id @default(autoincrement())
-  entityType   EntityType
-  entityId     Int
   url          String       @db.VarChar(255)
   source       SourceType
-  languageCode LanguageCode @map("language_code")
-  isPrimary    Boolean      @default(false) @map("is_primary")
+  languageCode LanguageCode @map("language_code") // Still makes sense here
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
 
-  @@unique([entityType, entityId, languageCode, url])
-  @@unique([entityType, entityId, languageCode, isPrimary], name: "primary_audio_unique")
-  @@index([entityType, entityId])
-  @@index([languageCode])
+  wordDetailsLinks WordDetailsAudio[]
+  definitionLinks  DefinitionAudio[]
+  exampleLinks     ExampleAudio[]
+
+  @@unique([url, languageCode]) // Simpler unique constraint?
   @@map("audio")
 }
 
@@ -369,29 +389,16 @@ model Image {
 
 model Translation {
   id           Int          @id @default(autoincrement())
-  entityType   EntityType
-  entityId     Int
-  languageCode LanguageCode
+  languageCode LanguageCode // Target language of the translation
   content      String       @db.Text
   source       SourceType
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
-  @@unique([entityType, entityId, languageCode])
-  @@index([entityType, entityId])
+  definitionLinks DefinitionTranslation[]
+  exampleLinks    ExampleTranslation[]
+
   @@map("translations")
-}
-
-model WordFrequencyData {
-  id           Int          @id @default(autoincrement())
-  orderIndex   Int
-  wordId       Int          @map("word_id")
-  partOfSpeech PartOfSpeech @map("part_of_speech")
-  frequency    Int // Absolute frequency or rank
-  language     LanguageCode
-
-  @@unique([orderIndex, language, wordId, partOfSpeech])
-  @@index([wordId, language])
 }
 
 // =========================================
@@ -459,7 +466,7 @@ model UserDictionary {
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userListWords    UserListWord[]
   sessionItems     UserSessionItem[]
-  mistakes         UserWordMistake[]
+  mistakes         LearningMistake[]
   reminderSettings UserWordReminder?
   customAudio      UserWordAudio[]
 
@@ -699,19 +706,35 @@ model UserSessionItem {
   @@map("user_session_items")
 }
 
-model UserWordMistake {
+model LearningMistake {
   id               String   @id @default(uuid()) @db.Uuid
-  userDictionaryId String   @map("user_dictionary_id") @db.Uuid
-  mistakeType      String // e.g., "spelling", "meaning", "usage"
+  userId           String   @db.Uuid
+  wordId           Int      @map("word_id")
+  wordDetailsId    Int?     @map("word_details_id") // Optional to support both Word and WordDetails level tracking
+  definitionId     Int?     @map("definition_id") // Optional to connect to specific definitions
+  userDictionaryId String?  @map("user_dictionary_id") @db.Uuid // Optional connection to user dictionary
+  type             String // e.g., "pronunciation", "meaning", "usage", "spelling"
   incorrectValue   String?  @db.Text
-  context          Json? // Additional context about the mistake
-  createdAt        DateTime @default(now())
+  context          String?  @db.Text
+  mistakeData      Json // Detailed information about the mistake
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   // Relations
-  userDictionary UserDictionary @relation(fields: [userDictionaryId], references: [id], onDelete: Cascade)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  word           Word            @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  wordDetails    WordDetails?    @relation(fields: [wordDetailsId], references: [id], onDelete: SetNull)
+  definition     Definition?     @relation(fields: [definitionId], references: [id], onDelete: SetNull)
+  userDictionary UserDictionary? @relation(fields: [userDictionaryId], references: [id], onDelete: SetNull)
 
-  @@index([userDictionaryId, mistakeType])
-  @@map("user_word_mistakes")
+  @@index([userId])
+  @@index([wordId])
+  @@index([wordDetailsId])
+  @@index([definitionId])
+  @@index([userDictionaryId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("learning_mistakes")
 }
 
 // =========================================
@@ -808,27 +831,6 @@ model ContentContribution {
   @@map("content_contributions")
 }
 
-model LearningMistake {
-  id          String   @id @default(uuid()) @db.Uuid
-  userId      String   @db.Uuid
-  wordId      Int      @map("word_id")
-  type        String // e.g., "pronunciation", "meaning", "usage", "spelling"
-  context     String?  @db.Text
-  mistakeData Json // Detailed information about the mistake
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([wordId])
-  @@index([type])
-  @@index([createdAt])
-  @@map("learning_mistakes")
-}
-
 // =========================================
 // 9. JUNCTION & RELATIONSHIP MODELS
 // =========================================
@@ -842,38 +844,157 @@ model LearningMistake {
  */
 
 model WordDefinition {
-  wordId       Int      @map("word_id")
-  definitionId Int      @map("definition_id")
-  isPrimary    Boolean  @default(false) @map("is_primary")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  wordDetailsId Int      @map("word_details_id")
+  definitionId  Int      @map("definition_id")
+  isPrimary     Boolean  @default(false) @map("is_primary")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   // Relations
-  word       Word       @relation("WordToDefinition", fields: [wordId], references: [id], onDelete: Cascade)
-  definition Definition @relation("DefinitionToWord", fields: [definitionId], references: [id], onDelete: Cascade)
+  wordDetails WordDetails @relation("WordDetailsToDefinition", fields: [wordDetailsId], references: [id], onDelete: Cascade)
+  definition  Definition  @relation("DefinitionToWordDetails", fields: [definitionId], references: [id], onDelete: Cascade)
 
-  @@id([wordId, definitionId])
-  @@unique([wordId, definitionId])
-  @@index([wordId], map: "idx_word_definition_word")
+  @@id([wordDetailsId, definitionId])
+  @@index([wordDetailsId], map: "idx_word_definition_details")
   @@index([definitionId], map: "idx_word_definition_def")
   @@map("word_definitions")
 }
 
-model WordRelationship {
-  fromWordId   Int              @map("from_word_id")
-  toWordId     Int              @map("to_word_id")
-  type         RelationshipType @map("relationship_type")
-  definitionId Int?             @map("definition_id") // Make it nullable for word-level relationships
-  orderIndex   Int?             @map("order_index")
-  createdAt    DateTime         @default(now()) @map("created_at")
+model WordToWordRelationship {
+  fromWordId  Int              @map("from_word_id")
+  toWordId    Int              @map("to_word_id")
+  type        RelationshipType @map("relationship_type")
+  orderIndex  Int?             @map("order_index")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  description String?          @db.Text
 
-  fromWord   Word        @relation("FromWord", fields: [fromWordId], references: [id], onDelete: Cascade)
-  toWord     Word        @relation("ToWord", fields: [toWordId], references: [id], onDelete: Cascade)
-  definition Definition? @relation(fields: [definitionId], references: [id], onDelete: SetNull)
+  fromWord Word @relation("FromWord", fields: [fromWordId], references: [id], onDelete: Cascade)
+  toWord   Word @relation("ToWord", fields: [toWordId], references: [id], onDelete: Cascade)
 
   @@id([fromWordId, toWordId, type])
-  @@index([fromWordId, type], map: "idx_word_relationship_from")
-  @@index([toWordId, type], map: "idx_word_relationship_to")
-  @@index([definitionId], map: "idx_word_relationship_definition")
-  @@map("word_relationships")
+  @@index([fromWordId, type], map: "idx_word_to_word_rel_from_word")
+  @@index([toWordId, type], map: "idx_word_to_word_rel_to_word")
+  @@index([fromWordId, toWordId], name: "idx_word_pair")
+  @@map("word_to_word_relationships")
+}
+
+model WordDetailsRelationship {
+  fromWordDetailsId Int              @map("from_word_details_id")
+  toWordDetailsId   Int              @map("to_word_details_id")
+  type              RelationshipType @map("relationship_type")
+  orderIndex        Int?             @map("order_index")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  description       String?          @db.Text
+
+  fromWordDetails WordDetails @relation("FromWordDetails", fields: [fromWordDetailsId], references: [id], onDelete: Cascade)
+  toWordDetails   WordDetails @relation("ToWordDetails", fields: [toWordDetailsId], references: [id], onDelete: Cascade)
+
+  @@id([fromWordDetailsId, toWordDetailsId, type])
+  @@index([fromWordDetailsId, type], map: "idx_word_relationship_from")
+  @@index([toWordDetailsId, type], map: "idx_word_relationship_to")
+  @@index([fromWordDetailsId, toWordDetailsId], name: "idx_word_details_pair")
+  @@map("word_details_relationships")
+}
+
+model DefinitionToWordRelationship {
+  fromDefinitionId Int              @map("from_definition_id")
+  toWordId         Int              @map("to_word_id")
+  type             RelationshipType @map("relationship_type")
+  orderIndex       Int?             @map("order_index")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  description      String?          @db.Text
+
+  // Relations
+  fromDefinition Definition @relation("DefinitionToWordLinks", fields: [fromDefinitionId], references: [id], onDelete: Cascade)
+  toWord         Word       @relation("WordLinkedByDefinitions", fields: [toWordId], references: [id], onDelete: Cascade)
+
+  @@id([fromDefinitionId, toWordId, type])
+  @@index([fromDefinitionId, type], map: "idx_def_to_word_rel_from_def")
+  @@index([toWordId, type], map: "idx_def_to_word_rel_to_word")
+  @@index([fromDefinitionId, toWordId], name: "idx_def_word_pair")
+  @@map("definition_to_word_relationships")
+}
+
+model DefinitionRelationship {
+  fromDefinitionId Int              @map("from_definition_id")
+  toDefinitionId   Int              @map("to_definition_id")
+  type             RelationshipType @map("relationship_type")
+  orderIndex       Int?             @map("order_index")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  description      String?          @db.Text
+
+  fromDefinition Definition @relation("FromDefinition", fields: [fromDefinitionId], references: [id], onDelete: Cascade)
+  toDefinition   Definition @relation("ToDefinition", fields: [toDefinitionId], references: [id], onDelete: Cascade)
+
+  @@id([fromDefinitionId, toDefinitionId, type])
+  @@index([fromDefinitionId, type], map: "idx_def_relationship_from")
+  @@index([toDefinitionId, type], map: "idx_def_relationship_to")
+  @@index([fromDefinitionId, toDefinitionId], name: "idx_def_pair")
+  @@map("definition_relationships")
+}
+
+//junction table for many-to-many relationship between WordDetails and Audio
+
+model WordDetailsAudio {
+  wordDetailsId Int     @map("word_details_id")
+  audioId       Int     @map("audio_id")
+  isPrimary     Boolean @default(false) @map("is_primary")
+
+  wordDetails WordDetails @relation(fields: [wordDetailsId], references: [id], onDelete: Cascade)
+  audio       Audio       @relation(fields: [audioId], references: [id], onDelete: Cascade)
+
+  @@id([wordDetailsId, audioId])
+  @@unique([wordDetailsId, isPrimary], map: "word_details_primary_audio_unique")
+  @@index([isPrimary])
+  @@map("word_details_audio")
+}
+
+model DefinitionAudio {
+  definitionId Int        @map("definition_id")
+  audioId      Int        @map("audio_id")
+  isPrimary    Boolean    @default(false) @map("is_primary")
+  definition   Definition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  audio        Audio      @relation(fields: [audioId], references: [id], onDelete: Cascade)
+
+  @@id([definitionId, audioId])
+  @@unique([definitionId, isPrimary], map: "definition_primary_audio_unique")
+  @@index([isPrimary])
+  @@map("definition_audio")
+}
+
+model ExampleAudio {
+  exampleId Int               @map("example_id")
+  audioId   Int               @map("audio_id")
+  isPrimary Boolean           @default(false) @map("is_primary")
+  example   DefinitionExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
+  audio     Audio             @relation(fields: [audioId], references: [id], onDelete: Cascade)
+
+  @@id([exampleId, audioId])
+  @@unique([exampleId, isPrimary], map: "example_primary_audio_unique")
+  @@index([isPrimary])
+  @@map("example_audio")
+}
+
+//junction table for many-to-many relationship between Definition and Translation
+
+model DefinitionTranslation {
+  definitionId  Int @map("definition_id")
+  translationId Int @map("translation_id")
+
+  definition  Definition  @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  translation Translation @relation(fields: [translationId], references: [id], onDelete: Cascade)
+
+  @@id([definitionId, translationId])
+  @@map("definition_translations")
+}
+
+model ExampleTranslation {
+  exampleId     Int @map("example_id")
+  translationId Int @map("translation_id")
+
+  example     DefinitionExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
+  translation Translation       @relation(fields: [translationId], references: [id], onDelete: Cascade)
+
+  @@id([exampleId, translationId])
+  @@map("example_translations")
 }

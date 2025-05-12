@@ -26,16 +26,13 @@ CREATE TYPE "SessionType" AS ENUM ('review', 'newLearning', 'practice', 'test', 
 CREATE TYPE "LanguageCode" AS ENUM ('en', 'ru', 'da', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ar');
 
 -- CreateEnum
-CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'phrase', 'sentence', 'numeral', 'article', 'exclamation', 'abbreviation', 'undefined');
+CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'numeral', 'article', 'exclamation', 'abbreviation', 'suffix', 'phrase', 'sentence', 'undefined');
 
 -- CreateEnum
-CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'common_gender_da', 'neuter_gender_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'adverb_comparative_da', 'adverb_superlative_da', 'pronoun_accusative_da', 'pronoun_genitive_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant', 'translation');
+CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'adverb_comparative_da', 'adverb_superlative_da', 'pronoun_accusative_da', 'pronoun_genitive_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant', 'translation');
 
 -- CreateEnum
 CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'helsinki_nlp', 'danish_dictionary', 'user', 'admin');
-
--- CreateEnum
-CREATE TYPE "EntityType" AS ENUM ('definition', 'example', 'phrase', 'sentence', 'word');
 
 -- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('masculine', 'feminine', 'common', 'neuter');
@@ -86,7 +83,8 @@ CREATE TABLE "user_settings" (
 CREATE TABLE "words" (
     "id" SERIAL NOT NULL,
     "word" VARCHAR(255) NOT NULL,
-    "phonetic" VARCHAR(100),
+    "phoneticGeneral" VARCHAR(100),
+    "frequency_general" INTEGER,
     "etymology" TEXT,
     "additionalInfo" JSONB DEFAULT '{}',
     "language_code" "LanguageCode" NOT NULL,
@@ -98,11 +96,23 @@ CREATE TABLE "words" (
 );
 
 -- CreateTable
+CREATE TABLE "word_details" (
+    "id" SERIAL NOT NULL,
+    "word_id" INTEGER NOT NULL,
+    "part_of_speech" "PartOfSpeech" NOT NULL,
+    "variant" VARCHAR(100),
+    "phonetic" VARCHAR(100),
+    "forms" VARCHAR(100),
+    "frequency" INTEGER,
+    "isPlural" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "word_details_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "definitions" (
     "id" SERIAL NOT NULL,
     "definition" TEXT NOT NULL,
-    "part_of_speech" "PartOfSpeech" NOT NULL,
-    "isPlural" BOOLEAN NOT NULL DEFAULT false,
     "image_id" INTEGER,
     "source" "SourceType" NOT NULL,
     "language_code" "LanguageCode" NOT NULL,
@@ -134,12 +144,9 @@ CREATE TABLE "definition_examples" (
 -- CreateTable
 CREATE TABLE "audio" (
     "id" SERIAL NOT NULL,
-    "entityType" "EntityType" NOT NULL,
-    "entityId" INTEGER NOT NULL,
     "url" VARCHAR(255) NOT NULL,
     "source" "SourceType" NOT NULL,
     "language_code" "LanguageCode" NOT NULL,
-    "is_primary" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -160,8 +167,6 @@ CREATE TABLE "images" (
 -- CreateTable
 CREATE TABLE "translations" (
     "id" SERIAL NOT NULL,
-    "entityType" "EntityType" NOT NULL,
-    "entityId" INTEGER NOT NULL,
     "languageCode" "LanguageCode" NOT NULL,
     "content" TEXT NOT NULL,
     "source" "SourceType" NOT NULL,
@@ -169,18 +174,6 @@ CREATE TABLE "translations" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "translations_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "WordFrequencyData" (
-    "id" SERIAL NOT NULL,
-    "orderIndex" INTEGER NOT NULL,
-    "word_id" INTEGER NOT NULL,
-    "part_of_speech" "PartOfSpeech" NOT NULL,
-    "frequency" INTEGER NOT NULL,
-    "language" "LanguageCode" NOT NULL,
-
-    CONSTRAINT "WordFrequencyData_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -396,15 +389,21 @@ CREATE TABLE "user_session_items" (
 );
 
 -- CreateTable
-CREATE TABLE "user_word_mistakes" (
+CREATE TABLE "learning_mistakes" (
     "id" UUID NOT NULL,
-    "user_dictionary_id" UUID NOT NULL,
-    "mistakeType" TEXT NOT NULL,
+    "userId" UUID NOT NULL,
+    "word_id" INTEGER NOT NULL,
+    "word_details_id" INTEGER,
+    "definition_id" INTEGER,
+    "user_dictionary_id" UUID,
+    "type" TEXT NOT NULL,
     "incorrectValue" TEXT,
-    "context" JSONB,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "context" TEXT,
+    "mistakeData" JSONB NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "user_word_mistakes_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "learning_mistakes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -468,40 +467,105 @@ CREATE TABLE "content_contributions" (
 );
 
 -- CreateTable
-CREATE TABLE "learning_mistakes" (
-    "id" UUID NOT NULL,
-    "userId" UUID NOT NULL,
-    "word_id" INTEGER NOT NULL,
-    "type" TEXT NOT NULL,
-    "context" TEXT,
-    "mistakeData" JSONB NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "learning_mistakes_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "word_definitions" (
-    "word_id" INTEGER NOT NULL,
+    "word_details_id" INTEGER NOT NULL,
     "definition_id" INTEGER NOT NULL,
     "is_primary" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "word_definitions_pkey" PRIMARY KEY ("word_id","definition_id")
+    CONSTRAINT "word_definitions_pkey" PRIMARY KEY ("word_details_id","definition_id")
 );
 
 -- CreateTable
-CREATE TABLE "word_relationships" (
+CREATE TABLE "word_to_word_relationships" (
     "from_word_id" INTEGER NOT NULL,
     "to_word_id" INTEGER NOT NULL,
     "relationship_type" "RelationshipType" NOT NULL,
-    "definition_id" INTEGER,
     "order_index" INTEGER,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "description" TEXT,
 
-    CONSTRAINT "word_relationships_pkey" PRIMARY KEY ("from_word_id","to_word_id","relationship_type")
+    CONSTRAINT "word_to_word_relationships_pkey" PRIMARY KEY ("from_word_id","to_word_id","relationship_type")
+);
+
+-- CreateTable
+CREATE TABLE "word_details_relationships" (
+    "from_word_details_id" INTEGER NOT NULL,
+    "to_word_details_id" INTEGER NOT NULL,
+    "relationship_type" "RelationshipType" NOT NULL,
+    "order_index" INTEGER,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "description" TEXT,
+
+    CONSTRAINT "word_details_relationships_pkey" PRIMARY KEY ("from_word_details_id","to_word_details_id","relationship_type")
+);
+
+-- CreateTable
+CREATE TABLE "definition_to_word_relationships" (
+    "from_definition_id" INTEGER NOT NULL,
+    "to_word_id" INTEGER NOT NULL,
+    "relationship_type" "RelationshipType" NOT NULL,
+    "order_index" INTEGER,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "description" TEXT,
+
+    CONSTRAINT "definition_to_word_relationships_pkey" PRIMARY KEY ("from_definition_id","to_word_id","relationship_type")
+);
+
+-- CreateTable
+CREATE TABLE "definition_relationships" (
+    "from_definition_id" INTEGER NOT NULL,
+    "to_definition_id" INTEGER NOT NULL,
+    "relationship_type" "RelationshipType" NOT NULL,
+    "order_index" INTEGER,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "description" TEXT,
+
+    CONSTRAINT "definition_relationships_pkey" PRIMARY KEY ("from_definition_id","to_definition_id","relationship_type")
+);
+
+-- CreateTable
+CREATE TABLE "word_details_audio" (
+    "word_details_id" INTEGER NOT NULL,
+    "audio_id" INTEGER NOT NULL,
+    "is_primary" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "word_details_audio_pkey" PRIMARY KEY ("word_details_id","audio_id")
+);
+
+-- CreateTable
+CREATE TABLE "definition_audio" (
+    "definition_id" INTEGER NOT NULL,
+    "audio_id" INTEGER NOT NULL,
+    "is_primary" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "definition_audio_pkey" PRIMARY KEY ("definition_id","audio_id")
+);
+
+-- CreateTable
+CREATE TABLE "example_audio" (
+    "example_id" INTEGER NOT NULL,
+    "audio_id" INTEGER NOT NULL,
+    "is_primary" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "example_audio_pkey" PRIMARY KEY ("example_id","audio_id")
+);
+
+-- CreateTable
+CREATE TABLE "definition_translations" (
+    "definition_id" INTEGER NOT NULL,
+    "translation_id" INTEGER NOT NULL,
+
+    CONSTRAINT "definition_translations_pkey" PRIMARY KEY ("definition_id","translation_id")
+);
+
+-- CreateTable
+CREATE TABLE "example_translations" (
+    "example_id" INTEGER NOT NULL,
+    "translation_id" INTEGER NOT NULL,
+
+    CONSTRAINT "example_translations_pkey" PRIMARY KEY ("example_id","translation_id")
 );
 
 -- CreateTable
@@ -539,10 +603,10 @@ CREATE INDEX "idx_word_language" ON "words"("language_code");
 CREATE UNIQUE INDEX "words_word_language_code_key" ON "words"("word", "language_code");
 
 -- CreateIndex
-CREATE INDEX "idx_definition_pos" ON "definitions"("part_of_speech");
+CREATE UNIQUE INDEX "word_details_word_id_part_of_speech_variant_key" ON "word_details"("word_id", "part_of_speech", "variant");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "definitions_definition_part_of_speech_language_code_source__key" ON "definitions"("definition", "part_of_speech", "language_code", "source", "subject_status_labels", "general_labels", "grammatical_note", "usage_note", "is_in_short_def", "isPlural");
+CREATE UNIQUE INDEX "definitions_definition_language_code_source_key" ON "definitions"("definition", "language_code", "source");
 
 -- CreateIndex
 CREATE INDEX "idx_definition_example_def" ON "definition_examples"("definition_id");
@@ -554,28 +618,10 @@ CREATE INDEX "idx_definition_example_lang" ON "definition_examples"("language_co
 CREATE UNIQUE INDEX "definition_examples_definition_id_example_key" ON "definition_examples"("definition_id", "example");
 
 -- CreateIndex
-CREATE INDEX "audio_entityType_entityId_idx" ON "audio"("entityType", "entityId");
-
--- CreateIndex
-CREATE INDEX "audio_language_code_idx" ON "audio"("language_code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "audio_entityType_entityId_language_code_url_key" ON "audio"("entityType", "entityId", "language_code", "url");
+CREATE UNIQUE INDEX "audio_url_language_code_key" ON "audio"("url", "language_code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "images_url_key" ON "images"("url");
-
--- CreateIndex
-CREATE INDEX "translations_entityType_entityId_idx" ON "translations"("entityType", "entityId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "translations_entityType_entityId_languageCode_key" ON "translations"("entityType", "entityId", "languageCode");
-
--- CreateIndex
-CREATE INDEX "WordFrequencyData_word_id_language_idx" ON "WordFrequencyData"("word_id", "language");
-
--- CreateIndex
-CREATE UNIQUE INDEX "WordFrequencyData_orderIndex_language_word_id_part_of_speec_key" ON "WordFrequencyData"("orderIndex", "language", "word_id", "part_of_speech");
 
 -- CreateIndex
 CREATE INDEX "idx_learning_status" ON "user_dictionary"("user_id", "learning_status");
@@ -650,13 +696,19 @@ CREATE INDEX "idx_user_sessions_by_type" ON "user_learning_sessions"("user_id", 
 CREATE UNIQUE INDEX "user_session_items_session_id_user_dictionary_id_key" ON "user_session_items"("session_id", "user_dictionary_id");
 
 -- CreateIndex
-CREATE INDEX "user_word_mistakes_user_dictionary_id_mistakeType_idx" ON "user_word_mistakes"("user_dictionary_id", "mistakeType");
-
--- CreateIndex
 CREATE INDEX "learning_mistakes_userId_idx" ON "learning_mistakes"("userId");
 
 -- CreateIndex
 CREATE INDEX "learning_mistakes_word_id_idx" ON "learning_mistakes"("word_id");
+
+-- CreateIndex
+CREATE INDEX "learning_mistakes_word_details_id_idx" ON "learning_mistakes"("word_details_id");
+
+-- CreateIndex
+CREATE INDEX "learning_mistakes_definition_id_idx" ON "learning_mistakes"("definition_id");
+
+-- CreateIndex
+CREATE INDEX "learning_mistakes_user_dictionary_id_idx" ON "learning_mistakes"("user_dictionary_id");
 
 -- CreateIndex
 CREATE INDEX "learning_mistakes_type_idx" ON "learning_mistakes"("type");
@@ -665,22 +717,64 @@ CREATE INDEX "learning_mistakes_type_idx" ON "learning_mistakes"("type");
 CREATE INDEX "learning_mistakes_created_at_idx" ON "learning_mistakes"("created_at");
 
 -- CreateIndex
-CREATE INDEX "idx_word_definition_word" ON "word_definitions"("word_id");
+CREATE INDEX "idx_word_definition_details" ON "word_definitions"("word_details_id");
 
 -- CreateIndex
 CREATE INDEX "idx_word_definition_def" ON "word_definitions"("definition_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "word_definitions_word_id_definition_id_key" ON "word_definitions"("word_id", "definition_id");
+CREATE INDEX "idx_word_to_word_rel_from_word" ON "word_to_word_relationships"("from_word_id", "relationship_type");
 
 -- CreateIndex
-CREATE INDEX "idx_word_relationship_from" ON "word_relationships"("from_word_id", "relationship_type");
+CREATE INDEX "idx_word_to_word_rel_to_word" ON "word_to_word_relationships"("to_word_id", "relationship_type");
 
 -- CreateIndex
-CREATE INDEX "idx_word_relationship_to" ON "word_relationships"("to_word_id", "relationship_type");
+CREATE INDEX "idx_word_pair" ON "word_to_word_relationships"("from_word_id", "to_word_id");
 
 -- CreateIndex
-CREATE INDEX "idx_word_relationship_definition" ON "word_relationships"("definition_id");
+CREATE INDEX "idx_word_relationship_from" ON "word_details_relationships"("from_word_details_id", "relationship_type");
+
+-- CreateIndex
+CREATE INDEX "idx_word_relationship_to" ON "word_details_relationships"("to_word_details_id", "relationship_type");
+
+-- CreateIndex
+CREATE INDEX "idx_word_details_pair" ON "word_details_relationships"("from_word_details_id", "to_word_details_id");
+
+-- CreateIndex
+CREATE INDEX "idx_def_to_word_rel_from_def" ON "definition_to_word_relationships"("from_definition_id", "relationship_type");
+
+-- CreateIndex
+CREATE INDEX "idx_def_to_word_rel_to_word" ON "definition_to_word_relationships"("to_word_id", "relationship_type");
+
+-- CreateIndex
+CREATE INDEX "idx_def_word_pair" ON "definition_to_word_relationships"("from_definition_id", "to_word_id");
+
+-- CreateIndex
+CREATE INDEX "idx_def_relationship_from" ON "definition_relationships"("from_definition_id", "relationship_type");
+
+-- CreateIndex
+CREATE INDEX "idx_def_relationship_to" ON "definition_relationships"("to_definition_id", "relationship_type");
+
+-- CreateIndex
+CREATE INDEX "idx_def_pair" ON "definition_relationships"("from_definition_id", "to_definition_id");
+
+-- CreateIndex
+CREATE INDEX "word_details_audio_is_primary_idx" ON "word_details_audio"("is_primary");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "word_details_primary_audio_unique" ON "word_details_audio"("word_details_id", "is_primary");
+
+-- CreateIndex
+CREATE INDEX "definition_audio_is_primary_idx" ON "definition_audio"("is_primary");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "definition_primary_audio_unique" ON "definition_audio"("definition_id", "is_primary");
+
+-- CreateIndex
+CREATE INDEX "example_audio_is_primary_idx" ON "example_audio"("is_primary");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "example_primary_audio_unique" ON "example_audio"("example_id", "is_primary");
 
 -- CreateIndex
 CREATE INDEX "_UserToList_B_index" ON "_UserToList"("B");
@@ -690,6 +784,9 @@ CREATE INDEX "_ListToStudyGroup_B_index" ON "_ListToStudyGroup"("B");
 
 -- AddForeignKey
 ALTER TABLE "user_settings" ADD CONSTRAINT "user_settings_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "word_details" ADD CONSTRAINT "word_details_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "definitions" ADD CONSTRAINT "definitions_image_id_fkey" FOREIGN KEY ("image_id") REFERENCES "images"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -755,7 +852,19 @@ ALTER TABLE "user_session_items" ADD CONSTRAINT "user_session_items_session_id_f
 ALTER TABLE "user_session_items" ADD CONSTRAINT "user_session_items_user_dictionary_id_fkey" FOREIGN KEY ("user_dictionary_id") REFERENCES "user_dictionary"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_word_mistakes" ADD CONSTRAINT "user_word_mistakes_user_dictionary_id_fkey" FOREIGN KEY ("user_dictionary_id") REFERENCES "user_dictionary"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "learning_mistakes" ADD CONSTRAINT "learning_mistakes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "learning_mistakes" ADD CONSTRAINT "learning_mistakes_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "learning_mistakes" ADD CONSTRAINT "learning_mistakes_word_details_id_fkey" FOREIGN KEY ("word_details_id") REFERENCES "word_details"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "learning_mistakes" ADD CONSTRAINT "learning_mistakes_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "learning_mistakes" ADD CONSTRAINT "learning_mistakes_user_dictionary_id_fkey" FOREIGN KEY ("user_dictionary_id") REFERENCES "user_dictionary"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "study_groups" ADD CONSTRAINT "study_groups_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -779,25 +888,64 @@ ALTER TABLE "content_contributions" ADD CONSTRAINT "content_contributions_contri
 ALTER TABLE "content_contributions" ADD CONSTRAINT "content_contributions_reviewerId_fkey" FOREIGN KEY ("reviewerId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "learning_mistakes" ADD CONSTRAINT "learning_mistakes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "learning_mistakes" ADD CONSTRAINT "learning_mistakes_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "word_definitions" ADD CONSTRAINT "word_definitions_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "word_definitions" ADD CONSTRAINT "word_definitions_word_details_id_fkey" FOREIGN KEY ("word_details_id") REFERENCES "word_details"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "word_definitions" ADD CONSTRAINT "word_definitions_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "word_relationships" ADD CONSTRAINT "word_relationships_from_word_id_fkey" FOREIGN KEY ("from_word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "word_to_word_relationships" ADD CONSTRAINT "word_to_word_relationships_from_word_id_fkey" FOREIGN KEY ("from_word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "word_relationships" ADD CONSTRAINT "word_relationships_to_word_id_fkey" FOREIGN KEY ("to_word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "word_to_word_relationships" ADD CONSTRAINT "word_to_word_relationships_to_word_id_fkey" FOREIGN KEY ("to_word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "word_relationships" ADD CONSTRAINT "word_relationships_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "word_details_relationships" ADD CONSTRAINT "word_details_relationships_from_word_details_id_fkey" FOREIGN KEY ("from_word_details_id") REFERENCES "word_details"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "word_details_relationships" ADD CONSTRAINT "word_details_relationships_to_word_details_id_fkey" FOREIGN KEY ("to_word_details_id") REFERENCES "word_details"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_to_word_relationships" ADD CONSTRAINT "definition_to_word_relationships_from_definition_id_fkey" FOREIGN KEY ("from_definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_to_word_relationships" ADD CONSTRAINT "definition_to_word_relationships_to_word_id_fkey" FOREIGN KEY ("to_word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_relationships" ADD CONSTRAINT "definition_relationships_from_definition_id_fkey" FOREIGN KEY ("from_definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_relationships" ADD CONSTRAINT "definition_relationships_to_definition_id_fkey" FOREIGN KEY ("to_definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "word_details_audio" ADD CONSTRAINT "word_details_audio_word_details_id_fkey" FOREIGN KEY ("word_details_id") REFERENCES "word_details"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "word_details_audio" ADD CONSTRAINT "word_details_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_audio" ADD CONSTRAINT "definition_audio_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_audio" ADD CONSTRAINT "definition_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "example_audio" ADD CONSTRAINT "example_audio_example_id_fkey" FOREIGN KEY ("example_id") REFERENCES "definition_examples"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "example_audio" ADD CONSTRAINT "example_audio_audio_id_fkey" FOREIGN KEY ("audio_id") REFERENCES "audio"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_translations" ADD CONSTRAINT "definition_translations_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_translations" ADD CONSTRAINT "definition_translations_translation_id_fkey" FOREIGN KEY ("translation_id") REFERENCES "translations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "example_translations" ADD CONSTRAINT "example_translations_example_id_fkey" FOREIGN KEY ("example_id") REFERENCES "definition_examples"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "example_translations" ADD CONSTRAINT "example_translations_translation_id_fkey" FOREIGN KEY ("translation_id") REFERENCES "translations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserToList" ADD CONSTRAINT "_UserToList_A_fkey" FOREIGN KEY ("A") REFERENCES "lists"("id") ON DELETE CASCADE ON UPDATE CASCADE;

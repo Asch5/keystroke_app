@@ -523,6 +523,16 @@ function applyEnding(baseWord: string, ending: string): string {
     return ending;
   }
 
+  // Handle compound words (words with spaces)
+  if (baseWord.includes(' ')) {
+    // For compounds like "for stærkt", only apply ending to the last word
+    const parts = baseWord.split(' ');
+    const lastPart = parts[parts.length - 1];
+    const modifiedLastPart = lastPart + ending.substring(1);
+    parts[parts.length - 1] = modifiedLastPart;
+    return parts.join(' ');
+  }
+
   // Remove the dash and apply the ending
   return baseWord + ending.substring(1);
 }

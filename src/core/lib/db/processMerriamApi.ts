@@ -4,6 +4,7 @@ import { prisma } from '@/core/lib/prisma';
 import {
   DefinitionExampleOfProcessWordData,
   ProcessedWordData,
+  RelationshipFromTo,
 } from '@/core/types/dictionary'; // Extended interface to include ID for database trackinginterface DefinitionExampleWithId extends DefinitionExampleOfProcessWordData {  id?: number | null;}
 import { saveJson } from '@/core/lib/utils/saveJson';
 import {
@@ -15,6 +16,7 @@ import {
   Word,
   DifficultyLevel,
   Definition,
+  Gender,
 } from '@prisma/client';
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 import { LogLevel, serverLog } from '@/core/lib/utils/logUtils';
@@ -213,8 +215,6 @@ export type StateMerriamWebster =
       data?: never;
     };
 
-type RelationshipFromTo = 'main' | 'sub' | string;
-
 export async function getWordFromMerriamWebster(
   _prevState: StateMerriamWebster,
   formData: FormData,
@@ -307,9 +307,15 @@ export async function processAndSaveWord(
   const checkedWordDetails = await getWordDetails(mainWordText);
 
   const language = LanguageCode.en; // Hardcoded because we are using the English dictionary API
+  const variant = apiResponse.meta.id.split(':')[1] || '';
   const source = mapSourceType(apiResponse.meta.src);
   const sourceEntityId = apiResponse.meta.id;
-  const partOfSpeech = mapPartOfSpeech(apiResponse.fl) as PartOfSpeech;
+
+  // Get part of speech from API response, ensuring it's properly mapped to our enum
+  const partOfSpeech = apiResponse.fl
+    ? mapPartOfSpeech(apiResponse.fl)
+    : PartOfSpeech.undefined;
+
   const sourceEntityUuid = apiResponse.meta.uuid;
 
   serverLog(
@@ -321,9 +327,9 @@ export async function processAndSaveWord(
 
   // Extract primary audio
   //?do we need this file if we have audioFiles?
-  const audio = apiResponse.hwi.prs?.[0]?.sound?.audio
-    ? `https://media.merriam-webster.com/audio/prons/en/us/mp3/${apiResponse.hwi.prs[0].sound.audio.charAt(0)}/${apiResponse.hwi.prs[0].sound.audio}.mp3`
-    : null;
+  // const audio = apiResponse.hwi.prs?.[0]?.sound?.audio
+  //   ? `https://media.merriam-webster.com/audio/prons/en/us/mp3/${apiResponse.hwi.prs[0].sound.audio.charAt(0)}/${apiResponse.hwi.prs[0].sound.audio}.mp3`
+  //   : null;
 
   // Extract all audio files (including alternate pronunciations)
   const audioFiles: string[] = [];
@@ -354,7 +360,10 @@ export async function processAndSaveWord(
   const processedData: ProcessedWordData = {
     word: {
       word: mainWordText,
+      variant: variant,
       languageCode: language,
+      source: source,
+      partOfSpeech: partOfSpeech,
       phonetic:
         apiResponse.hwi.prs?.[0]?.ipa ||
         apiResponse.hwi.prs?.[0]?.mw ||
@@ -362,7 +371,6 @@ export async function processAndSaveWord(
         apiResponse.hwi.altprs?.[0]?.mw ||
         // checkedWordDetails?.word?.phonetic ||
         null,
-      audio: audio || checkedWordDetails?.word?.audio || null,
       audioFiles:
         audioFiles.length > 0
           ? audioFiles
@@ -393,10 +401,8 @@ export async function processAndSaveWord(
 
   interface SubWordDefinition {
     id?: number | null;
-    partOfSpeech: PartOfSpeech;
     source: string;
     languageCode: string;
-    isPlural: boolean;
     definition: string;
     subjectStatusLabels?: string | null;
     generalLabels?: string | null;
@@ -419,15 +425,20 @@ export async function processAndSaveWord(
     id?: number | null;
     word: string;
     languageCode: string;
-    phonetic?: string | null;
-    imageId?: number | null;
-    audio?: string | null;
-    audioFiles?: string[] | null;
+    phoneticGeneral?: string | null;
+    frequencyGeneral?: string | null;
     etymology?: string | null;
+    source: SourceType;
+    //WordDetails section
+    partOfSpeech: PartOfSpeech | null;
+    phonetic?: string | null;
+    variant?: string | null;
+    gender?: Gender | null;
+    audioFiles?: string[] | null;
     definitions: SubWordDefinition[];
     relationship: {
-      fromWord: string;
-      toWord: string;
+      fromWord: RelationshipFromTo;
+      toWord: RelationshipFromTo;
       type: RelationshipType;
     }[];
     sourceData: SOURCE_OF_WORD[];
@@ -446,25 +457,30 @@ export async function processAndSaveWord(
       if (cleanedVariant !== mainWordText) {
         subWordsArray.push({
           word: cleanedVariant,
+          etymology: mainWordText,
           languageCode: language,
           phonetic: null,
-          audio: null,
-          etymology: variantTypeDefinition,
+          audioFiles: null,
+          partOfSpeech: partOfSpeech,
+          source: source,
           definitions: [
             {
-              partOfSpeech: partOfSpeech,
               source: source,
               languageCode: language,
-              isPlural: false,
               definition: variantTypeDefinition,
               examples: [],
             },
           ],
           relationship: [
             {
-              fromWord: 'main' as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              fromWord: 'mainWord',
+              toWord: 'subWord',
               type: RelationshipType.related,
+            },
+            {
+              fromWord: 'mainWord',
+              toWord: 'subWord',
+              type: RelationshipType.alternative_spelling,
             },
           ],
           sourceData: [SOURCE_OF_WORD.VRS],
@@ -499,24 +515,24 @@ export async function processAndSaveWord(
         } else if (relationship.includes('third person singular')) {
           definitionText = `Third person singular of "${baseWord}"`;
           relationshipType = RelationshipType.third_person_en;
+        } else if (relationship.includes('less common spelling of')) {
+          definitionText = `Less common spelling of "${baseWord}"`;
+          relationshipType = RelationshipType.alternative_spelling;
         }
 
         if (definitionText && relationshipType) {
           // Add definition for the current word
           processedData.definitions.push({
-            partOfSpeech: PartOfSpeech.verb,
             source: source,
             languageCode: language,
             //mainWordText is the form of the base word
-
-            isPlural: false,
             definition: definitionText,
             isInShortDef: false,
             examples: [],
           });
 
           // Set etymology
-          processedData.word.etymology = definitionText;
+          processedData.word.etymology = baseWord;
 
           // Extract audio information from the API response
           const audioUrl = apiResponse.hwi.prs?.[0]?.sound?.audio
@@ -545,25 +561,47 @@ export async function processAndSaveWord(
             apiResponse.hwi.prs?.[0]?.ipa ||
             apiResponse.hwi.prs?.[0]?.mw ||
             null;
+
+          //           "hom":1,
+          // "hwi":{
+          //   "hw":"ba*lo*ney",
+          //   "prs":[
+          //     {
+          //       "mw":"b\u0259-\u02c8l\u014d-n\u0113",
+          //       "sound":{"audio":"bologn01","ref":"c","stat":"1"}
+          //     }
+          //   ]
+          // },
+          // "fl":"noun",
+          // "cxs":[
+          //   {
+          //     "cxl":"less common spelling of",
+          //     "cxtis":[
+          //       {"cxt":"bologna"}
+          //     ]
+          //   }
+          // ],
+          // "def":[
 
           // Add to subWordsArray to establish relationship
           subWordsArray.push({
             word: baseWord, // The base word e.g., "get" for "got"
             languageCode: language,
+            source: source,
+            partOfSpeech: partOfSpeech,
             phonetic: phonetic,
-            audio: audioUrl,
             audioFiles: audioFiles.length > 0 ? audioFiles : null,
             etymology: null,
             definitions: [],
             relationship: [
               {
-                fromWord: 'sub' as RelationshipFromTo, // Reversed relationship
-                toWord: 'main' as RelationshipFromTo,
+                fromWord: 'subWordDetails', // Reversed relationship
+                toWord: 'mainWordDetails',
                 type: relationshipType,
               },
               {
-                fromWord: 'main' as RelationshipFromTo,
-                toWord: 'sub' as RelationshipFromTo,
+                fromWord: 'subWord',
+                toWord: 'mainWord',
                 type: RelationshipType.related,
               },
             ],
@@ -571,65 +609,65 @@ export async function processAndSaveWord(
           });
         }
 
-        if (relationship.includes('less common spelling')) {
-          definitionText = `Less common spelling of "${baseWord}"`;
-          relationshipType = RelationshipType.alternative_spelling;
+        // if (relationship.includes('less common spelling')) {
+        //   definitionText = `Less common spelling of "${baseWord}"`;
+        //   relationshipType = RelationshipType.alternative_spelling;
 
-          // Set etymology
-          processedData.word.etymology = definitionText;
+        //   // Set etymology
+        //   processedData.word.etymology = definitionText;
 
-          // Extract audio information from the API response
-          const audioUrl = apiResponse.hwi.prs?.[0]?.sound?.audio
-            ? `https://media.merriam-webster.com/audio/prons/en/us/mp3/${apiResponse.hwi.prs[0].sound.audio.charAt(0)}/${apiResponse.hwi.prs[0].sound.audio}.mp3`
-            : null;
+        //   // Extract audio information from the API response
+        //   const audioUrl = apiResponse.hwi.prs?.[0]?.sound?.audio
+        //     ? `https://media.merriam-webster.com/audio/prons/en/us/mp3/${apiResponse.hwi.prs[0].sound.audio.charAt(0)}/${apiResponse.hwi.prs[0].sound.audio}.mp3`
+        //     : null;
 
-          // Create an array of audio files
-          const audioFiles: string[] = [];
-          if (audioUrl) {
-            audioFiles.push(audioUrl);
-          }
+        //   // Create an array of audio files
+        //   const audioFiles: string[] = [];
+        //   if (audioUrl) {
+        //     audioFiles.push(audioUrl);
+        //   }
 
-          // Process all pronunciations if there are multiple
-          if (apiResponse.hwi.prs && apiResponse.hwi.prs.length > 0) {
-            apiResponse.hwi.prs.forEach((pronunciation, index) => {
-              if (index === 0) return; // Skip the first one as it's already processed
-              if (pronunciation.sound?.audio) {
-                const additionalAudioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
-                audioFiles.push(additionalAudioUrl);
-              }
-            });
-          }
+        //   // Process all pronunciations if there are multiple
+        //   if (apiResponse.hwi.prs && apiResponse.hwi.prs.length > 0) {
+        //     apiResponse.hwi.prs.forEach((pronunciation, index) => {
+        //       if (index === 0) return; // Skip the first one as it's already processed
+        //       if (pronunciation.sound?.audio) {
+        //         const additionalAudioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
+        //         audioFiles.push(additionalAudioUrl);
+        //       }
+        //     });
+        //   }
 
-          // Extract phonetic spelling if available
-          const phonetic =
-            apiResponse.hwi.prs?.[0]?.ipa ||
-            apiResponse.hwi.prs?.[0]?.mw ||
-            null;
+        //   // Extract phonetic spelling if available
+        //   const phonetic =
+        //     apiResponse.hwi.prs?.[0]?.ipa ||
+        //     apiResponse.hwi.prs?.[0]?.mw ||
+        //     null;
 
-          // Add to subWordsArray to establish relationship
-          subWordsArray.push({
-            word: baseWord,
-            languageCode: language,
-            phonetic: phonetic,
-            audio: audioUrl,
-            audioFiles: audioFiles.length > 0 ? audioFiles : null,
-            etymology: null,
-            definitions: [],
-            relationship: [
-              {
-                fromWord: 'sub' as RelationshipFromTo,
-                toWord: 'main' as RelationshipFromTo,
-                type: relationshipType,
-              },
-              {
-                fromWord: 'main' as RelationshipFromTo,
-                toWord: 'sub' as RelationshipFromTo,
-                type: RelationshipType.related,
-              },
-            ],
-            sourceData: [SOURCE_OF_WORD.CXS],
-          });
-        }
+        //   // Add to subWordsArray to establish relationship
+        //   subWordsArray.push({
+        //     word: baseWord,
+        //     languageCode: language,
+        //     phonetic: phonetic,
+        //     audio: audioUrl,
+        //     audioFiles: audioFiles.length > 0 ? audioFiles : null,
+        //     etymology: null,
+        //     definitions: [],
+        //     relationship: [
+        //       {
+        //         fromWord: 'sub' ,
+        //         toWord: 'main' ,
+        //         type: relationshipType,
+        //       },
+        //       {
+        //         fromWord: 'main' ,
+        //         toWord: 'sub' ,
+        //         type: RelationshipType.related,
+        //       },
+        //     ],
+        //     sourceData: [SOURCE_OF_WORD.CXS],
+        //   });
+        // }
       }
     }
   }
@@ -672,39 +710,33 @@ export async function processAndSaveWord(
         inflection.prs?.[0]?.ipa || inflection.prs?.[0]?.mw || null;
 
       // Determine the verb form type and set appropriate relationships
-      let verbFormType: RelationshipType = RelationshipType.related;
-      let etymology: string | null = null;
+      let verbFormType;
       let definition: string | null = null;
 
       // Check for third person singular (ends with 's' or 'es')
       if (cleanedForm.endsWith('s') || cleanedForm.endsWith('es')) {
         verbFormType = RelationshipType.third_person_en;
-        etymology = `Third person singular of "${mainWordText}"`;
         definition = `Third person singular form of the verb "${mainWordText}"`;
       }
       // Check for present participle (ends with 'ing')
       else if (cleanedForm.endsWith('ing')) {
         verbFormType = RelationshipType.present_participle_en;
-        etymology = `Present participle of "${mainWordText}"`;
         definition = `Present participle form of the verb "${mainWordText}"`;
       }
       // Check for past tense and past participle
       else if (cleanedForm.endsWith('ed')) {
         // For regular verbs, past tense and past participle are the same
         verbFormType = RelationshipType.past_tense_en;
-        etymology = `Past tense and past participle of "${mainWordText}"`;
         definition = `Past tense and past participle form of the verb "${mainWordText}"`;
       }
       // Handle irregular past tense forms (if not caught by above rules)
       else if (inflection.il === 'past' || inflection.il === 'past tense') {
         verbFormType = RelationshipType.past_tense_en;
-        etymology = `Past tense of "${mainWordText}"`;
         definition = `Past tense form of the verb "${mainWordText}"`;
       }
       // Handle irregular past participle forms
       else if (inflection.il === 'past participle') {
         verbFormType = RelationshipType.past_participle_en;
-        etymology = `Past participle of "${mainWordText}"`;
         definition = `Past participle form of the verb "${mainWordText}"`;
       }
 
@@ -712,38 +744,36 @@ export async function processAndSaveWord(
         word: cleanedForm,
         languageCode: language,
         phonetic: formPhonetic,
-        audio: formAudio,
+        source: source,
+        partOfSpeech: partOfSpeech,
         audioFiles: audioFiles.length > 0 ? audioFiles : null,
-        etymology: etymology,
+        etymology: mainWordText,
         definitions: definition
           ? [
               {
-                partOfSpeech: PartOfSpeech.verb,
                 source: source,
                 languageCode: language,
-
-                isPlural: false,
                 definition: definition,
                 examples: [],
               },
             ]
           : [],
         relationship: [
-          {
-            fromWord: 'main' as RelationshipFromTo,
-            toWord: 'sub' as RelationshipFromTo,
-            type: verbFormType,
-          },
-          // Add a general related relationship if it's not already the related type
-          ...(verbFormType !== RelationshipType.related
+          ...(verbFormType
             ? [
                 {
-                  fromWord: 'main' as RelationshipFromTo,
-                  toWord: 'sub' as RelationshipFromTo,
-                  type: RelationshipType.related,
+                  fromWord: 'mainWordDetails' as const,
+                  toWord: 'subWordDetails' as const,
+                  type: verbFormType,
                 },
               ]
             : []),
+
+          {
+            fromWord: 'mainWord',
+            toWord: 'subWord',
+            type: RelationshipType.related,
+          },
         ],
         sourceData: [SOURCE_OF_WORD.INS],
       });
@@ -798,30 +828,29 @@ export async function processAndSaveWord(
         word: cleanedForm,
         languageCode: language,
         phonetic: formPhonetic,
-        audio: formAudio, // Keep this for backward compatibility
+        source: source,
+        partOfSpeech: partOfSpeech,
         audioFiles: audioFiles.length > 0 ? audioFiles : null, // Add audioFiles array
-        etymology: etymologySubWord || null,
+        etymology: mainWordText,
         definitions: [
           {
-            partOfSpeech: PartOfSpeech.noun,
             source: source,
             languageCode: language,
-            isPlural: true,
             definition: etymologySubWord || '',
             examples: [],
           },
         ],
         relationship: [
           {
-            fromWord: 'main' as RelationshipFromTo,
-            toWord: 'sub' as RelationshipFromTo,
+            fromWord: 'mainWord',
+            toWord: 'subWord',
             type: RelationshipType.related,
           },
           ...(pluralForm
             ? [
                 {
-                  fromWord: 'main' as RelationshipFromTo,
-                  toWord: 'sub' as RelationshipFromTo,
+                  fromWord: 'mainWordDetails' as const,
+                  toWord: 'subWordDetails' as const,
                   type: pluralForm,
                 },
               ]
@@ -841,11 +870,13 @@ export async function processAndSaveWord(
         subWordsArray.push({
           word: synonym,
           languageCode: language,
+          source: source,
+          partOfSpeech: partOfSpeech,
           definitions: [],
           relationship: [
             {
-              fromWord: 'main' as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              fromWord: 'mainWordDetails',
+              toWord: 'subWordDetails',
               type: RelationshipType.synonym,
             },
           ],
@@ -862,11 +893,13 @@ export async function processAndSaveWord(
         subWordsArray.push({
           word: antonym,
           languageCode: language,
+          source: source,
+          partOfSpeech: partOfSpeech,
           definitions: [],
           relationship: [
             {
-              fromWord: 'main' as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              fromWord: 'mainWordDetails',
+              toWord: 'subWordDetails',
               type: RelationshipType.antonym,
             },
           ],
@@ -886,19 +919,20 @@ export async function processAndSaveWord(
 
       if (dro.gram === 'phrasal verb') {
         const subWordPhrasalVerb: SubWordData = {
-          id: null,
           word: cleanDrp,
           languageCode: language,
+          source: source,
+          partOfSpeech: PartOfSpeech.phrasal_verb, // Explicitly set appropriate part of speech
           definitions: [],
           relationship: [
             {
-              fromWord: 'main' as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              fromWord: 'mainWord',
+              toWord: 'subWord',
               type: RelationshipType.related,
             },
             {
-              fromWord: 'main' as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              fromWord: 'mainWordDetails',
+              toWord: 'subWordDetails',
               type: RelationshipType.phrasal_verb,
             },
           ],
@@ -983,10 +1017,8 @@ export async function processAndSaveWord(
                         // Create definition for the main phrasal verb
                         const definitionData = {
                           definition: cleanedDefinition,
-                          partOfSpeech: PartOfSpeech.phrasal_verb,
                           source: source,
                           languageCode: language,
-                          isPlural: false,
                           subjectStatusLabels:
                             getStringFromArray([
                               senSubjectStatusLabels,
@@ -1054,17 +1086,24 @@ export async function processAndSaveWord(
                           subWordsArray.push({
                             word: cleanPva,
                             languageCode: language,
-
+                            partOfSpeech: PartOfSpeech.phrasal_verb,
+                            source: source,
                             definitions: [definitionData],
                             relationship: [
                               {
-                                fromWord: 'main' as RelationshipFromTo,
-                                toWord: 'sub' as RelationshipFromTo,
+                                fromWord: 'mainWord',
+                                toWord: 'subWord',
                                 type: RelationshipType.related,
                               },
                               {
+                                //!
+                                //!
+                                //! from CLEANDRP DETAILS realtionship must be estublished
+                                //!
+                                //!
+
                                 fromWord: cleanDrp as RelationshipFromTo,
-                                toWord: 'sub' as RelationshipFromTo,
+                                toWord: 'subWordDetails',
                                 type: RelationshipType.variant_form_phrasal_verb_en,
                               },
                             ],
@@ -1086,17 +1125,18 @@ export async function processAndSaveWord(
         const subWordPhrase: SubWordData = {
           word: cleanDrp,
           languageCode: language,
-
+          source: source,
+          partOfSpeech: PartOfSpeech.phrase, // Explicitly set appropriate part of speech
           definitions: [],
           relationship: [
             {
-              fromWord: 'main' as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              fromWord: 'mainWord',
+              toWord: 'subWord',
               type: RelationshipType.related,
             },
             {
-              fromWord: 'main' as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              fromWord: 'mainWordDetails',
+              toWord: 'subWordDetails',
               type: RelationshipType.phrase,
             },
           ],
@@ -1181,13 +1221,11 @@ export async function processAndSaveWord(
                           senseData.sls?.join(', ') ||
                           null;
 
-                        // Create definition for the main phrasal verb
+                        // Create definition for the phrase (NOT a noun)
                         const definitionData = {
                           definition: cleanedDefinition,
-                          partOfSpeech: PartOfSpeech.phrase,
                           source: source,
                           languageCode: language,
-                          isPlural: false,
                           frequencyPartOfSpeech: null,
                           subjectStatusLabels:
                             getStringFromArray([
@@ -1333,17 +1371,15 @@ export async function processAndSaveWord(
       const uroSubWord: SubWordData = {
         word: cleanUro,
         languageCode: language,
+        partOfSpeech: mapPartOfSpeech(uro.fl) as PartOfSpeech,
+        source: source,
         phonetic: uro.prs?.[0]?.ipa || uro.prs?.[0]?.mw || null,
-        audio: audioUrl,
         audioFiles: audioFiles.length > 0 ? audioFiles : null,
-        etymology: `Form of "${mainWordText}"`,
+        etymology: mainWordText,
         definitions: [
           {
-            partOfSpeech: mapPartOfSpeech(uro.fl) as PartOfSpeech,
             source: source,
             languageCode: language,
-
-            isPlural: false,
             definition: `Form of "${mainWordText}"`,
             subjectStatusLabels: null,
             generalLabels: null,
@@ -1354,9 +1390,14 @@ export async function processAndSaveWord(
         ],
         relationship: [
           {
-            fromWord: 'main' as RelationshipFromTo,
-            toWord: 'sub' as RelationshipFromTo,
+            fromWord: 'mainWord',
+            toWord: 'subWord',
             type: RelationshipType.related,
+          },
+          {
+            fromWord: 'mainWord',
+            toWord: 'subWord',
+            type: RelationshipType.stem,
           },
         ],
         sourceData: [SOURCE_OF_WORD.URO],
@@ -1372,17 +1413,16 @@ export async function processAndSaveWord(
 
         const inflectedSubWord: SubWordData = {
           word: inflection.form,
+          partOfSpeech: mapPartOfSpeech(uro.fl),
+          source: source,
           languageCode: language,
           phonetic: null, // Inflected forms might have their own pronunciations in some cases
-          audio: null,
-          etymology: `${inflection.type === RelationshipType.plural_en ? 'Plural' : 'Inflected'} form of "${cleanUro}"`,
+          audioFiles: null,
+          etymology: `${inflection.type === RelationshipType.plural_en ? mainWordText : cleanUro}`,
           definitions: [
             {
-              partOfSpeech: mapPartOfSpeech(uro.fl),
               source: source,
               languageCode: language,
-
-              isPlural: inflection.type === RelationshipType.plural_en,
               definition: `${inflection.type === RelationshipType.plural_en ? 'Plural' : 'Inflected'} form of "${cleanUro}"`,
               subjectStatusLabels: null,
               generalLabels: null,
@@ -1395,13 +1435,18 @@ export async function processAndSaveWord(
           ],
           relationship: [
             {
+              //!
+              //!
+              //! from CLEANURO DETAILS realtionship must be estublished
+              //!
+              //!
               fromWord: cleanUro as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              toWord: 'subWordDetails',
               type: inflection.type,
             },
             {
-              fromWord: 'main' as RelationshipFromTo,
-              toWord: 'sub' as RelationshipFromTo,
+              fromWord: 'mainWord',
+              toWord: 'subWord',
               type: RelationshipType.related,
             },
           ],
@@ -1453,10 +1498,6 @@ sourceWordText processing
     const processedDefinitions = new Set<string>(); // Track processed definitions to avoid duplicates
     const mainLbs = apiResponse.lbs?.join(', ') || '';
     for (const defEntry of apiResponse.def) {
-      const currentPartOfSpeech = defEntry.vd
-        ? mapPartOfSpeech(defEntry.vd)
-        : partOfSpeech;
-
       if (defEntry.sseq) {
         for (const sseqItem of defEntry.sseq) {
           // Store any 'sen' data that appears before a 'sense' within the same sseq item
@@ -1555,10 +1596,8 @@ sourceWordText processing
 
               // Create definition object
               processedData.definitions.push({
-                partOfSpeech: currentPartOfSpeech,
                 source: source,
                 languageCode: language,
-                isPlural: false,
                 definition: cleanDefinitionText,
                 subjectStatusLabels:
                   getStringFromArray([
@@ -1596,42 +1635,42 @@ sourceWordText processing
   }
 
   //! Process stems from meta data
-  if (apiResponse.meta.stems && apiResponse.meta.stems.length > 0) {
-    for (const stem of apiResponse.meta.stems) {
-      if (stem === mainWordText) continue;
+  // if (apiResponse.meta.stems && apiResponse.meta.stems.length > 0) {
+  //   for (const stem of apiResponse.meta.stems) {
+  //     if (stem === mainWordText) continue;
 
-      const isMorphologicalStem = isMorphologicalVariation(mainWordText, stem);
+  //     const isMorphologicalStem = isMorphologicalVariation(mainWordText, stem);
 
-      const relationships = [];
+  //     const relationships = [];
 
-      // Add stem relationship if it's a morphological variation
-      if (isMorphologicalStem) {
-        relationships.push({
-          fromWord: 'main' as RelationshipFromTo,
-          toWord: 'sub' as RelationshipFromTo,
-          type: RelationshipType.stem,
-        });
-      }
+  //     // Add stem relationship if it's a morphological variation
+  //     if (isMorphologicalStem) {
+  //       relationships.push({
+  //         fromWord: 'main' ,
+  //         toWord: 'sub' ,
+  //         type: RelationshipType.stem,
+  //       });
+  //     }
 
-      // Always add related relationship
-      relationships.push({
-        fromWord: 'main' as RelationshipFromTo,
-        toWord: 'sub' as RelationshipFromTo,
-        type: RelationshipType.related,
-      });
+  //     // Always add related relationship
+  //       relationships.push({
+  //         fromWord: 'main' ,
+  //         toWord: 'sub' ,
+  //         type: RelationshipType.related,
+  //       });
 
-      const stemSubWord: SubWordData = {
-        word: stem,
-        languageCode: language,
+  //     const stemSubWord: SubWordData = {
+  //       word: stem,
+  //       languageCode: language,
+  //       source: source,
+  //       definitions: [],
+  //       relationship: relationships,
+  //       sourceData: [SOURCE_OF_WORD.STEM],
+  //     };
 
-        definitions: [],
-        relationship: relationships,
-        sourceData: [SOURCE_OF_WORD.STEM],
-      };
-
-      subWordsArray.push(stemSubWord);
-    }
-  }
+  //     subWordsArray.push(stemSubWord);
+  //   }
+  // }
 
   try {
     // Initialize the services
@@ -1639,18 +1678,163 @@ sourceWordText processing
     // Add a transaction to save the data to the database
     await prisma.$transaction(
       async (tx) => {
+        // Helper function to get Word ID and associated details for relationship processing
+        async function getWordEntityInfo(
+          relationSide: RelationshipFromTo,
+          mainWordEntity: Word,
+          processedMainWordData: ProcessedWordData['word'],
+          currentSubWordInLoop: SubWordData, // The subWord whose relationships are being processed
+          allSubWords: SubWordData[], // All subwords with their IDs populated
+          relationTypeForPosFallback: RelationshipType,
+          apiSource: SourceType, // Source from the API meta, as a default
+        ): Promise<{
+          wordId: number | null;
+          partOfSpeech: PartOfSpeech | null;
+          variant: string;
+          phonetic: string | null;
+          isDetailsLevel: boolean;
+          source: SourceType; // The determined source for the WordDetails
+        }> {
+          let wordId: number | null = null;
+          let partOfSpeech: PartOfSpeech | null = null;
+          let variant: string = '';
+          let phonetic: string | null = null;
+          const isDetailsLevel =
+            typeof relationSide === 'string' &&
+            relationSide.endsWith('Details');
+          let entitySource: SourceType = apiSource; // Default to the main API source
+
+          if (
+            relationSide === 'mainWord' ||
+            relationSide === 'mainWordDetails'
+          ) {
+            wordId = mainWordEntity.id;
+            partOfSpeech = processedMainWordData.partOfSpeech;
+            variant = processedMainWordData.variant || '';
+            phonetic = processedMainWordData.phonetic || null;
+            // Use main word's own source if available, otherwise default API source
+            entitySource = processedMainWordData.source || apiSource;
+          } else if (
+            relationSide === 'subWord' ||
+            relationSide === 'subWordDetails'
+          ) {
+            // This refers to the 'currentSubWordInLoop' for context
+            if (!currentSubWordInLoop.id) {
+              serverLog(
+                `Error: currentSubWordInLoop '${currentSubWordInLoop.word}' has no ID. RelationSide: ${relationSide}`,
+                LogLevel.ERROR,
+              );
+              // Attempt to find it in allSubWords as a fallback
+              const foundSubWord = allSubWords.find(
+                (sw) =>
+                  sw.word === currentSubWordInLoop.word &&
+                  sw.partOfSpeech === currentSubWordInLoop.partOfSpeech &&
+                  sw.id,
+              );
+              if (foundSubWord && foundSubWord.id) {
+                wordId = foundSubWord.id;
+                partOfSpeech = foundSubWord.partOfSpeech;
+                variant = foundSubWord.variant || '';
+                phonetic = foundSubWord.phonetic || null;
+                entitySource = foundSubWord.source || apiSource;
+              } else {
+                return {
+                  wordId: null,
+                  partOfSpeech: null,
+                  variant: '',
+                  phonetic: null,
+                  isDetailsLevel,
+                  source: entitySource,
+                };
+              }
+            } else {
+              wordId = currentSubWordInLoop.id;
+              partOfSpeech = currentSubWordInLoop.partOfSpeech;
+              variant = currentSubWordInLoop.variant || '';
+              phonetic = currentSubWordInLoop.phonetic || null;
+              entitySource = currentSubWordInLoop.source || apiSource;
+            }
+          } else if (typeof relationSide === 'string') {
+            // This is a specific sub-word string like 'cleanDrp'
+            const targetSubWord = allSubWords.find(
+              (sw) => sw.word === relationSide && sw.id, // ensure ID is present
+            );
+            if (targetSubWord && targetSubWord.id) {
+              wordId = targetSubWord.id;
+              partOfSpeech = targetSubWord.partOfSpeech;
+              variant = targetSubWord.variant || '';
+              phonetic = targetSubWord.phonetic || null;
+              entitySource = targetSubWord.source || apiSource;
+            } else {
+              serverLog(
+                `Could not find subWord or its ID for relationSide string: '${relationSide}'`,
+                LogLevel.WARN,
+              );
+              return {
+                wordId: null,
+                partOfSpeech: null,
+                variant: '',
+                phonetic: null,
+                isDetailsLevel,
+                source: entitySource,
+              };
+            }
+          } else {
+            serverLog(
+              `Unknown relationSide type: ${relationSide}`,
+              LogLevel.WARN,
+            );
+            return {
+              wordId: null,
+              partOfSpeech: null,
+              variant: '',
+              phonetic: null,
+              isDetailsLevel,
+              source: entitySource,
+            };
+          }
+
+          // If partOfSpeech is still null or undefined from direct data, and it's a details level relationship,
+          // try to infer it using the relation type (e.g., for inflections).
+          if (
+            isDetailsLevel &&
+            (!partOfSpeech || partOfSpeech === PartOfSpeech.undefined)
+          ) {
+            const inferredPos = getPosForRelation(relationTypeForPosFallback);
+            if (inferredPos !== PartOfSpeech.undefined) {
+              partOfSpeech = inferredPos;
+            }
+          }
+
+          // Normalize PartOfSpeech.undefined to null for cleaner PoS data for upsertWordDetails
+          if (partOfSpeech === PartOfSpeech.undefined) {
+            partOfSpeech = null;
+          }
+
+          return {
+            wordId,
+            partOfSpeech,
+            variant,
+            phonetic,
+            isDetailsLevel,
+            source: entitySource,
+          };
+        }
+
         //! 1. Create or update the main Word
         const mainWord = await upsertWord(
           tx,
           source as SourceType,
           mainWordText,
           language as LanguageCode,
+
           {
             phonetic: processedData.word.phonetic || null,
-            audio: processedData.word.audio || null,
             audioFiles: processedData.word.audioFiles || null,
             etymology: processedData.word.etymology || null,
             sourceEntityId: processedData.word.sourceEntityId || null,
+            partOfSpeech: partOfSpeech, // Make sure to pass the part of speech
+            variant: processedData.word.variant || '',
           },
         );
 
@@ -1658,9 +1842,16 @@ sourceWordText processing
         const mainWordDetails = await upsertWordDetails(
           tx,
           mainWord.id,
-          partOfSpeech,
-          null,
-          false,
+          partOfSpeech, // This is processedData.word.partOfSpeech
+          source as SourceType,
+          false, // isPlural
+          processedData.word.variant || '', // Pass the main word's variant from processedData
+          processedData.word.phonetic, // Pass the main word's phonetic from processedData
+        );
+        //postion 1
+        serverLog(
+          `Position 1: From upsertWord in processMerriamApi.ts (upsertWord section): mainWordDetails: ${JSON.stringify(mainWordDetails)}`,
+          LogLevel.INFO,
         );
 
         //! 2. Process and save definitions
@@ -1806,6 +1997,11 @@ sourceWordText processing
           }
         }
 
+        serverLog(
+          `+++++++++++++++Process in processMerriamApi.ts (definition section): subWordsArray: ${JSON.stringify(subWordsArray)}`,
+          LogLevel.INFO,
+        );
+
         //! 3. Process sub-words
         for (const subWord of subWordsArray) {
           // Create or update the sub-word
@@ -1816,9 +2012,9 @@ sourceWordText processing
             subWord.languageCode as LanguageCode,
             {
               phonetic: subWord.phonetic || null,
-              audio: subWord.audio || null,
               audioFiles: subWord.audioFiles || null,
               etymology: subWord.etymology || null,
+              partOfSpeech: subWord.partOfSpeech,
             },
           );
 
@@ -1874,12 +2070,16 @@ sourceWordText processing
             }
 
             // Create WordDetails for the subword based on part of speech
+            // Prioritize the subword's overall partOfSpeech if available
+            serverLog(
+              `Position 5: From upsertWordDetails in processMerriamApi.ts (upsertWordDetails section): subWord.partOfSpeech: ${subWord.partOfSpeech}`,
+              LogLevel.INFO,
+            );
             const subWordDetails = await upsertWordDetails(
               tx,
               subWordEntity.id,
-              defData.partOfSpeech as PartOfSpeech,
-              null,
-              defData.isPlural,
+              subWord.partOfSpeech || null,
+              source as SourceType,
             );
 
             // Link definition to word details
@@ -1938,195 +2138,151 @@ sourceWordText processing
           }
         }
 
-        //! Create relationships between words
-        for (const subWord of subWordsArray) {
-          if (subWord.relationship.length > 0) {
-            // Process relationships in batches
-            const batchSize = 20;
-            const relationBatches = [];
+        //! Create relationships between words - REFACTORED BLOCK
+        const allPopulatedSubWords = [...subWordsArray]; // Use a stable copy with IDs
 
-            // Split relationships into batches
-            for (let i = 0; i < subWord.relationship.length; i += batchSize) {
-              relationBatches.push(
-                subWord.relationship.slice(i, i + batchSize),
+        for (const currentProcessingSubWord of allPopulatedSubWords) {
+          if (!currentProcessingSubWord.id) {
+            serverLog(
+              `Skipping relationships for subWord '${currentProcessingSubWord.word}' as it has no ID. This should not happen.`,
+              LogLevel.ERROR,
+            );
+            continue;
+          }
+
+          if (
+            currentProcessingSubWord.relationship &&
+            currentProcessingSubWord.relationship.length > 0
+          ) {
+            const batchSize = 20; // Keep batching for performance
+            for (
+              let i = 0;
+              i < currentProcessingSubWord.relationship.length;
+              i += batchSize
+            ) {
+              const batch = currentProcessingSubWord.relationship.slice(
+                i,
+                i + batchSize,
               );
-            }
-
-            // Process each batch
-            for (const batch of relationBatches) {
               await Promise.all(
-                batch
-                  .map(async (relation) => {
-                    if (
-                      !relation.type ||
-                      (relation.fromWord !== ('main' as RelationshipFromTo) &&
-                        !subWord.id) ||
-                      (relation.toWord !== ('main' as RelationshipFromTo) &&
-                        !subWord.id)
-                    ) {
-                      serverLog(
-                        `Process in processMerriamApi.ts: Missing ID or type for relationship`,
-                        LogLevel.WARN,
-                      );
-                      return;
-                    }
-
-                    function getWordId(
-                      word: string,
-                      mainWord: Word,
-                      subWord: SubWordData,
-                    ): number {
-                      if (word !== 'main' && word !== 'sub') {
-                        const wordId = subWordsArray.find(
-                          (w) => w.word === word,
-                        )?.id;
-                        if (wordId) {
-                          return wordId;
-                        }
-                      }
-                      return word === ('main' as RelationshipFromTo)
-                        ? mainWord.id
-                        : subWord.id!;
-                    }
-
-                    const fromWordId = getWordId(
-                      relation.fromWord,
-                      mainWord,
-                      subWord,
+                batch.map(async (relation) => {
+                  if (!relation.type) {
+                    serverLog(
+                      `Missing type for relationship on subWord ${currentProcessingSubWord.word} (ID: ${currentProcessingSubWord.id})`,
+                      LogLevel.WARN,
                     );
-                    const toWordId = getWordId(
-                      relation.toWord,
-                      mainWord,
-                      subWord,
+                    return;
+                  }
+                  const relationType = relation.type as RelationshipType;
+
+                  // Use the newly added getWordEntityInfo function
+                  const fromInfo = await getWordEntityInfo(
+                    relation.fromWord,
+                    mainWord, // Main word entity
+                    processedData.word, // Main word's processed data
+                    currentProcessingSubWord, // Current sub-word in loop context
+                    allPopulatedSubWords, // All sub-words (with IDs)
+                    relationType, // Relation type for PoS fallback
+                    source as SourceType, // API source as default
+                  );
+                  const toInfo = await getWordEntityInfo(
+                    relation.toWord,
+                    mainWord,
+                    processedData.word,
+                    currentProcessingSubWord,
+                    allPopulatedSubWords,
+                    relationType,
+                    source as SourceType,
+                  );
+
+                  if (!fromInfo.wordId || !toInfo.wordId) {
+                    serverLog(
+                      `Missing wordId for relationship: from='${relation.fromWord}'(id:${fromInfo.wordId}) to='${relation.toWord}'(id:${toInfo.wordId}), for subWord '${currentProcessingSubWord.word}' (ID: ${currentProcessingSubWord.id}). Skipping.`,
+                      LogLevel.WARN,
                     );
-                    const relationType = relation.type as RelationshipType;
+                    return;
+                  }
 
-                    // Fix type checking with manual array includes
-                    const isGeneralRelation =
-                      (
-                        [
-                          RelationshipType.synonym,
-                          RelationshipType.antonym,
-                          RelationshipType.related,
-                          RelationshipType.composition,
-                          RelationshipType.alternative_spelling,
-                        ] as RelationshipType[]
-                      ).indexOf(relationType) !== -1;
+                  // Determine if it's a WordDetailsRelationship based on the schema or explicit naming
+                  const createDetailsRelation =
+                    fromInfo.isDetailsLevel ||
+                    toInfo.isDetailsLevel ||
+                    (typeof relation.fromWord === 'string' &&
+                      relation.fromWord.endsWith('Details')) ||
+                    (typeof relation.toWord === 'string' &&
+                      relation.toWord.endsWith('Details'));
 
-                    const isGrammaticalRelation =
-                      (
-                        [
-                          RelationshipType.past_tense_en,
-                          RelationshipType.past_participle_en,
-                          RelationshipType.present_participle_en,
-                          RelationshipType.third_person_en,
-                          RelationshipType.plural_en,
-                          RelationshipType.stem,
-                          RelationshipType.phrasal_verb,
-                          RelationshipType.phrase,
-                          RelationshipType.variant_form_phrasal_verb_en,
-                        ] as RelationshipType[]
-                      ).indexOf(relationType) !== -1;
+                  if (createDetailsRelation) {
+                    // For plural_en, isPlural is true if the WordDetail IS the plural noun form
+                    const isFromPlural =
+                      relationType === RelationshipType.plural_en &&
+                      fromInfo.partOfSpeech === PartOfSpeech.noun;
+                    const isToPlural =
+                      relationType === RelationshipType.plural_en &&
+                      toInfo.partOfSpeech === PartOfSpeech.noun;
 
-                    if (isGeneralRelation) {
-                      // Use WordToWordRelationship for semantic relationships
-                      return tx.wordToWordRelationship.upsert({
-                        where: {
-                          fromWordId_toWordId_type: {
-                            fromWordId,
-                            toWordId,
-                            type: relationType,
-                          },
-                        },
-                        create: {
-                          fromWordId,
-                          toWordId,
-                          type: relationType,
-                          // Use null instead of undefined for description
-                          description: getRelationshipDescription(relationType),
-                        },
-                        update: {},
-                      });
-                    } else if (isGrammaticalRelation) {
-                      // For grammatical relationships
-                      const posFromWord = getPosForRelation(relationType);
-                      const posToWord = getPosForRelation(relationType);
+                    const fromWordDetails = await upsertWordDetails(
+                      tx,
+                      fromInfo.wordId,
+                      fromInfo.partOfSpeech,
+                      fromInfo.source,
+                      isFromPlural,
+                      fromInfo.variant,
+                      fromInfo.phonetic,
+                    );
+                    const toWordDetails = await upsertWordDetails(
+                      tx,
+                      toInfo.wordId,
+                      toInfo.partOfSpeech,
+                      toInfo.source,
+                      isToPlural,
+                      toInfo.variant,
+                      toInfo.phonetic,
+                    );
 
-                      const fromWordDetails = await upsertWordDetails(
-                        tx,
-                        fromWordId,
-                        posFromWord,
-                        null,
-                        relationType === RelationshipType.plural_en,
-                      );
-
-                      const toWordDetails = await upsertWordDetails(
-                        tx,
-                        toWordId,
-                        posToWord,
-                        null,
-                        false,
-                      );
-
-                      // Use WordDetailsRelationship for grammatical relationships
-                      return tx.wordDetailsRelationship.upsert({
-                        where: {
-                          fromWordDetailsId_toWordDetailsId_type: {
-                            fromWordDetailsId: fromWordDetails.id,
-                            toWordDetailsId: toWordDetails.id,
-                            type: relationType,
-                          },
-                        },
-                        create: {
+                    await tx.wordDetailsRelationship.upsert({
+                      where: {
+                        fromWordDetailsId_toWordDetailsId_type: {
                           fromWordDetailsId: fromWordDetails.id,
                           toWordDetailsId: toWordDetails.id,
-                          type: relationType,
-                          // Use null instead of undefined for description
-                          description: getRelationshipDescription(relationType),
-                        },
-                        update: {},
-                      });
-                    }
-
-                    // Default fallback to Word-to-Word for any other relationship types
-                    return tx.wordToWordRelationship.upsert({
-                      where: {
-                        fromWordId_toWordId_type: {
-                          fromWordId,
-                          toWordId,
                           type: relationType,
                         },
                       },
                       create: {
-                        fromWordId,
-                        toWordId,
+                        fromWordDetailsId: fromWordDetails.id,
+                        toWordDetailsId: toWordDetails.id,
                         type: relationType,
-                        description: `Relationship type: ${relationType}`,
+                        description: getRelationshipDescription(relationType),
                       },
                       update: {},
                     });
-                  })
-                  .filter(Boolean),
+                  } else {
+                    // Create WordToWordRelationship
+                    await tx.wordToWordRelationship.upsert({
+                      where: {
+                        fromWordId_toWordId_type: {
+                          fromWordId: fromInfo.wordId,
+                          toWordId: toInfo.wordId,
+                          type: relationType,
+                        },
+                      },
+                      create: {
+                        fromWordId: fromInfo.wordId,
+                        toWordId: toInfo.wordId,
+                        type: relationType,
+                        description: getRelationshipDescription(relationType),
+                      },
+                      update: {},
+                    });
+                  }
+                }),
               );
             }
           }
         }
+        //! End of refactored relationship block
 
-        //! Process translations after creating the main word and definitions
-        // await processTranslationsForWord(tx, mainWord.id, mainWordText, {
-        //   phonetic: processedData.word.phonetic,
-        //   stems: processedData.stems,
-        //   definitions: processedData.definitions.map((def) => ({
-        //     id: def.id || 0,
-        //     partOfSpeech: def.partOfSpeech,
-        //     definition: def.definition,
-        //     examples: def.examples.map((ex) => ({
-        //       // Always use 0 as fallback to ensure a valid number type
-        //       id: 0,
-        //       example: ex.example,
-        //     })),
-        //   })),
-        // });
+        // ... (Rest of transaction, e.g., final serverLog, saveJson) ...
       },
       {
         maxWait: 60000,
@@ -2379,7 +2535,7 @@ function cleanupExampleText(text: unknown): string {
 function mapPartOfSpeech(apiFl: string | undefined | null): PartOfSpeech {
   if (!apiFl) {
     console.warn('Missing functional label (fl) in API response.');
-    return PartOfSpeech.noun;
+    return PartOfSpeech.undefined;
   }
   switch (apiFl.toLowerCase()) {
     case 'noun':
@@ -2403,14 +2559,14 @@ function mapPartOfSpeech(apiFl: string | undefined | null): PartOfSpeech {
     case 'abbreviation':
     case 'symbol':
       console.warn(
-        `Mapping potentially unhandled part of speech: ${apiFl}. Defaulting to noun.`,
+        `Mapping potentially unhandled part of speech: ${apiFl}. Using undefined.`,
       );
-      return PartOfSpeech.noun;
+      return PartOfSpeech.undefined;
     default:
       console.warn(
-        `Unknown part of speech encountered: ${apiFl}. Defaulting to noun.`,
+        `Unknown part of speech encountered: ${apiFl}. Using undefined.`,
       );
-      return PartOfSpeech.noun;
+      return PartOfSpeech.undefined;
   }
 }
 
@@ -2804,6 +2960,8 @@ async function upsertWord(
     etymology?: string | null;
     difficultyLevel?: DifficultyLevel;
     sourceEntityId?: string | null;
+    partOfSpeech?: PartOfSpeech | null; // This can be PartOfSpeech, null, or undefined if not in options
+    variant?: string;
   },
 ): Promise<Word> {
   // Create word record
@@ -2821,14 +2979,30 @@ async function upsertWord(
     },
     create: {
       word: wordText,
+      phoneticGeneral: options?.phonetic ?? null,
       languageCode,
       etymology: options?.etymology ?? null,
       sourceEntityId: options?.sourceEntityId ?? null,
     },
   });
 
-  // Create word details with phonetic
-  const wordDetails = await upsertWordDetails(tx, word.id, null, null);
+  // Ensure that partOfSpeech passed to upsertWordDetails is PartOfSpeech | null
+  const partOfSpeechForDetails: PartOfSpeech | null =
+    options?.partOfSpeech === undefined ? null : options?.partOfSpeech || null;
+
+  const wordDetails = await upsertWordDetails(
+    tx,
+    word.id,
+    partOfSpeechForDetails, // Explicitly PartOfSpeech | null
+    source,
+    false,
+    options?.variant ?? '', // Ensure this is an empty string for the variant argument
+    options?.phonetic ?? null,
+  );
+  serverLog(
+    `From upsertWord in processMerriamApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
+    LogLevel.INFO,
+  );
 
   // Process audio files if present
   if (options?.audioFiles?.length) {
@@ -2846,11 +3020,44 @@ async function upsertWordDetails(
   tx: Prisma.TransactionClient,
   wordId: number,
   partOfSpeech: PartOfSpeech | null,
-  variant: string | null,
+  source: SourceType = SourceType.user,
   isPlural: boolean = false,
+  variant: string = '',
+  phonetic: string | null = null,
 ): Promise<{ id: number; wordId: number; partOfSpeech: PartOfSpeech }> {
-  // Use the provided part of speech or default to noun
-  const pos = partOfSpeech || PartOfSpeech.noun;
+  // Ensure we have a valid part of speech, using the API's part of speech if available
+  const pos: PartOfSpeech = partOfSpeech || PartOfSpeech.undefined;
+  // if (partOfSpeech) {
+  //   pos = partOfSpeech;
+  // } else {
+  //   // Get the part of speech from the word if possible
+  //   const word = await tx.word.findUnique({
+  //     where: { id: wordId },
+  //   });
+
+  //   if (
+  //     word &&
+  //     word.sourceEntityId &&
+  //     word.sourceEntityId.includes('merriam_learners')
+  //   ) {
+  //     // For Merriam-Webster words, try to determine from name pattern
+  //     if (word.word.endsWith('ing')) {
+  //       pos = PartOfSpeech.verb; // present participle
+  //     } else if (word.word.endsWith('ed')) {
+  //       pos = PartOfSpeech.verb; // past tense or participle
+  //     } else {
+  //       pos = PartOfSpeech.undefined;
+  //     }
+  //   } else {
+  //     // Default to undefined if we can't determine
+  //     pos = PartOfSpeech.undefined;
+  //   }
+  // }
+
+  // serverLog(
+  //   `Position 3: From upsertWordDetails: final part of speech: ${pos}`,
+  //   LogLevel.INFO,
+  // );
 
   // Create or find the WordDetails record
   const wordDetails = await tx.wordDetails.upsert({
@@ -2861,7 +3068,14 @@ async function upsertWordDetails(
         variant: variant || '',
       },
     },
-    create: { wordId, partOfSpeech: pos, variant: variant || '', isPlural },
+    create: {
+      wordId,
+      partOfSpeech: pos,
+      phonetic: phonetic || '',
+      variant: variant || '',
+      isPlural,
+      source: source,
+    },
     update: {
       isPlural,
     },
@@ -2876,41 +3090,41 @@ async function upsertWordDetails(
  * @param stem The potential stem variation
  * @returns boolean indicating if it's a true morphological variation
  */
-function isMorphologicalVariation(baseWord: string, stem: string): boolean {
-  // Common English suffixes for morphological variations
-  const commonSuffixes = [
-    's',
-    'es',
-    'ed',
-    'ing',
-    'er',
-    'est', // Basic variations
-    'able',
-    'ible',
-    'al',
-    'ial',
-    'ful',
-    'ic', // Adjective formations
-    'ly',
-    'ment',
-    'ness',
-    'tion',
-    'sion', // Other common suffixes
-  ];
+// function isMorphologicalVariation(baseWord: string, stem: string): boolean {
+//   // Common English suffixes for morphological variations
+//   const commonSuffixes = [
+//     's',
+//     'es',
+//     'ed',
+//     'ing',
+//     'er',
+//     'est', // Basic variations
+//     'able',
+//     'ible',
+//     'al',
+//     'ial',
+//     'ful',
+//     'ic', // Adjective formations
+//     'ly',
+//     'ment',
+//     'ness',
+//     'tion',
+//     'sion', // Other common suffixes
+//   ];
 
-  // Check if the stem is formed by adding/removing common suffixes
-  return (
-    commonSuffixes.some((suffix) => {
-      return (
-        (baseWord.endsWith(suffix) &&
-          stem === baseWord.slice(0, -suffix.length)) ||
-        (stem.endsWith(suffix) && baseWord === stem.slice(0, -suffix.length))
-      );
-    }) ||
-    // Check for irregular but common variations
-    isIrregularVariation(baseWord, stem)
-  );
-}
+//   // Check if the stem is formed by adding/removing common suffixes
+//   return (
+//     commonSuffixes.some((suffix) => {
+//       return (
+//         (baseWord.endsWith(suffix) &&
+//           stem === baseWord.slice(0, -suffix.length)) ||
+//         (stem.endsWith(suffix) && baseWord === stem.slice(0, -suffix.length))
+//       );
+//     }) ||
+//     // Check for irregular but common variations
+//     isIrregularVariation(baseWord, stem)
+//   );
+// }
 
 /**
  * Helper function for checking irregular word variations
@@ -2918,28 +3132,28 @@ function isMorphologicalVariation(baseWord: string, stem: string): boolean {
  * @param stem The potential irregular variation
  * @returns boolean indicating if it's a known irregular variation
  */
-function isIrregularVariation(baseWord: string, stem: string): boolean {
-  // Common irregular variations in English
-  const irregularPairs = new Map([
-    ['go', new Set(['went', 'gone', 'goes', 'going'])],
-    ['be', new Set(['am', 'is', 'are', 'was', 'were', 'been', 'being'])],
-    ['do', new Set(['did', 'done', 'does', 'doing'])],
-    ['run', new Set(['ran', 'runs', 'running'])],
-    ['see', new Set(['saw', 'seen', 'sees', 'seeing'])],
-    ['eat', new Set(['ate', 'eaten', 'eats', 'eating'])],
-    ['write', new Set(['wrote', 'written', 'writes', 'writing'])],
-    ['speak', new Set(['spoke', 'spoken', 'speaks', 'speaking'])],
-    ['take', new Set(['took', 'taken', 'takes', 'taking'])],
-    ['give', new Set(['gave', 'given', 'gives', 'giving'])],
-  ]);
+// function isIrregularVariation(baseWord: string, stem: string): boolean {
+//   // Common irregular variations in English
+//   const irregularPairs = new Map([
+//     ['go', new Set(['went', 'gone', 'goes', 'going'])],
+//     ['be', new Set(['am', 'is', 'are', 'was', 'were', 'been', 'being'])],
+//     ['do', new Set(['did', 'done', 'does', 'doing'])],
+//     ['run', new Set(['ran', 'runs', 'running'])],
+//     ['see', new Set(['saw', 'seen', 'sees', 'seeing'])],
+//     ['eat', new Set(['ate', 'eaten', 'eats', 'eating'])],
+//     ['write', new Set(['wrote', 'written', 'writes', 'writing'])],
+//     ['speak', new Set(['spoke', 'spoken', 'speaks', 'speaking'])],
+//     ['take', new Set(['took', 'taken', 'takes', 'taking'])],
+//     ['give', new Set(['gave', 'given', 'gives', 'giving'])],
+//   ]);
 
-  return (
-    irregularPairs.get(baseWord)?.has(stem) ||
-    Array.from(irregularPairs.entries()).some(
-      ([word, variations]) => word === stem && variations.has(baseWord),
-    )
-  );
-}
+//   return (
+//     irregularPairs.get(baseWord)?.has(stem) ||
+//     Array.from(irregularPairs.entries()).some(
+//       ([word, variations]) => word === stem && variations.has(baseWord),
+//     )
+//   );
+// }
 
 function getStringFromArray(
   array: (string | null | undefined)[] | null,
@@ -2986,9 +3200,13 @@ function getPosForRelation(relationType: RelationshipType): PartOfSpeech {
     case RelationshipType.variant_form_phrasal_verb_en:
       return PartOfSpeech.phrasal_verb;
     case RelationshipType.phrase:
-      return PartOfSpeech.phrase;
+      return PartOfSpeech.phrase; // Always ensure phrases have phrase part of speech
+    case RelationshipType.synonym:
+    case RelationshipType.antonym:
+    case RelationshipType.related:
+      return PartOfSpeech.undefined; // For semantic relationships, use the original part of speech
     default:
-      return PartOfSpeech.noun;
+      return PartOfSpeech.undefined;
   }
 }
 

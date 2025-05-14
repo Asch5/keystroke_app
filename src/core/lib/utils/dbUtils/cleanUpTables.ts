@@ -9,6 +9,7 @@ const PROTECTED_TABLES = [
   'Account',
   'Session',
   'VerificationToken',
+  'UserSettings',
   '_prisma_migrations',
 ] as const;
 
@@ -20,34 +21,26 @@ export async function cleanTablesExceptUser() {
       FROM pg_tables 
       WHERE schemaname = 'public' 
       AND tablename NOT IN (${PROTECTED_TABLES[0]}, ${PROTECTED_TABLES[1]}, ${PROTECTED_TABLES[2]}, 
-        ${PROTECTED_TABLES[3]}, ${PROTECTED_TABLES[4]}, ${PROTECTED_TABLES[5]});
+        ${PROTECTED_TABLES[3]}, ${PROTECTED_TABLES[4]}, ${PROTECTED_TABLES[5]}, ${PROTECTED_TABLES[6]});
     `;
 
-    // First disable triggers to avoid cascade issues
-    await prisma.$executeRawUnsafe('SET session_replication_role = replica;');
-
-    // Process tables in sequence
+    // Process tables in sequence - use CASCADE option instead of disabling triggers
     for (const { tablename } of tables) {
       try {
-        // Use RESTRICT instead of CASCADE to prevent affecting protected tables
+        // Use CASCADE to handle dependencies properly without changing session_replication_role
         await prisma.$executeRawUnsafe(
-          `TRUNCATE TABLE "${tablename}" RESTART IDENTITY;`,
+          `TRUNCATE TABLE "${tablename}" RESTART IDENTITY CASCADE;`,
         );
         console.log(`Successfully cleaned table: ${tablename}`);
       } catch (tableError) {
         console.error(`Error cleaning table ${tablename}:`, tableError);
-        throw tableError;
+        // Continue with other tables instead of throwing here
       }
     }
-
-    // Re-enable triggers
-    await prisma.$executeRawUnsafe('SET session_replication_role = DEFAULT;');
 
     console.log('All non-protected tables cleaned successfully.');
     return { success: true };
   } catch (error) {
-    // Make sure triggers are re-enabled even if there's an error
-    await prisma.$executeRawUnsafe('SET session_replication_role = DEFAULT;');
     console.error('Error in cleanTablesExceptUser:', error);
     throw error;
   }

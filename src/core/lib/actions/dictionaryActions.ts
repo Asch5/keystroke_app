@@ -25,9 +25,6 @@ import {
   ExampleUpdateData,
   AudioUpdateData,
 } from '@/core/types/dictionary';
-//import { ImageService } from '@/lib/services/imageService';
-// import { LogLevel } from '@/core/lib/utils/logUtils';
-// import { serverLog } from '@/core/lib/utils/logUtils';
 
 // Add type definition for image data
 interface ImageData {
@@ -58,129 +55,6 @@ type WordWithAudioAndDefinitions = Prisma.WordGetPayload<{
     };
   };
 }>;
-
-// type WordWithFullRelations = Prisma.WordGetPayload<{
-//   include: {
-//     details: {
-//       include: {
-//         definitions: {
-//           include: {
-//             definition: {
-//               include: {
-//                 image: {
-//                   select: {
-//                     id: true;
-//                     url: true;
-//                     description: true;
-//                   };
-//                 };
-//                 examples: {
-//                   include: {
-//                     audioLinks: {
-//                       include: {
-//                         audio: true;
-//                       };
-//                     };
-//                   };
-//                 };
-//               };
-//             };
-//           };
-//         };
-//         audioLinks: {
-//           include: {
-//             audio: true;
-//           };
-//         };
-//         relatedFrom: {
-//           include: {
-//             toWordDetails: {
-//               include: {
-//                 word: true;
-//                 audioLinks: {
-//                   include: {
-//                     audio: true;
-//                   };
-//                 };
-//               };
-//             };
-//           };
-//         };
-//         relatedTo: {
-//           include: {
-//             fromWordDetails: {
-//               include: {
-//                 word: true;
-//                 audioLinks: {
-//                   include: {
-//                     audio: true;
-//                   };
-//                 };
-//               };
-//             };
-//           };
-//         };
-//       };
-//     };
-//     relatedFromWords: {
-//       include: {
-//         toWord: {
-//           include: {
-//             details: {
-//               include: {
-//                 definitions: {
-//                   include: {
-//                     definition: true;
-//                   };
-//                 };
-//                 audioLinks: {
-//                   include: {
-//                     audio: true;
-//                   };
-//                 };
-//               };
-//             };
-//           };
-//         };
-//       };
-//     };
-//     relatedToWords: {
-//       include: {
-//         fromWord: {
-//           include: {
-//             details: {
-//               include: {
-//                 definitions: {
-//                   include: {
-//                     definition: true;
-//                   };
-//                 };
-//                 audioLinks: {
-//                   include: {
-//                     audio: true;
-//                   };
-//                 };
-//               };
-//             };
-//           };
-//         };
-//       };
-//     };
-//     mistakes: true;
-//   };
-// }>;
-
-// Define an interface for examples with audio
-// interface ExampleWithAudio {
-//   id: number;
-//   example: string;
-//   grammaticalNote: string | null;
-//   audio?: Array<{
-//     audio: {
-//       url: string;
-//     };
-//   }>;
-// }
 
 // Update the Word type to match the schema
 interface DictionaryWord {

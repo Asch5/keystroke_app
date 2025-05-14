@@ -29,7 +29,7 @@ CREATE TYPE "LanguageCode" AS ENUM ('en', 'ru', 'da', 'es', 'fr', 'de', 'it', 'p
 CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'numeral', 'article', 'exclamation', 'abbreviation', 'suffix', 'phrase', 'sentence', 'undefined');
 
 -- CreateEnum
-CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'adverb_comparative_da', 'adverb_superlative_da', 'pronoun_accusative_da', 'pronoun_genitive_da', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant', 'translation');
+CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant', 'translation', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'adverb_comparative_da', 'adverb_superlative_da', 'pronoun_accusative_da', 'pronoun_genitive_da');
 
 -- CreateEnum
 CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'helsinki_nlp', 'danish_dictionary', 'user', 'admin');
@@ -85,6 +85,7 @@ CREATE TABLE "words" (
     "word" VARCHAR(255) NOT NULL,
     "phoneticGeneral" VARCHAR(100),
     "frequency_general" INTEGER,
+    "is_highlighted" BOOLEAN NOT NULL DEFAULT false,
     "etymology" TEXT,
     "additionalInfo" JSONB DEFAULT '{}',
     "language_code" "LanguageCode" NOT NULL,
@@ -101,10 +102,12 @@ CREATE TABLE "word_details" (
     "word_id" INTEGER NOT NULL,
     "part_of_speech" "PartOfSpeech" NOT NULL,
     "variant" VARCHAR(100),
+    "gender" "Gender",
     "phonetic" VARCHAR(100),
     "forms" VARCHAR(100),
     "frequency" INTEGER,
     "isPlural" BOOLEAN NOT NULL DEFAULT false,
+    "source_of_word_details" "SourceType" NOT NULL,
 
     CONSTRAINT "word_details_pkey" PRIMARY KEY ("id")
 );
@@ -114,12 +117,11 @@ CREATE TABLE "definitions" (
     "id" SERIAL NOT NULL,
     "definition" TEXT NOT NULL,
     "image_id" INTEGER,
-    "source" "SourceType" NOT NULL,
+    "source_of_definition" "SourceType" NOT NULL,
     "language_code" "LanguageCode" NOT NULL,
     "subject_status_labels" VARCHAR(255),
     "general_labels" VARCHAR(255),
     "grammatical_note" VARCHAR(255),
-    "gender" "Gender",
     "usage_note" VARCHAR(255),
     "is_in_short_def" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -606,7 +608,7 @@ CREATE UNIQUE INDEX "words_word_language_code_key" ON "words"("word", "language_
 CREATE UNIQUE INDEX "word_details_word_id_part_of_speech_variant_key" ON "word_details"("word_id", "part_of_speech", "variant");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "definitions_definition_language_code_source_key" ON "definitions"("definition", "language_code", "source");
+CREATE UNIQUE INDEX "definitions_definition_language_code_source_of_definition_key" ON "definitions"("definition", "language_code", "source_of_definition");
 
 -- CreateIndex
 CREATE INDEX "idx_definition_example_def" ON "definition_examples"("definition_id");

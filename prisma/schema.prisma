@@ -257,6 +257,7 @@ model Word {
   word             String       @db.VarChar(255)
   phoneticGeneral  String?      @db.VarChar(100)
   frequencyGeneral Int?         @map("frequency_general")
+  isHighlighted    Boolean      @default(false) @map("is_highlighted")
   etymology        String?      @db.Text
   additionalInfo   Json?        @default("{}")
   languageCode     LanguageCode @map("language_code")
@@ -283,10 +284,12 @@ model WordDetails {
   wordId       Int          @map("word_id")
   partOfSpeech PartOfSpeech @map("part_of_speech")
   variant      String?      @db.VarChar(100)
+  gender       Gender?      @map("gender")
   phonetic     String?      @db.VarChar(100)
   forms        String?      @db.VarChar(100) //-t, -e, -ere, -est
   frequency    Int?         @map("frequency")
   isPlural     Boolean      @default(false)
+  source       SourceType   @map("source_of_word_details")
 
   word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
 
@@ -309,12 +312,11 @@ model Definition {
   id                  Int          @id @default(autoincrement())
   definition          String       @db.Text
   imageId             Int?         @map("image_id")
-  source              SourceType
+  source              SourceType   @map("source_of_definition")
   languageCode        LanguageCode @map("language_code")
   subjectStatusLabels String?      @map("subject_status_labels") @db.VarChar(255)
   generalLabels       String?      @map("general_labels") @db.VarChar(255)
   grammaticalNote     String?      @map("grammatical_note") @db.VarChar(255)
-  gender              Gender?      @map("gender")
   usageNote           String?      @map("usage_note") @db.VarChar(255)
   isInShortDef        Boolean      @default(false) @map("is_in_short_def")
   createdAt           DateTime     @default(now()) @map("created_at")
@@ -860,6 +862,19 @@ model WordDefinition {
   @@map("word_definitions")
 }
 
+//*
+//* Relationship section
+//* 1. WordToWordRelationship  word ---> word
+//* 2. WordDetailsRelationship  wordDetails ---> wordDetails
+//* 3. DefinitionToWordRelationship  definition ---> word
+//* 4. DefinitionRelationship  definition ---> definition
+//* 5. WordDetailsAudio  wordDetails ---> audio
+//* 6. DefinitionAudio  definition ---> audio
+//* 7. ExampleAudio  example ---> audio
+//* 8. DefinitionTranslation  definition ---> translation
+//* 9. ExampleTranslation  example ---> translation
+//*
+//*
 model WordToWordRelationship {
   fromWordId  Int              @map("from_word_id")
   toWordId    Int              @map("to_word_id")

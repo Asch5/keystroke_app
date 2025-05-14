@@ -3,6 +3,7 @@ import {
   RelationshipType,
   LanguageCode,
   SourceType,
+  Gender,
 } from '@prisma/client';
 
 //! Type definitions for dictionary operations
@@ -91,15 +92,23 @@ export interface DefinitionExampleOfProcessWordData {
   grammaticalNote?: string | null;
 }
 
+export type RelationshipFromTo =
+  | 'mainWord'
+  | 'subWord'
+  | 'mainWordDetails'
+  | 'subWordDetails';
+
 export interface ProcessedWordData {
   word: {
     word: string;
     languageCode: string;
+    source: SourceType;
+    partOfSpeech: PartOfSpeech | null;
     phonetic: string | null;
-    audio: string | null;
+    variant?: string | null;
+    gender?: Gender | null;
     audioFiles?: string[] | null;
     etymology: string | null;
-    phrasalVerbAnnotations?: string[] | null;
     sourceEntityId?: string | null;
     relatedWords: {
       type: RelationshipType;
@@ -108,11 +117,8 @@ export interface ProcessedWordData {
   };
   definitions: {
     id?: number | null;
-    partOfSpeech: PartOfSpeech;
     source: string;
     languageCode: string;
-    imageId?: number | null;
-    isPlural: boolean;
     definition: string;
     subjectStatusLabels?: string | null;
     generalLabels?: string | null;

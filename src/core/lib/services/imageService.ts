@@ -286,6 +286,11 @@ export class ImageService {
         where: { id: definitionId },
         include: {
           image: true, // Include the image if it exists
+          wordDetails: {
+            include: {
+              wordDetails: true,
+            },
+          },
         },
       });
 
@@ -311,12 +316,19 @@ export class ImageService {
         LogLevel.INFO,
       );
 
+      // Get the first associated WordDetails (if any)
+      const wordDetailsEntry = definition.wordDetails?.[0];
+      const partOfSpeech = wordDetailsEntry?.wordDetails?.partOfSpeech;
+      const isPlural = wordDetailsEntry?.wordDetails?.isPlural || false;
+
       // Create a unique search query for each definition by adding a fragment of the definition text
       // This ensures different definitions get different images
       const combinedDefinition = {
         ...definition,
         word: word,
-      };
+        partOfSpeech: partOfSpeech || 'undefined',
+        isPlural: isPlural,
+      } as unknown as Definition;
 
       const uniqueSearchQuery =
         this.createSearchQueryFromDefinition(combinedDefinition);
@@ -513,7 +525,7 @@ export class ImageService {
 
     // Extract key concepts from definition
     const keyWords = this.extractKeywords(normalizeText(definition.definition));
-    const partOfSpeech = definition.partOfSpeech;
+    const partOfSpeech = definition.partOfSpeech || 'undefined'; // Use the backward compatibility field
 
     // Create base query based on part of speech
     const query = `${word} ${partOfSpeech} ${keyWords.join(' ')}`;
@@ -534,30 +546,6 @@ export class ImageService {
         normalizedQuery,
       },
     );
-    // switch (partOfSpeech) {
-    //   case PartOfSpeech.noun:
-    //     query = this.createNounSearchQuery(word, keyWords, definition, labels);
-
-    //     break;
-    //   case PartOfSpeech.verb:
-    //     query = this.createVerbSearchQuery(word, keyWords);
-
-    //     break;
-    //   case PartOfSpeech.adjective:
-    //     query = this.createAdjectiveSearchQuery(word, keyWords);
-
-    //     break;
-    //   case PartOfSpeech.phrasal_verb:
-    //     query = this.createPhrasalVerbSearchQuery(word, keyWords);
-
-    //     break;
-    //   case PartOfSpeech.phrase:
-    //     query = this.createPhraseSearchQuery(word, keyWords);
-
-    //     break;
-    //   default:
-    //     query = this.createDefaultSearchQuery(word, keyWords);
-    // }
 
     // Clean up and normalize the query
     return normalizedQuery;
@@ -681,7 +669,6 @@ export class ImageService {
       return `${word} ${contextWords.join(' ')} symbol metaphor concept`;
     } else {
       // For concrete nouns, focus on physical objects
-
       return `${word} ${contextWords.join(' ')}`;
     }
   }

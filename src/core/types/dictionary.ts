@@ -103,6 +103,9 @@ export interface ProcessedWordData {
     word: string;
     languageCode: string;
     source: SourceType;
+    isHighlighted: boolean;
+    frequencyGeneral: number | null;
+    frequency: number | null;
     partOfSpeech: PartOfSpeech | null;
     phonetic: string | null;
     variant?: string | null;

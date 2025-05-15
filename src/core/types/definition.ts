@@ -1,18 +1,22 @@
-import { PartOfSpeech, SourceType } from '@prisma/client';
+import { PartOfSpeech, SourceType, LanguageCode } from '@prisma/client';
+import { WordDefinition } from '@/core/types/wordDefinition';
 
 export interface Definition {
   id: number;
-  word: string;
+  word?: string; // Not in DB schema, but used in some methods
   definition: string;
-  partOfSpeech: PartOfSpeech;
-  generalLabels?: string | null;
+  imageId: number | null;
+  source: SourceType;
+  languageCode: LanguageCode;
   subjectStatusLabels?: string | null;
+  generalLabels?: string | null;
   grammaticalNote?: string | null;
   usageNote?: string | null;
+  isInShortDef: boolean;
   createdAt: Date;
   updatedAt: Date;
-  source: SourceType;
-  isPlural: boolean;
-  imageId: number | null;
-  isInShortDef: boolean;
+  // Relations
+  wordDetails?: WordDefinition[];
+  partOfSpeech?: PartOfSpeech; // For backward compatibility
+  isPlural?: boolean; // For backward compatibility
 }

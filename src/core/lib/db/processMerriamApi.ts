@@ -146,6 +146,7 @@ export interface MerriamWebsterResponse {
   meta: {
     id: string;
     uuid: string;
+    highlight: string;
     src: string;
     section: string;
     target: {
@@ -310,7 +311,7 @@ export async function processAndSaveWord(
   const variant = apiResponse.meta.id.split(':')[1] || '';
   const source = mapSourceType(apiResponse.meta.src);
   const sourceEntityId = apiResponse.meta.id;
-
+  const isHighlighted = apiResponse.meta.highlight === 'yes';
   // Get part of speech from API response, ensuring it's properly mapped to our enum
   const partOfSpeech = apiResponse.fl
     ? mapPartOfSpeech(apiResponse.fl)
@@ -361,6 +362,9 @@ export async function processAndSaveWord(
     word: {
       word: mainWordText,
       variant: variant,
+      isHighlighted: isHighlighted,
+      frequencyGeneral: null,
+      frequency: null,
       languageCode: language,
       source: source,
       partOfSpeech: partOfSpeech,
@@ -1835,6 +1839,7 @@ sourceWordText processing
             sourceEntityId: processedData.word.sourceEntityId || null,
             partOfSpeech: partOfSpeech, // Make sure to pass the part of speech
             variant: processedData.word.variant || '',
+            isHighlighted: isHighlighted,
           },
         );
 
@@ -1857,9 +1862,25 @@ sourceWordText processing
         //! 2. Process and save definitions
         for (const definitionData of processedData.definitions) {
           try {
-            // Create the definition - using findFirst followed by create to avoid type issues
-            const existingDefinition = await tx.definition.findFirst({
+            // Robustly upsert the definition with proper handling of unique constraints
+            const definition: Definition = await tx.definition.upsert({
               where: {
+                // Use unique constraint fields
+                definition_languageCode_source: {
+                  definition: definitionData.definition,
+                  languageCode: definitionData.languageCode as LanguageCode,
+                  source: definitionData.source as SourceType,
+                },
+              },
+              update: {
+                // Update any fields that might have changed
+                subjectStatusLabels: definitionData.subjectStatusLabels || null,
+                generalLabels: definitionData.generalLabels || null,
+                grammaticalNote: definitionData.grammaticalNote || null,
+                usageNote: definitionData.usageNote || null,
+                isInShortDef: definitionData.isInShortDef || false,
+              },
+              create: {
                 definition: definitionData.definition,
                 source: definitionData.source as SourceType,
                 languageCode: definitionData.languageCode as LanguageCode,
@@ -1871,32 +1892,13 @@ sourceWordText processing
               },
             });
 
-            // If definition doesn't exist, create it
-            let definition: Definition | null = existingDefinition;
-            if (!definition) {
-              definition = await tx.definition.create({
-                data: {
-                  definition: definitionData.definition,
-                  source: definitionData.source as SourceType,
-                  languageCode: definitionData.languageCode as LanguageCode,
-                  subjectStatusLabels:
-                    definitionData.subjectStatusLabels || null,
-                  generalLabels: definitionData.generalLabels || null,
-                  grammaticalNote: definitionData.grammaticalNote || null,
-                  usageNote: definitionData.usageNote || null,
-                  isInShortDef: definitionData.isInShortDef || false,
-                },
-              });
-
-              processedData.definitions = processedData.definitions.map(
-                (def) => {
-                  if (def.definition === definitionData.definition) {
-                    return { ...def, id: definition?.id || null };
-                  }
-                  return def;
-                },
-              );
-            }
+            // Update processed data with definition ID
+            processedData.definitions = processedData.definitions.map((def) => {
+              if (def.definition === definitionData.definition) {
+                return { ...def, id: definition.id };
+              }
+              return def;
+            });
 
             //! Link definition to word details
             await tx.wordDefinition.upsert({
@@ -2031,9 +2033,25 @@ sourceWordText processing
 
           //! Process definitions for subword
           for (const defData of subWord.definitions) {
-            // Find or create definition using findFirst + create approach
-            const existingSubDef = await tx.definition.findFirst({
+            // Robustly upsert subword definition with proper handling of unique constraints
+            const subWordDef = await tx.definition.upsert({
               where: {
+                // Use unique constraint fields
+                definition_languageCode_source: {
+                  definition: defData.definition,
+                  languageCode: defData.languageCode as LanguageCode,
+                  source: defData.source as SourceType,
+                },
+              },
+              update: {
+                // Update any fields that might have changed
+                subjectStatusLabels: defData.subjectStatusLabels || null,
+                generalLabels: defData.generalLabels || null,
+                grammaticalNote: defData.grammaticalNote || null,
+                usageNote: defData.usageNote || null,
+                isInShortDef: defData.isInShortDef || false,
+              },
+              create: {
                 definition: defData.definition,
                 source: defData.source as SourceType,
                 languageCode: defData.languageCode as LanguageCode,
@@ -2045,29 +2063,13 @@ sourceWordText processing
               },
             });
 
-            let subWordDef: Definition | null = existingSubDef;
-            if (!subWordDef) {
-              // Create a new definition if it doesn't exist
-              subWordDef = await tx.definition.create({
-                data: {
-                  definition: defData.definition,
-                  source: defData.source as SourceType,
-                  languageCode: defData.languageCode as LanguageCode,
-                  subjectStatusLabels: defData.subjectStatusLabels || null,
-                  generalLabels: defData.generalLabels || null,
-                  grammaticalNote: defData.grammaticalNote || null,
-                  usageNote: defData.usageNote || null,
-                  isInShortDef: defData.isInShortDef || false,
-                },
-              });
-
-              subWord.definitions = subWord.definitions.map((def) => {
-                if (def.definition === defData.definition) {
-                  return { ...def, id: subWordDef?.id || null };
-                }
-                return def;
-              });
-            }
+            // Update subword definitions with the returned ID
+            subWord.definitions = subWord.definitions.map((def) => {
+              if (def.definition === defData.definition) {
+                return { ...def, id: subWordDef.id };
+              }
+              return def;
+            });
 
             // Create WordDetails for the subword based on part of speech
             // Prioritize the subword's overall partOfSpeech if available
@@ -2927,9 +2929,16 @@ async function processAudioForWord(
   isPrimary: boolean = false,
 ): Promise<void> {
   for (const [index, audioUrl] of audioFiles.entries()) {
-    // Create the audio record
-    const audio = await tx.audio.create({
-      data: {
+    // Use upsert instead of create to handle duplicate audio URLs
+    const audio = await tx.audio.upsert({
+      where: {
+        url_languageCode: {
+          url: audioUrl,
+          languageCode: LanguageCode.en,
+        },
+      },
+      update: {}, // No updates needed if it already exists
+      create: {
         url: audioUrl,
         source: SourceType.merriam_learners,
         languageCode: LanguageCode.en,
@@ -2937,8 +2946,17 @@ async function processAudioForWord(
     });
 
     // Link audio to word details
-    await tx.wordDetailsAudio.create({
-      data: {
+    await tx.wordDetailsAudio.upsert({
+      where: {
+        wordDetailsId_audioId: {
+          wordDetailsId,
+          audioId: audio.id,
+        },
+      },
+      update: {
+        isPrimary: isPrimary && index === 0, // Update primary status if it exists
+      },
+      create: {
         wordDetailsId,
         audioId: audio.id,
         isPrimary: isPrimary && index === 0, // Only first audio file is primary if isPrimary is true
@@ -2962,6 +2980,7 @@ async function upsertWord(
     sourceEntityId?: string | null;
     partOfSpeech?: PartOfSpeech | null; // This can be PartOfSpeech, null, or undefined if not in options
     variant?: string;
+    isHighlighted?: boolean;
   },
 ): Promise<Word> {
   // Create word record
@@ -2976,6 +2995,8 @@ async function upsertWord(
       etymology: options?.etymology ?? null,
       sourceEntityId: options?.sourceEntityId ?? null,
       updatedAt: new Date(),
+      isHighlighted: options?.isHighlighted ?? false,
+      phoneticGeneral: options?.phonetic ?? null,
     },
     create: {
       word: wordText,
@@ -2983,6 +3004,7 @@ async function upsertWord(
       languageCode,
       etymology: options?.etymology ?? null,
       sourceEntityId: options?.sourceEntityId ?? null,
+      isHighlighted: options?.isHighlighted ?? false,
     },
   });
 

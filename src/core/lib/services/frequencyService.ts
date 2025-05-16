@@ -1,353 +1,190 @@
-'use server';
-
-import { prisma } from '@/core/lib/prisma';
 import { LanguageCode, PartOfSpeech } from '@prisma/client';
-
-type PartOfSpeechDetails = {
-  orderIndexPartOfspeech: number;
-  freauencyGeneral: number;
-};
-type PartOfSpeechMap = {
-  [key in PartOfSpeech]?: PartOfSpeechDetails;
-};
-
-type FrequencyWord = {
-  word: string;
-  orderIndexGeneralWord: number;
-  freauencyGeneral?: number | null;
-  isPartOfSpeech: boolean;
-  partOfSpeech?: PartOfSpeechMap;
-};
-
-// Import result type
-type ImportResult = {
-  added: number;
-  updated: number;
-  skipped: number;
-  errors: string[];
-  total: number;
-  progress: number;
-};
+import { FrequencyRequest, FrequencyResponse } from '@/core/types/dictionary';
+import { LogLevel } from '../utils/logUtils';
+import { serverLog } from '../utils/logUtils';
 
 /**
- * Server action to import words from a JSON structure like combinedArrayWordsWithFrwquency
- * @param jsonData Array of FrequencyWord objects
- * @param language Language code
- * @returns Results of the import operation
+ * Fetches frequency data for a single word
+ * @param word The word to fetch frequency for
+ * @param languageCode The language code of the word
+ * @returns FrequencyResponse data or null if request failed
  */
-export async function importFrequencyJson(
-  jsonData: FrequencyWord[],
-  language: LanguageCode = LanguageCode.en,
-): Promise<ImportResult> {
-  const result: ImportResult = {
-    added: 0,
-    updated: 0,
-    skipped: 0,
-    errors: [],
-    total: jsonData.length,
-    progress: 0,
-  };
-
+export async function fetchWordFrequency(
+  word: string,
+  languageCode: LanguageCode,
+): Promise<FrequencyResponse | null> {
   try {
-    if (!jsonData || jsonData.length === 0) {
-      return result;
-    }
-    console.log('jsonData', jsonData);
+    const request: FrequencyRequest = {
+      word,
+      languageCode,
+    };
 
-    // Process each frequency word
-    for (let i = 0; i < jsonData.length; i++) {
-      const frequencyWord = jsonData[i];
-      if (!frequencyWord || !frequencyWord.word) {
-        result.skipped++;
-        continue;
-      }
-
-      try {
-        // Check if word already exists with explicit field selection
-        let wordRecord = await prisma.word.findFirst({
-          where: {
-            word: frequencyWord.word,
-            languageCode: language,
-          },
-          select: {
-            id: true,
-            word: true,
-            languageCode: true,
-          },
-        });
-
-        // If word doesn't exist, create it
-        if (!wordRecord) {
-          try {
-            wordRecord = await prisma.word.create({
-              data: {
-                word: frequencyWord.word,
-                languageCode: language,
-                additionalInfo: {},
-              },
-              select: {
-                id: true,
-                word: true,
-                languageCode: true,
-              },
-            });
-            result.added++;
-          } catch (createError) {
-            console.error(
-              `Error creating word '${frequencyWord.word}':`,
-              createError,
-            );
-            throw new Error(
-              `Failed to create word: ${createError instanceof Error ? createError.message : String(createError)}`,
-            );
-          }
-        } else {
-          result.updated++;
-        }
-
-        // Ensure wordRecord is defined before proceeding
-        if (!wordRecord) {
-          throw new Error(
-            `Failed to create or find word: ${frequencyWord.word}`,
-          );
-        }
-
-        // Always add an entry with PartOfSpeech.undefined using orderIndexGeneralWord
-        await prisma.wordFrequencyData.upsert({
-          where: {
-            orderIndex_language_wordId_partOfSpeech: {
-              orderIndex: frequencyWord.orderIndexGeneralWord,
-              language: language,
-              wordId: wordRecord.id,
-              partOfSpeech: PartOfSpeech.undefined,
-            },
-          },
-          create: {
-            wordId: wordRecord.id,
-            orderIndex: frequencyWord.orderIndexGeneralWord,
-            partOfSpeech: PartOfSpeech.undefined,
-            frequency: frequencyWord.freauencyGeneral || 0,
-            language: language,
-          },
-          update: {
-            frequency: frequencyWord.freauencyGeneral || 0,
-          },
-        });
-
-        // Process part of speech data if available
-        if (frequencyWord.isPartOfSpeech && frequencyWord.partOfSpeech) {
-          for (const [pos, details] of Object.entries(
-            frequencyWord.partOfSpeech,
-          )) {
-            const partOfSpeech = pos as PartOfSpeech;
-
-            await prisma.wordFrequencyData.upsert({
-              where: {
-                orderIndex_language_wordId_partOfSpeech: {
-                  orderIndex: details.orderIndexPartOfspeech,
-                  language: language,
-                  wordId: wordRecord.id,
-                  partOfSpeech: partOfSpeech,
-                },
-              },
-              create: {
-                wordId: wordRecord.id,
-                orderIndex: details.orderIndexPartOfspeech,
-                partOfSpeech: partOfSpeech,
-                frequency: details.freauencyGeneral,
-                language: language,
-              },
-              update: {
-                frequency: details.freauencyGeneral,
-              },
-            });
-          }
-        }
-      } catch (error) {
-        console.error(`Error processing word '${frequencyWord.word}':`, error);
-        result.errors.push(
-          `Failed to process word '${frequencyWord.word}': ${error instanceof Error ? error.message : String(error)}`,
-        );
-        result.skipped++;
-      }
-
-      // Update progress
-      result.progress = (i + 1) / jsonData.length;
-    }
-
-    return result;
-  } catch (error) {
-    console.error('Error importing frequency JSON:', error);
-    throw new Error(
-      `Failed to import frequency JSON: ${error instanceof Error ? error.message : String(error)}`,
-    );
-  }
-}
-
-/**
- * Server action to import words and add them to the WordFrequencyData table
- * @param words Array of words to import
- * @param language Language code
- * @returns Results of the import operation
- */
-export async function importWordFrequencies(
-  words: string[],
-  language: LanguageCode = LanguageCode.en,
-): Promise<ImportResult> {
-  const result: ImportResult = {
-    added: 0,
-    updated: 0,
-    skipped: 0,
-    errors: [],
-    total: words.length,
-    progress: 0,
-  };
-
-  try {
-    if (!words || words.length === 0) {
-      return result;
-    }
-
-    // Process each word
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i]?.trim();
-      if (!word) {
-        result.skipped++;
-        continue;
-      }
-
-      try {
-        // Check if word already exists
-        let wordRecord = await prisma.word.findUnique({
-          where: {
-            word_languageCode: {
-              word: word,
-              languageCode: language,
-            },
-          },
-        });
-
-        // If word doesn't exist, create it
-        if (!wordRecord) {
-          try {
-            wordRecord = await prisma.word.create({
-              data: {
-                word: word,
-                languageCode: language,
-                additionalInfo: {},
-              },
-            });
-            result.added++;
-          } catch (createError) {
-            console.error(`Error creating word '${word}':`, createError);
-            throw new Error(
-              `Failed to create word: ${createError instanceof Error ? createError.message : String(createError)}`,
-            );
-          }
-        } else {
-          result.updated++;
-        }
-
-        // Ensure wordRecord is defined before proceeding
-        if (!wordRecord) {
-          throw new Error(`Failed to create or find word: ${word}`);
-        }
-
-        // Check if frequency data already exists
-        const existingFrequency = await prisma.wordFrequencyData.findFirst({
-          where: {
-            wordId: wordRecord.id,
-            partOfSpeech: PartOfSpeech.undefined,
-            language: language,
-          },
-        });
-
-        if (!existingFrequency) {
-          // Create new frequency data
-          await prisma.wordFrequencyData.create({
-            data: {
-              wordId: wordRecord.id,
-              orderIndex: i + 1, // Use the index in the list as order
-              partOfSpeech: PartOfSpeech.undefined,
-              frequency: 1, // Default frequency value
-              language: language,
-            },
-          });
-        } else {
-          // Update existing frequency data
-          await prisma.wordFrequencyData.update({
-            where: {
-              id: existingFrequency.id,
-            },
-            data: {
-              orderIndex: i + 1, // Update the index
-            },
-          });
-        }
-      } catch (error) {
-        console.error(`Error processing word '${word}':`, error);
-        result.errors.push(
-          `Failed to process word '${word}': ${error instanceof Error ? error.message : String(error)}`,
-        );
-        result.skipped++;
-      }
-
-      // Update progress
-      result.progress = (i + 1) / words.length;
-    }
-
-    return result;
-  } catch (error) {
-    console.error('Error importing word frequencies:', error);
-    throw new Error(
-      `Failed to import word frequencies: ${error instanceof Error ? error.message : String(error)}`,
-    );
-  }
-}
-
-/**
- * Server action to get word frequency data
- * @param language Language code
- * @param limit Maximum number of records to retrieve
- * @returns Array of word frequency records
- */
-export async function getWordFrequencyData(
-  language: LanguageCode = LanguageCode.en,
-  limit: number = 100,
-) {
-  try {
-    // First get the frequency data
-    const frequencyData = await prisma.wordFrequencyData.findMany({
-      where: {
-        language,
+    const response = await fetch('http://192.168.8.231:5000/frequency', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      orderBy: {
-        orderIndex: 'asc',
-      },
-      take: limit,
+      body: JSON.stringify([request]), // API expects an array of requests
     });
 
-    // For each frequency record, get the word data
-    const enrichedData = await Promise.all(
-      frequencyData.map(async (record) => {
-        const word = await prisma.word.findUnique({
-          where: {
-            id: record.wordId,
-          },
-        });
+    if (!response.ok) {
+      console.error(
+        `Failed to fetch frequency for word ${word}: ${response.statusText}`,
+      );
+      return null;
+    }
 
-        return {
-          frequency: record,
-          word: word || null,
-        };
-      }),
+    const data = await response.json();
+    serverLog(
+      `Frequency data --- from Frequency Service first step: ${JSON.stringify(data)}`,
+      LogLevel.INFO,
     );
 
-    return enrichedData;
+    // API returns an array of responses, we expect the first item
+    if (Array.isArray(data) && data.length > 0) {
+      const frequencyItem = data[0] as FrequencyResponse;
+
+      // Only treat as error if 'error' property exists AND is not null
+      if (
+        frequencyItem &&
+        'error' in frequencyItem &&
+        frequencyItem['error'] !== null
+      ) {
+        serverLog(
+          `Error fetching frequency for word ---- from Frequency Service: ${word}: ${frequencyItem['error']}`,
+          LogLevel.ERROR,
+        );
+        return null;
+      }
+      serverLog(
+        `Frequency frequencyItem ---- from Frequency Service: ${JSON.stringify(frequencyItem)}`,
+        LogLevel.INFO,
+      );
+      return frequencyItem;
+    }
+
+    return null;
   } catch (error) {
-    console.error('Error fetching word frequency data:', error);
-    throw new Error(
-      `Failed to fetch word frequency data: ${error instanceof Error ? error.message : String(error)}`,
-    );
+    console.error(`Exception fetching frequency for word ${word}:`, error);
+    return null;
   }
+}
+
+/**
+ * Fetches frequency data for multiple words in batch
+ * @param requests Array of word and language code pairs
+ * @returns Array of FrequencyResponse objects
+ */
+export async function fetchBatchFrequencies(
+  requests: FrequencyRequest[],
+): Promise<(FrequencyResponse | null)[]> {
+  if (requests.length === 0) {
+    return [];
+  }
+
+  try {
+    const response = await fetch('http://localhost:5555/frequency', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requests),
+    });
+
+    if (!response.ok) {
+      console.error(
+        `Failed to fetch batch frequencies: ${response.statusText}`,
+      );
+      return requests.map(() => null);
+    }
+
+    const data = await response.json();
+
+    if (Array.isArray(data)) {
+      return data.map((item, index) => {
+        if ('error' in item) {
+          console.error(
+            `Error fetching frequency for word ${requests[index]?.word}: ${item.error}`,
+          );
+          return null;
+        }
+        return item as FrequencyResponse;
+      });
+    }
+
+    return requests.map(() => null);
+  } catch (error) {
+    console.error(`Exception fetching batch frequencies:`, error);
+    return requests.map(() => null);
+  }
+}
+
+/**
+ * Gets the general frequency for a word
+ * @param frequencyData The frequency response data
+ * @returns The general frequency value or null
+ */
+export function getGeneralFrequency(
+  frequencyData: FrequencyResponse | null,
+): number | null {
+  if (!frequencyData) return null;
+
+  // Return the general frequency if available
+  return frequencyData.orderIndexGeneralWord;
+}
+
+/**
+ * Gets the frequency for a specific part of speech
+ * @param frequencyData The frequency response data
+ * @param partOfSpeech The part of speech to get frequency for
+ * @returns The frequency value for the specified part of speech or null
+ */
+export function getPartOfSpeechFrequency(
+  frequencyData: FrequencyResponse | null,
+  partOfSpeech: PartOfSpeech | null,
+): number | null {
+  if (!frequencyData || !partOfSpeech || !frequencyData.isPartOfSpeech) {
+    return null;
+  }
+
+  // If the part of speech exists in the data, return its frequency
+  const posData = frequencyData.partOfSpeech?.[partOfSpeech];
+  return posData ? posData.orderIndexPartOfspeech : null;
+}
+
+/**
+ * Gets the highest frequency across all parts of speech
+ * @param frequencyData The frequency response data
+ * @returns The highest frequency value or null
+ */
+export function getHighestPartOfSpeechFrequency(
+  frequencyData: FrequencyResponse | null,
+): number | null {
+  if (!frequencyData || !frequencyData.isPartOfSpeech) {
+    return null;
+  }
+
+  let highestFrequency: number | null = null;
+
+  // Find the highest frequency across all parts of speech
+  if (frequencyData.partOfSpeech) {
+    // Use type-safe approach to iterate through the object
+    Object.entries(frequencyData.partOfSpeech).forEach(([, posData]) => {
+      // Add type assertion to posData
+      const typedPosData = posData as {
+        orderIndexPartOfspeech: number;
+        frequencyGeneral: number;
+      };
+      if (typedPosData && 'frequencyGeneral' in typedPosData) {
+        if (
+          highestFrequency === null ||
+          typedPosData.frequencyGeneral > highestFrequency
+        ) {
+          highestFrequency = typedPosData.frequencyGeneral;
+        }
+      }
+    });
+  }
+
+  return highestFrequency;
 }

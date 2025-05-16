@@ -179,10 +179,13 @@ export interface FrequencyResponse {
   orderIndexGeneralWord: number;
   frequencyGeneral: number | null;
   isPartOfSpeech: boolean;
-  partOfSpeech: {
-    [key in PartOfSpeech]?: {
-      orderIndexPartOfspeech: number;
-      frequencyGeneral: number;
-    };
-  };
+  partOfSpeech:
+    | {
+        [key in PartOfSpeech]?: {
+          orderIndexPartOfspeech: number;
+          frequencyGeneral: number;
+        };
+      }
+    | null;
+  error?: string;
 }

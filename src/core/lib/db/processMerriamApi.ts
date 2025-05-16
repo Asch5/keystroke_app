@@ -21,6 +21,11 @@ import {
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 import { LogLevel, serverLog } from '@/core/lib/utils/logUtils';
 import { ImageService } from '@/core/lib/services/imageService';
+import {
+  fetchWordFrequency,
+  getGeneralFrequency,
+  getPartOfSpeechFrequency,
+} from '../services/frequencyService';
 //import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**Definitions:
@@ -355,6 +360,7 @@ export async function processAndSaveWord(
     });
   }
 
+  // Frequency data will be fetched by upsertWord and upsertWordDetails directly;
   // Process etymology data from the API response
   const etymology = processEtymology(apiResponse.et);
 
@@ -363,8 +369,8 @@ export async function processAndSaveWord(
       word: mainWordText,
       variant: variant,
       isHighlighted: isHighlighted,
-      frequencyGeneral: null,
-      frequency: null,
+      frequencyGeneral: null, // Will be fetched by upsertWord
+      frequency: null, // Will be fetched by upsertWordDetails
       languageCode: language,
       source: source,
       partOfSpeech: partOfSpeech,
@@ -505,22 +511,22 @@ export async function processAndSaveWord(
         let relationshipType: RelationshipType | null = null;
         //VERB
         if (relationship.includes('past tense and past participle')) {
-          definitionText = `Past tense and past participle of "${baseWord}"`;
+          definitionText = `Past tense and past participle of {it}${baseWord}{/it}`;
           relationshipType = RelationshipType.past_tense_en; // Primary relationship type
         } else if (relationship.includes('past participle')) {
-          definitionText = `Past participle of "${baseWord}"`;
+          definitionText = `Past participle of {it}${baseWord}{/it}`;
           relationshipType = RelationshipType.past_participle_en;
         } else if (relationship.includes('past tense')) {
-          definitionText = `Past tense of "${baseWord}"`;
+          definitionText = `Past tense of {it}${baseWord}{/it}`;
           relationshipType = RelationshipType.past_tense_en;
         } else if (relationship.includes('present participle')) {
-          definitionText = `Present participle of "${baseWord}"`;
+          definitionText = `Present participle of {it}${baseWord}{/it}`;
           relationshipType = RelationshipType.present_participle_en;
         } else if (relationship.includes('third person singular')) {
-          definitionText = `Third person singular of "${baseWord}"`;
+          definitionText = `Third person singular of {it}${baseWord}{/it}`;
           relationshipType = RelationshipType.third_person_en;
         } else if (relationship.includes('less common spelling of')) {
-          definitionText = `Less common spelling of "${baseWord}"`;
+          definitionText = `Less common spelling of {it}${baseWord}{/it}`;
           relationshipType = RelationshipType.alternative_spelling;
         }
 
@@ -612,66 +618,6 @@ export async function processAndSaveWord(
             sourceData: [SOURCE_OF_WORD.CXS],
           });
         }
-
-        // if (relationship.includes('less common spelling')) {
-        //   definitionText = `Less common spelling of "${baseWord}"`;
-        //   relationshipType = RelationshipType.alternative_spelling;
-
-        //   // Set etymology
-        //   processedData.word.etymology = definitionText;
-
-        //   // Extract audio information from the API response
-        //   const audioUrl = apiResponse.hwi.prs?.[0]?.sound?.audio
-        //     ? `https://media.merriam-webster.com/audio/prons/en/us/mp3/${apiResponse.hwi.prs[0].sound.audio.charAt(0)}/${apiResponse.hwi.prs[0].sound.audio}.mp3`
-        //     : null;
-
-        //   // Create an array of audio files
-        //   const audioFiles: string[] = [];
-        //   if (audioUrl) {
-        //     audioFiles.push(audioUrl);
-        //   }
-
-        //   // Process all pronunciations if there are multiple
-        //   if (apiResponse.hwi.prs && apiResponse.hwi.prs.length > 0) {
-        //     apiResponse.hwi.prs.forEach((pronunciation, index) => {
-        //       if (index === 0) return; // Skip the first one as it's already processed
-        //       if (pronunciation.sound?.audio) {
-        //         const additionalAudioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
-        //         audioFiles.push(additionalAudioUrl);
-        //       }
-        //     });
-        //   }
-
-        //   // Extract phonetic spelling if available
-        //   const phonetic =
-        //     apiResponse.hwi.prs?.[0]?.ipa ||
-        //     apiResponse.hwi.prs?.[0]?.mw ||
-        //     null;
-
-        //   // Add to subWordsArray to establish relationship
-        //   subWordsArray.push({
-        //     word: baseWord,
-        //     languageCode: language,
-        //     phonetic: phonetic,
-        //     audio: audioUrl,
-        //     audioFiles: audioFiles.length > 0 ? audioFiles : null,
-        //     etymology: null,
-        //     definitions: [],
-        //     relationship: [
-        //       {
-        //         fromWord: 'sub' ,
-        //         toWord: 'main' ,
-        //         type: relationshipType,
-        //       },
-        //       {
-        //         fromWord: 'main' ,
-        //         toWord: 'sub' ,
-        //         type: RelationshipType.related,
-        //       },
-        //     ],
-        //     sourceData: [SOURCE_OF_WORD.CXS],
-        //   });
-        // }
       }
     }
   }
@@ -720,28 +666,28 @@ export async function processAndSaveWord(
       // Check for third person singular (ends with 's' or 'es')
       if (cleanedForm.endsWith('s') || cleanedForm.endsWith('es')) {
         verbFormType = RelationshipType.third_person_en;
-        definition = `Third person singular form of the verb "${mainWordText}"`;
+        definition = `Third person singular form of the verb {it}${mainWordText}{/it}`;
       }
       // Check for present participle (ends with 'ing')
       else if (cleanedForm.endsWith('ing')) {
         verbFormType = RelationshipType.present_participle_en;
-        definition = `Present participle form of the verb "${mainWordText}"`;
+        definition = `Present participle form of the verb {it}${mainWordText}{/it}`;
       }
       // Check for past tense and past participle
       else if (cleanedForm.endsWith('ed')) {
         // For regular verbs, past tense and past participle are the same
         verbFormType = RelationshipType.past_tense_en;
-        definition = `Past tense and past participle form of the verb "${mainWordText}"`;
+        definition = `Past tense and past participle form of the verb {it}${mainWordText}{/it}`;
       }
       // Handle irregular past tense forms (if not caught by above rules)
       else if (inflection.il === 'past' || inflection.il === 'past tense') {
         verbFormType = RelationshipType.past_tense_en;
-        definition = `Past tense form of the verb "${mainWordText}"`;
+        definition = `Past tense form of the verb {it}${mainWordText}{/it}`;
       }
       // Handle irregular past participle forms
       else if (inflection.il === 'past participle') {
         verbFormType = RelationshipType.past_participle_en;
-        definition = `Past participle form of the verb "${mainWordText}"`;
+        definition = `Past participle form of the verb {it}${mainWordText}{/it}`;
       }
 
       subWordsArray.push({
@@ -825,7 +771,7 @@ export async function processAndSaveWord(
       let etymologySubWord: string | null = null;
       if (inflection.il === 'plural') {
         pluralForm = RelationshipType.plural_en;
-        etymologySubWord = `Plural form of "${mainWordText}"`;
+        etymologySubWord = `Plural form of {it}${mainWordText}{/it}`;
       }
 
       subWordsArray.push({
@@ -1100,12 +1046,6 @@ export async function processAndSaveWord(
                                 type: RelationshipType.related,
                               },
                               {
-                                //!
-                                //!
-                                //! from CLEANDRP DETAILS realtionship must be estublished
-                                //!
-                                //!
-
                                 fromWord: cleanDrp as RelationshipFromTo,
                                 toWord: 'subWordDetails',
                                 type: RelationshipType.variant_form_phrasal_verb_en,
@@ -1384,7 +1324,7 @@ export async function processAndSaveWord(
           {
             source: source,
             languageCode: language,
-            definition: `Form of "${mainWordText}"`,
+            definition: `Form of {it}${mainWordText}{/it}`,
             subjectStatusLabels: null,
             generalLabels: null,
             grammaticalNote: uro.gram || null,
@@ -1427,7 +1367,7 @@ export async function processAndSaveWord(
             {
               source: source,
               languageCode: language,
-              definition: `${inflection.type === RelationshipType.plural_en ? 'Plural' : 'Inflected'} form of "${cleanUro}"`,
+              definition: `${inflection.type === RelationshipType.plural_en ? 'Plural' : 'Inflected'} form of {it}${cleanUro}{/it}`,
               subjectStatusLabels: null,
               generalLabels: null,
               grammaticalNote: inflection.category
@@ -1439,11 +1379,6 @@ export async function processAndSaveWord(
           ],
           relationship: [
             {
-              //!
-              //!
-              //! from CLEANURO DETAILS realtionship must be estublished
-              //!
-              //!
               fromWord: cleanUro as RelationshipFromTo,
               toWord: 'subWordDetails',
               type: inflection.type,
@@ -1638,44 +1573,6 @@ sourceWordText processing
     }
   }
 
-  //! Process stems from meta data
-  // if (apiResponse.meta.stems && apiResponse.meta.stems.length > 0) {
-  //   for (const stem of apiResponse.meta.stems) {
-  //     if (stem === mainWordText) continue;
-
-  //     const isMorphologicalStem = isMorphologicalVariation(mainWordText, stem);
-
-  //     const relationships = [];
-
-  //     // Add stem relationship if it's a morphological variation
-  //     if (isMorphologicalStem) {
-  //       relationships.push({
-  //         fromWord: 'main' ,
-  //         toWord: 'sub' ,
-  //         type: RelationshipType.stem,
-  //       });
-  //     }
-
-  //     // Always add related relationship
-  //       relationships.push({
-  //         fromWord: 'main' ,
-  //         toWord: 'sub' ,
-  //         type: RelationshipType.related,
-  //       });
-
-  //     const stemSubWord: SubWordData = {
-  //       word: stem,
-  //       languageCode: language,
-  //       source: source,
-  //       definitions: [],
-  //       relationship: relationships,
-  //       sourceData: [SOURCE_OF_WORD.STEM],
-  //     };
-
-  //     subWordsArray.push(stemSubWord);
-  //   }
-  // }
-
   try {
     // Initialize the services
 
@@ -1852,6 +1749,7 @@ sourceWordText processing
           false, // isPlural
           processedData.word.variant || '', // Pass the main word's variant from processedData
           processedData.word.phonetic, // Pass the main word's phonetic from processedData
+          processedData.word.frequency, // Pass the main word's frequencyGeneral from processedData
         );
         //postion 1
         serverLog(
@@ -2487,20 +2385,6 @@ function cleanupDefinitionText(text: unknown): string {
     .trim();
 }
 
-// function normalize(text: string): string {
-//   return text
-//     .replace(/\s*[:;—–-]\s*/g, ' ') // Convert all separators to spaces
-//     .replace(/\s*\.\s*Usage:\s*/g, ' ')
-//     .replace(/^\d+\)\s*/g, '')
-//     .replace(/^only\s+/i, '') // Remove "only" prefix
-//     .replace(/\s+/g, ' ')
-//     .replace(/\s*\.\s*$/, '')
-//     .replace(/[.,!?]/g, '') // Remove punctuation
-//     .replace(/["']/g, '') // Remove quotes
-//     .toLowerCase()
-//     .trim();
-// }
-
 function cleanupExampleText(text: unknown): string {
   if (typeof text !== 'string') {
     console.warn('Non-string example text encountered:', text);
@@ -2927,6 +2811,8 @@ async function processAudioForWord(
   wordDetailsId: number,
   audioFiles: string[],
   isPrimary: boolean = false,
+  languageCode: LanguageCode = LanguageCode.en,
+  source: SourceType = SourceType.merriam_learners,
 ): Promise<void> {
   for (const [index, audioUrl] of audioFiles.entries()) {
     // Use upsert instead of create to handle duplicate audio URLs
@@ -2934,14 +2820,14 @@ async function processAudioForWord(
       where: {
         url_languageCode: {
           url: audioUrl,
-          languageCode: LanguageCode.en,
+          languageCode: languageCode,
         },
       },
       update: {}, // No updates needed if it already exists
       create: {
         url: audioUrl,
-        source: SourceType.merriam_learners,
-        languageCode: LanguageCode.en,
+        source: source,
+        languageCode: languageCode,
       },
     });
 
@@ -2981,8 +2867,28 @@ async function upsertWord(
     partOfSpeech?: PartOfSpeech | null; // This can be PartOfSpeech, null, or undefined if not in options
     variant?: string;
     isHighlighted?: boolean;
+    frequencyGeneral?: number | null;
   },
 ): Promise<Word> {
+  // Fetch frequency data if not provided
+  let frequencyGeneral = options?.frequencyGeneral;
+  if (frequencyGeneral === undefined) {
+    try {
+      const frequencyData = await fetchWordFrequency(wordText, languageCode);
+      frequencyGeneral = getGeneralFrequency(frequencyData);
+      serverLog(
+        `Fetched frequency data in upsertWord for "${wordText}": ${frequencyGeneral}`,
+        LogLevel.INFO,
+      );
+    } catch (error) {
+      serverLog(
+        `Error fetching frequency data in upsertWord for "${wordText}": ${error}`,
+        LogLevel.ERROR,
+      );
+      frequencyGeneral = null;
+    }
+  }
+
   // Create word record
   const word = await tx.word.upsert({
     where: {
@@ -2997,6 +2903,7 @@ async function upsertWord(
       updatedAt: new Date(),
       isHighlighted: options?.isHighlighted ?? false,
       phoneticGeneral: options?.phonetic ?? null,
+      frequencyGeneral: frequencyGeneral ?? null,
     },
     create: {
       word: wordText,
@@ -3005,6 +2912,7 @@ async function upsertWord(
       etymology: options?.etymology ?? null,
       sourceEntityId: options?.sourceEntityId ?? null,
       isHighlighted: options?.isHighlighted ?? false,
+      frequencyGeneral: frequencyGeneral ?? null,
     },
   });
 
@@ -3028,7 +2936,14 @@ async function upsertWord(
 
   // Process audio files if present
   if (options?.audioFiles?.length) {
-    await processAudioForWord(tx, wordDetails.id, options.audioFiles, true);
+    await processAudioForWord(
+      tx,
+      wordDetails.id,
+      options.audioFiles,
+      true,
+      languageCode,
+      source,
+    );
   }
 
   return word;
@@ -3046,40 +2961,42 @@ async function upsertWordDetails(
   isPlural: boolean = false,
   variant: string = '',
   phonetic: string | null = null,
+  frequency: number | null = null,
 ): Promise<{ id: number; wordId: number; partOfSpeech: PartOfSpeech }> {
   // Ensure we have a valid part of speech, using the API's part of speech if available
   const pos: PartOfSpeech = partOfSpeech || PartOfSpeech.undefined;
-  // if (partOfSpeech) {
-  //   pos = partOfSpeech;
-  // } else {
-  //   // Get the part of speech from the word if possible
-  //   const word = await tx.word.findUnique({
-  //     where: { id: wordId },
-  //   });
 
-  //   if (
-  //     word &&
-  //     word.sourceEntityId &&
-  //     word.sourceEntityId.includes('merriam_learners')
-  //   ) {
-  //     // For Merriam-Webster words, try to determine from name pattern
-  //     if (word.word.endsWith('ing')) {
-  //       pos = PartOfSpeech.verb; // present participle
-  //     } else if (word.word.endsWith('ed')) {
-  //       pos = PartOfSpeech.verb; // past tense or participle
-  //     } else {
-  //       pos = PartOfSpeech.undefined;
-  //     }
-  //   } else {
-  //     // Default to undefined if we can't determine
-  //     pos = PartOfSpeech.undefined;
-  //   }
-  // }
+  // Fetch the word text for frequency lookup if frequency is not provided
+  let posFrequency = frequency;
+  if (posFrequency === null || posFrequency === undefined) {
+    try {
+      // Get the word text from the database
+      const wordRecord = await tx.word.findUnique({
+        where: { id: wordId },
+        select: { word: true, languageCode: true },
+      });
 
-  // serverLog(
-  //   `Position 3: From upsertWordDetails: final part of speech: ${pos}`,
-  //   LogLevel.INFO,
-  // );
+      if (wordRecord) {
+        const frequencyData = await fetchWordFrequency(
+          wordRecord.word,
+          wordRecord.languageCode as LanguageCode,
+        );
+
+        posFrequency = getPartOfSpeechFrequency(frequencyData, pos);
+
+        serverLog(
+          `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${pos}: ${posFrequency}`,
+          LogLevel.INFO,
+        );
+      }
+    } catch (error) {
+      serverLog(
+        `Error fetching POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
+        LogLevel.ERROR,
+      );
+      posFrequency = null;
+    }
+  }
 
   // Create or find the WordDetails record
   const wordDetails = await tx.wordDetails.upsert({
@@ -3097,85 +3014,18 @@ async function upsertWordDetails(
       variant: variant || '',
       isPlural,
       source: source,
+      frequency: posFrequency,
     },
     update: {
-      isPlural,
+      isPlural: isPlural ?? undefined,
+      phonetic: phonetic !== null ? phonetic : null,
+      ...(source !== null && { source: source }),
+      ...(posFrequency !== null && { frequency: posFrequency }),
     },
   });
 
   return wordDetails;
 }
-
-/**
- * Helper function to determine if a word is a morphological variation
- * @param baseWord The original word
- * @param stem The potential stem variation
- * @returns boolean indicating if it's a true morphological variation
- */
-// function isMorphologicalVariation(baseWord: string, stem: string): boolean {
-//   // Common English suffixes for morphological variations
-//   const commonSuffixes = [
-//     's',
-//     'es',
-//     'ed',
-//     'ing',
-//     'er',
-//     'est', // Basic variations
-//     'able',
-//     'ible',
-//     'al',
-//     'ial',
-//     'ful',
-//     'ic', // Adjective formations
-//     'ly',
-//     'ment',
-//     'ness',
-//     'tion',
-//     'sion', // Other common suffixes
-//   ];
-
-//   // Check if the stem is formed by adding/removing common suffixes
-//   return (
-//     commonSuffixes.some((suffix) => {
-//       return (
-//         (baseWord.endsWith(suffix) &&
-//           stem === baseWord.slice(0, -suffix.length)) ||
-//         (stem.endsWith(suffix) && baseWord === stem.slice(0, -suffix.length))
-//       );
-//     }) ||
-//     // Check for irregular but common variations
-//     isIrregularVariation(baseWord, stem)
-//   );
-// }
-
-/**
- * Helper function for checking irregular word variations
- * @param baseWord The original word
- * @param stem The potential irregular variation
- * @returns boolean indicating if it's a known irregular variation
- */
-// function isIrregularVariation(baseWord: string, stem: string): boolean {
-//   // Common irregular variations in English
-//   const irregularPairs = new Map([
-//     ['go', new Set(['went', 'gone', 'goes', 'going'])],
-//     ['be', new Set(['am', 'is', 'are', 'was', 'were', 'been', 'being'])],
-//     ['do', new Set(['did', 'done', 'does', 'doing'])],
-//     ['run', new Set(['ran', 'runs', 'running'])],
-//     ['see', new Set(['saw', 'seen', 'sees', 'seeing'])],
-//     ['eat', new Set(['ate', 'eaten', 'eats', 'eating'])],
-//     ['write', new Set(['wrote', 'written', 'writes', 'writing'])],
-//     ['speak', new Set(['spoke', 'spoken', 'speaks', 'speaking'])],
-//     ['take', new Set(['took', 'taken', 'takes', 'taking'])],
-//     ['give', new Set(['gave', 'given', 'gives', 'giving'])],
-//   ]);
-
-//   return (
-//     irregularPairs.get(baseWord)?.has(stem) ||
-//     Array.from(irregularPairs.entries()).some(
-//       ([word, variations]) => word === stem && variations.has(baseWord),
-//     )
-//   );
-// }
 
 function getStringFromArray(
   array: (string | null | undefined)[] | null,
@@ -3267,36 +3117,3 @@ function getRelationshipDescription(
       return null;
   }
 }
-
-/**
- * Categorizes relationships into grammatical or general types
- * @param relationType The type of relationship to categorize
- * @returns Whether the relationship is grammatical (true) or general (false)
- */
-// function isGrammaticalRelationship(relationType: RelationshipType): boolean {
-//   const grammaticalTypes = new Set([
-//     'past_tense_en',
-//     'plural_en',
-//     'past_participle_en',
-//     'present_participle_en',
-//     'third_person_en',
-//     'variant_form_phrasal_verb_en',
-//     'definite_form_da',
-//     'plural_da',
-//     'plural_definite_da',
-//     'present_tense_da',
-//     'past_tense_da',
-//     'past_participle_da',
-//     'imperative_da',
-//     'adjective_neuter_da',
-//     'adjective_plural_da',
-//     'comparative_da',
-//     'superlative_da',
-//     'adverb_comparative_da',
-//     'adverb_superlative_da',
-//     'pronoun_accusative_da',
-//     'pronoun_genitive_da',
-//   ]);
-
-//   return grammaticalTypes.has(relationType);
-// }

@@ -135,6 +135,7 @@ CREATE TABLE "definition_examples" (
     "id" SERIAL NOT NULL,
     "example" TEXT NOT NULL,
     "grammatical_note" VARCHAR(255),
+    "source_of_example" VARCHAR(255),
     "language_code" "LanguageCode" NOT NULL,
     "definition_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

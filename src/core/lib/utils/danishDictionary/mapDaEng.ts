@@ -12,7 +12,7 @@ export function mapDanishPosToEnum(
 
   const normalizedTerm = danishTerm.toLowerCase().trim();
 
-  const posMap: Record<PartOfSpeechDanish, PartOfSpeech> = {
+  const posMap: Partial<Record<PartOfSpeechDanish, PartOfSpeech>> = {
     // Direct mappings
     substantiv: PartOfSpeech.noun,
     verbum: PartOfSpeech.verb,
@@ -28,7 +28,7 @@ export function mapDanishPosToEnum(
     artikel: PartOfSpeech.article,
     udråbsord: PartOfSpeech.exclamation,
     forkortelse: PartOfSpeech.abbreviation,
-    suffiks: PartOfSpeech.undefined,
+    suffiks: PartOfSpeech.suffix,
     sidsteled: PartOfSpeech.undefined,
     undefined: PartOfSpeech.undefined,
   };

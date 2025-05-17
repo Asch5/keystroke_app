@@ -99,6 +99,9 @@ enum PartOfSpeech {
   exclamation // udråbsord
   abbreviation // forkortelse
   suffix // suffiks
+  last_letter // sidsteled
+  adj_pl // adj. pl.
+  symbol // symbol
   //--------------------------------
   phrase // faste udtryk (fixed expressions)
   sentence // sætning (not standard part of speech)
@@ -344,6 +347,8 @@ model DefinitionExample {
   id              Int          @id @default(autoincrement())
   example         String       @db.Text
   grammaticalNote String?      @map("grammatical_note") @db.VarChar(255)
+  //author of the example
+  sourceOfExample String?      @map("source_of_example") @db.VarChar(255)
   languageCode    LanguageCode @map("language_code")
   definitionId    Int          @map("definition_id")
   createdAt       DateTime     @default(now()) @map("created_at")
@@ -365,6 +370,7 @@ model Audio {
   id           Int          @id @default(autoincrement())
   url          String       @db.VarChar(255)
   source       SourceType
+  note         String?      @db.VarChar(255)
   languageCode LanguageCode @map("language_code") // Still makes sense here
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")

@@ -90,6 +90,7 @@ export interface DefinitionExampleOfProcessWordData {
   example: string;
   languageCode: string;
   grammaticalNote?: string | null;
+  sourceOfExample?: string | null;
 }
 
 export type RelationshipFromTo =
@@ -151,6 +152,47 @@ export interface ProcessedWordData {
 export interface FrequencyRequest {
   word: string;
   languageCode: LanguageCode;
+}
+
+interface SubWordDefinition {
+  id?: number | null;
+  source: string;
+  languageCode: string;
+  definition: string;
+  subjectStatusLabels?: string | null;
+  generalLabels?: string | null;
+  grammaticalNote?: string | null;
+  usageNote?: string | null;
+  isInShortDef?: boolean;
+  image?: {
+    id: number;
+    url: string;
+    description: string | null;
+  } | null;
+  examples: DefinitionExampleOfProcessWordData[];
+}
+
+export interface SubWordData {
+  id?: number | null;
+  word: string;
+  languageCode: string;
+  phoneticGeneral?: string | null;
+  frequencyGeneral?: string | null;
+  etymology?: string | null;
+  source: SourceType;
+  //WordDetails section
+  partOfSpeech: PartOfSpeech | null;
+  phonetic?: string | null;
+  variant?: string | null;
+  gender?: Gender | null;
+  audioFiles?: string[] | null;
+  definitions: SubWordDefinition[];
+  relationship: {
+    fromWord: RelationshipFromTo;
+    toWord: RelationshipFromTo;
+    type: RelationshipType;
+  }[];
+  sourceData: string[];
 }
 
 // Example response from the frequency API

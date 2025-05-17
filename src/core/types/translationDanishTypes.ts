@@ -88,6 +88,7 @@ export type PartOfSpeechDanish =
   | 'substantiv'
   | 'verbum'
   | 'adjektiv'
+  | 'adj. pl.'
   | 'adverbium'
   | 'pronomen'
   | 'præposition'
@@ -99,10 +100,13 @@ export type PartOfSpeechDanish =
   | 'talord (ordenstal)'
   | 'udråbsord'
   | 'forkortelse'
-  //as undefined
   | 'suffiks'
-  | 'sidsteled'
-  | 'undefined';
+  | 'sidsteled' //last letter
+  | 'undefined'
+  //gender
+  | 'fælleskøn'
+  | 'intetkøn'
+  | 'fælleskønellerintetkøn';
 
 export type PartOfSpeechForStems =
   | 'vb.'
@@ -176,6 +180,11 @@ export type DetailCategoryDanish =
   | 'som udråbsord' // as exclamation (give part of speech of this definition as exclamation)
   | 'som forkortelse'; // as abbreviation (give part of speech of this definition as abbreviation)
 
+export type SourceOfExample = {
+  short: string;
+  full: string;
+};
+
 export interface WordVariant {
   word: {
     word: string;
@@ -199,6 +208,7 @@ export interface WordVariant {
     definition_translation_en: string;
     examples: string[];
     examples_translation_en: string[];
+    sourceOfExample?: SourceOfExample[];
     labels?: {
       [key in DetailCategoryDanish]?: string[] | boolean | string;
     };

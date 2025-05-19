@@ -5,6 +5,7 @@ import {
   ProcessedWordData,
   SubWordData,
   RelationshipFromTo,
+  AudioFile,
 } from '@/core/types/dictionary';
 import {
   LanguageCode,
@@ -14,6 +15,7 @@ import {
   SourceType,
   Word,
   DifficultyLevel,
+  Gender,
 } from '@prisma/client';
 import { LogLevel, serverLog } from '@/core/lib/utils/logUtils';
 import {
@@ -134,25 +136,26 @@ export async function processTranslationsForWord(
 async function processAudioForWord(
   tx: Prisma.TransactionClient,
   wordDetailsId: number,
-  audioFiles: string[],
+  audioFiles: AudioFile[],
   isPrimary: boolean = false,
   languageCode: LanguageCode = LanguageCode.en,
   source: SourceType = SourceType.merriam_learners,
 ): Promise<void> {
-  for (const [index, audioUrl] of audioFiles.entries()) {
+  for (const [index, audioFile] of audioFiles.entries()) {
     // Use upsert instead of create to handle duplicate audio URLs
     const audio = await tx.audio.upsert({
       where: {
         url_languageCode: {
-          url: audioUrl,
+          url: audioFile.url,
           languageCode: languageCode,
         },
       },
       update: {}, // No updates needed if it already exists
       create: {
-        url: audioUrl,
+        url: audioFile.url,
         source: source,
         languageCode: languageCode,
+        note: audioFile.note || null,
       },
     });
 
@@ -185,7 +188,7 @@ async function upsertWord(
   options?: {
     phonetic?: string | null;
     audio?: string | null;
-    audioFiles?: string[] | null;
+    audioFiles?: AudioFile[] | null;
     etymology?: string | null;
     difficultyLevel?: DifficultyLevel;
     sourceEntityId?: string | null;
@@ -352,6 +355,82 @@ async function upsertWordDetails(
   return wordDetails;
 }
 
+/**
+ * Generates a descriptive definition for a Danish word form.
+ * @param baseWordText The text of the base word.
+ * @param relatedWordText The text of the related word form.
+ * @param relationshipType The type of relationship between the base and related word.
+ * @returns A string describing the word form, or an empty string if no specific description is generated.
+ */
+function getDanishFormDefinition(
+  baseWordText: string,
+  relatedWordText: string,
+  relationshipType: RelationshipType | string, // Allow string for custom Danish types
+): string {
+  switch (relationshipType) {
+    case 'definite_form_da' as RelationshipType:
+    case RelationshipType.definite_form_da:
+      return `Definite form (bestemt form) of {it}${baseWordText}{/it}.`;
+    case 'plural_da' as RelationshipType:
+    case RelationshipType.plural_da:
+      return `Plural form (flertal) of {it}${baseWordText}{/it}.`;
+    case 'plural_definite_da' as RelationshipType:
+    case RelationshipType.plural_definite_da:
+      return `Plural definite form (bestemt form flertal) of {it}${baseWordText}{/it}.`;
+    case 'present_tense_da' as RelationshipType:
+    case RelationshipType.present_tense_da:
+      return `Present tense (nutid) of {it}${baseWordText}{/it}.`;
+    case 'past_tense_da' as RelationshipType:
+    case RelationshipType.past_tense_da:
+      return `Past tense (datid) of {it}${baseWordText}{/it}.`;
+    case 'past_participle_da' as RelationshipType:
+    case RelationshipType.past_participle_da:
+      return `Past participle (førnutid) of {it}${baseWordText}{/it}.`;
+    case 'imperative_da' as RelationshipType:
+    case RelationshipType.imperative_da:
+      return `Imperative form (bydeform) of {it}${baseWordText}{/it}.`;
+    case 'comparative_da' as RelationshipType:
+    case RelationshipType.comparative_da:
+      return `Comparative form (komparativ) of {it}${baseWordText}{/it}.`;
+    case 'superlative_da' as RelationshipType:
+    case RelationshipType.superlative_da:
+      return `Superlative form (superlativ) of {it}${baseWordText}{/it}.`;
+    case 'common_gender_da' as RelationshipType:
+      return `Common gender form (fælleskøn) of {it}${baseWordText}{/it}.`;
+    case 'neuter_gender_da' as RelationshipType:
+      return `Neuter gender form (intetkøn) of {it}${baseWordText}{/it}.`;
+    case 'neuter_form_da' as RelationshipType: // Typically for adjectives
+      return `Neuter form (intetkønsform) of {it}${baseWordText}{/it}.`;
+    case 'adverbial_form_da' as RelationshipType:
+      return `Adverbial form of {it}${baseWordText}{/it}.`;
+    case 'contextual_usage_da' as RelationshipType:
+      return `Contextual usage of {it}${baseWordText}{/it}.`; // Usage note should provide more detail
+    case 'neuter_pronoun_da' as RelationshipType:
+      return `Neuter form of the pronoun {it}${baseWordText}{/it}.`;
+    case 'plural_pronoun_da' as RelationshipType:
+      return `Plural form of the pronoun {it}${baseWordText}{/it}.`;
+    // Add other relevant Danish form types if needed
+    default:
+      // For other relationship types (synonym, antonym, stem, related, composition, phrase),
+      // the definition is usually more complex or comes from the API directly,
+      // so we don't generate a simple form description here.
+      // Check if it's a valid RelationshipType enum member before returning empty
+      if (
+        Object.values(RelationshipType).includes(
+          relationshipType as RelationshipType,
+        )
+      ) {
+        return ''; // It's a valid enum but not handled above
+      }
+      // If it's a string not matching any case and not in enum, it's an unknown/custom type
+      serverLog(
+        `Unknown relationship type in getDanishFormDefinition: ${relationshipType}`,
+        LogLevel.WARN,
+      );
+      return ''; // Return empty or a generic placeholder if preferred
+  }
+}
+
 export async function processAndSaveDanishWord(
   danishWordData: WordVariant,
 ): Promise<ProcessedWordData> {
@@ -362,6 +441,27 @@ export async function processAndSaveDanishWord(
 
   // Get part of speech from API response
   const partOfSpeech = mapDanishPosToEnum(danishWordData.word.partOfSpeech[0]);
+
+  // Corrected gender logic
+  const mainWordPartOfSpeechInfo = danishWordData.word.partOfSpeech; // Renamed for clarity
+  let determinedGender: Gender | null = null;
+  if (mainWordPartOfSpeechInfo.includes('fælleskøn' as PartOfSpeechDanish)) {
+    determinedGender = Gender.common;
+  } else if (
+    mainWordPartOfSpeechInfo.includes('intetkøn' as PartOfSpeechDanish)
+  ) {
+    determinedGender = Gender.neuter;
+  } else if (
+    mainWordPartOfSpeechInfo.includes(
+      'fælleskønellerintetkøn' as PartOfSpeechDanish,
+    )
+  ) {
+    //we can meet this case in the Danish dictionary
+    determinedGender = Gender.common_neuter;
+  } else {
+    determinedGender = null; // Default for others or if not specified
+  }
+  const gender: Gender | null = determinedGender;
 
   // Extract audio files
   const audioFiles = danishWordData.word.audio || [];
@@ -388,8 +488,13 @@ export async function processAndSaveDanishWord(
   const processedData: ProcessedWordData = {
     word: {
       word: mainWordText,
-      variant: '',
+      variant: variant,
       isHighlighted: false,
+      gender: gender,
+      forms:
+        danishWordData.word.forms && danishWordData.word.forms.length > 0
+          ? danishWordData.word.forms.join(', ')
+          : null,
       frequencyGeneral: frequencyGeneral,
       frequency: frequency,
       languageCode: language,
@@ -397,8 +502,15 @@ export async function processAndSaveDanishWord(
       partOfSpeech: partOfSpeech,
       phonetic: danishWordData.word.phonetic,
       audioFiles: (() => {
-        const audio = audioFiles.find((a) => a.word === 'grundform');
-        return audio ? [audio.audio_url] : null;
+        const files: AudioFile[] = [];
+        if (source === SourceType.danish_dictionary && audioFiles.length > 0) {
+          files.push(
+            ...audioFiles
+              .filter((a) => a.word === 'grundform')
+              .map((a) => ({ url: a.audio_url })),
+          );
+        }
+        return files.length > 0 ? files : null;
       })(),
       etymology: etymology,
       relatedWords: [],
@@ -415,8 +527,8 @@ export async function processAndSaveDanishWord(
       const examples = def.examples.map((example, index) => {
         // Format sourceOfExample if available
         let sourceExampleText = null;
-        if (def.sourceOfExample && def.sourceOfExample[index]) {
-          const source = def.sourceOfExample[index];
+        if (def.sources && def.sources[index]) {
+          const source = def.sources[index];
           sourceExampleText = `{bc}short {it}${source.short}{/it} {bc}full {it}${source.full}{/it}`;
         }
 
@@ -459,7 +571,10 @@ export async function processAndSaveDanishWord(
           )
         : [],
       forms: danishWordData.word.forms || [],
-      contextual_forms: {},
+      contextual_forms:
+        (danishWordData.word.contextual_forms as {
+          [key: string]: string[];
+        } | null) || {},
       audio: danishWordData.word.audio.map((a) => ({
         audio_url: a.audio_url,
         audio_type: a.audio_type,
@@ -470,17 +585,62 @@ export async function processAndSaveDanishWord(
 
     const formsData = transformDanishForms(danishEntry);
 
+    processedData.word.audioFiles = formsData.audio
+      ? formsData.audio.map((a) => ({
+          url: a.audio_url,
+          note: a.note || null,
+        }))
+      : null;
+
     // Convert the returned related words to SubWordData format
     subWordsArray = formsData.relatedWords.map((relatedWord) => {
+      // Determine the primary grammatical relationship type for definition generation
+      // Prioritize form-specific relationships over general ones like 'related'
+      const formRelationshipType = relatedWord.relationships.find(
+        (rel) =>
+          rel.relationshipType !== RelationshipType.related &&
+          rel.relationshipType !== RelationshipType.stem, // Exclude general/stem for form def
+      )?.relationshipType;
+
+      const definitionText = formRelationshipType
+        ? getDanishFormDefinition(
+            mainWordText,
+            relatedWord.word,
+            formRelationshipType,
+          )
+        : ''; // Fallback if no specific form relationship is found
+
       return {
         word: relatedWord.word,
         languageCode: language,
-        source,
+        source: SourceType.danish_dictionary,
         partOfSpeech: mapDanishPosToEnum(relatedWord.partOfSpeech),
         phonetic: relatedWord.phonetic || null,
-        audioFiles: relatedWord.audio?.map((a) => a.audio_url) || null,
-        etymology: mainWordText,
-        definitions: [],
+        audioFiles: relatedWord.audio
+          ? relatedWord.audio.map((a) => ({
+              url: a.audio_url,
+              note: a.note || null,
+            }))
+          : null,
+        usageNote:
+          relatedWord.relationships.find((rel) => rel.usageNote)?.usageNote ||
+          null,
+        etymology: mainWordText, // Etymology for forms is usually the base word
+        definitions: [
+          {
+            source: SourceType.danish_dictionary,
+            languageCode: language,
+            definition: definitionText, // Use generated definition
+            examples: [], // Examples for forms are typically not from this process
+            subjectStatusLabels: null, // Corrected: Was []
+            generalLabels: null, // Corrected: Was []
+            grammaticalNote: null, // Adding for completeness, though likely null for forms
+            usageNote:
+              relatedWord.relationships.find((rel) => rel.usageNote)
+                ?.usageNote || null, // Can be redundant if also top-level
+            isInShortDef: false,
+          },
+        ],
         relationship: [
           ...relatedWord.relationships.map((rel) => ({
             fromWord: 'mainWordDetails' as const,
@@ -505,6 +665,7 @@ export async function processAndSaveDanishWord(
         word: stem.stem,
         languageCode: language,
         source,
+        etymology: mainWordText,
         partOfSpeech: mapStemPosToEnum(stem.partOfSpeech),
         definitions: [],
         relationship: [
@@ -524,7 +685,7 @@ export async function processAndSaveDanishWord(
     }
   }
 
-  // --- 4. Process Synonyms and Antonyms ---
+  // --- 4. Process Synonyms, Antonyms  and compositions---
   if (danishWordData.synonyms && danishWordData.synonyms.length > 0) {
     for (const synonym of danishWordData.synonyms) {
       subWordsArray.push({
@@ -561,6 +722,26 @@ export async function processAndSaveDanishWord(
           },
         ],
         sourceData: ['antonym'],
+      });
+    }
+  }
+
+  if (danishWordData.compositions && danishWordData.compositions.length > 0) {
+    for (const composition of danishWordData.compositions) {
+      subWordsArray.push({
+        word: composition.composition,
+        languageCode: language,
+        source,
+        partOfSpeech: PartOfSpeech.phrase,
+        definitions: [],
+        relationship: [
+          {
+            fromWord: 'mainWord',
+            toWord: 'subWord',
+            type: RelationshipType.composition,
+          },
+        ],
+        sourceData: ['composition'],
       });
     }
   }

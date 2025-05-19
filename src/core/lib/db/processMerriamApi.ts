@@ -5,6 +5,7 @@ import {
   DefinitionExampleOfProcessWordData,
   ProcessedWordData,
   RelationshipFromTo,
+  AudioFile,
 } from '@/core/types/dictionary'; // Extended interface to include ID for database trackinginterface DefinitionExampleWithId extends DefinitionExampleOfProcessWordData {  id?: number | null;}
 import { saveJson } from '@/core/lib/utils/saveJson';
 import {
@@ -338,14 +339,14 @@ export async function processAndSaveWord(
   //   : null;
 
   // Extract all audio files (including alternate pronunciations)
-  const audioFiles: string[] = [];
+  const audioFiles: AudioFile[] = [];
 
   // Process main pronunciations from hwi.prs
   if (apiResponse.hwi.prs && apiResponse.hwi.prs.length > 0) {
     apiResponse.hwi.prs.forEach((pronunciation) => {
       if (pronunciation.sound?.audio) {
         const audioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
-        audioFiles.push(audioUrl);
+        audioFiles.push({ url: audioUrl });
       }
     });
   }
@@ -355,7 +356,7 @@ export async function processAndSaveWord(
     apiResponse.hwi.altprs.forEach((pronunciation) => {
       if (pronunciation.sound?.audio) {
         const audioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
-        audioFiles.push(audioUrl);
+        audioFiles.push({ url: audioUrl });
       }
     });
   }
@@ -384,8 +385,7 @@ export async function processAndSaveWord(
       audioFiles:
         audioFiles.length > 0
           ? audioFiles
-          : checkedWordDetails?.word?.audioFiles?.map((audio) => audio.url) ||
-            null,
+          : checkedWordDetails?.word?.audioFiles || null,
       etymology: etymology || checkedWordDetails?.word?.etymology || null,
       relatedWords: [],
       sourceEntityId: `${source}-${sourceEntityId}-${sourceEntityUuid}`,
@@ -444,7 +444,7 @@ export async function processAndSaveWord(
     phonetic?: string | null;
     variant?: string | null;
     gender?: Gender | null;
-    audioFiles?: string[] | null;
+    audioFiles?: AudioFile[] | null;
     definitions: SubWordDefinition[];
     relationship: {
       fromWord: RelationshipFromTo;
@@ -550,9 +550,9 @@ export async function processAndSaveWord(
             : null;
 
           // Create an array of audio files
-          const audioFiles: string[] = [];
+          const audioFiles: AudioFile[] = [];
           if (audioUrl) {
-            audioFiles.push(audioUrl);
+            audioFiles.push({ url: audioUrl });
           }
 
           // Process all pronunciations if there are multiple
@@ -561,7 +561,7 @@ export async function processAndSaveWord(
               if (index === 0) return; // Skip the first one as it's already processed
               if (pronunciation.sound?.audio) {
                 const additionalAudioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
-                audioFiles.push(additionalAudioUrl);
+                audioFiles.push({ url: additionalAudioUrl });
               }
             });
           }
@@ -639,9 +639,9 @@ export async function processAndSaveWord(
         : null;
 
       // Create an array of audio files
-      const audioFiles: string[] = [];
+      const audioFiles: AudioFile[] = [];
       if (formAudio) {
-        audioFiles.push(formAudio);
+        audioFiles.push({ url: formAudio });
       }
 
       // Process all pronunciations if there are multiple
@@ -650,7 +650,7 @@ export async function processAndSaveWord(
           if (index === 0) return; // Skip the first one as it's already processed
           if (pronunciation.sound?.audio) {
             const audioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
-            audioFiles.push(audioUrl);
+            audioFiles.push({ url: audioUrl });
           }
         });
       }
@@ -747,9 +747,9 @@ export async function processAndSaveWord(
         : null;
 
       // Create an array of audio files
-      const audioFiles: string[] = [];
+      const audioFiles: AudioFile[] = [];
       if (formAudio) {
-        audioFiles.push(formAudio);
+        audioFiles.push({ url: formAudio });
       }
 
       // Process all pronunciations if there are multiple
@@ -758,7 +758,7 @@ export async function processAndSaveWord(
           if (index === 0) return; // Skip the first one as it's already processed
           if (pronunciation.sound?.audio) {
             const audioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
-            audioFiles.push(audioUrl);
+            audioFiles.push({ url: audioUrl });
           }
         });
       }
@@ -1241,9 +1241,9 @@ export async function processAndSaveWord(
         : null;
 
       // Create an array of audio files
-      const audioFiles: string[] = [];
+      const audioFiles: AudioFile[] = [];
       if (audioUrl) {
-        audioFiles.push(audioUrl);
+        audioFiles.push({ url: audioUrl });
       }
 
       // Process all pronunciations if there are multiple
@@ -1252,7 +1252,7 @@ export async function processAndSaveWord(
           if (index === 0) return; // Skip the first one as it's already processed
           if (pronunciation.sound?.audio) {
             const additionalAudioUrl = `https://media.merriam-webster.com/audio/prons/en/us/mp3/${pronunciation.sound.audio.charAt(0)}/${pronunciation.sound.audio}.mp3`;
-            audioFiles.push(additionalAudioUrl);
+            audioFiles.push({ url: additionalAudioUrl });
           }
         });
       }
@@ -1728,7 +1728,6 @@ sourceWordText processing
           source as SourceType,
           mainWordText,
           language as LanguageCode,
-
           {
             phonetic: processedData.word.phonetic || null,
             audioFiles: processedData.word.audioFiles || null,
@@ -2809,23 +2808,23 @@ function processNestedExamples(
 async function processAudioForWord(
   tx: Prisma.TransactionClient,
   wordDetailsId: number,
-  audioFiles: string[],
+  audioFiles: AudioFile[],
   isPrimary: boolean = false,
   languageCode: LanguageCode = LanguageCode.en,
   source: SourceType = SourceType.merriam_learners,
 ): Promise<void> {
-  for (const [index, audioUrl] of audioFiles.entries()) {
+  for (const [index, audioFile] of audioFiles.entries()) {
     // Use upsert instead of create to handle duplicate audio URLs
     const audio = await tx.audio.upsert({
       where: {
         url_languageCode: {
-          url: audioUrl,
+          url: audioFile.url,
           languageCode: languageCode,
         },
       },
       update: {}, // No updates needed if it already exists
       create: {
-        url: audioUrl,
+        url: audioFile.url,
         source: source,
         languageCode: languageCode,
       },
@@ -2860,7 +2859,7 @@ async function upsertWord(
   options?: {
     phonetic?: string | null;
     audio?: string | null;
-    audioFiles?: string[] | null;
+    audioFiles?: AudioFile[] | null;
     etymology?: string | null;
     difficultyLevel?: DifficultyLevel;
     sourceEntityId?: string | null;

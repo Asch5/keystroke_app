@@ -171,6 +171,7 @@ enum Gender {
   feminine
   common //n-ord (fælleskøn)
   neuter //t-ord (intetkøn)
+  common_neuter //n-t-ord (fælleskøn eller intetkøn)
 }
 
 // =========================================

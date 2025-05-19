@@ -32,6 +32,7 @@ export interface ExampleUpdateData {
 export interface AudioUpdateData {
   id?: number;
   url: string;
+  note?: string | null;
   source: SourceType;
   languageCode: LanguageCode;
   isPrimary?: boolean;
@@ -99,6 +100,11 @@ export type RelationshipFromTo =
   | 'mainWordDetails'
   | 'subWordDetails';
 
+export interface AudioFile {
+  url: string;
+  note?: string | null;
+}
+
 export interface ProcessedWordData {
   word: {
     word: string;
@@ -106,12 +112,13 @@ export interface ProcessedWordData {
     source: SourceType;
     isHighlighted: boolean;
     frequencyGeneral: number | null;
+    forms?: string | null;
     frequency: number | null;
     partOfSpeech: PartOfSpeech | null;
     phonetic: string | null;
     variant?: string | null;
     gender?: Gender | null;
-    audioFiles?: string[] | null;
+    audioFiles?: AudioFile[] | null;
     etymology: string | null;
     sourceEntityId?: string | null;
     relatedWords: {
@@ -185,7 +192,7 @@ export interface SubWordData {
   phonetic?: string | null;
   variant?: string | null;
   gender?: Gender | null;
-  audioFiles?: string[] | null;
+  audioFiles?: AudioFile[] | null;
   definitions: SubWordDefinition[];
   relationship: {
     fromWord: RelationshipFromTo;

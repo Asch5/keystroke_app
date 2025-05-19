@@ -35,6 +35,7 @@ export interface TranslationRequest {
   word: {
     wordId: number;
     word: string;
+    word_variants: string[] | null;
     phonetic: string | null;
     word_translation: string;
     phonetic_translation: string;
@@ -55,6 +56,7 @@ export interface TranslationRequest {
       exampleId: number;
       example: string;
       example_translation: string;
+      source?: string | null;
     }>;
   }>;
   stems: string[];
@@ -188,9 +190,11 @@ export type SourceOfExample = {
 export interface WordVariant {
   word: {
     word: string;
+    word_variants: string[] | null;
     phonetic: string;
     partOfSpeech: [PartOfSpeechDanish, GenderTypeDanish] | [PartOfSpeechDanish];
-    forms?: string[];
+    forms: string[];
+    contextual_forms: string[] | null;
     audio: {
       audio_type: string;
       audio_url: string;
@@ -198,9 +202,9 @@ export interface WordVariant {
       word: RelationshipTypeVerbsInAudio | null;
     }[];
     etymology: string | null;
-    colloquialism?: string[];
-    variant?: string;
-    variant_pos?: string;
+    colloquialism: string[];
+    variant: string;
+    variant_pos: string;
   };
   definition: {
     id: string;
@@ -208,8 +212,8 @@ export interface WordVariant {
     definition_translation_en: string;
     examples: string[];
     examples_translation_en: string[];
-    sourceOfExample?: SourceOfExample[];
-    labels?: {
+    sources: SourceOfExample[];
+    labels: {
       [key in DetailCategoryDanish]?: string[] | boolean | string;
     };
     labels_translation_en?: {
@@ -219,30 +223,32 @@ export interface WordVariant {
   fixed_expressions: {
     expression: string;
     expression_translation_en: string;
+    expression_variants: string[];
     definition: string;
     definition_translation_en: string;
     examples: string[];
     examples_translation_en: string[];
-    labels?: {
+    sources: SourceOfExample[];
+    labels: {
       [key in DetailCategoryDanish]?: string[] | boolean | string;
     };
     labels_translation_en?: {
       [key in DetailCategoryDanish]?: string[] | boolean | string;
     };
   }[];
-  stems?: {
+  stems: {
     stem: string;
     stem_translation_en: string;
     partOfSpeech: PartOfSpeechForStems;
   }[];
-  compositions?: {
+  compositions: {
     composition: string;
     composition_translation_en: string;
   }[];
   synonyms: string[];
   synonyms_translation_en: string[];
   antonyms: string[];
-  antonyms_translation?: string[];
+  antonyms_translation_en: string[];
 }
 
 export interface DanishDictionaryObject {
@@ -254,12 +260,14 @@ export interface DanishDictionaryObject {
   };
   word: {
     word: string;
+    word_variants: string[] | null;
     phonetic: string;
     partOfSpeech:
       | [PartOfSpeechDanish, GenderTypeDanish]
       | [PartOfSpeechDanish]
       | [];
     forms?: string[];
+    contextual_forms?: string[];
     audio: {
       audio_type: string;
       audio_url: string;
@@ -275,6 +283,7 @@ export interface DanishDictionaryObject {
     definition_translation_en: string;
     examples: string[];
     examples_translation_en: string[];
+    sources: SourceOfExample[];
     labels?: {
       [key in DetailCategoryDanish]?: string[] | boolean | string;
     };
@@ -285,10 +294,12 @@ export interface DanishDictionaryObject {
   fixed_expressions: {
     expression: string;
     expression_translation_en: string;
+    expression_variants: string[];
     definition: string;
     definition_translation_en: string;
     examples: string[];
     examples_translation_en: string[];
+    sources: SourceOfExample[];
     labels?: {
       [key in DetailCategoryDanish]?: string[] | boolean | string;
     };

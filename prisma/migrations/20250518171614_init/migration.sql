@@ -26,7 +26,7 @@ CREATE TYPE "SessionType" AS ENUM ('review', 'newLearning', 'practice', 'test', 
 CREATE TYPE "LanguageCode" AS ENUM ('en', 'ru', 'da', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko', 'ar');
 
 -- CreateEnum
-CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'numeral', 'article', 'exclamation', 'abbreviation', 'suffix', 'phrase', 'sentence', 'undefined');
+CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'numeral', 'article', 'exclamation', 'abbreviation', 'suffix', 'last_letter', 'adj_pl', 'symbol', 'phrase', 'sentence', 'undefined');
 
 -- CreateEnum
 CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant', 'translation', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'adverb_comparative_da', 'adverb_superlative_da', 'pronoun_accusative_da', 'pronoun_genitive_da');
@@ -35,7 +35,7 @@ CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem',
 CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'helsinki_nlp', 'danish_dictionary', 'user', 'admin');
 
 -- CreateEnum
-CREATE TYPE "Gender" AS ENUM ('masculine', 'feminine', 'common', 'neuter');
+CREATE TYPE "Gender" AS ENUM ('masculine', 'feminine', 'common', 'neuter', 'common_neuter');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -149,6 +149,7 @@ CREATE TABLE "audio" (
     "id" SERIAL NOT NULL,
     "url" VARCHAR(255) NOT NULL,
     "source" "SourceType" NOT NULL,
+    "note" VARCHAR(255),
     "language_code" "LanguageCode" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,

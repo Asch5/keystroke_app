@@ -15,20 +15,10 @@ export interface DanishWordEntry {
   audio: Audio[];
 }
 
-export interface WordRelationship {
-  baseWord: string;
-  relatedWord: string;
-  relationshipType: RelationshipType;
-  definitionNumbers?: number[];
-  usageNote?: string;
-}
-
-export interface Audio {
-  audio_url: string;
-  audio_type: string;
+export interface BaseWordModal {
   word: string;
-  phonetic_audio: string;
-  note?: string;
+  audio?: Audio[] | null;
+  relatedWords: RelatedWordModal[];
 }
 
 export interface RelatedWordModal {
@@ -39,10 +29,20 @@ export interface RelatedWordModal {
   relationships: WordRelationship[];
 }
 
-export interface BaseWordModal {
+export interface Audio {
+  audio_url: string;
+  audio_type: string;
   word: string;
-  audio?: Audio[] | null;
-  relatedWords: RelatedWordModal[];
+  phonetic_audio: string;
+  note?: string;
+}
+
+export interface WordRelationship {
+  baseWord: string;
+  relatedWord: string;
+  relationshipType: RelationshipType;
+  definitionNumbers?: number[];
+  usageNote?: string;
 }
 
 /**

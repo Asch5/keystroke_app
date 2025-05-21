@@ -88,6 +88,7 @@ export const LANGUAGE_MAP_ARRAY = [
 ] as const;
 
 export interface DefinitionExampleOfProcessWordData {
+  id?: number | null;
   example: string;
   languageCode: string;
   grammaticalNote?: string | null;
@@ -107,6 +108,7 @@ export interface AudioFile {
 
 export interface ProcessedWordData {
   word: {
+    id?: number;
     word: string;
     languageCode: string;
     source: SourceType;
@@ -142,9 +144,11 @@ export interface ProcessedWordData {
       description: string | null;
     } | null;
     examples: {
+      id?: number | null;
       example: string;
       languageCode: string;
       grammaticalNote?: string | null;
+      sourceOfExample?: string | null;
     }[];
   }[];
   phrases: {
@@ -237,4 +241,15 @@ export interface FrequencyResponse {
       }
     | null;
   error?: string;
+}
+export interface WordData {
+  id?: number;
+  word: string;
+  languageCode: string;
+  phonetic: string | null;
+  etymology: string | null;
+  definitions?: DefinitionUpdateData[];
+  audioFiles?: AudioUpdateData[];
+  examples?: Record<number, ExampleUpdateData[]>;
+  relatedWords?: Record<RelationshipType, RelatedWordUpdateData[]>;
 }

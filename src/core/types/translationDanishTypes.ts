@@ -194,12 +194,12 @@ export interface WordVariant {
     phonetic: string;
     partOfSpeech: [PartOfSpeechDanish, GenderTypeDanish] | [PartOfSpeechDanish];
     forms: string[];
-    contextual_forms: string[] | null;
+    contextual_forms?: string[] | null;
     audio: {
       audio_type: string;
       audio_url: string;
       phonetic_audio: string;
-      word: RelationshipTypeVerbsInAudio | null;
+      word: RelationshipTypeVerbsInAudio | null | string;
     }[];
     etymology: string | null;
     colloquialism: string[];
@@ -224,17 +224,21 @@ export interface WordVariant {
     expression: string;
     expression_translation_en: string;
     expression_variants: string[];
-    definition: string;
-    definition_translation_en: string;
-    examples: string[];
-    examples_translation_en: string[];
-    sources: SourceOfExample[];
-    labels: {
-      [key in DetailCategoryDanish]?: string[] | boolean | string;
-    };
-    labels_translation_en?: {
-      [key in DetailCategoryDanish]?: string[] | boolean | string;
-    };
+    definition: {
+      // Changed from string to array of objects
+      id: string;
+      definition: string;
+      definition_translation_en: string;
+      examples: string[];
+      examples_translation_en: string[];
+      sources: SourceOfExample[];
+      labels: {
+        [key in DetailCategoryDanish]?: string[] | boolean | string;
+      };
+      labels_translation_en?: {
+        [key in DetailCategoryDanish]?: string[] | boolean | string;
+      };
+    }[]; // Array of definition objects
   }[];
   stems: {
     stem: string;
@@ -267,7 +271,7 @@ export interface DanishDictionaryObject {
       | [PartOfSpeechDanish]
       | [];
     forms?: string[];
-    contextual_forms?: string[];
+    contextual_forms?: string[] | null;
     audio: {
       audio_type: string;
       audio_url: string;
@@ -295,17 +299,21 @@ export interface DanishDictionaryObject {
     expression: string;
     expression_translation_en: string;
     expression_variants: string[];
-    definition: string;
-    definition_translation_en: string;
-    examples: string[];
-    examples_translation_en: string[];
-    sources: SourceOfExample[];
-    labels?: {
-      [key in DetailCategoryDanish]?: string[] | boolean | string;
-    };
-    labels_translation_en?: {
-      [key in DetailCategoryDanish]?: string[] | boolean | string;
-    };
+    definition: {
+      // Changed from string to array of objects
+      id: string;
+      definition: string;
+      definition_translation_en: string;
+      examples: string[];
+      examples_translation_en: string[];
+      sources: SourceOfExample[];
+      labels: {
+        [key in DetailCategoryDanish]?: string[] | boolean | string;
+      };
+      labels_translation_en?: {
+        [key in DetailCategoryDanish]?: string[] | boolean | string;
+      };
+    }[]; // Array of definition objects
   }[];
   //1. relationshipType: "stem" (from the main word to these word)
   stems?: {
@@ -335,10 +343,26 @@ export interface Example {
   notes?: string;
 }
 
-export interface FixedExpression {
-  fixed_expression: string;
+export interface FixedExpressionDefinition {
+  id: string;
   definition: string;
-  examples: Example[];
+  definition_translation_en: string;
+  examples: string[];
+  examples_translation_en: string[];
+  sources: SourceOfExample[];
+  labels?: {
+    [key in DetailCategoryDanish]?: string[] | boolean | string;
+  };
+  labels_translation_en?: {
+    [key in DetailCategoryDanish]?: string[] | boolean | string;
+  };
+}
+
+export interface FixedExpression {
+  expression: string;
+  expression_translation_en: string;
+  expression_variants: string[];
+  definition: FixedExpressionDefinition[];
 }
 
 export interface TranslationCombinedResponse {

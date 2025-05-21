@@ -27,7 +27,7 @@ import {
   getGeneralFrequency,
   getPartOfSpeechFrequency,
 } from '../services/frequencyService';
-//import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
+import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**Definitions:
  * generalLabels "lbs" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs. (like capitalization indicators, usage notes, etc.)
@@ -627,6 +627,8 @@ export async function processAndSaveWord(
     for (const inflection of apiResponse.ins) {
       if (!inflection.if) continue;
 
+      const subjectStatusLabels = inflection.il || null;
+
       // Clean the inflection form
       const cleanedForm = inflection.if.replace(/\*/g, '');
 
@@ -703,6 +705,7 @@ export async function processAndSaveWord(
               {
                 source: source,
                 languageCode: language,
+                subjectStatusLabels: subjectStatusLabels,
                 definition: definition,
                 examples: [],
               },
@@ -1557,7 +1560,7 @@ sourceWordText processing
                 isInShortDef: artShortDefTexts.has(
                   cleanupDefinitionText(cleanDefinitionText),
                 ),
-                examples,
+                examples: examples, // Using already extracted examples with proper structure
               });
               serverLog(
                 `Process in processMerriamApi.ts (definition section): cleanDefinitionText: ${cleanDefinitionText}`,
@@ -1573,9 +1576,9 @@ sourceWordText processing
     }
   }
 
-  try {
-    // Initialize the services
+  let mainWordEntityId: number; // Declare mainWordEntityId here, outside the transaction
 
+  try {
     // Add a transaction to save the data to the database
     await prisma.$transaction(
       async (tx) => {
@@ -1725,30 +1728,31 @@ sourceWordText processing
         //! 1. Create or update the main Word
         const mainWord = await upsertWord(
           tx,
-          source as SourceType,
+          source as SourceType, // Ensure source is defined from initial processing
           mainWordText,
-          language as LanguageCode,
+          language as LanguageCode, // Ensure language is defined
           {
             phonetic: processedData.word.phonetic || null,
             audioFiles: processedData.word.audioFiles || null,
             etymology: processedData.word.etymology || null,
             sourceEntityId: processedData.word.sourceEntityId || null,
-            partOfSpeech: partOfSpeech, // Make sure to pass the part of speech
+            partOfSpeech: processedData.word.partOfSpeech, // Ensure partOfSpeech from initial processing
             variant: processedData.word.variant || '',
-            isHighlighted: isHighlighted,
+            isHighlighted: processedData.word.isHighlighted, // Ensure isHighlighted is defined
           },
         );
+        mainWordEntityId = mainWord.id; // Assign the ID here
 
-        // Create WordDetails for the main word with the default part of speech
+        // Create WordDetails for the main word
         const mainWordDetails = await upsertWordDetails(
           tx,
           mainWord.id,
-          partOfSpeech, // This is processedData.word.partOfSpeech
+          processedData.word.partOfSpeech, // Use partOfSpeech from initial processing
           source as SourceType,
           false, // isPlural
-          processedData.word.variant || '', // Pass the main word's variant from processedData
-          processedData.word.phonetic, // Pass the main word's phonetic from processedData
-          processedData.word.frequency, // Pass the main word's frequencyGeneral from processedData
+          processedData.word.variant || '',
+          processedData.word.phonetic,
+          processedData.word.frequency,
         );
         //postion 1
         serverLog(
@@ -2182,13 +2186,43 @@ sourceWordText processing
         //! End of refactored relationship block
 
         // ... (Rest of transaction, e.g., final serverLog, saveJson) ...
+
+        // The following call to processTranslationsForWord has been moved outside this transaction.
+        // mainWord.id is captured in mainWordEntityId earlier in this transaction.
       },
       {
-        maxWait: 60000,
-        timeout: 200000,
+        maxWait: 120000,
+        timeout: 800000,
         isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted,
       },
     );
+
+    // Call processTranslationsForWord AFTER the main transaction has committed
+    if (mainWordEntityId!) {
+      // Check if mainWordEntityId was assigned
+      await processTranslationsForWord(
+        // No 'tx' argument here
+        mainWordEntityId,
+        mainWordText,
+        {
+          phonetic: processedData.word.phonetic,
+          stems: processedData.stems,
+          definitions: processedData.definitions
+            .filter((def): def is typeof def & { id: number } => def.id != null)
+            .map((def) => ({
+              id: def.id,
+              partOfSpeech: processedData.word.partOfSpeech || 'undefined',
+              definition: def.definition,
+              examples: (def.examples || [])
+                .filter((ex): ex is typeof ex & { id: number } => ex.id != null)
+                .map((ex) => ({
+                  id: ex.id,
+                  example: ex.example,
+                })),
+            })),
+        },
+      );
+    }
 
     // Fetch all definitions from the database for the main word and related words
     // This ensures we have the correct IDs assigned by the database

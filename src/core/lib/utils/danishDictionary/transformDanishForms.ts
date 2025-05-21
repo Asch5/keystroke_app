@@ -186,7 +186,7 @@ function processContextualForms(
           addRelationship(
             baseWord,
             relatedWord,
-            'plural_da' as RelationshipType,
+            'plural_da' as const,
             usageNote,
             definitionNumbers,
           );
@@ -195,7 +195,7 @@ function processContextualForms(
           addRelationship(
             baseWord,
             relatedWord,
-            'genitive_form_da' as RelationshipType,
+            'genitive_form_da' as const,
             usageNote,
             definitionNumbers,
           );
@@ -213,7 +213,7 @@ function processContextualForms(
           addRelationship(
             baseWord,
             relatedWord,
-            'definite_form_da' as RelationshipType,
+            'definite_form_da' as const,
             usageNote,
             definitionNumbers,
           );
@@ -221,7 +221,7 @@ function processContextualForms(
             addRelationship(
               baseWord,
               relatedWord,
-              'common_gender_da' as RelationshipType,
+              'common_gender_da' as const,
               usageNote,
               definitionNumbers,
             );
@@ -234,7 +234,7 @@ function processContextualForms(
           addRelationship(
             baseWord,
             relatedWord,
-            'definite_form_da' as RelationshipType,
+            'definite_form_da' as const,
             usageNote,
             definitionNumbers,
           );
@@ -242,7 +242,7 @@ function processContextualForms(
             addRelationship(
               baseWord,
               relatedWord,
-              'neuter_gender_da' as RelationshipType,
+              'neuter_gender_da' as const,
               usageNote,
               definitionNumbers,
             );
@@ -261,7 +261,7 @@ function processContextualForms(
             addRelationship(
               baseWord,
               baseWord,
-              'plural_da' as RelationshipType,
+              'plural_da' as const,
               usageNote,
               definitionNumbers,
             );
@@ -275,7 +275,7 @@ function processContextualForms(
             addRelationship(
               baseWord,
               relatedWord,
-              'plural_da' as RelationshipType,
+              'plural_da' as const,
               usageNote,
               definitionNumbers,
             );
@@ -289,7 +289,7 @@ function processContextualForms(
             addRelationship(
               baseWord,
               relatedWord,
-              'plural_definite_da' as RelationshipType,
+              'plural_definite_da' as const,
               usageNote,
               definitionNumbers,
             );
@@ -343,10 +343,10 @@ function processAdjectiveForms(
   // Add neuter form for most adjectives (first form with -t suffix)
   if (forms[0] && (forms[0] === '-t' || forms[0].endsWith('-t'))) {
     const neuterForm = applyEnding(baseWord, forms[0]);
-    addRelationship(baseWord, neuterForm, 'neuter_form_da' as RelationshipType);
+    addRelationship(baseWord, neuterForm, 'neuter_form_da' as const);
   } else if (forms[0] === '-') {
     // If invariable in neuter form, use base word
-    addRelationship(baseWord, baseWord, 'neuter_form_da' as RelationshipType);
+    addRelationship(baseWord, baseWord, 'neuter_form_da' as const);
   }
 
   // Add plural/definite form (usually second form with -e suffix)
@@ -359,38 +359,22 @@ function processAdjectiveForms(
       forms[1].endsWith('-ke'))
   ) {
     const pluralDefForm = applyEnding(baseWord, forms[1]);
-    addRelationship(
-      baseWord,
-      pluralDefForm,
-      'plural_definite_da' as RelationshipType,
-    );
+    addRelationship(baseWord, pluralDefForm, 'plural_definite_da' as const);
   } else if (forms[1] === '-') {
     // If invariable in plural/definite form, use base word
-    addRelationship(
-      baseWord,
-      baseWord,
-      'plural_definite_da' as RelationshipType,
-    );
+    addRelationship(baseWord, baseWord, 'plural_definite_da' as const);
   }
 
   // Process comparative form (e.g., "større", "-ere")
   if (forms.length >= 3 && forms[2] && forms[2].includes('ere')) {
     const comparativeForm = applyEnding(baseWord, forms[2]);
-    addRelationship(
-      baseWord,
-      comparativeForm,
-      'comparative_da' as RelationshipType,
-    );
+    addRelationship(baseWord, comparativeForm, 'comparative_da' as const);
   } else if (baseWord === 'god' && forms.length >= 3 && forms[2] === 'bedre') {
     // Special case for 'god' -> 'bedre' (irregular)
-    addRelationship(baseWord, 'bedre', 'comparative_da' as RelationshipType);
+    addRelationship(baseWord, 'bedre', 'comparative_da' as const);
   } else if (forms[0] === '-' && forms[1] === '-') {
     // Invariable adjective like "direkte"
-    addRelationship(
-      baseWord,
-      `mere ${baseWord}`,
-      'comparative_da' as RelationshipType,
-    );
+    addRelationship(baseWord, `mere ${baseWord}`, 'comparative_da' as const);
   }
 
   // Process superlative form (e.g., "størst", "-est")
@@ -401,11 +385,7 @@ function processAdjectiveForms(
     if (forms[3] && forms[3].includes('est') && !forms[3].includes('(')) {
       // Handle normal -est forms
       superlativeForm = applyEnding(baseWord, forms[3]);
-      addRelationship(
-        baseWord,
-        superlativeForm,
-        'superlative_da' as RelationshipType,
-      );
+      addRelationship(baseWord, superlativeForm, 'superlative_da' as const);
       superlativeAdded = true;
     } else if (
       forms[3] &&
@@ -414,38 +394,22 @@ function processAdjectiveForms(
       // Special pattern (-est) - convert to proper form by removing parentheses
       const actualSuffix = '-est';
       superlativeForm = applyEnding(baseWord, actualSuffix);
-      addRelationship(
-        baseWord,
-        superlativeForm,
-        'superlative_da' as RelationshipType,
-      );
+      addRelationship(baseWord, superlativeForm, 'superlative_da' as const);
       superlativeAdded = true;
     } else if (baseWord === 'god' && forms[3] === 'bedst') {
       // Special case for 'god' -> 'bedst' (irregular)
-      addRelationship(baseWord, 'bedst', 'superlative_da' as RelationshipType);
+      addRelationship(baseWord, 'bedst', 'superlative_da' as const);
       superlativeAdded = true;
     }
 
     // If we haven't added a superlative yet and this is an invariable adjective
     if (!superlativeAdded && forms[0] === '-' && forms[1] === '-') {
-      addRelationship(
-        baseWord,
-        `mest ${baseWord}`,
-        'superlative_da' as RelationshipType,
-      );
+      addRelationship(baseWord, `mest ${baseWord}`, 'superlative_da' as const);
     }
   } else if (forms.length === 2 && forms[0] === '-' && forms[1] === '-') {
     // For invariable adjectives with fewer forms
-    addRelationship(
-      baseWord,
-      `mere ${baseWord}`,
-      'comparative_da' as RelationshipType,
-    );
-    addRelationship(
-      baseWord,
-      `mest ${baseWord}`,
-      'superlative_da' as RelationshipType,
-    );
+    addRelationship(baseWord, `mere ${baseWord}`, 'comparative_da' as const);
+    addRelationship(baseWord, `mest ${baseWord}`, 'superlative_da' as const);
   } else {
     // For adjectives with fewer forms, do our best with what we have
     forms.forEach((form) => {
@@ -454,28 +418,16 @@ function processAdjectiveForms(
 
         // Determine relationship type based on form pattern and index
         if (form === '-t' || form.endsWith('-t')) {
-          addRelationship(
-            baseWord,
-            relatedWord,
-            'neuter_form_da' as RelationshipType,
-          );
+          addRelationship(baseWord, relatedWord, 'neuter_form_da' as const);
         } else if (
           form === '-e' ||
           form.endsWith('-e') ||
           form === '-ne' ||
           form.endsWith('-ke')
         ) {
-          addRelationship(
-            baseWord,
-            relatedWord,
-            'plural_definite_da' as RelationshipType,
-          );
+          addRelationship(baseWord, relatedWord, 'plural_definite_da' as const);
         } else if (form.includes('ere')) {
-          addRelationship(
-            baseWord,
-            relatedWord,
-            'comparative_da' as RelationshipType,
-          );
+          addRelationship(baseWord, relatedWord, 'comparative_da' as const);
         } else if (
           form.includes('est') ||
           form === '(-est)' ||
@@ -485,11 +437,7 @@ function processAdjectiveForms(
             form === '(-est)' || form.includes('(-est)')
               ? applyEnding(baseWord, '-est')
               : relatedWord;
-          addRelationship(
-            baseWord,
-            actualWord,
-            'superlative_da' as RelationshipType,
-          );
+          addRelationship(baseWord, actualWord, 'superlative_da' as const);
         }
       }
     });
@@ -497,14 +445,14 @@ function processAdjectiveForms(
 
   // Add adverbial form if missing
   const hasAdverbialForm = relationships.some(
-    (rel) => rel.relationshipType === ('adverbial_form_da' as RelationshipType),
+    (rel) => rel.relationshipType === ('adverbial_form_da' as const),
   );
 
   if (!hasAdverbialForm) {
     // First look for a comparative form ending in -ere
     const comparativeRel = relationships.find(
       (rel) =>
-        rel.relationshipType === ('comparative_da' as RelationshipType) &&
+        rel.relationshipType === ('comparative_da' as const) &&
         rel.relatedWord.endsWith('ere'),
     );
 
@@ -512,25 +460,17 @@ function processAdjectiveForms(
       addRelationship(
         baseWord,
         comparativeRel.relatedWord,
-        'adverbial_form_da' as RelationshipType,
+        'adverbial_form_da' as const,
       );
     }
     // If no comparative form but we have a neuter form, use that for the adverbial
     else if (forms[0] && (forms[0] === '-t' || forms[0].endsWith('-t'))) {
       const neuterForm = applyEnding(baseWord, forms[0]);
-      addRelationship(
-        baseWord,
-        neuterForm,
-        'adverbial_form_da' as RelationshipType,
-      );
+      addRelationship(baseWord, neuterForm, 'adverbial_form_da' as const);
     }
     // For invariable adjectives, use the base word
     else if (forms[0] === '-') {
-      addRelationship(
-        baseWord,
-        baseWord,
-        'adverbial_form_da' as RelationshipType,
-      );
+      addRelationship(baseWord, baseWord, 'adverbial_form_da' as const);
     }
   }
 }
@@ -560,7 +500,7 @@ function processVerbForms(
       relationships.push({
         baseWord,
         relatedWord: presentForm,
-        relationshipType: 'present_tense_da' as RelationshipType,
+        relationshipType: 'present_tense_da' as const,
       });
     }
 
@@ -570,7 +510,7 @@ function processVerbForms(
       relationships.push({
         baseWord,
         relatedWord: pastForm,
-        relationshipType: 'past_tense_da' as RelationshipType,
+        relationshipType: 'past_tense_da' as const,
       });
     }
 
@@ -580,7 +520,7 @@ function processVerbForms(
       relationships.push({
         baseWord,
         relatedWord: pastParticipleForm,
-        relationshipType: 'past_participle_da' as RelationshipType,
+        relationshipType: 'past_participle_da' as const,
       });
     }
 
@@ -590,15 +530,15 @@ function processVerbForms(
       relationships.push({
         baseWord,
         relatedWord: imperativeForm,
-        relationshipType: 'imperative_da' as RelationshipType,
+        relationshipType: 'imperative_da' as const,
       });
     }
   } else {
     // For verbs with fewer forms, process what's available
     const relationshipTypes: RelationshipType[] = [
-      'present_tense_da' as RelationshipType,
-      'past_tense_da' as RelationshipType,
-      'past_participle_da' as RelationshipType,
+      'present_tense_da' as const,
+      'past_tense_da' as const,
+      'past_participle_da' as const,
     ];
 
     forms.forEach((form, index) => {
@@ -606,9 +546,9 @@ function processVerbForms(
         const relatedWord = applyEnding(baseWord, form);
         // Make sure we don't get undefined here by providing a fallback
         const relationshipType: RelationshipType =
-          index < relationshipTypes.length
-            ? (relationshipTypes[index] as RelationshipType)
-            : ('other_form_da' as RelationshipType);
+          index < relationshipTypes.length && relationshipTypes[index]
+            ? relationshipTypes[index]!
+            : RelationshipType.related; // Default to 'related' or a more specific default if appropriate
 
         relationships.push({
           baseWord,
@@ -655,7 +595,7 @@ function processNounForms(
     relationships.push({
       baseWord,
       relatedWord: definiteForm,
-      relationshipType: 'definite_form_da' as RelationshipType,
+      relationshipType: 'definite_form_da' as const,
     });
 
     // Add gender relationship based on ending or explicit gender
@@ -666,7 +606,7 @@ function processNounForms(
       relationships.push({
         baseWord,
         relatedWord: definiteForm,
-        relationshipType: 'common_gender_da' as RelationshipType,
+        relationshipType: 'common_gender_da' as const,
       });
     } else if (
       hasNeuterGender ||
@@ -676,7 +616,7 @@ function processNounForms(
       relationships.push({
         baseWord,
         relatedWord: definiteForm,
-        relationshipType: 'neuter_gender_da' as RelationshipType,
+        relationshipType: 'neuter_gender_da' as const,
       });
     }
   }
@@ -687,7 +627,7 @@ function processNounForms(
     relationships.push({
       baseWord,
       relatedWord: pluralForm,
-      relationshipType: 'plural_da' as RelationshipType,
+      relationshipType: 'plural_da' as const,
     });
   }
 
@@ -697,7 +637,7 @@ function processNounForms(
     relationships.push({
       baseWord,
       relatedWord: pluralDefiniteForm,
-      relationshipType: 'plural_definite_da' as RelationshipType,
+      relationshipType: 'plural_definite_da' as const,
     });
   }
 }
@@ -803,28 +743,28 @@ function processAdjectiveContextualForms(
         addRelationship(
           baseWord,
           relatedWord,
-          'neuter_form_da' as RelationshipType,
+          'neuter_form_da' as const,
           usageNote,
         );
       } else if (formEntry === '-e' || formEntry.endsWith('-e')) {
         addRelationship(
           baseWord,
           relatedWord,
-          'plural_definite_da' as RelationshipType,
+          'plural_definite_da' as const,
           usageNote,
         );
       } else if (formEntry === '-ere' || formEntry.endsWith('-ere')) {
         addRelationship(
           baseWord,
           relatedWord,
-          'comparative_da' as RelationshipType,
+          'comparative_da' as const,
           usageNote,
         );
       } else if (formEntry === '-est' || formEntry.endsWith('-est')) {
         addRelationship(
           baseWord,
           relatedWord,
-          'superlative_da' as RelationshipType,
+          'superlative_da' as const,
           usageNote,
         );
       } else if (formEntry === '-mest' || formEntry.endsWith('-mest')) {
@@ -832,7 +772,7 @@ function processAdjectiveContextualForms(
         addRelationship(
           baseWord,
           actualWord,
-          'superlative_da' as RelationshipType,
+          'superlative_da' as const,
           usageNote,
         );
       }
@@ -922,9 +862,7 @@ function createRelatedWordModals(
       }
     }
     // Grammatical Form Match for Verbs
-    else if (
-      relationshipTypes.includes('present_tense_da' as RelationshipType)
-    ) {
+    else if (relationshipTypes.includes('present_tense_da' as const)) {
       const presentAudio = baseAudio.filter((audio) =>
         audio.word.includes('præsens'),
       );
@@ -934,9 +872,7 @@ function createRelatedWordModals(
           phoneticToUse = presentAudio[0].phonetic_audio;
         }
       }
-    } else if (
-      relationshipTypes.includes('past_tense_da' as RelationshipType)
-    ) {
+    } else if (relationshipTypes.includes('past_tense_da' as const)) {
       const pastAudio = baseAudio.filter(
         (audio) =>
           audio.word.includes('præteritum') &&
@@ -948,9 +884,7 @@ function createRelatedWordModals(
           phoneticToUse = pastAudio[0].phonetic_audio;
         }
       }
-    } else if (
-      relationshipTypes.includes('past_participle_da' as RelationshipType)
-    ) {
+    } else if (relationshipTypes.includes('past_participle_da' as const)) {
       const pastParticipleAudio = baseAudio.filter((audio) =>
         audio.word.includes('præteritum participium'),
       );
@@ -962,9 +896,7 @@ function createRelatedWordModals(
       }
     }
     // Grammatical Form Match for Pronouns
-    else if (
-      relationshipTypes.includes('neuter_pronoun_da' as RelationshipType)
-    ) {
+    else if (relationshipTypes.includes('neuter_pronoun_da' as const)) {
       const neuterAudio = baseAudio.filter(
         (audio) =>
           audio.word.includes('intetkøn') || audio.word.includes('neuter'),
@@ -975,9 +907,7 @@ function createRelatedWordModals(
           phoneticToUse = neuterAudio[0].phonetic_audio;
         }
       }
-    } else if (
-      relationshipTypes.includes('plural_pronoun_da' as RelationshipType)
-    ) {
+    } else if (relationshipTypes.includes('plural_pronoun_da' as const)) {
       const pluralAudio = baseAudio.filter(
         (audio) =>
           audio.word.includes('pluralis') || audio.word.includes('plural'),
@@ -1206,47 +1136,19 @@ function processPronounForms(
 
       // Determine relationship type based on common pronoun patterns
       if (formEntry === '-t' || relatedWord.endsWith('t')) {
-        addRelationship(
-          baseWord,
-          relatedWord,
-          'neuter_pronoun_da' as RelationshipType,
-        );
+        addRelationship(baseWord, relatedWord, 'neuter_pronoun_da' as const);
       } else if (formEntry === '-le' || relatedWord.endsWith('le')) {
-        addRelationship(
-          baseWord,
-          relatedWord,
-          'plural_pronoun_da' as RelationshipType,
-        );
+        addRelationship(baseWord, relatedWord, 'plural_pronoun_da' as const);
       } else if (formEntry === 'andet' || relatedWord === 'andet') {
-        addRelationship(
-          baseWord,
-          relatedWord,
-          'neuter_pronoun_da' as RelationshipType,
-        );
+        addRelationship(baseWord, relatedWord, 'neuter_pronoun_da' as const);
       } else if (formEntry === 'andre' || relatedWord === 'andre') {
-        addRelationship(
-          baseWord,
-          relatedWord,
-          'plural_pronoun_da' as RelationshipType,
-        );
+        addRelationship(baseWord, relatedWord, 'plural_pronoun_da' as const);
       } else if (formEntry === 'dette' || relatedWord === 'dette') {
-        addRelationship(
-          baseWord,
-          relatedWord,
-          'neuter_pronoun_da' as RelationshipType,
-        );
+        addRelationship(baseWord, relatedWord, 'neuter_pronoun_da' as const);
       } else if (formEntry === 'disse' || relatedWord === 'disse') {
-        addRelationship(
-          baseWord,
-          relatedWord,
-          'plural_pronoun_da' as RelationshipType,
-        );
+        addRelationship(baseWord, relatedWord, 'plural_pronoun_da' as const);
       } else if (formEntry === 'noget' || relatedWord === 'noget') {
-        addRelationship(
-          baseWord,
-          relatedWord,
-          'neuter_pronoun_da' as RelationshipType,
-        );
+        addRelationship(baseWord, relatedWord, 'neuter_pronoun_da' as const);
       }
       // More specific pronoun form patterns can be added here
     });
@@ -1273,7 +1175,7 @@ function processPronounForms(
             addRelationship(
               baseWord,
               relatedWord,
-              'contextual_usage_da' as RelationshipType,
+              'contextual_usage_da' as const,
               usageNote,
             );
           }
@@ -1285,7 +1187,7 @@ function processPronounForms(
           addRelationship(
             baseWord,
             relatedWord,
-            'plural_pronoun_da' as RelationshipType,
+            'plural_pronoun_da' as const,
             usageNote,
           );
         }

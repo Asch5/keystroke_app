@@ -154,6 +154,23 @@ enum RelationshipType {
 
   pronoun_accusative_da
   pronoun_genitive_da
+
+  //new relations
+  genitive_form_da
+  common_gender_da
+  neuter_gender_da
+
+  neuter_form_da
+
+  adverbial_form_da
+
+  other_form_da
+
+  neuter_pronoun_da
+  plural_pronoun_da
+
+  contextual_usage_da
+
 }
 
 enum SourceType {

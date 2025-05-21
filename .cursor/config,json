@@ -1,28 +1,28 @@
 {
-    "rules": {
-        "bestPractices": true,
-        "latestVersions": {
-            "react": "^19.0.0",
-            "next": "15.2.1-canary.5"
-        },
-        "documentationLinks": {
-            "react": "https://react.dev",
-            "next": "https://nextjs.org/docs",
-            "prisma": "https://www.prisma.io/docs",
-            "next-auth": "https://authjs.dev/getting-started/installation?framework=next-js",
-            "vercel": "https://vercel.com/docs",
-            "Redux": "https://redux.js.org/introduction/getting-started",
-            "shadcn": "https://ui.shadcn.com/docs",
-            "TypeScript": "https://www.typescriptlang.org/docs/",
-            "Redux Toolkit": "https://redux-toolkit.js.org/introduction/getting-started",
-            "Zod": "https://zod.dev/",
-            "TailwindCSS": "https://tailwindcss.com/docs",
-            "Vercel AI SDK": "https://sdk.vercel.ai/docs/introduction",
-            "Vercel Blob": "https://vercel.com/docs/blob/introduction",
-            "Vercel Postgres": "https://vercel.com/docs/postgres/introduction",
-            "Redux Persist": "https://www.npmjs.com/package/redux-persist",
-            "ESLint": "https://eslint.org/docs/latest/rules/"
-        },
-        "comments": true
-    }
+  "rules": {
+    "bestPractices": true,
+    "latestVersions": {
+      "react": "^19.0.0",
+      "next": "^15.3.2"
+    },
+    "documentationLinks": {
+      "react": "https://react.dev",
+      "next": "https://nextjs.org/docs",
+      "prisma": "https://www.prisma.io/docs",
+      "next-auth": "https://authjs.dev/getting-started/installation?framework=next-js",
+      "vercel": "https://vercel.com/docs",
+      "Redux": "https://redux.js.org/introduction/getting-started",
+      "shadcn": "https://ui.shadcn.com/docs",
+      "TypeScript": "https://www.typescriptlang.org/docs/",
+      "Redux Toolkit": "https://redux-toolkit.js.org/introduction/getting-started",
+      "Zod": "https://zod.dev/",
+      "TailwindCSS": "https://tailwindcss.com/docs",
+      "Vercel AI SDK": "https://sdk.vercel.ai/docs/introduction",
+      "Vercel Blob": "https://vercel.com/docs/blob/introduction",
+      "Vercel Postgres": "https://vercel.com/docs/postgres/introduction",
+      "Redux Persist": "https://www.npmjs.com/package/redux-persist",
+      "ESLint": "https://eslint.org/docs/latest/rules/"
+    },
+    "comments": true
+  }
 }

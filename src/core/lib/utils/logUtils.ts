@@ -1,6 +1,3 @@
-import fs from 'fs/promises'; // Import for async file operations
-import path from 'path'; // For handling file paths
-
 export enum LogLevel {
   INFO = 'INFO',
   WARN = 'WARN',
@@ -8,7 +5,8 @@ export enum LogLevel {
 }
 
 /**
- * Logs a message on the server side with a timestamp and optional context.
+ * Logs a message with a timestamp and optional context.
+ * This version is safe to use in both client and server code.
  * @param message The message to log.
  * @param level The log level (INFO, WARN, ERROR). Defaults to INFO.
  * @param context Optional context data to include with the log.
@@ -33,16 +31,7 @@ export function serverLog(
     }
   }
 
-  // Write to log file asynchronously
-  const logFilePath = path.join(process.cwd(), 'logs', 'server.log'); // Path relative to project root
-  const logEntry = `${logOutput}\n`; // Add newline for each entry
-
-  fs.mkdir(path.dirname(logFilePath), { recursive: true }) // Ensure directory exists
-    .then(() => fs.appendFile(logFilePath, logEntry))
-    .catch((err) => {
-      console.error(`[${timestamp}] [ERROR] Failed to write to log file:`, err);
-    });
-
+  // Console logging based on level
   switch (level) {
     case LogLevel.WARN:
       console.warn(logOutput);

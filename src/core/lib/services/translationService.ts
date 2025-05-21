@@ -41,6 +41,7 @@ export class TranslationService {
           word_translation: '',
           phonetic_translation: '',
           sourceTranslator: 'Helsinki-NLP',
+          word_variants: [],
           relatedWords: relatedWords.map((related) => ({
             type: related.type,
             word: related.word,

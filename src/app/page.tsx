@@ -1,6 +1,6 @@
 'use client';
 
-import { ModeToggle } from '@/components/theme/theme-toggle';
+import { ModeToggle } from '@/components/theme/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -16,6 +16,12 @@ import { useSession } from 'next-auth/react';
 import { RoleGate } from '@/components/auth/RoleGate';
 import AuthStatus from '@/components/AuthStatus';
 
+/**
+ * Home page component.
+ * Displays the main landing page with navigation, hero section, features, and call to action.
+ *
+ * @returns {JSX.Element} The home page UI.
+ */
 export default function Home() {
   const { data: session } = useSession();
 

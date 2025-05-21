@@ -22,10 +22,6 @@ const nextConfig = {
       },
     ],
   },
-  // Experimental features
-  experimental: {
-    ppr: 'incremental',
-  },
   // Enable verbose logging for debugging
   logging: {
     fetches: {

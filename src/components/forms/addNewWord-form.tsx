@@ -6,6 +6,7 @@ import {
   processAllWords,
   processOneWord,
 } from '@/core/lib/db/processMerriamApi';
+import { processDanishVariantOnServer } from '@/core/lib/actions/danishWordActions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -25,16 +26,55 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/core/lib/utils';
 import { Upload } from 'lucide-react';
 import { DatabaseCleanupDialog } from '../DatabaseCleanupDialog';
+import { DanishDictionaryObject } from '@/core/types/translationDanishTypes';
+import { logToFile } from '@/core/lib/server/serverLogger';
+import { LogLevel } from '@/core/lib/utils/logUtils';
 
 interface ProcessedWord {
   word: string;
   timestamp: Date;
   status: 'added' | 'existed';
+  language?: 'en' | 'da';
+  phonetic?: string | null;
+  stems?: string[];
+  definitions?: {
+    id: number;
+    partOfSpeech: string;
+    definition: string;
+    examples: { id: number; example: string }[];
+  }[];
+}
+
+async function getWordsFromDanishDictionary(
+  words: string[],
+): Promise<DanishDictionaryObject[]> {
+  try {
+    const response = await fetch(
+      'http://localhost:5000/get_danish_definitions',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(words),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching Danish definitions:', error);
+    throw error;
+  }
 }
 
 export default function AddNewWordForm() {
   const [loading, setLoading] = useState(false);
   const [word, setWord] = useState('');
+  const [language, setLanguage] = useState<'en' | 'da'>('en');
   const [dictionaryType, setDictionaryType] = useState('learners');
   const [processOneWordOnly, setProcessOneWordOnly] = useState(true);
   const [processedWords, setProcessedWords] = useState<ProcessedWord[]>([]);
@@ -48,136 +88,209 @@ export default function AddNewWordForm() {
     }
 
     try {
-      // Create FormData to match the existing function signature
-      const formData = new FormData();
-      formData.append('word', wordToProcess);
-      formData.append('dictionaryType', dictionaryType);
+      if (language === 'en') {
+        const formData = new FormData();
+        formData.append('word', wordToProcess);
+        formData.append('dictionaryType', dictionaryType);
 
-      const result = await getWordFromMerriamWebster(
-        {
-          message: null,
-          errors: { word: [] },
-        },
-        formData,
-      );
+        const result = await getWordFromMerriamWebster(
+          {
+            message: null,
+            errors: { word: [] },
+          },
+          formData,
+        );
 
-      if (result.data && result.data.length > 0) {
-        // If "Process only one word" is checked, we're just processing the first object
-        // (which could contain multiple related forms of the same word)
-        if (processOneWordOnly) {
-          // Check if the main word already exists
-          const firstEntry = result.data[0];
-          const mainId = firstEntry?.meta?.id;
-          const mainUuid = firstEntry?.meta?.uuid;
-          if (mainId && mainUuid) {
-            const existingWord = await checkWordExistsByUuid(mainId, mainUuid);
-
-            if (existingWord) {
-              toast.info(
-                `The word "${wordToProcess}" already exists in the dictionary.`,
+        if (result.data && result.data.length > 0) {
+          if (processOneWordOnly) {
+            const firstEntry = result.data[0];
+            const mainId = firstEntry?.meta?.id;
+            const mainUuid = firstEntry?.meta?.uuid;
+            if (mainId && mainUuid) {
+              const existingWord = await checkWordExistsByUuid(
+                mainId,
+                mainUuid,
               );
+
+              if (existingWord) {
+                toast.info(
+                  `The word "${wordToProcess}" already exists in the dictionary.`,
+                );
+                setProcessedWords((prev) => [
+                  {
+                    word: firstEntry?.meta?.id || wordToProcess,
+                    timestamp: new Date(),
+                    status: 'existed',
+                    language: 'en',
+                  },
+                  ...prev,
+                ]);
+                return null;
+              }
+            }
+
+            if (firstEntry) {
+              await processOneWord(firstEntry);
+              toast.success(
+                `Added "${wordToProcess}" and its related forms to the dictionary.`,
+              );
+
               setProcessedWords((prev) => [
                 {
                   word: firstEntry?.meta?.id || wordToProcess,
                   timestamp: new Date(),
-                  status: 'existed',
+                  status: 'added',
+                  language: 'en',
                 },
                 ...prev,
               ]);
-              return null;
             }
-          }
+          } else {
+            let allExist = true;
+            let someExist = false;
+            const existsMap = new Map<string, boolean>();
 
-          // Process only the first entry (which includes the main word and its related forms)
-          if (firstEntry) {
-            await processOneWord(firstEntry);
-            toast.success(
-              `Added "${wordToProcess}" and its related forms to the dictionary.`,
-            );
+            for (const entry of result.data) {
+              const uuid = entry?.meta?.uuid;
+              const wordId = entry?.meta?.id;
 
-            // Add to processed words
-            setProcessedWords((prev) => [
-              {
-                word: firstEntry?.meta?.id || wordToProcess,
-                timestamp: new Date(),
-                status: 'added',
-              },
-              ...prev,
-            ]);
-          }
-        } else {
-          // Process all entries from the result data
-          // Check if any of the words already exist
-          let allExist = true;
-          let someExist = false;
-          const existsMap = new Map<string, boolean>();
+              if (uuid) {
+                const exists = await checkWordExistsByUuid(wordId, uuid);
+                existsMap.set(wordId, !!exists);
 
-          for (const entry of result.data) {
-            const uuid = entry?.meta?.uuid;
-            const wordId = entry?.meta?.id;
-
-            if (uuid) {
-              const exists = await checkWordExistsByUuid(wordId, uuid);
-              existsMap.set(wordId, !!exists);
-
-              if (exists) {
-                someExist = true;
-              } else {
-                allExist = false;
+                if (exists) {
+                  someExist = true;
+                } else {
+                  allExist = false;
+                }
               }
             }
-          }
 
-          if (allExist) {
-            toast.info(
-              `All words related to "${wordToProcess}" already exist in the dictionary.`,
-            );
+            if (allExist) {
+              toast.info(
+                `All words related to "${wordToProcess}" already exist in the dictionary.`,
+              );
 
-            // Add to processed words
+              const newProcessedWords: ProcessedWord[] = result.data.map(
+                (entry) => ({
+                  word: entry?.meta?.id || wordToProcess,
+                  timestamp: new Date(),
+                  status: 'existed',
+                  language: 'en',
+                }),
+              );
+
+              setProcessedWords((prev) => [...newProcessedWords, ...prev]);
+              return null;
+            }
+
+            await processAllWords(result.data);
+
             const newProcessedWords: ProcessedWord[] = result.data.map(
-              (entry) => ({
-                word: entry?.meta?.id || wordToProcess,
-                timestamp: new Date(),
-                status: 'existed',
-              }),
+              (entry) => {
+                const wordId = entry?.meta?.id || wordToProcess;
+                return {
+                  word: wordId,
+                  timestamp: new Date(),
+                  status: existsMap.get(wordId) ? 'existed' : 'added',
+                  language: 'en',
+                };
+              },
             );
 
             setProcessedWords((prev) => [...newProcessedWords, ...prev]);
+
+            if (someExist) {
+              toast.success(
+                `Added new words related to "${wordToProcess}" to the dictionary. Some were already present.`,
+              );
+            } else {
+              toast.success(
+                `Added ${result.data.length} word entries to the dictionary.`,
+              );
+            }
+          }
+
+          return result;
+        } else {
+          toast.error(`No words found for "${wordToProcess}"`);
+          return null;
+        }
+      } else {
+        try {
+          const danishResult = await getWordsFromDanishDictionary([
+            wordToProcess,
+          ]);
+
+          logToFile(
+            `Danish result for "${wordToProcess}":`,
+            LogLevel.INFO,
+            danishResult,
+          );
+
+          if (!danishResult || danishResult.length === 0) {
+            toast.error(`No Danish definitions found for "${wordToProcess}"`);
             return null;
           }
 
-          // Process all words
-          await processAllWords(result.data);
+          const wordsToProccess = processOneWordOnly
+            ? [danishResult[0]]
+            : danishResult;
 
-          // Add to processed words
-          const newProcessedWords: ProcessedWord[] = result.data.map(
-            (entry) => {
-              const wordId = entry?.meta?.id || wordToProcess;
-              return {
-                word: wordId,
-                timestamp: new Date(),
-                status: existsMap.get(wordId) ? 'existed' : 'added',
-              };
-            },
+          for (const danishWordData of wordsToProccess) {
+            if (
+              danishWordData &&
+              danishWordData.variants &&
+              danishWordData.variants.length > 0
+            ) {
+              for (const variant of danishWordData.variants) {
+                if (variant) {
+                  const serverResult = await processDanishVariantOnServer(
+                    variant,
+                    wordToProcess,
+                  );
+
+                  if (serverResult.status === 'added') {
+                    setProcessedWords((prev) => [
+                      {
+                        word: serverResult.wordDisplay,
+                        timestamp: new Date(),
+                        status: 'added',
+                        language: 'da',
+                      },
+                      ...prev,
+                    ]);
+                  } else {
+                    toast.error(
+                      `Failed to process Danish variant ${serverResult.wordDisplay}. ${serverResult.error ? `Error: ${serverResult.error}` : ''}`,
+                    );
+                  }
+                }
+              }
+            }
+          }
+          // Ensure we only work with actual DanishDictionaryObject instances
+          const validWordsToProcess = wordsToProccess.filter(
+            (item): item is DanishDictionaryObject => Boolean(item),
           );
 
-          setProcessedWords((prev) => [...newProcessedWords, ...prev]);
-
-          if (someExist) {
+          if (
+            validWordsToProcess.length > 0 &&
+            validWordsToProcess.some((d) => d.variants && d.variants.length > 0)
+          ) {
             toast.success(
-              `Added new words related to "${wordToProcess}" to the dictionary. Some were already present.`,
+              `Processed Danish word "${wordToProcess}" and its variants.`,
             );
-          } else {
-            toast.success(
-              `Added ${result.data.length} word entries to the dictionary.`,
+          } else if (validWordsToProcess.length > 0) {
+            toast.info(
+              `No specific variants found to process for Danish word "${wordToProcess}", but main entry might have been processed if applicable.`,
             );
           }
+        } catch (error) {
+          console.error('Error processing Danish word:', error);
+          toast.error(`Failed to process the Danish word "${wordToProcess}".`);
+          return null;
         }
-
-        return result;
-      } else {
-        toast.error(`No words found for "${wordToProcess}"`);
-        return null;
       }
     } catch (error) {
       console.error('Error processing word:', error);
@@ -303,24 +416,42 @@ export default function AddNewWordForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="dictionaryType">Dictionary Type</Label>
+                  <Label htmlFor="language">Language</Label>
                   <Select
-                    value={dictionaryType}
-                    onValueChange={setDictionaryType}
+                    value={language}
+                    onValueChange={(value) => setLanguage(value as 'en' | 'da')}
                   >
-                    <SelectTrigger id="dictionaryType">
-                      <SelectValue placeholder="Select dictionary" />
+                    <SelectTrigger id="language">
+                      <SelectValue placeholder="Select language" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="learners">
-                        Learner&apos;s Dictionary
-                      </SelectItem>
-                      <SelectItem value="intermediate">
-                        Intermediate Dictionary
-                      </SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="da">Danish</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+
+                {language === 'en' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="dictionaryType">Dictionary Type</Label>
+                    <Select
+                      value={dictionaryType}
+                      onValueChange={setDictionaryType}
+                    >
+                      <SelectTrigger id="dictionaryType">
+                        <SelectValue placeholder="Select dictionary" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="learners">
+                          Learner&apos;s Dictionary
+                        </SelectItem>
+                        <SelectItem value="intermediate">
+                          Intermediate Dictionary
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <div className="flex items-start space-x-3 rounded-md border p-4">
                   <Checkbox
@@ -353,24 +484,42 @@ export default function AddNewWordForm() {
             <TabsContent value="file">
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="dictionaryType">Dictionary Type</Label>
+                  <Label htmlFor="language">Language</Label>
                   <Select
-                    value={dictionaryType}
-                    onValueChange={setDictionaryType}
+                    value={language}
+                    onValueChange={(value) => setLanguage(value as 'en' | 'da')}
                   >
-                    <SelectTrigger id="dictionaryType">
-                      <SelectValue placeholder="Select dictionary" />
+                    <SelectTrigger id="language">
+                      <SelectValue placeholder="Select language" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="learners">
-                        Learner&apos;s Dictionary
-                      </SelectItem>
-                      <SelectItem value="intermediate">
-                        Intermediate Dictionary
-                      </SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="da">Danish</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+
+                {language === 'en' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="dictionaryType">Dictionary Type</Label>
+                    <Select
+                      value={dictionaryType}
+                      onValueChange={setDictionaryType}
+                    >
+                      <SelectTrigger id="dictionaryType">
+                        <SelectValue placeholder="Select dictionary" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="learners">
+                          Learner&apos;s Dictionary
+                        </SelectItem>
+                        <SelectItem value="intermediate">
+                          Intermediate Dictionary
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <div className="flex items-start space-x-3 rounded-md border p-4">
                   <Checkbox
@@ -451,6 +600,11 @@ export default function AddNewWordForm() {
                     <span className="ml-2 text-xs text-muted-foreground">
                       {processedWord.timestamp.toLocaleTimeString()}
                     </span>
+                    {processedWord.language && (
+                      <Badge variant="outline" className="ml-2">
+                        {processedWord.language === 'en' ? 'EN' : 'DA'}
+                      </Badge>
+                    )}
                   </div>
                   <Badge
                     variant={

@@ -24,6 +24,14 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+/**
+ * Root layout for the application.
+ * Sets up the HTML structure, global styles, fonts, and context providers.
+ *
+ * @param {Readonly<{ children: React.ReactNode }>} props - Props for the component.
+ * @param {React.ReactNode} props.children - The child components to render within the layout.
+ * @returns {JSX.Element} The root layout structure.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,10 +45,10 @@ export default function RootLayout({
         <AuthProvider>
           <ReduxProvider>
             <ThemeProvider
-              defaultTheme="system"
-              storageKey="ui-theme"
-              enableSystem
               attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
             >
               {children}
               <Toaster />

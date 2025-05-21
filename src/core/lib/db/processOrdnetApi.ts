@@ -669,8 +669,8 @@ export async function processAndSaveDanishWord(
         definitions: [],
         relationship: [
           {
-            fromWord: 'mainWord' as const,
-            toWord: 'subWord' as const,
+            fromWord: 'mainWordDetails' as const,
+            toWord: 'subWordDetails' as const,
             type: RelationshipType.stem,
           },
           {
@@ -940,6 +940,7 @@ export async function processAndSaveDanishWord(
     }
   }
 
+  //! Fixed expressions
   if (
     danishWordData.fixed_expressions &&
     danishWordData.fixed_expressions.length > 0

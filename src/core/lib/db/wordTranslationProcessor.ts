@@ -1,3 +1,5 @@
+'use server';
+
 import {
   LanguageCode,
   Prisma,
@@ -12,6 +14,7 @@ import { processAndSaveDanishWord } from '@/core/lib/db/processOrdnetApi';
 import { prisma } from '@/core/lib/prisma';
 import { ProcessedWordData } from '@/core/types/dictionary';
 import type { WordVariant } from '@/core/types/translationDanishTypes';
+import { logToFile } from '../server/serverLogger';
 
 /**
  * Process translations for a word and its related data
@@ -236,7 +239,7 @@ export async function processTranslationsForWord(
  * @param variantData Raw variant data containing translations
  * @param tx Transaction client for database operations
  */
-async function processEnglishTranslationsForDanishWord(
+export async function processEnglishTranslationsForDanishWord(
   danishWordData: ProcessedWordData,
   variantData: WordVariant,
   tx: Prisma.TransactionClient,
@@ -246,7 +249,7 @@ async function processEnglishTranslationsForDanishWord(
 
     const danishWordId = danishWordData.word.id;
     if (!danishWordId) {
-      serverLog(
+      logToFile(
         `Missing Danish word ID (danishWordData.word.id) for translation processing.`,
         LogLevel.WARN,
       );
@@ -260,7 +263,7 @@ async function processEnglishTranslationsForDanishWord(
 
         const defId = danishWordData.definitions?.[i]?.id;
         if (!defId) {
-          serverLog(
+          logToFile(
             `Missing definition ID for Danish definition index ${i}`,
             LogLevel.WARN,
           );

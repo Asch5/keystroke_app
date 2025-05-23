@@ -257,3 +257,8 @@ export interface WordData {
   examples?: Record<number, ExampleUpdateData[]>;
   relatedWords?: Record<RelationshipType, RelatedWordUpdateData[]>;
 }
+
+// ===== BACKWARD COMPATIBILITY LAYER =====
+// Re-export new domain types for seamless transition
+// Note: Domain types are available at @/core/domains/dictionary/types
+// This maintains 100% backward compatibility while new code can use clean domain imports

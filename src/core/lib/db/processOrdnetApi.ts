@@ -138,45 +138,131 @@ async function processAudioForWord(
   tx: Prisma.TransactionClient,
   wordDetailsId: number,
   audioFiles: AudioFile[],
-  isPrimary: boolean = false,
+  isPrimaryArg: boolean = false,
   languageCode: LanguageCode = LanguageCode.en,
   source: SourceType = SourceType.merriam_learners,
 ): Promise<void> {
-  for (const [index, audioFile] of audioFiles.entries()) {
-    // Use upsert instead of create to handle duplicate audio URLs
+  if (!audioFiles || audioFiles.length === 0) {
+    return;
+  }
+
+  // Determine which audio file will be primary, if any
+  let primaryAudioCandidate: AudioFile | null = null;
+  if (isPrimaryArg && audioFiles.length > 0) {
+    primaryAudioCandidate = audioFiles[0] || null;
+  }
+
+  // Determine which audio file will be non-primary, if any
+  // It must be different from the primary candidate and we only take one.
+  let nonPrimaryAudioCandidate: AudioFile | null = null;
+  for (let i = 0; i < audioFiles.length; i++) {
+    // If isPrimaryArg is true and i is 0, this is the primary candidate.
+    // So, a non-primary candidate must not be this one.
+    if (isPrimaryArg && i === 0) {
+      continue;
+    }
+    nonPrimaryAudioCandidate = audioFiles[i] || null;
+    break; // Take the first available non-primary
+  }
+
+  // 1. Handle Primary Audio
+  if (primaryAudioCandidate) {
     const audio = await tx.audio.upsert({
       where: {
-        url_languageCode: {
-          url: audioFile.url,
-          languageCode: languageCode,
-        },
+        url_languageCode: { url: primaryAudioCandidate.url, languageCode },
       },
-      update: {}, // No updates needed if it already exists
       create: {
-        url: audioFile.url,
-        source: source,
+        url: primaryAudioCandidate.url,
         languageCode: languageCode,
-        note: audioFile.note || null,
+        source: source,
+        note: primaryAudioCandidate.note || primaryAudioCandidate.word || null,
+      },
+      update: {
+        source: source,
+        note: primaryAudioCandidate.note || primaryAudioCandidate.word || null,
       },
     });
 
-    // Link audio to word details
-    await tx.wordDetailsAudio.upsert({
+    // Demote any existing primary audio for this wordDetailsId that is not the current audio.
+    await tx.wordDetailsAudio.updateMany({
       where: {
-        wordDetailsId_audioId: {
-          wordDetailsId,
-          audioId: audio.id,
-        },
+        wordDetailsId: wordDetailsId,
+        isPrimary: true,
+        NOT: { audioId: audio.id },
       },
-      update: {
-        isPrimary: isPrimary && index === 0, // Update primary status if it exists
-      },
-      create: {
-        wordDetailsId,
-        audioId: audio.id,
-        isPrimary: isPrimary && index === 0, // Only first audio file is primary if isPrimary is true
-      },
+      data: { isPrimary: false },
     });
+
+    // Upsert the designated primary audio.
+    // This ensures it's correctly linked and marked as primary.
+    // If it was previously non-primary, its status will be updated.
+    await tx.wordDetailsAudio.upsert({
+      where: { wordDetailsId_audioId: { wordDetailsId, audioId: audio.id } },
+      update: { isPrimary: true },
+      create: { wordDetailsId, audioId: audio.id, isPrimary: true },
+    });
+  }
+
+  // 2. Handle Non-Primary Audio
+  if (nonPrimaryAudioCandidate) {
+    // Ensure it's not the same audio file that was just processed as primary
+    if (
+      primaryAudioCandidate &&
+      primaryAudioCandidate.url === nonPrimaryAudioCandidate.url
+    ) {
+      // This audio was already processed as primary, so nothing to do here.
+    } else {
+      const audio = await tx.audio.upsert({
+        where: {
+          url_languageCode: { url: nonPrimaryAudioCandidate.url, languageCode },
+        },
+        create: {
+          url: nonPrimaryAudioCandidate.url,
+          languageCode: languageCode,
+          source: source,
+          note:
+            nonPrimaryAudioCandidate.note ||
+            nonPrimaryAudioCandidate.word ||
+            null,
+        },
+        update: {
+          source: source,
+          note:
+            nonPrimaryAudioCandidate.note ||
+            nonPrimaryAudioCandidate.word ||
+            null,
+        },
+      });
+
+      // Check if a different non-primary audio already exists for this wordDetailsId.
+      const existingOtherNonPrimary = await tx.wordDetailsAudio.findFirst({
+        where: {
+          wordDetailsId: wordDetailsId,
+          isPrimary: false,
+          NOT: { audioId: audio.id }, // Exclude the current audio itself
+        },
+      });
+
+      if (existingOtherNonPrimary) {
+        // If a different non-primary audio exists, remove its link to make way for the new one.
+        await tx.wordDetailsAudio.delete({
+          where: {
+            wordDetailsId_audioId: {
+              wordDetailsId: existingOtherNonPrimary.wordDetailsId,
+              audioId: existingOtherNonPrimary.audioId,
+            },
+          },
+        });
+      }
+
+      // Upsert the designated non-primary audio.
+      // If this audio was previously primary, this will update it to non-primary.
+      await tx.wordDetailsAudio.upsert({
+        where: { wordDetailsId_audioId: { wordDetailsId, audioId: audio.id } },
+        update: { isPrimary: false },
+        create: { wordDetailsId, audioId: audio.id, isPrimary: false },
+      });
+    }
   }
 }
 
@@ -218,7 +304,7 @@ async function upsertWord(
     }
   }
 
-  // Create word record
+  // Create word record (etymology removed from here)
   const word = await tx.word.upsert({
     where: {
       word_languageCode: {
@@ -227,7 +313,6 @@ async function upsertWord(
       },
     },
     update: {
-      etymology: options?.etymology ?? null,
       sourceEntityId: options?.sourceEntityId ?? null,
       updatedAt: new Date(),
       isHighlighted: options?.isHighlighted ?? false,
@@ -238,7 +323,6 @@ async function upsertWord(
       word: wordText,
       phoneticGeneral: options?.phonetic ?? null,
       languageCode,
-      etymology: options?.etymology ?? null,
       sourceEntityId: options?.sourceEntityId ?? null,
       isHighlighted: options?.isHighlighted ?? false,
       frequencyGeneral: frequencyGeneral ?? null,
@@ -257,6 +341,10 @@ async function upsertWord(
     false,
     options?.variant ?? '', // Ensure this is an empty string for the variant argument
     options?.phonetic ?? null,
+    null, // frequency will be fetched in upsertWordDetails
+    null, // gender
+    null, // forms
+    options?.etymology ?? null, // Pass etymology to WordDetails
   );
   serverLog(
     `From upsertWord in processMerriamApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
@@ -285,7 +373,7 @@ async function upsertWord(
 async function upsertWordDetails(
   tx: Prisma.TransactionClient,
   wordId: number,
-  partOfSpeech: PartOfSpeech | null,
+  partOfSpeech: PartOfSpeech | null, // Input can be null or a specific PoS
   source: SourceType = SourceType.user,
   isPlural: boolean = false,
   variant: string = '',
@@ -293,15 +381,16 @@ async function upsertWordDetails(
   frequency: number | null = null,
   gender: Gender | null = null,
   forms: string | null = null,
+  etymology: string | null = null,
 ): Promise<{ id: number; wordId: number; partOfSpeech: PartOfSpeech }> {
-  // Ensure we have a valid part of speech, using the API's part of speech if available
-  const pos: PartOfSpeech = partOfSpeech || PartOfSpeech.undefined;
+  // Determine the definitive PartOfSpeech to be persisted in the DB for this operation.
+  // If the input `partOfSpeech` is null, PartOfSpeech.undefined is used.
+  const dbPoSToPersist: PartOfSpeech = partOfSpeech || PartOfSpeech.undefined;
 
-  // Fetch the word text for frequency lookup if frequency is not provided
+  // Fetch frequency data using dbPoSToPersist for an accurate lookup.
   let posFrequency = frequency;
   if (posFrequency === null || posFrequency === undefined) {
     try {
-      // Get the word text from the database
       const wordRecord = await tx.word.findUnique({
         where: { id: wordId },
         select: { word: true, languageCode: true },
@@ -312,11 +401,9 @@ async function upsertWordDetails(
           wordRecord.word,
           wordRecord.languageCode as LanguageCode,
         );
-
-        posFrequency = getPartOfSpeechFrequency(frequencyData, pos);
-
+        posFrequency = getPartOfSpeechFrequency(frequencyData, dbPoSToPersist);
         serverLog(
-          `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${pos}: ${posFrequency}`,
+          `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${dbPoSToPersist}: ${posFrequency}`,
           LogLevel.INFO,
         );
       }
@@ -329,18 +416,18 @@ async function upsertWordDetails(
     }
   }
 
-  // Create or find the WordDetails record
+  // Upsert the WordDetails record with the definitive dbPoSToPersist.
   const wordDetails = await tx.wordDetails.upsert({
     where: {
       wordId_partOfSpeech_variant: {
         wordId,
-        partOfSpeech: pos,
+        partOfSpeech: dbPoSToPersist,
         variant: variant || '',
       },
     },
     create: {
       wordId,
-      partOfSpeech: pos,
+      partOfSpeech: dbPoSToPersist,
       phonetic: phonetic,
       variant: variant,
       isPlural,
@@ -348,16 +435,33 @@ async function upsertWordDetails(
       frequency: posFrequency,
       gender: gender,
       forms: forms,
+      etymology: etymology,
     },
     update: {
-      isPlural: isPlural ?? undefined,
-      ...(phonetic !== null && { phonetic: phonetic }),
-      ...(source !== null && { source: source }),
-      ...(posFrequency !== null && { frequency: posFrequency }),
-      ...(gender !== null && { gender: gender }),
-      ...(forms !== null && { forms: forms }),
+      // Update all relevant non-key fields.
+      // PoS is part of the where clause, so it matches the target state or creates it.
+      isPlural: isPlural,
+      phonetic: phonetic !== null ? phonetic : null, // Explicitly set, even if null, to clear existing values if needed
+      source: source !== 'user' ? source : SourceType.user,
+      frequency: posFrequency !== null ? posFrequency : null,
+      gender: gender !== null ? gender : null,
+      forms: forms !== null ? forms : null,
+      etymology: etymology !== null ? etymology : null,
     },
   });
+
+  // After ensuring the target PoS record exists and is up-to-date,
+  // clean up any alternative PoS state for the same wordId and variant.
+  if (dbPoSToPersist !== PartOfSpeech.undefined) {
+    // A specific PoS was persisted, so remove any lingering Undefined PoS record.
+    await tx.wordDetails.deleteMany({
+      where: {
+        wordId: wordId,
+        variant: variant || '',
+        partOfSpeech: PartOfSpeech.undefined,
+      },
+    });
+  }
 
   return wordDetails;
 }
@@ -468,7 +572,7 @@ export async function processAndSaveDanishWord(
   const audioFiles = danishWordData.word.audio || [];
   const etymology = danishWordData.word.etymology;
   const variant = danishWordData.word.variant || '';
-  const sourceEntityId = `${source}-${mainWordText}-${partOfSpeech}-${variant}`;
+  const sourceEntityId = `${source}-${mainWordText}-${partOfSpeech}-(${variant})-(${danishWordData.word.forms.join(',')})`;
   let frequencyGeneral = null;
   let frequency = null;
   try {
@@ -502,11 +606,47 @@ export async function processAndSaveDanishWord(
       audioFiles: (() => {
         const files: AudioFile[] = [];
         if (source === SourceType.danish_dictionary && audioFiles.length > 0) {
-          files.push(
-            ...audioFiles
-              .filter((a) => a.word === 'grundform')
-              .map((a) => ({ url: a.audio_url })),
-          );
+          const eligibleAudioSourceEntries: typeof audioFiles = [];
+          let foundGrundform = false;
+          const allowedChainWords = ['', 'i sammensætning'];
+
+          for (let i = 0; i < audioFiles.length; i++) {
+            const currentSourceEntry = audioFiles[i];
+            if (!currentSourceEntry) continue; // Skip if entry is undefined
+
+            if (i === 0 && currentSourceEntry.word === 'grundform') {
+              eligibleAudioSourceEntries.push(currentSourceEntry);
+              foundGrundform = true;
+            } else if (
+              foundGrundform &&
+              currentSourceEntry.word !== null &&
+              allowedChainWords.includes(currentSourceEntry.word)
+            ) {
+              eligibleAudioSourceEntries.push(currentSourceEntry);
+            } else if (foundGrundform) {
+              // If grundform was found, but the current word is not in the allowed chain, stop.
+              break;
+            } else if (currentSourceEntry.word === 'grundform') {
+              // If grundform is found later in the list, start the chain from here.
+              eligibleAudioSourceEntries.length = 0; // Clear previous non-grundform entries
+              eligibleAudioSourceEntries.push(currentSourceEntry);
+              foundGrundform = true;
+            } else {
+              // Logic for cases where grundform is not yet found or chain is broken.
+              // If strict about starting only with the absolute first entry as grundform,
+              // and it wasn't, we might break or simply not populate eligibleAudioSourceEntries.
+              // The current setup allows finding a grundform later in the list and starting from there.
+            }
+          }
+
+          const mappedAudioFiles = eligibleAudioSourceEntries.map((entry) => ({
+            url: entry.audio_url,
+            word: entry.word || '',
+            audio_type: entry.audio_type || null,
+            phonetic_audio: entry.phonetic_audio || null,
+            note: entry.word || null,
+          }));
+          files.push(...mappedAudioFiles);
         }
         return files.length > 0 ? files : null;
       })(),
@@ -565,6 +705,7 @@ export async function processAndSaveDanishWord(
     }
   }
 
+  //! forms
   let subWordsArray: SubWordData[] = [];
   if (danishWordData.word) {
     const danishEntry = {
@@ -591,12 +732,7 @@ export async function processAndSaveDanishWord(
       })),
     };
     const formsData = transformDanishForms(danishEntry);
-    processedData.word.audioFiles = formsData.audio
-      ? formsData.audio.map((a) => ({
-          url: a.audio_url,
-          note: a.note || null,
-        }))
-      : null;
+
     subWordsArray = formsData.relatedWords.map((relatedWord) => {
       const formRelationshipType = relatedWord.relationships.find(
         (rel) =>
@@ -619,7 +755,7 @@ export async function processAndSaveDanishWord(
         audioFiles: relatedWord.audio
           ? relatedWord.audio.map((a) => ({
               url: a.audio_url,
-              note: a.note || null,
+              note: a.word || null,
             }))
           : null,
         usageNote:
@@ -658,6 +794,7 @@ export async function processAndSaveDanishWord(
     });
   }
 
+  //! stems
   if (danishWordData.stems && danishWordData.stems.length > 0) {
     for (const stem of danishWordData.stems) {
       subWordsArray.push({
@@ -669,8 +806,8 @@ export async function processAndSaveDanishWord(
         definitions: [],
         relationship: [
           {
-            fromWord: 'mainWordDetails' as const,
-            toWord: 'subWordDetails' as const,
+            fromWord: 'mainWord' as const,
+            toWord: 'subWord' as const,
             type: RelationshipType.stem,
           },
           {
@@ -684,46 +821,154 @@ export async function processAndSaveDanishWord(
     }
   }
 
-  if (danishWordData.synonyms && danishWordData.synonyms.length > 0) {
-    for (const synonym of danishWordData.synonyms) {
-      subWordsArray.push({
-        word: synonym,
-        languageCode: language,
-        source,
-        partOfSpeech: partOfSpeech,
-        definitions: [],
-        relationship: [
-          {
-            fromWord: 'mainWordDetails' as const,
-            toWord: 'subWordDetails' as const,
-            type: RelationshipType.synonym,
-          },
-        ],
-        sourceData: ['synonym'],
-      });
+  //! Process synonyms from labels of definitions
+  // Iterate over each definition of the main word
+  if (danishWordData.definition && danishWordData.definition.length > 0) {
+    for (const currentMainDef of danishWordData.definition) {
+      const synonymsFromLabels: string[] = [];
+      if (currentMainDef.labels) {
+        // Check 'Synonym' label
+        if (currentMainDef.labels.Synonym) {
+          if (typeof currentMainDef.labels.Synonym === 'string') {
+            synonymsFromLabels.push(currentMainDef.labels.Synonym);
+          } else if (Array.isArray(currentMainDef.labels.Synonym)) {
+            synonymsFromLabels.push(
+              ...currentMainDef.labels.Synonym.filter(
+                (s): s is string => typeof s === 'string',
+              ),
+            );
+          }
+        }
+
+        // Check 'Synonymer' label
+        if (currentMainDef.labels.Synonymer) {
+          if (typeof currentMainDef.labels.Synonymer === 'string') {
+            synonymsFromLabels.push(currentMainDef.labels.Synonymer);
+          } else if (Array.isArray(currentMainDef.labels.Synonymer)) {
+            synonymsFromLabels.push(
+              ...currentMainDef.labels.Synonymer.filter(
+                (s): s is string => typeof s === 'string',
+              ),
+            );
+          }
+        }
+      }
+
+      for (const synonym of synonymsFromLabels) {
+        if (synonym !== mainWordText) {
+          // Compare with the main word's text
+          subWordsArray.push({
+            word: synonym,
+            languageCode: language,
+            source,
+            partOfSpeech: null, // Use the main word's partOfSpeech
+            definitions: [], // Synonyms from labels typically don't have their own new definitions here
+            relationship: [
+              {
+                fromWord: 'mainWordDetails' as const, // Relate to the main word
+                toWord: 'subWordDetails' as const,
+                type: RelationshipType.synonym,
+              },
+            ],
+            sourceData: ['definition_label_synonym'], // Updated sourceData
+          });
+        }
+      }
+
+      //! Check 'Se også' label (Danish for "See also")
+      if (currentMainDef.labels['Se også']) {
+        const seOgsaValues: string[] = [];
+        if (typeof currentMainDef.labels['Se også'] === 'string') {
+          seOgsaValues.push(currentMainDef.labels['Se også'] as string);
+        } else if (Array.isArray(currentMainDef.labels['Se også'])) {
+          // If it's an array, filter for string values just in case, though typically expect string[]
+          seOgsaValues.push(
+            ...(currentMainDef.labels['Se også'] as string[]).filter(
+              (s): s is string => typeof s === 'string',
+            ),
+          );
+        }
+
+        for (const seOgsaWord of seOgsaValues) {
+          if (seOgsaWord !== mainWordText) {
+            subWordsArray.push({
+              word: seOgsaWord,
+              languageCode: language,
+              source,
+              partOfSpeech: null, // "Se også" can refer to various PoS, safer to set null or determine later
+              definitions: [],
+              relationship: [
+                {
+                  fromWord: 'mainWordDetails' as const,
+                  toWord: 'subWordDetails' as const,
+                  type: RelationshipType.synonym, // Treating "Se også" as a type of synonymy or close relation
+                },
+              ],
+              sourceData: ['definition_label_se_ogsa'],
+            });
+          }
+        }
+      }
     }
   }
 
-  if (danishWordData.antonyms && danishWordData.antonyms.length > 0) {
-    for (const antonym of danishWordData.antonyms) {
-      subWordsArray.push({
-        word: antonym,
-        languageCode: language,
-        source,
-        partOfSpeech: partOfSpeech,
-        definitions: [],
-        relationship: [
-          {
-            fromWord: 'mainWordDetails' as const,
-            toWord: 'subWordDetails' as const,
-            type: RelationshipType.antonym,
-          },
-        ],
-        sourceData: ['antonym'],
-      });
+  //! Process antonyms from labels of definitions
+  // Iterate over each definition of the main word
+  if (danishWordData.definition && danishWordData.definition.length > 0) {
+    for (const currentMainDef of danishWordData.definition) {
+      const antonymsFromLabels: string[] = [];
+      if (currentMainDef.labels) {
+        // Check 'Antonym' label
+        if (currentMainDef.labels.Antonym) {
+          if (typeof currentMainDef.labels.Antonym === 'string') {
+            antonymsFromLabels.push(currentMainDef.labels.Antonym);
+          } else if (Array.isArray(currentMainDef.labels.Antonym)) {
+            antonymsFromLabels.push(
+              ...currentMainDef.labels.Antonym.filter(
+                (s): s is string => typeof s === 'string',
+              ),
+            );
+          }
+        }
+
+        // Check 'Antonymer' label
+        if (currentMainDef.labels.Antonym) {
+          if (typeof currentMainDef.labels.Antonym === 'string') {
+            antonymsFromLabels.push(currentMainDef.labels.Antonym);
+          } else if (Array.isArray(currentMainDef.labels.Antonym)) {
+            antonymsFromLabels.push(
+              ...currentMainDef.labels.Antonym.filter(
+                (s): s is string => typeof s === 'string',
+              ),
+            );
+          }
+        }
+      }
+
+      for (const antonym of antonymsFromLabels) {
+        if (antonym !== mainWordText) {
+          // Compare with the main word's text
+          subWordsArray.push({
+            word: antonym,
+            languageCode: language,
+            source,
+            partOfSpeech: null, // Use the main word's partOfSpeech
+            definitions: [], // Antonyms from labels typically don't have their own new definitions here
+            relationship: [
+              {
+                fromWord: 'mainWordDetails' as const, // Relate to the main word
+                toWord: 'subWordDetails' as const,
+                type: RelationshipType.antonym,
+              },
+            ],
+            sourceData: ['definition_label_antonym'], // Updated sourceData
+          });
+        }
+      }
     }
   }
 
+  //! composition of main word
   if (danishWordData.compositions && danishWordData.compositions.length > 0) {
     const S_PATTERN = /^(.*)\(s\)(.*)$/;
     for (const composition of danishWordData.compositions) {
@@ -742,19 +987,7 @@ export async function processAndSaveDanishWord(
             phonetic: null,
             audioFiles: null,
             etymology: mainWordText,
-            definitions: [
-              {
-                source: source,
-                languageCode: language,
-                definition: `Compound form related to {it}${mainWordText}{/it}.`,
-                examples: [],
-                subjectStatusLabels: null,
-                generalLabels: null,
-                grammaticalNote: null,
-                usageNote: null,
-                isInShortDef: false,
-              },
-            ],
+            definitions: [],
             relationship: [
               {
                 fromWord: 'mainWord' as const,
@@ -782,19 +1015,7 @@ export async function processAndSaveDanishWord(
             phonetic: null,
             audioFiles: null,
             etymology: mainWordText,
-            definitions: [
-              {
-                source: source,
-                languageCode: language,
-                definition: `Compound form related to {it}${mainWordText}{/it}.`,
-                examples: [],
-                subjectStatusLabels: null,
-                generalLabels: null,
-                grammaticalNote: null,
-                usageNote: null,
-                isInShortDef: false,
-              },
-            ],
+            definitions: [],
             relationship: [
               {
                 fromWord: 'mainWord' as const,
@@ -827,19 +1048,7 @@ export async function processAndSaveDanishWord(
             phonetic: null,
             audioFiles: null,
             etymology: mainWordText,
-            definitions: [
-              {
-                source: source,
-                languageCode: language,
-                definition: `Compound form related to {it}${mainWordText}{/it}.`,
-                examples: [],
-                subjectStatusLabels: null,
-                generalLabels: null,
-                grammaticalNote: null,
-                usageNote: null,
-                isInShortDef: false,
-              },
-            ],
+            definitions: [],
             relationship: [
               {
                 fromWord: 'mainWord' as const,
@@ -864,19 +1073,7 @@ export async function processAndSaveDanishWord(
           phonetic: null,
           audioFiles: null,
           etymology: mainWordText,
-          definitions: [
-            {
-              source: source,
-              languageCode: language,
-              definition: `Compound form related to {it}${mainWordText}{/it}.`,
-              examples: [],
-              subjectStatusLabels: null,
-              generalLabels: null,
-              grammaticalNote: null,
-              usageNote: null,
-              isInShortDef: false,
-            },
-          ],
+          definitions: [],
           relationship: [
             {
               fromWord: 'mainWord' as const,
@@ -895,6 +1092,7 @@ export async function processAndSaveDanishWord(
     }
   }
 
+  //! variant of main word
   if (
     danishWordData.word.word_variants &&
     danishWordData.word.word_variants.length > 1
@@ -1033,34 +1231,6 @@ export async function processAndSaveDanishWord(
           sourceData: ['expression'],
         });
 
-        // Get any synonyms from the labels if they exist
-        const synonymsFromLabels: string[] = [];
-        if (defItem.labels) {
-          // Check 'Synonym' label which can be a string or array
-          if (defItem.labels.Synonym) {
-            if (typeof defItem.labels.Synonym === 'string') {
-              synonymsFromLabels.push(defItem.labels.Synonym);
-            } else if (Array.isArray(defItem.labels.Synonym)) {
-              synonymsFromLabels.push(
-                ...defItem.labels.Synonym.filter((s) => typeof s === 'string'),
-              );
-            }
-          }
-
-          // Check 'Synonymer' label which can be a string or array
-          if (defItem.labels.Synonymer) {
-            if (typeof defItem.labels.Synonymer === 'string') {
-              synonymsFromLabels.push(defItem.labels.Synonymer);
-            } else if (Array.isArray(defItem.labels.Synonymer)) {
-              synonymsFromLabels.push(
-                ...defItem.labels.Synonymer.filter(
-                  (s) => typeof s === 'string',
-                ),
-              );
-            }
-          }
-        }
-
         // Process variants (alternative forms) of the expression
         if (
           expression.expression_variants &&
@@ -1110,7 +1280,35 @@ export async function processAndSaveDanishWord(
           }
         }
 
-        // Process synonyms from labels
+        //! Process synonyms from labels of fixed expressions
+        // Get any synonyms from the labels if they exist
+        const synonymsFromLabels: string[] = [];
+        if (defItem.labels) {
+          // Check 'Synonym' label which can be a string or array
+          if (defItem.labels.Synonym) {
+            if (typeof defItem.labels.Synonym === 'string') {
+              synonymsFromLabels.push(defItem.labels.Synonym);
+            } else if (Array.isArray(defItem.labels.Synonym)) {
+              synonymsFromLabels.push(
+                ...defItem.labels.Synonym.filter((s) => typeof s === 'string'),
+              );
+            }
+          }
+
+          // Check 'Synonymer' label which can be a string or array
+          if (defItem.labels.Synonymer) {
+            if (typeof defItem.labels.Synonymer === 'string') {
+              synonymsFromLabels.push(defItem.labels.Synonymer);
+            } else if (Array.isArray(defItem.labels.Synonymer)) {
+              synonymsFromLabels.push(
+                ...defItem.labels.Synonymer.filter(
+                  (s) => typeof s === 'string',
+                ),
+              );
+            }
+          }
+        }
+
         for (const synonym of synonymsFromLabels) {
           if (synonym !== expression.expression) {
             // Skip self-reference
@@ -1118,20 +1316,8 @@ export async function processAndSaveDanishWord(
               word: synonym,
               languageCode: language,
               source,
-              partOfSpeech: PartOfSpeech.phrase,
-              definitions: [
-                {
-                  source: source.toString(),
-                  languageCode: language,
-                  definition: `Synonym of the phrase {it}${expression.expression}{/it}: ${defItem.definition}`,
-                  examples: [],
-                  subjectStatusLabels: null,
-                  generalLabels: null,
-                  grammaticalNote: null,
-                  usageNote: null,
-                  isInShortDef: false,
-                },
-              ],
+              partOfSpeech: null,
+              definitions: [],
               relationship: [
                 {
                   fromWord: expression.expression as RelationshipFromTo,
@@ -1141,6 +1327,89 @@ export async function processAndSaveDanishWord(
               ],
               sourceData: ['expression_synonym'],
             });
+          }
+        }
+
+        //! Process antonyms from labels of fixed expressions
+        const antonymsFromLabels: string[] = [];
+        if (defItem.labels) {
+          // Check 'Synonym' label which can be a string or array
+          if (defItem.labels.Synonym) {
+            if (typeof defItem.labels.Antonym === 'string') {
+              antonymsFromLabels.push(defItem.labels.Antonym);
+            } else if (Array.isArray(defItem.labels.Antonym)) {
+              antonymsFromLabels.push(
+                ...defItem.labels.Antonym.filter((s) => typeof s === 'string'),
+              );
+            }
+          }
+
+          // Check 'Antonymer' label which can be a string or array
+          if (defItem.labels.Antonym) {
+            if (typeof defItem.labels.Antonym === 'string') {
+              antonymsFromLabels.push(defItem.labels.Antonym);
+            } else if (Array.isArray(defItem.labels.Antonym)) {
+              antonymsFromLabels.push(
+                ...defItem.labels.Antonym.filter((s) => typeof s === 'string'),
+              );
+            }
+          }
+        }
+
+        for (const antonym of antonymsFromLabels) {
+          if (antonym !== expression.expression) {
+            // Skip self-reference
+            subWordsArray.push({
+              word: antonym,
+              languageCode: language,
+              source,
+              partOfSpeech: null,
+              definitions: [],
+              relationship: [
+                {
+                  fromWord: expression.expression as RelationshipFromTo,
+                  toWord: 'subWordDetails' as const,
+                  type: RelationshipType.antonym,
+                },
+              ],
+              sourceData: ['expression_antonym'],
+            });
+          }
+        }
+
+        //! Check 'Se også' label (Danish for "See also") for fixed expressions
+        if (defItem.labels && defItem.labels['Se også']) {
+          const seOgsaValues: string[] = [];
+          if (typeof defItem.labels['Se også'] === 'string') {
+            seOgsaValues.push(defItem.labels['Se også'] as string);
+          } else if (Array.isArray(defItem.labels['Se også'])) {
+            // If it's an array, filter for string values
+            seOgsaValues.push(
+              ...(defItem.labels['Se også'] as string[]).filter(
+                (s): s is string => typeof s === 'string',
+              ),
+            );
+          }
+
+          for (const seOgsaWord of seOgsaValues) {
+            if (seOgsaWord !== expression.expression) {
+              // Compare with the expression text
+              subWordsArray.push({
+                word: seOgsaWord,
+                languageCode: language,
+                source,
+                partOfSpeech: null, // "Se også" can refer to various PoS
+                definitions: [],
+                relationship: [
+                  {
+                    fromWord: expression.expression as RelationshipFromTo, // Relate to the current expression
+                    toWord: 'subWordDetails' as const,
+                    type: RelationshipType.synonym,
+                  },
+                ],
+                sourceData: ['expression_label_se_ogsa'], // Distinct sourceData
+              });
+            }
           }
         }
       }
@@ -1171,9 +1440,16 @@ export async function processAndSaveDanishWord(
       frequency,
       gender,
       processedData.word.forms,
+      processedData.word.etymology,
     );
 
     for (const definitionData of processedData.definitions) {
+      if (
+        definitionData.definition.split(' ').length === 1 &&
+        definitionData.definition.startsWith('se')
+      ) {
+        continue;
+      }
       const definition = await tx.definition.upsert({
         where: {
           definition_languageCode_source: {
@@ -1282,6 +1558,12 @@ export async function processAndSaveDanishWord(
       }
 
       for (const [defDataIndex, defData] of subWord.definitions.entries()) {
+        if (
+          defData.definition.split(' ').length === 1 &&
+          defData.definition.startsWith('se')
+        ) {
+          continue;
+        }
         const subWordDef = await tx.definition.upsert({
           where: {
             definition_languageCode_source: {
@@ -1323,6 +1605,13 @@ export async function processAndSaveDanishWord(
           subWordEntity.id,
           subWord.partOfSpeech || null,
           source,
+          false,
+          subWord.variant || '',
+          subWord.phonetic || null,
+          null,
+          subWord.gender || null,
+          subWord.forms || null,
+          subWord.etymology || null,
         );
         await tx.wordDefinition.upsert({
           where: {
@@ -1456,39 +1745,82 @@ export async function processAndSaveDanishWord(
             relation.type === RelationshipType.alternative_spelling; // Treat alt_spelling as details level
 
           if (createDetailsRelation) {
+            let resolvedFromWordDetailsId: number;
+            let resolvedToWordDetailsId: number;
+
+            // These are needed for sub-word details creation if not main word
             const isFromPlural =
               relation.type === RelationshipType.plural_da &&
+              fromWordId !== mainWord.id && // Only for actual sub-words
               fromWordPartOfSpeech === PartOfSpeech.noun;
             const isToPlural =
               relation.type === RelationshipType.plural_da &&
+              toWordId !== mainWord.id && // Only for actual sub-words
               toWordPartOfSpeech === PartOfSpeech.noun;
 
-            const fromWordDetails = await upsertWordDetails(
-              tx,
-              fromWordId,
-              fromWordPartOfSpeech,
-              source,
-              isFromPlural,
-            );
-            const toWordDetails = await upsertWordDetails(
-              tx,
-              toWordId,
-              toWordPartOfSpeech,
-              source,
-              isToPlural,
-            );
+            // Resolve fromWordDetailsId
+            if (
+              fromWordId === mainWord.id &&
+              fromWordPartOfSpeech === partOfSpeech
+            ) {
+              // This refers to the main word's canonical WordDetails entry
+              resolvedFromWordDetailsId = mainWordDetails.id;
+            } else {
+              // This refers to a sub-word or another word. Upsert its details.
+              // Assume empty variant for sub-words in this relationship context for now.
+              const subFromDetails = await upsertWordDetails(
+                tx,
+                fromWordId!,
+                fromWordPartOfSpeech,
+                source,
+                isFromPlural, // Use here
+                '', // Default empty variant for sub-words here
+                null, // phonetic
+                null, // frequency
+                null, // gender
+                null, // forms
+                null, // etymology
+              );
+              resolvedFromWordDetailsId = subFromDetails.id;
+            }
+
+            // Resolve toWordDetailsId
+            if (
+              toWordId === mainWord.id &&
+              toWordPartOfSpeech === partOfSpeech
+            ) {
+              // This refers to the main word's canonical WordDetails entry
+              resolvedToWordDetailsId = mainWordDetails.id;
+            } else {
+              // This refers to a sub-word or another word. Upsert its details.
+              // Assume empty variant for sub-words in this relationship context for now.
+              const subToDetails = await upsertWordDetails(
+                tx,
+                toWordId!,
+                toWordPartOfSpeech,
+                source,
+                isToPlural, // Use here
+                '', // Default empty variant for sub-words here
+                null, // phonetic
+                null, // frequency
+                null, // gender
+                null, // forms
+                null, // etymology
+              );
+              resolvedToWordDetailsId = subToDetails.id;
+            }
 
             await tx.wordDetailsRelationship.upsert({
               where: {
                 fromWordDetailsId_toWordDetailsId_type: {
-                  fromWordDetailsId: fromWordDetails.id,
-                  toWordDetailsId: toWordDetails.id,
+                  fromWordDetailsId: resolvedFromWordDetailsId,
+                  toWordDetailsId: resolvedToWordDetailsId,
                   type: relation.type,
                 },
               },
               create: {
-                fromWordDetailsId: fromWordDetails.id,
-                toWordDetailsId: toWordDetails.id,
+                fromWordDetailsId: resolvedFromWordDetailsId,
+                toWordDetailsId: resolvedToWordDetailsId,
                 type: relation.type,
                 description: getRelationshipDescription(relation.type),
               },
@@ -1563,6 +1895,7 @@ function extractSubjectLabels(
     'MILITÆR',
     'LITTERATUR',
     'ASTRONOMI',
+    'ASTROLOGI',
     'GASTRONOMI',
     'SØFART',
     'slang',

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fetchDictionaryWords } from '@/core/lib/actions/dictionaryActions';
 import { ColumnDef } from '@tanstack/react-table';
-import { Word } from '@/core/types/word';
 import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ArrowUpDown, Edit, Search, Plus } from 'lucide-react';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode, DifficultyLevel } from '@prisma/client';
 
 // Map for display names of language codes
 const languageDisplayNames: Record<LanguageCode, string> = {
@@ -34,11 +33,23 @@ const languageDisplayNames: Record<LanguageCode, string> = {
   ar: 'Arabic',
 };
 
+// Define the type that matches what fetchDictionaryWords returns
+interface DictionaryWord {
+  id: string;
+  text: string;
+  translation: string;
+  languageId: LanguageCode;
+  category: string;
+  difficulty: DifficultyLevel;
+  audioUrl: string;
+  exampleSentence: string;
+}
+
 export default function DictionariesPage() {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
     LanguageCode.en,
   );
-  const [words, setWords] = useState<Word[]>([]);
+  const [words, setWords] = useState<DictionaryWord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -57,7 +68,7 @@ export default function DictionariesPage() {
     loadWords();
   }, [selectedLanguage]);
 
-  const columns: ColumnDef<Word>[] = [
+  const columns: ColumnDef<DictionaryWord>[] = [
     {
       accessorKey: 'text',
       header: ({ column }) => (
@@ -82,16 +93,19 @@ export default function DictionariesPage() {
       accessorKey: 'difficulty',
       header: 'Difficulty',
       cell: ({ row }) => {
-        const difficulty = row.getValue('difficulty') as string;
+        const difficulty = row.getValue('difficulty') as DifficultyLevel;
+        const difficultyColors: Record<DifficultyLevel, string> = {
+          [DifficultyLevel.beginner]: 'bg-green-500',
+          [DifficultyLevel.elementary]: 'bg-green-400',
+          [DifficultyLevel.intermediate]: 'bg-yellow-500',
+          [DifficultyLevel.advanced]: 'bg-orange-500',
+          [DifficultyLevel.proficient]: 'bg-red-500',
+        };
         return (
           <div className="flex items-center">
             <div
               className={`h-2 w-2 rounded-full mr-2 ${
-                difficulty === 'easy'
-                  ? 'bg-green-500'
-                  : difficulty === 'medium'
-                    ? 'bg-yellow-500'
-                    : 'bg-red-500'
+                difficultyColors[difficulty] || 'bg-gray-500'
               }`}
             />
             <span className="capitalize">{difficulty || 'unknown'}</span>
@@ -114,7 +128,7 @@ export default function DictionariesPage() {
               </Button>
             </Link>
             <Link
-              href={`/admin/dictionaries/check-word?word=${word.text}&language=${selectedLanguage}`}
+              href={`/admin/dictionaries/word-details/${encodeURIComponent(word.text)}?lang=${selectedLanguage}`}
             >
               <Button variant="outline" size="sm">
                 <Search className="h-4 w-4 mr-1" />

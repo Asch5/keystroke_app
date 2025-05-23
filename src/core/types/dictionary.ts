@@ -9,7 +9,7 @@ import {
 //! Type definitions for dictionary operations
 
 export interface DefinitionUpdateData {
-  id?: number;
+  id?: number | undefined;
   definition: string;
   partOfSpeech: PartOfSpeech;
   imageId: number | null;
@@ -24,22 +24,22 @@ export interface DefinitionUpdateData {
 }
 
 export interface ExampleUpdateData {
-  id?: number;
+  id?: number | undefined;
   example: string;
   grammaticalNote: string | null;
 }
 
 export interface AudioUpdateData {
-  id?: number;
+  id?: number | undefined;
   url: string;
-  note?: string | null;
+  note?: string | null | undefined;
   source: SourceType;
   languageCode: LanguageCode;
   isPrimary?: boolean;
 }
 
 export interface RelatedWordUpdateData {
-  id?: number;
+  id?: number | undefined;
   word: string;
   phonetic: string | null;
 }
@@ -103,6 +103,9 @@ export type RelationshipFromTo =
 
 export interface AudioFile {
   url: string;
+  word?: string | null;
+  audio_type?: string | null;
+  phonetic_audio?: string | null;
   note?: string | null;
 }
 
@@ -196,6 +199,7 @@ export interface SubWordData {
   phonetic?: string | null;
   variant?: string | null;
   gender?: Gender | null;
+  forms?: string | null;
   audioFiles?: AudioFile[] | null;
   definitions: SubWordDefinition[];
   relationship: {

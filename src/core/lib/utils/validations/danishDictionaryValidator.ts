@@ -218,8 +218,8 @@ export function validateDanishDictionary(
       Array.isArray(typedData.fixed_expressions)
     ) {
       typedData.fixed_expressions.forEach((expr) => {
-        if (expr.labels && isObject(expr.labels)) {
-          Object.keys(expr.labels).forEach((label) => {
+        if (expr.definition && isObject(expr.definition)) {
+          Object.keys(expr.definition.labels).forEach((label) => {
             if (
               !KNOWN_DETAIL_CATEGORIES.includes(label as DetailCategoryDanish)
             ) {
@@ -287,8 +287,8 @@ export function validateDanishDictionary(
           Array.isArray(variant.fixed_expressions)
         ) {
           variant.fixed_expressions.forEach((expr) => {
-            if (expr.labels && isObject(expr.labels)) {
-              Object.keys(expr.labels).forEach((label) => {
+            if (expr.definition && isObject(expr.definition)) {
+              Object.keys(expr.definition.labels).forEach((label) => {
                 if (
                   !KNOWN_DETAIL_CATEGORIES.includes(
                     label as DetailCategoryDanish,

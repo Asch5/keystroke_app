@@ -34,7 +34,7 @@ export interface Audio {
   audio_type: string;
   word: string;
   phonetic_audio: string;
-  note?: string;
+  note?: string | null;
 }
 
 export interface WordRelationship {

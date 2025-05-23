@@ -29,6 +29,8 @@ export function mapDanishPosToEnum(
     udråbsord: PartOfSpeech.exclamation,
     forkortelse: PartOfSpeech.abbreviation,
     suffiks: PartOfSpeech.suffix,
+    'adj. pl.': PartOfSpeech.adj_pl,
+
     sidsteled: PartOfSpeech.undefined,
     undefined: PartOfSpeech.undefined,
   };

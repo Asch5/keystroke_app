@@ -6,7 +6,7 @@ import {
   processAllWords,
   processOneWord,
 } from '@/core/lib/db/processMerriamApi';
-import { processDanishVariantOnServer } from '@/core/lib/actions/danishWordActions';
+import { processDanishVariantOnServer } from '@/core/lib/actions/danishDictionaryActions/danishWordActions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -253,7 +253,7 @@ export default function AddNewWordForm() {
                   if (serverResult.status === 'added') {
                     setProcessedWords((prev) => [
                       {
-                        word: serverResult.wordDisplay,
+                        word: `${serverResult.wordDisplay}`,
                         timestamp: new Date(),
                         status: 'added',
                         language: 'da',

@@ -385,8 +385,9 @@ export async function processAndSaveWord(
       audioFiles:
         audioFiles.length > 0
           ? audioFiles
-          : checkedWordDetails?.word?.audioFiles || null,
-      etymology: etymology || checkedWordDetails?.word?.etymology || null,
+          : checkedWordDetails?.details?.[0]?.audioFiles || null,
+      etymology:
+        etymology || checkedWordDetails?.details?.[0]?.etymology || null, // Now from details
       relatedWords: [],
       sourceEntityId: `${source}-${sourceEntityId}-${sourceEntityUuid}`,
     },
@@ -1753,6 +1754,7 @@ sourceWordText processing
           processedData.word.variant || '',
           processedData.word.phonetic,
           processedData.word.frequency,
+          processedData.word.etymology || null, // Add etymology parameter
         );
         //postion 1
         serverLog(
@@ -1983,6 +1985,11 @@ sourceWordText processing
               subWordEntity.id,
               subWord.partOfSpeech || null,
               source as SourceType,
+              false, // isPlural
+              subWord.variant || '',
+              subWord.phonetic || null,
+              null, // frequency will be fetched in upsertWordDetails
+              subWord.etymology || null, // Add etymology parameter
             );
 
             // Link definition to word details
@@ -2132,6 +2139,8 @@ sourceWordText processing
                       isFromPlural,
                       fromInfo.variant,
                       fromInfo.phonetic,
+                      null, // frequency
+                      null, // etymology
                     );
                     const toWordDetails = await upsertWordDetails(
                       tx,
@@ -2141,6 +2150,8 @@ sourceWordText processing
                       isToPlural,
                       toInfo.variant,
                       toInfo.phonetic,
+                      null, // frequency
+                      null, // etymology
                     );
 
                     await tx.wordDetailsRelationship.upsert({
@@ -2894,7 +2905,7 @@ async function upsertWord(
     phonetic?: string | null;
     audio?: string | null;
     audioFiles?: AudioFile[] | null;
-    etymology?: string | null;
+    etymology?: string | null; // Keep this for passing to WordDetails
     difficultyLevel?: DifficultyLevel;
     sourceEntityId?: string | null;
     partOfSpeech?: PartOfSpeech | null; // This can be PartOfSpeech, null, or undefined if not in options
@@ -2922,7 +2933,7 @@ async function upsertWord(
     }
   }
 
-  // Create word record
+  // Create word record (etymology removed from here)
   const word = await tx.word.upsert({
     where: {
       word_languageCode: {
@@ -2931,7 +2942,6 @@ async function upsertWord(
       },
     },
     update: {
-      etymology: options?.etymology ?? null,
       sourceEntityId: options?.sourceEntityId ?? null,
       updatedAt: new Date(),
       isHighlighted: options?.isHighlighted ?? false,
@@ -2942,7 +2952,6 @@ async function upsertWord(
       word: wordText,
       phoneticGeneral: options?.phonetic ?? null,
       languageCode,
-      etymology: options?.etymology ?? null,
       sourceEntityId: options?.sourceEntityId ?? null,
       isHighlighted: options?.isHighlighted ?? false,
       frequencyGeneral: frequencyGeneral ?? null,
@@ -2961,6 +2970,8 @@ async function upsertWord(
     false,
     options?.variant ?? '', // Ensure this is an empty string for the variant argument
     options?.phonetic ?? null,
+    null, // frequency will be fetched in upsertWordDetails
+    options?.etymology ?? null, // Pass etymology to WordDetails
   );
   serverLog(
     `From upsertWord in processMerriamApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
@@ -2995,6 +3006,7 @@ async function upsertWordDetails(
   variant: string = '',
   phonetic: string | null = null,
   frequency: number | null = null,
+  etymology: string | null = null, // Add etymology parameter
 ): Promise<{ id: number; wordId: number; partOfSpeech: PartOfSpeech }> {
   // Ensure we have a valid part of speech, using the API's part of speech if available
   const pos: PartOfSpeech = partOfSpeech || PartOfSpeech.undefined;
@@ -3048,12 +3060,14 @@ async function upsertWordDetails(
       isPlural,
       source: source,
       frequency: posFrequency,
+      etymology: etymology || null, // Set etymology in WordDetails
     },
     update: {
       isPlural: isPlural ?? undefined,
       phonetic: phonetic !== null ? phonetic : null,
       ...(source !== null && { source: source }),
       ...(posFrequency !== null && { frequency: posFrequency }),
+      ...(etymology !== null && { etymology: etymology }),
     },
   });
 

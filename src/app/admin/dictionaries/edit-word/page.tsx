@@ -1,3 +1,5 @@
+import PageWrapper from '@/components/pageWrapper';
+
 export default function EditWordPage() {
-  return <>Edit Word Page</>;
+  return <PageWrapper title="Edit Word"></PageWrapper>;
 }

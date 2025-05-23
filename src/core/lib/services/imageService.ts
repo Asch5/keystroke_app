@@ -5,6 +5,7 @@ import { Image } from '@prisma/client';
 import { serverLog, LogLevel } from '@/core/lib/utils/logUtils';
 import { normalizeText } from '@/core/lib/utils/commonDictUtils/wordsFormators';
 import { prisma } from '@/core/lib/prisma';
+import { logToFile } from '../server/serverLogger';
 
 export interface ImageMetadata {
   id: number;
@@ -738,5 +739,164 @@ export class ImageService {
       .replace(/[^\w\s]/g, '') // Remove special characters
       .trim()
       .toLowerCase();
+  }
+
+  /**
+   * Get or create an image for a definition using its translations for better search results
+   * This is particularly useful for non-English definitions
+   */
+  async getOrCreateTranslatedDefinitionImage(
+    word: string,
+    definitionId: number,
+  ): Promise<ImageMetadata | null> {
+    try {
+      logToFile(
+        `======FROM getOrCreateTranslatedDefinitionImage===========: Starting getOrCreateTranslatedDefinitionImage for word: "${word}", definitionId: ${definitionId}`,
+        LogLevel.INFO,
+      );
+
+      // First check if definition exists and has an image
+      const definitionWithImage = await prisma.definition.findUnique({
+        where: { id: definitionId },
+        include: { image: true },
+      });
+
+      if (!definitionWithImage) {
+        logToFile(
+          `======FROM getOrCreateTranslatedDefinitionImage===========: Definition with id ${definitionId} not found`,
+          LogLevel.WARN,
+        );
+        return null;
+      }
+
+      // If the definition already has an image, return it
+      if (definitionWithImage.imageId && definitionWithImage.image) {
+        logToFile(
+          `======FROM getOrCreateTranslatedDefinitionImage===========: Found existing image for definition ${definitionId}: ${definitionWithImage.imageId}`,
+          LogLevel.INFO,
+        );
+        return this.transformImageToMetadata(definitionWithImage.image);
+      }
+
+      // Try to find word details for this definition
+      const wordDefinition = await prisma.wordDefinition.findFirst({
+        where: { definitionId },
+        include: {
+          wordDetails: {
+            include: {
+              word: true,
+            },
+          },
+        },
+      });
+
+      // Get the actual word text
+      const wordText = wordDefinition?.wordDetails?.word?.word || word;
+
+      // Try to find translations for this definition
+      // Find definition translations to English
+      await prisma.definitionTranslation.findMany({
+        where: { definitionId },
+        include: {
+          translation: true,
+        },
+      });
+
+      // Get translations to English via the junction table
+      const translations = await prisma.translation.findMany({
+        where: {
+          languageCode: 'en',
+          definitionLinks: {
+            some: {
+              definitionId,
+            },
+          },
+        },
+      });
+
+      // Create search query from the most relevant information
+      let searchQuery = wordText;
+
+      if (translations.length > 0) {
+        // Use the first English translation
+        const englishTranslation = translations[0];
+        const translatedContent = englishTranslation?.content || '';
+
+        logToFile(
+          `======FROM getOrCreateTranslatedDefinitionImage===========: Using English translation for search: "${translatedContent}"`,
+          LogLevel.INFO,
+        );
+
+        // Create search query with translation
+        searchQuery = this.createSearchQueryFromText(
+          wordText,
+          translatedContent,
+        );
+      }
+
+      logToFile(
+        `======FROM getOrCreateTranslatedDefinitionImage===========: Final search query: "${searchQuery}"`,
+        LogLevel.INFO,
+      );
+
+      // Search for images using the query
+      const pexelsService = new PexelsService();
+      const searchResponse = await pexelsService.searchImages(searchQuery, {
+        orientation: 'portrait',
+        size: 'medium',
+        per_page: 1,
+      });
+
+      const photo =
+        searchResponse?.photos && searchResponse.photos.length > 0
+          ? searchResponse.photos[0]
+          : null;
+
+      // If we found a photo, create the image
+      if (photo) {
+        logToFile(
+          `======FROM getOrCreateTranslatedDefinitionImage===========: Creating image from Pexels photo ID: ${photo.id}`,
+          LogLevel.INFO,
+        );
+        const image = await this.createFromPexels(photo, definitionId);
+        if (image) {
+          logToFile(
+            `======FROM getOrCreateTranslatedDefinitionImage===========: Successfully created image ${image.id} for definition ${definitionId}`,
+            LogLevel.INFO,
+          );
+          return image;
+        }
+      }
+
+      // Fall back to the standard method if no image was found
+      logToFile(
+        `======FROM getOrCreateTranslatedDefinitionImage===========: No image found using translations, falling back to standard method`,
+        LogLevel.INFO,
+      );
+      return this.getOrCreateDefinitionImage(word, definitionId);
+    } catch (error) {
+      logToFile(
+        `======FROM getOrCreateTranslatedDefinitionImage===========: Error in getOrCreateTranslatedDefinitionImage: ${error}`,
+        LogLevel.ERROR,
+      );
+      return null;
+    }
+  }
+
+  /**
+   * Create a search query from a word and its definition text
+   */
+  private createSearchQueryFromText(
+    word: string,
+    definitionText: string,
+  ): string {
+    // Extract key concepts from definition
+    const keyWords = this.extractKeywords(normalizeText(definitionText));
+
+    // Create a query combining the word and keywords
+    const query = `${word} ${keyWords.join(' ')}`;
+
+    // Clean up and normalize the query
+    return this.normalizeSearchQuery(query);
   }
 }

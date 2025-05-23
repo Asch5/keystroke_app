@@ -85,7 +85,6 @@ export async function processTranslationsForWord(
               languageCode: LanguageCode.da,
               phoneticGeneral:
                 english_word_data.word.phonetic_translation || null,
-              etymology: null,
               sourceEntityId: SourceType.helsinki_nlp,
             },
           });
@@ -109,6 +108,10 @@ export async function processTranslationsForWord(
           for (const translatedDef of english_word_data.definitions) {
             const definitionTranslationText =
               translatedDef.definition_translation;
+            logToFile(
+              `definitionTranslationText: ${definitionTranslationText}`,
+              LogLevel.INFO,
+            );
             if (
               definitionTranslationText &&
               typeof definitionTranslationText === 'string'

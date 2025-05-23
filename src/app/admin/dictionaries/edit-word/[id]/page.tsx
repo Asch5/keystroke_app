@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getWordDetails, fetchWordById } from '@/core/lib/actions/dictionaryActions';
+import {
+  getWordDetails,
+  fetchWordById,
+} from '@/core/lib/actions/dictionaryActions';
+import { convertWordEntryDataToWordDetails } from '@/core/lib/utils/wordDetailsAdapter';
 import { WordDetails } from '@/core/lib/actions/dictionaryActions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
@@ -34,7 +38,9 @@ export default function EditWordPage() {
         const details = await getWordDetails(wordRecord.word);
 
         if (details) {
-          setWordDetails(details);
+          // Convert WordEntryData to WordDetails for the form
+          const wordDetailsForForm = convertWordEntryDataToWordDetails(details);
+          setWordDetails(wordDetailsForForm);
         } else {
           toast.error('Word details not found');
         }

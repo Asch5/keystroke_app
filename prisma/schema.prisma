@@ -279,7 +279,6 @@ model Word {
   phoneticGeneral  String?      @db.VarChar(100)
   frequencyGeneral Int?         @map("frequency_general")
   isHighlighted    Boolean      @default(false) @map("is_highlighted")
-  etymology        String?      @db.Text
   additionalInfo   Json?        @default("{}")
   languageCode     LanguageCode @map("language_code")
   sourceEntityId   String?      @db.VarChar(255)
@@ -306,6 +305,7 @@ model WordDetails {
   partOfSpeech PartOfSpeech @map("part_of_speech")
   variant      String?      @db.VarChar(100)
   gender       Gender?      @map("gender")
+  etymology    String?      @db.Text
   phonetic     String?      @db.VarChar(100)
   forms        String?      @db.VarChar(100) //-t, -e, -ere, -est
   frequency    Int?         @map("frequency")

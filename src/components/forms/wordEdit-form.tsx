@@ -9,11 +9,13 @@ import {
   SourceType,
   LanguageCode,
 } from '@prisma/client';
+import { WordDetails } from '@/core/lib/actions/dictionaryActions';
 import {
-  WordDetails,
-  updateWordDetails,
-} from '@/core/lib/actions/dictionaryActions';
-import { WordUpdateData, ExampleUpdateData } from '@/core/types/dictionary';
+  WordUpdateData,
+  ExampleUpdateData,
+  RelatedWordUpdateData,
+} from '@/core/types/dictionary';
+import { updateWordDetails } from '@/core/lib/actions/dictionaryActions';
 import { Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -162,7 +164,7 @@ export default function WordEditForm({
         words.map((word) => ({
           id: word.id,
           word: word.word,
-          phonetic: word.phonetic,
+          phonetic: word.phoneticGeneral || null,
           audio: word.audio,
         })),
       ]),
@@ -191,7 +193,7 @@ export default function WordEditForm({
 
       form.reset({
         word: wordDetails.word.text,
-        phonetic: wordDetails.word.phonetic || '',
+        phonetic: wordDetails.word.phoneticGeneral || '',
         etymology: wordDetails.word.etymology || '',
         definitions: mapDefinitions(wordDetails.definitions),
         relatedWords: mapRelatedWords(wordDetails.relatedWords),
@@ -224,10 +226,10 @@ export default function WordEditForm({
         etymology: validatedData.etymology || null,
         // Transform definitions to match the API format
         definitions: validatedData.definitions.map((def) => ({
-          id: def.id || 0,
+          id: def.id && def.id > 0 ? def.id : undefined, // Only include valid IDs
           definition: def.text,
           partOfSpeech: def.partOfSpeech,
-          imageId: null,
+          imageId: null, // Images are handled separately via WordImage component
           isPlural: def.isPlural,
           source: 'user' as SourceType,
           languageCode: 'en' as LanguageCode,
@@ -240,9 +242,9 @@ export default function WordEditForm({
         // Transform examples to match the API format - grouped by definition ID
         examples: validatedData.definitions.reduce(
           (acc, def) => {
-            if (def.id && def.examples?.length) {
+            if (def.id && def.id > 0 && def.examples?.length) {
               acc[def.id] = def.examples.map((ex) => ({
-                id: ex.id || 0,
+                id: ex.id && ex.id > 0 ? ex.id : undefined, // Only include valid IDs
                 example: ex.text,
                 grammaticalNote: ex.grammaticalNote || null,
               }));
@@ -253,7 +255,7 @@ export default function WordEditForm({
         ),
         // Transform audio files
         audioFiles: validatedData.audioFiles.map((audio) => ({
-          id: audio.id || 0,
+          id: audio.id && audio.id > 0 ? audio.id : undefined, // Only include valid IDs
           url: audio.url,
           isPrimary: audio.isPrimary,
           source: 'user' as SourceType,
@@ -263,18 +265,15 @@ export default function WordEditForm({
         relatedWords: Object.entries(validatedData.relatedWords || {}).reduce(
           (acc, [type, words]) => {
             if (words && words.length > 0) {
-              acc[type as unknown as RelationshipType] = words.map((word) => ({
-                id: word.id || 0,
+              acc[type as RelationshipType] = words.map((word) => ({
+                id: word.id && word.id > 0 ? word.id : undefined, // Only include valid IDs
                 word: word.word,
                 phonetic: word.phonetic || null,
               }));
             }
             return acc;
           },
-          {} as Record<
-            RelationshipType,
-            Array<{ id?: number; word: string; phonetic: string | null }>
-          >,
+          {} as Record<RelationshipType, RelatedWordUpdateData[]>,
         ),
       };
 
@@ -1055,11 +1054,9 @@ export default function WordEditForm({
                       render={({ field }) => (
                         <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                           <FormControl>
-                            <input
-                              type="checkbox"
+                            <Checkbox
                               checked={field.value}
-                              onChange={field.onChange}
-                              className="h-4 w-4"
+                              onCheckedChange={field.onChange}
                             />
                           </FormControl>
                           <FormLabel>Set as primary audio</FormLabel>

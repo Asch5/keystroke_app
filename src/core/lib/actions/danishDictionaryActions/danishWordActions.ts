@@ -4,9 +4,9 @@ import { prisma } from '@/core/lib/prisma';
 import { processAndSaveDanishWord } from '@/core/lib/db/processOrdnetApi';
 import { processEnglishTranslationsForDanishWord } from '@/core/lib/db/wordTranslationProcessor';
 import type { WordVariant } from '@/core/types/translationDanishTypes';
-import { logToFile } from '@/core/lib/server/serverLogger';
-import { LogLevel, serverLog } from '@/core/lib/utils/logUtils';
-import { ImageService } from '../../services/imageService';
+import { serverLog } from '@/core/lib/server/serverLogger';
+import { LogLevel } from '@/core/lib/utils/logUtils';
+import { ImageService } from '@/core/lib/services/imageService';
 
 interface ProcessDanishVariantResult {
   wordDisplay: string;
@@ -28,18 +28,6 @@ export async function processDanishVariantOnServer(
   originalWord: string,
 ): Promise<ProcessDanishVariantResult> {
   try {
-    logToFile(
-      `Server action processDanishVariantOnServer called for variant of "${originalWord}"`,
-      LogLevel.INFO,
-      {
-        originalWord,
-        variantWord: variant.word.word,
-        variantDetails: variant.word.variant,
-        partOfSpeech: variant.word.partOfSpeech,
-        form: variant.word.forms,
-      },
-    );
-
     const processedWordData = await processAndSaveDanishWord(variant, prisma);
 
     if (
@@ -47,7 +35,7 @@ export async function processDanishVariantOnServer(
       !processedWordData.word ||
       !processedWordData.word.id
     ) {
-      logToFile(
+      serverLog(
         `Failed to process or save Danish word variant for "${originalWord}". processedWordData was insufficient.`,
         LogLevel.ERROR,
         { variant },
@@ -70,11 +58,12 @@ export async function processDanishVariantOnServer(
     // Get the definitions for image processing
     if (
       processedWordData.definitions &&
+      Array.isArray(processedWordData.definitions) &&
       processedWordData.definitions.length > 0
     ) {
       // Map to a simple array of definition IDs for image processing
       const definitionIds = processedWordData.definitions
-        .filter((def) => def.id != null)
+        .filter((def) => def && def.id != null)
         .map((def) => ({ id: def.id as number }));
 
       if (definitionIds.length > 0) {
@@ -84,13 +73,13 @@ export async function processDanishVariantOnServer(
           variant.word.word,
         );
       }
+    } else {
+      serverLog(
+        `No valid definitions found for image processing. processedWordData.definitions: ${processedWordData.definitions ? `Array(${Array.isArray(processedWordData.definitions) ? processedWordData.definitions.length : 'not array'})` : 'null/undefined'}`,
+        LogLevel.WARN,
+        { variant },
+      );
     }
-
-    logToFile(
-      `Successfully processed Danish variant and its translations for original word "${originalWord}" on server.`,
-      LogLevel.INFO,
-      { variantWord: variant.word.word },
-    );
 
     return {
       wordDisplay: `word: ${variant.word.word} variant: ${variant.word.variant} partOfSpeech: ${variant.word.partOfSpeech} forms: ${variant.word.forms}`,
@@ -99,7 +88,7 @@ export async function processDanishVariantOnServer(
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logToFile(
+    serverLog(
       `Error in server action processDanishVariantOnServer for "${originalWord}" (variant: ${variant.word.word}): ${errorMessage}`,
       LogLevel.ERROR,
       { error, variant },
@@ -140,13 +129,8 @@ export async function processImagesForTranslatedDefinitions(
     await Promise.all(
       batch.map(async (definition) => {
         try {
-          serverLog(
-            `Processing image for translation of definition ${definition.id} of word "${wordText}"`,
-            LogLevel.INFO,
-          );
-
-          // Get or create an image for the definition
-          const image = await imageService.getOrCreateDefinitionImage(
+          // Use the translated definition image method for Danish words
+          const image = await imageService.getOrCreateTranslatedDefinitionImage(
             wordText,
             definition.id,
           );
@@ -156,14 +140,13 @@ export async function processImagesForTranslatedDefinitions(
               where: { id: definition.id },
               data: { imageId: image.id },
             });
-
             serverLog(
-              `Updated definition ${definition.id} with image ${image.id}`,
+              `Successfully assigned image ${image.id} to definition ${definition.id}`,
               LogLevel.INFO,
             );
           } else {
             serverLog(
-              `No image found for definition ${definition.id}`,
+              `No image found for Danish definition ${definition.id} (word: "${wordText}")`,
               LogLevel.WARN,
             );
           }

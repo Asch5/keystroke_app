@@ -1,4 +1,4 @@
-import { UserBasicData } from '../../user/types/user-entity';
+import { UserBasicData } from '@/core/domains/user/types/user-entity';
 
 /**
  * Auth state types for auth domain

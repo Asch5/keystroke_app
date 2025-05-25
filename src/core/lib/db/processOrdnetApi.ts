@@ -18,21 +18,22 @@ import {
   DifficultyLevel,
   Gender,
 } from '@prisma/client';
-import { LogLevel, serverLog } from '@/core/lib/utils/logUtils';
+import { LogLevel, clientLog } from '@/core/lib/utils/logUtils';
 import {
   fetchWordFrequency,
   getGeneralFrequency,
   getPartOfSpeechFrequency,
-} from '../services/frequencyService';
-import { TranslationService } from '../services/translationService';
-import { validateDanishDictionary } from '../utils/validations/danishDictionaryValidator';
-import { mapDanishPosToEnum } from '../utils/danishDictionary/mapDaEng';
-import { transformDanishForms } from '../utils/danishDictionary/transformDanishForms';
+} from '@/core/lib/services/frequencyService';
+import { TranslationService } from '@/core/lib/services/translationService';
+import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
+import { mapDanishPosToEnum } from '@/core/lib/utils/danishDictionary/mapDaEng';
+import { transformDanishForms } from '@/core/lib/utils/danishDictionary/transformDanishForms';
 import {
   WordVariant,
   PartOfSpeechDanish,
   DetailCategoryDanish,
 } from '@/core/types/translationDanishTypes';
+import { serverLog } from '@/core/lib/server/serverLogger';
 //import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**Definitions:
@@ -88,7 +89,7 @@ export async function processTranslationsForWord(
     );
 
     if (!translationResponse) {
-      serverLog(
+      clientLog(
         `No translation data returned for word: ${mainWordText}`,
         LogLevel.WARN,
       );
@@ -100,7 +101,40 @@ export async function processTranslationsForWord(
     const danish_word_data = translation_word_for_danish_dictionary;
 
     // Validate the Danish dictionary data to catch any unknown entities
-    validateDanishDictionary(danish_word_data, `word: ${mainWordText}`);
+    const validationResult = validateDanishDictionary(
+      danish_word_data,
+      `word: ${mainWordText}`,
+    );
+
+    // Log validation results if issues found
+    if (validationResult.totalIssues > 0) {
+      serverLog(
+        `Validation issues for "${mainWordText}": ${validationResult.totalIssues} total issues`,
+        LogLevel.INFO,
+      );
+
+      // Log enum suggestions for development
+      const enumSuggestions = Object.entries(
+        validationResult.suggestedEnumAdditions,
+      );
+      if (enumSuggestions.length > 0) {
+        enumSuggestions.forEach(([category, suggestions]) => {
+          serverLog(
+            `${category} enum needs these additions: ${suggestions.join(' ')}`,
+            LogLevel.INFO,
+          );
+        });
+      }
+
+      // Stop processing if structural errors found (optional - you might want to continue)
+      if (!validationResult.isValid) {
+        serverLog(
+          `Structural errors found in Danish dictionary data for "${mainWordText}". Skipping processing.`,
+          LogLevel.ERROR,
+        );
+        return;
+      }
+    }
 
     if (!english_word_data) {
       serverLog(
@@ -291,12 +325,12 @@ async function upsertWord(
     try {
       const frequencyData = await fetchWordFrequency(wordText, languageCode);
       frequencyGeneral = getGeneralFrequency(frequencyData);
-      serverLog(
+      clientLog(
         `Fetched frequency data in upsertWord for "${wordText}": ${frequencyGeneral}`,
         LogLevel.INFO,
       );
     } catch (error) {
-      serverLog(
+      clientLog(
         `Error fetching frequency data in upsertWord for "${wordText}": ${error}`,
         LogLevel.ERROR,
       );
@@ -346,7 +380,7 @@ async function upsertWord(
     null, // forms
     options?.etymology ?? null, // Pass etymology to WordDetails
   );
-  serverLog(
+  clientLog(
     `From upsertWord in processMerriamApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
     LogLevel.INFO,
   );
@@ -402,13 +436,13 @@ async function upsertWordDetails(
           wordRecord.languageCode as LanguageCode,
         );
         posFrequency = getPartOfSpeechFrequency(frequencyData, dbPoSToPersist);
-        serverLog(
+        clientLog(
           `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${dbPoSToPersist}: ${posFrequency}`,
           LogLevel.INFO,
         );
       }
     } catch (error) {
-      serverLog(
+      clientLog(
         `Error fetching POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
         LogLevel.ERROR,
       );
@@ -534,7 +568,7 @@ function getDanishFormDefinition(
         return ''; // It's a valid enum but not handled above
       }
       // If it's a string not matching any case and not in enum, it's an unknown/custom type
-      serverLog(
+      clientLog(
         `Unknown relationship type in getDanishFormDefinition: ${relationshipType}`,
         LogLevel.WARN,
       );
@@ -580,7 +614,7 @@ export async function processAndSaveDanishWord(
     frequencyGeneral = getGeneralFrequency(frequencyData);
     frequency = getPartOfSpeechFrequency(frequencyData, partOfSpeech);
   } catch (error) {
-    serverLog(
+    clientLog(
       `Error fetching frequency data for "${mainWordText}": ${error}`,
       LogLevel.ERROR,
     );
@@ -724,12 +758,15 @@ export async function processAndSaveDanishWord(
         (danishWordData.word.contextual_forms as {
           [key: string]: string[];
         } | null) || {},
-      audio: danishWordData.word.audio.map((a) => ({
-        audio_url: a.audio_url,
-        audio_type: a.audio_type,
-        word: a.word || '',
-        phonetic_audio: a.phonetic_audio,
-      })),
+      audio:
+        danishWordData.word.audio && Array.isArray(danishWordData.word.audio)
+          ? danishWordData.word.audio.map((a) => ({
+              audio_url: a.audio_url,
+              audio_type: a.audio_type,
+              word: a.word || '',
+              phonetic_audio: a.phonetic_audio,
+            }))
+          : [],
     };
     const formsData = transformDanishForms(danishEntry);
 
@@ -1036,7 +1073,7 @@ export async function processAndSaveDanishWord(
             sourceData: ['composition_expanded_B'],
           });
         } else {
-          serverLog(
+          clientLog(
             `Could not parse composition with (s) pattern: ${composition.composition}`,
             LogLevel.WARN,
           );
@@ -1730,7 +1767,7 @@ export async function processAndSaveDanishWord(
           }
 
           if (!fromWordId || !toWordId) {
-            serverLog(
+            clientLog(
               `Missing wordId for relationship: from='${relation.fromWord}'(id:${fromWordId}) to='${relation.toWord}'(id:${toWordId}), for subWord '${currentSubWord.word}'. Skipping.`,
               LogLevel.WARN,
             );

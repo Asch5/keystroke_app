@@ -11,7 +11,7 @@ export enum LogLevel {
  * @param level The log level (INFO, WARN, ERROR). Defaults to INFO.
  * @param context Optional context data to include with the log.
  */
-export function serverLog(
+export function clientLog(
   message: string,
   level: LogLevel = LogLevel.INFO,
   context?: unknown,

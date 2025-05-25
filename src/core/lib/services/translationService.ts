@@ -1,5 +1,5 @@
 import { LanguageCode } from '@prisma/client';
-import { serverLog, LogLevel } from '../utils/logUtils';
+import { clientLog, LogLevel } from '@/core/lib/utils/logUtils';
 import {
   TranslationCombinedResponse,
   TranslationRequest,
@@ -67,7 +67,7 @@ export class TranslationService {
 
       const requestPayload = [translationRequest];
 
-      serverLog(
+      clientLog(
         `Sent request: ${JSON.stringify(requestPayload)}`,
         LogLevel.INFO,
       );
@@ -89,7 +89,7 @@ export class TranslationService {
         Array.isArray(translatedDataArray) && translatedDataArray.length > 0
           ? translatedDataArray[0]
           : null;
-      serverLog(
+      clientLog(
         `FROM TRANSLATION SERVICE: Translated data: ${JSON.stringify(
           translatedData,
         )}`,
@@ -97,7 +97,7 @@ export class TranslationService {
       );
       return translatedData;
     } catch (error) {
-      serverLog(`Translation error for word ${word}: ${error}`, LogLevel.ERROR);
+      clientLog(`Translation error for word ${word}: ${error}`, LogLevel.ERROR);
       return null;
     }
   }

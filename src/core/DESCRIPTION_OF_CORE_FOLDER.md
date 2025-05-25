@@ -54,6 +54,7 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 #### **Word CRUD Operations** (`actions/word-crud-actions.ts`)
 
 - **`fetchDictionaryWords(targetLanguageId)`** - Get dictionary words for a language
+- **`fetchDictionaryWordDetails(targetLanguageId)`** - Get comprehensive WordDetails items with word text, part of speech, variant, frequencies, source, definition, audio, and image information
 - **`addWordToUserDictionary(userId, mainDictionaryId, baseLanguageId, targetLanguageId)`** - Add word to user's personal dictionary
 - **`getWordDetails(wordText, languageCode)`** - Get comprehensive word information
 - **`fetchWordById(wordId)`** - Get word by ID
@@ -210,7 +211,7 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 
 #### **Logging System**
 
-- **`logToFile(message, level?, context?)`** - Server-side file logging
+- **`serverLog(message, level?, context?)`** - Server-side file logging
 - **Performance monitoring utilities**
 
 ### 💽 Storage (`infrastructure/storage/`)
@@ -319,6 +320,58 @@ _All functions remain accessible through original paths for 100% backward compat
 - **`mapStemPosToEnum(stemPos)`** - Map stem part of speech
 - **`getRelationshipDescription(relationType)`** - Get relationship descriptions
 
+#### **Enhanced Validation System** (`utils/validations/danishDictionaryValidator.ts`) ✨
+
+**Comprehensive Danish dictionary data validation for careful data handling**
+
+##### Core Validation Functions
+
+- **`validateDanishDictionary(data, context)`** - Enhanced validation with detailed analysis
+
+  - **Returns**: `ValidationSummary` with complete validation results
+  - **Features**: Unknown entity detection, structural validation, type checking
+  - **Output**: Detailed issues list with paths and suggestions
+
+- **`extractEnumSuggestions(validationResult)`** - Extract enum suggestions from validation
+
+  - **Returns**: Record of enum names and suggested additions
+  - **Purpose**: Identify new types to add to enums
+
+- **`isValidationAcceptable(validationResult)`** - Check if validation passed acceptably
+  - **Returns**: Boolean indicating if processing should continue
+  - **Logic**: Returns true for warnings only, false for structural errors
+
+##### Validation Result Types
+
+- **`ValidationSummary`** - Complete validation analysis
+
+  - `isValid`: Overall validation status
+  - `totalIssues`: Count of all issues found
+  - `unknownEntitiesCount`: Count of unknown types/values
+  - `structuralIssuesCount`: Count of structural problems
+  - `issues`: Detailed array of `ValidationIssue` objects
+  - `unknownEntitiesByCategory`: Categorized unknown entities
+  - `suggestedEnumAdditions`: Formatted enum additions
+  - `contextInfo`: Word text, source, timestamp
+
+- **`ValidationIssue`** - Individual validation issue
+  - `category`: Type of issue (labels, partOfSpeech, etc.)
+  - `value`: The unknown/problematic value
+  - `path`: JSON path to the issue location
+  - `context`: Validation context (word text)
+  - `severity`: 'error' | 'warning' | 'info'
+  - `suggestion`: Recommended action for fix
+
+##### Enhanced Features
+
+- **Comprehensive Type Discovery**: Identifies all unknown enum values
+- **Structural Validation**: Validates data structure integrity
+- **Path Tracking**: Precise location of issues in data
+- **Enum Suggestions**: Ready-to-use enum additions
+- **Severity Levels**: Different handling for errors vs warnings
+- **Context Awareness**: Links issues to specific words
+- **Development Support**: Detailed logging for type discovery
+
 ### Other Legacy Actions (`lib/actions/`)
 
 - **`cleanupDatabase()`** - General database cleanup operations
@@ -339,7 +392,7 @@ import { getUserStats } from '@/core/domains/user';
 
 // ✅ RECOMMENDED: Shared infrastructure
 import { handlePrismaError } from '@/core/shared/database';
-import { logToFile } from '@/core/infrastructure/monitoring';
+import { serverLog } from '@/core/infrastructure/monitoring';
 
 // ✅ RECOMMENDED: State management
 import { useAppDispatch, store } from '@/core/state';

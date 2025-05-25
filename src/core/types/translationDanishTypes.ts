@@ -157,6 +157,7 @@ export type DetailCategoryDanish =
   | 'MILITÆR' // as military (give part of speech of this definition as military)
   | 'LITTERATUR' // as literature (give part of speech of this definition as literature)
   | 'ASTRONOMI' // as astronomy (give part of speech of this definition as astronomy)
+  | 'ASTROLOGI' // as astrology (give part of speech of this definition as astrology)
   | 'GASTRONOMI' // as gastronomy (give part of speech of this definition as gastronomy)
   | 'SØFART' // as maritime (give part of speech of this definition as maritime)
   //-----------------------------------------------------------

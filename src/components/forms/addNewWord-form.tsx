@@ -25,9 +25,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/core/lib/utils';
 import { Upload } from 'lucide-react';
-import { DatabaseCleanupDialog } from '../DatabaseCleanupDialog';
+import { DatabaseCleanupDialog } from '@/components/DatabaseCleanupDialog';
 import { DanishDictionaryObject } from '@/core/types/translationDanishTypes';
-import { logToFile } from '@/core/lib/server/serverLogger';
+import { serverLog } from '@/core/lib/server/serverLogger';
 import { LogLevel } from '@/core/lib/utils/logUtils';
 
 interface ProcessedWord {
@@ -222,7 +222,7 @@ export default function AddNewWordForm() {
             wordToProcess,
           ]);
 
-          logToFile(
+          serverLog(
             `Danish result for "${wordToProcess}":`,
             LogLevel.INFO,
             danishResult,

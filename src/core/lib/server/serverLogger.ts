@@ -2,13 +2,13 @@
 
 import fs from 'fs/promises';
 import path from 'path';
-import { LogLevel } from '../utils/logUtils';
+import { LogLevel } from '@/core/lib/utils/logUtils';
 
 /**
  * Logs a message to a server-side log file with timestamp and optional context.
  * This function can only be called from server components or server actions.
  */
-export async function logToFile(
+export async function serverLog(
   message: string,
   level: LogLevel = LogLevel.INFO,
   context?: unknown,

@@ -1,9 +1,11 @@
 // Basic CRUD operations
 export {
   fetchDictionaryWords,
+  fetchDictionaryWordDetails,
   addWordToUserDictionary,
   checkWordExistsByUuid,
   fetchWordById,
+  type DictionaryWordDetails,
 } from './word-crud-actions';
 
 // Complex word details operations

@@ -1,7 +1,14 @@
 'use server';
 
 import { prisma } from '@/core/lib/prisma';
-import { LanguageCode, Prisma, DifficultyLevel } from '@prisma/client';
+import {
+  LanguageCode,
+  Prisma,
+  DifficultyLevel,
+  PartOfSpeech,
+  SourceType,
+  Gender,
+} from '@prisma/client';
 
 // Add type definition for image data
 // interface ImageData {
@@ -59,6 +66,25 @@ interface DictionaryWord {
   difficulty: DifficultyLevel;
   audioUrl: string;
   exampleSentence: string;
+}
+
+// New interface for WordDetails items
+export interface DictionaryWordDetails {
+  id: number;
+  wordText: string;
+  partOfSpeech: PartOfSpeech;
+  variant: string | null;
+  frequencyGeneral: number | null;
+  frequency: number | null;
+  source: SourceType;
+  definition: string;
+  definitionFull: string;
+  audioUrl: string | null;
+  hasImage: boolean;
+  imageUrl: string | null;
+  wordId: number;
+  gender: Gender | null;
+  forms: string | null;
 }
 
 /**
@@ -128,6 +154,90 @@ export async function fetchDictionaryWords(
   } catch (error) {
     console.error('Error fetching dictionary words:', error);
     throw new Error('Failed to fetch dictionary words');
+  }
+}
+
+/**
+ * New server action to fetch WordDetails items with comprehensive information
+ */
+export async function fetchDictionaryWordDetails(
+  targetLanguageId: string,
+): Promise<DictionaryWordDetails[]> {
+  try {
+    const wordDetails = await prisma.wordDetails.findMany({
+      where: {
+        word: {
+          languageCode: targetLanguageId as LanguageCode,
+        },
+      },
+      include: {
+        word: true,
+        definitions: {
+          include: {
+            definition: {
+              include: {
+                image: true,
+              },
+            },
+          },
+          take: 1, // Get first definition
+        },
+        audioLinks: {
+          where: {
+            isPrimary: true,
+          },
+          include: {
+            audio: true,
+          },
+          take: 1, // Get first audio
+        },
+      },
+      orderBy: [
+        { word: { word: 'asc' } },
+        { partOfSpeech: 'asc' },
+        { variant: 'asc' },
+      ],
+    });
+
+    // Transform entries to match WordDetails type
+    const transformedWordDetails: DictionaryWordDetails[] = wordDetails.map(
+      (details) => {
+        const firstDefinition = details.definitions[0]?.definition;
+        const firstAudio = details.audioLinks[0]?.audio;
+        const hasImage = !!firstDefinition?.image;
+
+        // Truncate definition to 3 words for display
+        const definitionText = firstDefinition?.definition || '';
+        const definitionWords = definitionText.split(' ');
+        const truncatedDefinition =
+          definitionWords.length > 3
+            ? definitionWords.slice(0, 3).join(' ') + '...'
+            : definitionText;
+
+        return {
+          id: details.id,
+          wordText: details.word.word,
+          partOfSpeech: details.partOfSpeech,
+          variant: details.variant,
+          frequencyGeneral: details.word.frequencyGeneral,
+          frequency: details.frequency,
+          source: details.source,
+          definition: truncatedDefinition,
+          definitionFull: definitionText,
+          audioUrl: firstAudio?.url || null,
+          hasImage,
+          imageUrl: firstDefinition?.image?.url || null,
+          wordId: details.wordId,
+          gender: details.gender,
+          forms: details.forms,
+        };
+      },
+    );
+
+    return transformedWordDetails;
+  } catch (error) {
+    console.error('Error fetching dictionary word details:', error);
+    throw new Error('Failed to fetch dictionary word details');
   }
 }
 

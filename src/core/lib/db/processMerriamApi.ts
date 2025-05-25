@@ -20,13 +20,13 @@ import {
   Gender,
 } from '@prisma/client';
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
-import { LogLevel, serverLog } from '@/core/lib/utils/logUtils';
+import { LogLevel, clientLog } from '@/core/lib/utils/logUtils';
 import { ImageService } from '@/core/lib/services/imageService';
 import {
   fetchWordFrequency,
   getGeneralFrequency,
   getPartOfSpeechFrequency,
-} from '../services/frequencyService';
+} from '@/core/lib/services/frequencyService';
 import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**Definitions:
@@ -325,7 +325,7 @@ export async function processAndSaveWord(
 
   const sourceEntityUuid = apiResponse.meta.uuid;
 
-  serverLog(
+  clientLog(
     `FROM processMerriamApi.ts: Processing word: ${mainWordText}`,
     LogLevel.INFO,
   );
@@ -1563,7 +1563,7 @@ sourceWordText processing
                 ),
                 examples: examples, // Using already extracted examples with proper structure
               });
-              serverLog(
+              clientLog(
                 `Process in processMerriamApi.ts (definition section): cleanDefinitionText: ${cleanDefinitionText}`,
                 LogLevel.INFO,
               );
@@ -1625,7 +1625,7 @@ sourceWordText processing
           ) {
             // This refers to the 'currentSubWordInLoop' for context
             if (!currentSubWordInLoop.id) {
-              serverLog(
+              clientLog(
                 `Error: currentSubWordInLoop '${currentSubWordInLoop.word}' has no ID. RelationSide: ${relationSide}`,
                 LogLevel.ERROR,
               );
@@ -1671,7 +1671,7 @@ sourceWordText processing
               phonetic = targetSubWord.phonetic || null;
               entitySource = targetSubWord.source || apiSource;
             } else {
-              serverLog(
+              clientLog(
                 `Could not find subWord or its ID for relationSide string: '${relationSide}'`,
                 LogLevel.WARN,
               );
@@ -1685,7 +1685,7 @@ sourceWordText processing
               };
             }
           } else {
-            serverLog(
+            clientLog(
               `Unknown relationSide type: ${relationSide}`,
               LogLevel.WARN,
             );
@@ -1757,7 +1757,7 @@ sourceWordText processing
           processedData.word.etymology || null, // Add etymology parameter
         );
         //postion 1
-        serverLog(
+        clientLog(
           `Position 1: From upsertWord in processMerriamApi.ts (upsertWord section): mainWordDetails: ${JSON.stringify(mainWordDetails)}`,
           LogLevel.INFO,
         );
@@ -1894,7 +1894,7 @@ sourceWordText processing
               }
             }
           } catch (error) {
-            serverLog(
+            clientLog(
               `Process in processMerriamApi.ts (definition section): Error processing definition: ${error}`,
               LogLevel.ERROR,
             );
@@ -1902,7 +1902,7 @@ sourceWordText processing
           }
         }
 
-        serverLog(
+        clientLog(
           `+++++++++++++++Process in processMerriamApi.ts (definition section): subWordsArray: ${JSON.stringify(subWordsArray)}`,
           LogLevel.INFO,
         );
@@ -1976,7 +1976,7 @@ sourceWordText processing
 
             // Create WordDetails for the subword based on part of speech
             // Prioritize the subword's overall partOfSpeech if available
-            serverLog(
+            clientLog(
               `Position 5: From upsertWordDetails in processMerriamApi.ts (upsertWordDetails section): subWord.partOfSpeech: ${subWord.partOfSpeech}`,
               LogLevel.INFO,
             );
@@ -2053,7 +2053,7 @@ sourceWordText processing
 
         for (const currentProcessingSubWord of allPopulatedSubWords) {
           if (!currentProcessingSubWord.id) {
-            serverLog(
+            clientLog(
               `Skipping relationships for subWord '${currentProcessingSubWord.word}' as it has no ID. This should not happen.`,
               LogLevel.ERROR,
             );
@@ -2077,7 +2077,7 @@ sourceWordText processing
               await Promise.all(
                 batch.map(async (relation) => {
                   if (!relation.type) {
-                    serverLog(
+                    clientLog(
                       `Missing type for relationship on subWord ${currentProcessingSubWord.word} (ID: ${currentProcessingSubWord.id})`,
                       LogLevel.WARN,
                     );
@@ -2106,7 +2106,7 @@ sourceWordText processing
                   );
 
                   if (!fromInfo.wordId || !toInfo.wordId) {
-                    serverLog(
+                    clientLog(
                       `Missing wordId for relationship: from='${relation.fromWord}'(id:${fromInfo.wordId}) to='${relation.toWord}'(id:${toInfo.wordId}), for subWord '${currentProcessingSubWord.word}' (ID: ${currentProcessingSubWord.id}). Skipping.`,
                       LogLevel.WARN,
                     );
@@ -2196,7 +2196,7 @@ sourceWordText processing
         }
         //! End of refactored relationship block
 
-        // ... (Rest of transaction, e.g., final serverLog, saveJson) ...
+        // ... (Rest of transaction, e.g., final clientLog, saveJson) ...
 
         // The following call to processTranslationsForWord has been moved outside this transaction.
         // mainWord.id is captured in mainWordEntityId earlier in this transaction.
@@ -2286,7 +2286,7 @@ sourceWordText processing
 
     const dbDefinitions = Array.from(definitionsMap.values());
 
-    serverLog(
+    clientLog(
       `Process in processMerriamApi.ts: Found ${dbDefinitions.length} unique definitions in database for word "${mainWordText}" and related words`,
       LogLevel.INFO,
     );
@@ -2298,7 +2298,7 @@ sourceWordText processing
         .filter((def) => !def.imageId)
         .map((def) => ({ id: def.id }));
 
-      serverLog(
+      clientLog(
         `Process in processMerriamApi.ts: Found ${definitionsToProcess.length} definitions that need images of ${dbDefinitions.length} total definitions`,
         LogLevel.INFO,
       );
@@ -2372,7 +2372,7 @@ async function processImagesForDefinitions(
     await Promise.all(
       batch.map(async (definition) => {
         try {
-          serverLog(
+          clientLog(
             `FROM processImagesForDefinitions: Processing image for definition ${definition.id} of word "${wordText}"`,
             LogLevel.INFO,
           );
@@ -2388,13 +2388,13 @@ async function processImagesForDefinitions(
               data: { imageId: image.id },
             });
           } else {
-            serverLog(
+            clientLog(
               `FROM processImagesForDefinitions: No image found for definition ${definition.id}`,
               LogLevel.WARN,
             );
           }
         } catch (error) {
-          serverLog(
+          clientLog(
             `FROM processImagesForDefinitions: Error processing image for definition ${definition.id}: ${error instanceof Error ? error.message : String(error)}`,
             LogLevel.ERROR,
           );
@@ -2920,12 +2920,12 @@ async function upsertWord(
     try {
       const frequencyData = await fetchWordFrequency(wordText, languageCode);
       frequencyGeneral = getGeneralFrequency(frequencyData);
-      serverLog(
+      clientLog(
         `Fetched frequency data in upsertWord for "${wordText}": ${frequencyGeneral}`,
         LogLevel.INFO,
       );
     } catch (error) {
-      serverLog(
+      clientLog(
         `Error fetching frequency data in upsertWord for "${wordText}": ${error}`,
         LogLevel.ERROR,
       );
@@ -2973,7 +2973,7 @@ async function upsertWord(
     null, // frequency will be fetched in upsertWordDetails
     options?.etymology ?? null, // Pass etymology to WordDetails
   );
-  serverLog(
+  clientLog(
     `From upsertWord in processMerriamApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
     LogLevel.INFO,
   );
@@ -3029,13 +3029,13 @@ async function upsertWordDetails(
 
         posFrequency = getPartOfSpeechFrequency(frequencyData, pos);
 
-        serverLog(
+        clientLog(
           `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${pos}: ${posFrequency}`,
           LogLevel.INFO,
         );
       }
     } catch (error) {
-      serverLog(
+      clientLog(
         `Error fetching POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
         LogLevel.ERROR,
       );

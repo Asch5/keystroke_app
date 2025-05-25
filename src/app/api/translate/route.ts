@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
 import translate from 'extended-google-translate-api';
 import { TranslateOptions } from 'extended-google-translate-api';
-import { serverLog } from '@/core/lib/utils/logUtils';
+import { clientLog } from '@/core/lib/utils/logUtils';
 
 export async function POST(request: Request) {
   try {
     const { text, sourceLang, destLang, options } = await request.json();
-    serverLog(`text: ${text}`);
-    serverLog(`sourceLang: ${sourceLang}`);
-    serverLog(`destLang: ${destLang}`);
-    serverLog(`options: ${JSON.stringify(options)}`);
+    clientLog(`text: ${text}`);
+    clientLog(`sourceLang: ${sourceLang}`);
+    clientLog(`destLang: ${destLang}`);
+    clientLog(`options: ${JSON.stringify(options)}`);
 
     if (!text) {
       return NextResponse.json(
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       options as TranslateOptions,
     );
 
-    serverLog(`JSON.stringify(result): ${JSON.stringify(result)}`);
+    clientLog(`JSON.stringify(result): ${JSON.stringify(result)}`);
 
     return NextResponse.json(result);
   } catch (error) {

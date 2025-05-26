@@ -1,473 +1,202 @@
-# Core Folder Documentation - Optimized Structure
+# Core Folder Documentation - Essential Reference
 
-This document provides a comprehensive overview of all functions and services available in the **optimized** `src/core/` folder. Use this reference to avoid writing duplicate code and to understand what functionality is already available.
-
-## 📁 New Optimized Structure Overview
+## Structure Overview
 
 ```
 src/core/
-├── domains/               # 🏢 Domain-Driven Business Logic
+├── domains/               # Business Logic by Domain
 │   ├── auth/             # Authentication domain
 │   ├── dictionary/       # Dictionary & word management
 │   ├── translation/      # Translation services
 │   └── user/             # User management
-├── shared/               # 🔧 Shared Infrastructure
+├── shared/               # Shared Infrastructure
 │   ├── database/         # Database operations
 │   ├── services/         # External services
 │   ├── utils/            # Common utilities
 │   ├── types/            # Shared types
 │   └── hooks/            # Shared hooks
-├── infrastructure/       # 🏗️ Technical Infrastructure
+├── infrastructure/       # Technical Infrastructure
 │   ├── auth/             # Auth configuration
 │   ├── monitoring/       # Logging & monitoring
 │   └── storage/          # Storage management
-├── state/                # 📊 State Management
+├── state/                # State Management
 │   ├── slices/           # Redux slices
 │   ├── features/         # Feature state
 │   └── store.ts          # Store configuration
-└── lib/ (legacy)         # 📦 Legacy - Maintained for compatibility
+└── lib/ (legacy)         # Legacy - Maintained for compatibility
 ```
 
----
-
-## 🏢 **DOMAINS** - Business Logic by Domain
-
-### 📚 Dictionary Domain (`domains/dictionary/`)
-
-**Main word and dictionary operations - Clean domain organization**
-
-#### **Recommended Imports** ✨
+## Import Patterns
 
 ```typescript
-// ✅ NEW: Clean domain imports
-import {
-  getWordDetails,
-  addWordToUserDictionary,
-  updateWordDetails,
-  WordEntryData,
-} from '@/core/domains/dictionary';
+// Recommended domain imports
+import { getWordDetails, updateWordDetails } from '@/core/domains/dictionary';
+import { authenticateUser } from '@/core/domains/auth';
+import { getUserStats } from '@/core/domains/user';
 
-// ✅ STILL WORKS: Legacy imports (backward compatible)
+// Shared infrastructure
+import { handlePrismaError } from '@/core/shared/database';
+import { serverLog } from '@/core/infrastructure/monitoring';
+
+// State management
+import { useAppDispatch, store } from '@/core/state';
+import { selectUser } from '@/core/state/slices/authSlice';
+
+// Legacy imports (still work)
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 ```
 
-#### **Word CRUD Operations** (`actions/word-crud-actions.ts`)
+## Dictionary Domain (`domains/dictionary/`)
 
-- **`fetchDictionaryWords(targetLanguageId)`** - Get dictionary words for a language
-- **`fetchDictionaryWordDetails(targetLanguageId)`** - Get comprehensive WordDetails items with word text, part of speech, variant, frequencies, source, definition, audio, and image information
-- **`addWordToUserDictionary(userId, mainDictionaryId, baseLanguageId, targetLanguageId)`** - Add word to user's personal dictionary
-- **`getWordDetails(wordText, languageCode)`** - Get comprehensive word information
-- **`fetchWordById(wordId)`** - Get word by ID
-- **`checkWordExistsByUuid(id, uuid)`** - Check if word exists using Merriam-Webster UUID
+### Word CRUD Operations (`actions/word-crud-actions.ts`)
 
-#### **Word Details & Complex Operations** (`actions/word-details-actions.ts`)
+- `fetchDictionaryWords(targetLanguageId)`
+- `fetchDictionaryWordDetails(targetLanguageId)`
+- `addWordToUserDictionary(userId, mainDictionaryId, baseLanguageId, targetLanguageId)`
+- `getWordDetails(wordText, languageCode)`
+- `fetchWordById(wordId)`
+- `checkWordExistsByUuid(id, uuid)`
 
-- **`updateWordDetails(wordId, updateData)`** - Comprehensive word update with transaction
-- **`processAndSaveWord(apiResponse)`** - Process and save complete word data
-- **`processAllWords(apiResponses)`** - Batch process multiple words
-- **`processOneWord(word)`** - Process single word entry
+### Word Details & Complex Operations (`actions/word-details-actions.ts`)
 
-#### **Word Updates** (`actions/word-update-actions.ts`)
+- `updateWordDetails(wordId, updateData)`
+- `processAndSaveWord(apiResponse)`
+- `processAllWords(apiResponses)`
+- `processOneWord(word)`
 
-- **`updateWord(wordId, data)`** - Update basic word information
-- **`updateDefinition(definitionId, data)`** - Update definition text and labels
-- **`updateExample(exampleId, data)`** - Update example sentences
+### Word Updates (`actions/word-update-actions.ts`)
 
-#### **Audio Management** (`actions/audio-actions.ts`)
+- `updateWord(wordId, data)`
+- `updateDefinition(definitionId, data)`
+- `updateExample(exampleId, data)`
 
-- **`createAudioForExample(exampleId, data)`** - Add audio to example
-- **`createAudioForWord(wordId, data)`** - Add audio to word
-- **`createAudioForDefinition(definitionId, data)`** - Add audio to definition
-- **`updateAudio(audioId, data)`** - Update audio file information
+### Audio Management (`actions/audio-actions.ts`)
 
-#### **Frequency Utilities** (`actions/frequency-actions.ts`)
+- `createAudioForExample(exampleId, data)`
+- `createAudioForWord(wordId, data)`
+- `createAudioForDefinition(definitionId, data)`
+- `updateAudio(audioId, data)`
 
-- **`mapWordFrequency(wordPosition)`** - Convert position to frequency enum
-- **`mapFrequencyPartOfSpeech(positionInPartOfSpeech)`** - Convert POS position to frequency
+### Frequency Utilities (`actions/frequency-actions.ts`)
 
-#### **Domain Utilities** (`utils/`)
+- `mapWordFrequency(wordPosition)`
+- `mapFrequencyPartOfSpeech(positionInPartOfSpeech)`
+- `importFrequencyJson()` - Server action for frequency import
 
-- **Word formatting and processing utilities**
-- **Domain-specific validation helpers**
-- **Frequency calculation utilities**
+## Auth Domain (`domains/auth/`)
 
-### 🔐 Auth Domain (`domains/auth/`)
+### Actions
 
-**Authentication and authorization business logic**
+- `authenticate(prevState, formData)` - User login
+- `signUp(prevState, formData)` - User registration
+- `checkRole(allowedRoles)` - Role verification
 
-#### **Available Actions**
+### Types
 
-- **`authenticate(prevState, formData)`** - User login authentication
-- **`signUp(prevState, formData)`** - User registration
-- **Types**: `StateAuth`, `StateSignup` - Form state types for auth operations
+- `StateAuth`, `StateSignup` - Form state types
 
-#### **Role Management**
+## User Domain (`domains/user/`)
 
-- **`checkRole(allowedRoles)`** - Verify user role permissions
+### User Management Actions
 
-### 👤 User Domain (`domains/user/`)
+- `updateUserProfile(prevState, formData)`
+- `getUsers(page, limit, searchQuery?, sortBy?, sortOrder?)`
+- `getUserDetails(userId)`
+- `getUserByEmail(email)`
+- `updateUserStatus(userId, status)`
+- `deleteUser(userId)`
 
-**User management and profile operations**
+### Session Management Actions
 
-#### **User Management Actions**
+- `createLearningSession(userId, data)`
+- `updateLearningSession(sessionId, data)`
+- `addSessionItem(sessionId, data)`
+- `getSessionStats(userId)`
+- `getSessionHistory(userId, page, pageSize, filters?)`
+- `getCurrentSession(userId)`
 
-- **`updateUserProfile(prevState, formData)`** - Update user profile information
-- **`getUsers(page, limit, searchQuery?, sortBy?, sortOrder?)`** - Get paginated users
-- **`getUserDetails(userId)`** - Get detailed user information
-- **`getUserByEmail(email)`** - Find user by email
-- **`updateUserStatus(userId, status)`** - Update user status
-- **`deleteUser(userId)`** - Delete user account
+### User Statistics
 
-#### **User Statistics**
+- `calculateUserStats(user)`
+- `calculateLearningProgress(user)`
 
-- **`calculateUserStats(user)`** - Calculate user learning statistics
-- **`calculateLearningProgress(user)`** - Calculate learning progress metrics
+### Types
 
-#### **Types**
+- `UserWithStats`, `UserWithStatsAndMeta`, `UserStats`
+- `UserLearningSession`, `UserSessionItem`
+- `SessionState`, `SessionStatsResponse`
+- `CreateSessionRequest`, `UpdateSessionRequest`
 
-- **`UserWithStats`** - User with learning statistics
-- **`UserWithStatsAndMeta`** - Extended user data
-- **`UserStats`** - Statistics interface
-- **`State`, `UserSettings`, `UpdateData`** - User-related type definitions
+## Translation Domain (`domains/translation/`)
 
-### 🌐 Translation Domain (`domains/translation/`)
+### Translation Processing
 
-**Translation services and language processing**
+- `processTranslationsForWord(mainWordId, mainWordText, wordData)`
+- `processEnglishTranslationsForDanishWord(danishWordData, variantData, tx)`
 
-#### **Translation Processing**
+## Shared Services (`shared/services/`)
 
-- **`processTranslationsForWord(mainWordId, mainWordText, wordData)`** - Process all translations for a word
-- **`processEnglishTranslationsForDanishWord(danishWordData, variantData, tx)`** - Process English translations of Danish content
+### External Services
 
----
+- `frequencyService.ts` - Word frequency analysis
+- `FrequencyManager.ts` - Frequency data caching (prevents duplicate API calls)
+- `imageService.ts` - Image generation and management
+- `pexelsService.ts` - Pexels API integration
+- `translationService.ts` - Translation service integration
 
-## 🔧 **SHARED** - Common Infrastructure
+### WordService
 
-### 💾 Database Operations (`shared/database/`)
+- `WordService.upsertWord(tx, source, wordText, languageCode, options)`
+- `WordService.upsertWordDetails(..., config, gender?, forms?)`
+- `WordService.upsertWordDetailsDanish(...)` - For Danish API
+- `WordService.upsertWordDetailsMerriam(...)` - For Merriam API
 
-#### **Database Client** (`client.ts`)
+### FrequencyManager Methods
 
-- Database client configuration and connection (moved from `prisma.ts`)
+- `getFrequencyData(word, languageCode, partOfSpeech?)`
+- `clearCache()`
+- `getCacheSize()`
 
-#### **Error Handling** (`error-handler.ts`)
+## Shared Database (`shared/database/`)
 
-- **`handlePrismaError(error)`** - Standardized Prisma error handling
-- **`ErrorResponse`** - Error response interface
-
-#### **Middleware** (`middleware/`)
-
-- **`performanceMiddleware`** - Query performance monitoring
-- **`errorHandlingMiddleware`** - Error handling and logging
-- **`softDeleteMiddleware`** - Soft delete functionality
-- **`batchingMiddleware`** - Query batching optimization
-- **`PrismaOperationError`** - Custom error class
-
-### 🔧 Shared Services (`shared/services/`)
-
-#### **External Service Integrations**
-
-- **`frequencyService.ts`** - Word frequency analysis
-- **`FrequencyManager.ts`** - **NEW** ✨ Frequency data caching manager (prevents duplicate API calls)
-- **`imageService.ts`** - Image generation and management **FIXED** 🔧
-- **`pexelsService.ts`** - Pexels API integration for images
-- **`translationService.ts`** - Translation service integration
-
-#### **ImageService Fix** 🔧
-
-**Issue Fixed**: Danish definition image processing through translation was inefficient with dead code and redundant database queries.
-
-**Location**: `shared/services/imageService.ts` - `getOrCreateTranslatedDefinitionImage()` method
-
-**Problems Resolved**:
-
-1. **Dead Code Removal**: Removed unused `await prisma.definitionTranslation.findMany()` call that wasn't storing results
-2. **Query Optimization**: Combined two separate database queries into one optimized query with proper includes
-3. **Logic Enhancement**: Added better error handling and logging for translation lookup failures
-
-**Before (Problematic)**:
-
-```typescript
-// ❌ Dead code - result not used
-await prisma.definitionTranslation.findMany({
-  where: { definitionId },
-  include: { translation: true },
-});
-
-// ❌ Separate inefficient query
-const translations = await prisma.translation.findMany({
-  where: {
-    languageCode: 'en',
-    definitionLinks: { some: { definitionId } },
-  },
-});
-```
-
-**After (Fixed)**:
-
-```typescript
-// ✅ Corrected query without invalid where in include
-const definitionTranslations = await prisma.definitionTranslation.findMany({
-  where: { definitionId },
-  include: {
-    translation: true, // Get all translations, filter in application
-  },
-});
-
-// ✅ Clean extraction with proper filtering
-const englishTranslations = definitionTranslations
-  .map((dt) => dt.translation)
-  .filter(
-    (translation) => translation !== null && translation.languageCode === 'en',
-  );
-```
-
-**Impact**:
+### Database Client (`client.ts`)
 
-- Improved performance for Danish word image processing
-- Better error logging and debugging information
-- Cleaner, more maintainable code
-- Reduced database load by eliminating redundant queries
+- Database client configuration
 
-#### **Terminal Build Issues Fixed** 🔧
+### Error Handling (`error-handler.ts`)
 
-**Date**: January 2025
+- `handlePrismaError(error)` - Standardized Prisma error handling
+- `ErrorResponse` - Error response interface
 
-**Issues Resolved**:
-
-1. **Missing `importFrequencyJson` Function** ❌➡️✅
+### Middleware (`middleware/`)
 
-   - **Problem**: Import error in `/admin/dictionaries/frequency/page.tsx`
-   - **Solution**: Created proper server action in `domains/dictionary/actions/frequency-actions.ts`
-   - **Details**: Function was being imported from frequency service but didn't exist. Moved to proper actions structure with `'use server'` directive.
+- `performanceMiddleware` - Query performance monitoring
+- `errorHandlingMiddleware` - Error handling and logging
+- `softDeleteMiddleware` - Soft delete functionality
+- `batchingMiddleware` - Query batching optimization
 
-2. **Database Table Reference Errors** ❌➡️✅
-
-   - **Problem**: Raw SQL queries referencing non-existent tables:
-     - `word_audio` table (should be `word_details_audio`)
-     - `definition_example_audio` table (should be `definition_audio` + `example_audio`)
-   - **Solution**: Updated `dbUtils/audioCleanup.ts` with correct table names
-   - **Before**:
-     ```sql
-     SELECT DISTINCT audio_id FROM word_audio
-     UNION
-     SELECT DISTINCT audio_id FROM definition_example_audio
-     ```
-   - **After**:
-     ```sql
-     SELECT DISTINCT audio_id FROM word_details_audio
-     UNION
-     SELECT DISTINCT audio_id FROM definition_audio
-     UNION
-     SELECT DISTINCT audio_id FROM example_audio
-     UNION
-     SELECT DISTINCT audio_id FROM user_word_audio
-     ```
-
-3. **Non-existent `is_orphaned` Column** ❌➡️✅
-
-   - **Problem**: Audio cleanup functions trying to use `is_orphaned` column that doesn't exist in database schema
-   - **Solution**: Refactored audio cleanup to work without the column
-   - **Before**:
-     ```sql
-     UPDATE audio SET is_orphaned = true WHERE...
-     DELETE FROM audio WHERE is_orphaned = true
-     ```
-   - **After**:
-     ```typescript
-     // Get orphaned IDs first, then delete by ID
-     const orphanedIds = await getOrphanedAudioRecords();
-     return await deleteOrphanedAudioRecords(orphanedIds);
-     ```
-
-4. **Invalid Prisma Where in Include** ❌➡️✅
-   - **Problem**: Prisma query using invalid `where` clause inside `include` statement
-   - **Solution**: Removed invalid where clause, applied filtering in application code
-   - **Error**: `Unknown argument 'where'` in translation include
-   - **Before**: `include: { translation: { where: { languageCode: 'en' } } }`
-   - **After**: `include: { translation: true }` + application-level filtering
-
-**Files Modified**:
-
-- ✅ `src/core/domains/dictionary/actions/frequency-actions.ts` - Added `importFrequencyJson` server action
-- ✅ `src/core/domains/dictionary/actions/index.ts` - Exported new function
-- ✅ `src/app/admin/dictionaries/frequency/page.tsx` - Updated import path
-- ✅ `src/core/lib/utils/dbUtils/audioCleanup.ts` - Fixed table references + removed is_orphaned dependency
-
-**Build Status**: ✅ **Successfully compiling and running** - All TypeScript, compilation, and runtime database errors resolved
-
-#### **FrequencyManager Service** 🆕
-
-**Purpose**: Manages frequency data caching to eliminate duplicate API calls across word processing services.
-
-**Location**: `shared/services/FrequencyManager.ts`
-
-**Key Features**:
-
-- Caches both general and part-of-speech-specific frequency data
-- Shared between `processOrdnetApi.ts` and `processMerriamApi.ts`
-- Prevents duplicate frequency fetching within processing sessions
-- Error handling and logging for failed requests
-
-**Methods**:
-
-- **`getFrequencyData(word, languageCode, partOfSpeech?)`** - Get cached or fetch frequency data
-- **`clearCache()`** - Clear frequency cache for testing/memory management
-- **`getCacheSize()`** - Get current cache size for monitoring
-
-#### **WordService** 🆕
-
-**Purpose**: Shared word processing service that eliminates code duplication between API processors.
-
-**Location**: `shared/services/WordService.ts`
-
-**Key Features**:
-
-- Unified `upsertWord` and `upsertWordDetails` functions for both Danish and Merriam APIs
-- Configurable behavior for language-specific differences (Danish vs English)
-- Integrated FrequencyManager usage to prevent duplicate API calls
-- Supports both Danish-specific fields (gender, forms) and standard fields
-
-**Methods**:
-
-- **`WordService.upsertWord(tx, source, wordText, languageCode, options)`** - Create/update Word records
-- **`WordService.upsertWordDetails(..., config, gender?, forms?)`** - Create/update WordDetails with configuration
-- **`WordService.upsertWordDetailsDanish(...)`** - Convenience method for Danish API (includes gender, forms, fallback frequency, cleanup)
-- **`WordService.upsertWordDetailsMerriam(...)`** - Convenience method for Merriam API (standard fields only)
-
-**Configuration Options**:
+## Shared Hooks (`shared/hooks/`)
 
-```typescript
-interface UpsertWordDetailsConfig {
-  includeDanishFields?: boolean; // Include gender/forms fields
-  useFallbackFrequency?: boolean; // Direct API calls if no FrequencyManager
-  cleanupUndefinedPos?: boolean; // Remove undefined PartOfSpeech records
-}
-```
+### Cross-Domain Hooks
 
-**Usage Example**:
+- `useSetUserDataToRedux()` - Sync user data to Redux
+- `syncUserData()` - Internal sync function
 
-```typescript
-import { WordService } from '@/core/shared/services/WordService';
+### Session Management Hooks
 
-// For Danish API processing
-const wordDetails = await WordService.upsertWordDetailsDanish(
-  tx,
-  wordId,
-  partOfSpeech,
-  source,
-  isPlural,
-  variant,
-  phonetic,
-  frequency,
-  gender,
-  forms,
-  etymology,
-  frequencyManager,
-);
+- `useSession()` - Complete session management
+- `useSessionStats(userId?)` - Session statistics with caching
+- `useRealTimeSessionStats(userId?)` - Real-time session stats
 
-// For Merriam API processing
-const wordDetails = await WordService.upsertWordDetailsMerriam(
-  tx,
-  wordId,
-  partOfSpeech,
-  source,
-  isPlural,
-  variant,
-  phonetic,
-  frequency,
-  etymology,
-  frequencyManager,
-);
-```
+## State Management (`state/`)
 
-**Migration Impact**:
+### Store Configuration (`store.ts`)
 
-- **`processOrdnetApi.ts`**: Now uses `WordService.upsertWordDetailsDanish()`
-- **`processMerriamApi.ts`**: Now uses `WordService.upsertWordDetailsMerriam()`
-- Eliminates ~200+ lines of duplicate code while maintaining all existing functionality
+- `store` - Configured Redux store
+- `useAppDispatch()` - Typed dispatch hook
+- Types: `RootState`, `AppDispatch`
 
-**Usage Example for FrequencyManager**:
-
-```typescript
-import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
-
-const frequencyManager = new FrequencyManager();
-const { general, posSpecific } = await frequencyManager.getFrequencyData(
-  'word',
-  LanguageCode.en,
-  PartOfSpeech.noun,
-);
-```
-
-### 🛠️ Shared Utilities (`shared/utils/`)
-
-#### **Common Utilities**
-
-- **General utility functions**
-- **Cross-domain helper functions**
-- **Validation utilities**
-- **Formatting utilities**
-
-### 🪝 Shared Hooks (`shared/hooks/`)
-
-#### **Cross-Domain Hooks**
-
-- **`useSetUserDataToRedux()`** - Sync user data to Redux store
-- **`syncUserData()`** - Internal sync function
-
-### 📝 Shared Types (`shared/types/`)
-
-#### **Common Type Definitions**
-
-- **Cross-domain interfaces**
-- **Shared data structures**
-- **API response types**
-
----
-
-## 🏗️ **INFRASTRUCTURE** - Technical Foundation
-
-### 🔐 Auth Infrastructure (`infrastructure/auth/`)
-
-#### **Configuration & Providers**
-
-- **JWT and session configuration** for Next.js authentication
-- **Edge runtime compatibility** for auth
-- **`authorize(credentials)`** - Custom credential validation
-
-### 📊 Monitoring (`infrastructure/monitoring/`)
-
-#### **Logging System**
-
-- **`serverLog(message, level?, context?)`** - Server-side file logging
-- **Performance monitoring utilities**
-
-### 💽 Storage (`infrastructure/storage/`)
-
-#### **Storage Management**
-
-- **File storage utilities**
-- **Asset management**
-
----
-
-## 📊 **STATE** - Redux State Management
-
-### 🏪 Store Configuration (`state/store.ts`)
-
-```typescript
-// ✅ Clean state imports
-import { store, useAppDispatch } from '@/core/state';
-import type { RootState, AppDispatch } from '@/core/state';
-```
-
-- **`store`** - Configured Redux store with persistence
-- **`useAppDispatch()`** - Typed dispatch hook
-- **Types**: `RootState`, `AppDispatch`
-
-### 🎯 State Slices (`state/slices/`)
-
-#### **Auth Slice** (`slices/authSlice.ts`)
+### Auth Slice (`slices/authSlice.ts`)
 
 ```typescript
 interface AuthState {
@@ -476,20 +205,9 @@ interface AuthState {
 }
 ```
 
-**Selectors:**
+Selectors: `selectUser(state)`, `selectIsAuthenticated(state)`
 
-- **`selectUser(state)`** - Get current user
-- **`selectIsAuthenticated(state)`** - Get authentication status
-
-#### **Theme Slice** (`slices/themeSlice.ts`)
-
-```typescript
-type ThemeState = {
-  mode: 'light' | 'dark' | 'system';
-};
-```
-
-#### **User Dictionary Slice** (`slices/userDictionarySlice.ts`)
+### User Dictionary Slice (`slices/userDictionarySlice.ts`)
 
 ```typescript
 interface UserDictionaryState {
@@ -501,281 +219,72 @@ interface UserDictionaryState {
 }
 ```
 
-**Selectors:**
+Selectors: `selectUserDictionary(state)`, `selectUserDictionaryStatus(state)`, `selectUserDictionaryError(state)`
 
-- **`selectUserDictionary(state)`** - Get dictionary items
-- **`selectUserDictionaryStatus(state)`** - Get loading status
-- **`selectUserDictionaryError(state)`** - Get error state
+### Session Slice (`features/sessionSlice.ts`)
 
----
+```typescript
+interface SessionState {
+  currentSession: UserLearningSession | null;
+  sessionItems: UserSessionItem[];
+  sessionHistory: UserLearningSession[];
+  isSessionActive: boolean;
+  loading: boolean;
+  error: string | null;
+  sessionStats: SessionStatsResponse | null;
+}
+```
 
-## 📦 **LEGACY LIB** - Backward Compatibility
+Async Thunks: `startLearningSession(request)`, `endLearningSession({sessionId, updates})`, `addSessionItem({sessionId, item})`, `fetchSessionStats(userId)`, `fetchSessionHistory({userId, page, pageSize, filters})`
 
-_All functions remain accessible through original paths for 100% backward compatibility_
+Selectors: `selectCurrentSession(state)`, `selectSessionItems(state)`, `selectIsSessionActive(state)`, `selectSessionLoading(state)`, `selectSessionError(state)`, `selectSessionStats(state)`, `selectSessionAccuracy(state)`, `selectSessionProgress(state)`
+
+## Infrastructure
+
+### Auth (`infrastructure/auth/`)
+
+- JWT and session configuration
+- Edge runtime compatibility
+- `authorize(credentials)` - Custom credential validation
+
+### Monitoring (`infrastructure/monitoring/`)
+
+- `serverLog(message, level?, context?)` - Server-side file logging
+
+## Legacy Lib (`lib/`) - Backward Compatibility
 
 ### Database Processing (`lib/db/`)
 
-#### **Merriam-Webster API Processing** (`processMerriamApi.ts`)
+#### Merriam-Webster API Processing (`processMerriamApi.ts`)
 
-**Complete pipeline for processing English dictionary data**
+Helper Functions: `mapPartOfSpeech(apiFl)`, `mapSourceType(apiSrc)`, `processEtymology(etymologyData)`, `extractExamples(dt, language)`, `cleanupDefinitionText(text)`, `cleanupExampleText(text)`
 
-##### Helper Functions
+#### Danish Dictionary Processing (`processOrdnetApi.ts`)
 
-- **`mapPartOfSpeech(apiFl)`** - Convert API part of speech to enum
-- **`mapSourceType(apiSrc)`** - Convert API source to enum
-- **`processEtymology(etymologyData)`** - Extract and format etymology
-- **`extractExamples(dt, language)`** - Extract examples and usage notes
-- **`cleanupDefinitionText(text)`** - Clean definition formatting
-- **`cleanupExampleText(text)`** - Clean example text formatting
+Core Functions: `processTranslationsForWord(tx, mainWordId, mainWordText, wordData)`, `processAndSaveDanishWord(danishWordData, pTx?)`, `upsertWord(tx, source, wordText, languageCode, options?)`, `upsertWordDetails(tx, wordId, partOfSpeech, source, ...)`
 
-#### **Danish Dictionary Processing** (`processOrdnetApi.ts`)
+Utility Functions: `extractSubjectLabels(labels)`, `extractGeneralLabels(labels)`, `extractGrammaticalNote(labels)`, `extractUsageNote(labels)`, `mapStemPosToEnum(stemPos)`, `getRelationshipDescription(relationType)`
 
-**Processing Danish dictionary data from Ordnet API**
+#### Validation System (`utils/validations/danishDictionaryValidator.ts`)
 
-##### Core Functions
+Core Functions: `validateDanishDictionary(data, context)`, `extractEnumSuggestions(validationResult)`, `isValidationAcceptable(validationResult)`
 
-- **`processTranslationsForWord(tx, mainWordId, mainWordText, wordData)`** - Process Danish translations
-- **`processAndSaveDanishWord(danishWordData, pTx?)`** - Save Danish word with all relations
-- **`upsertWord(tx, source, wordText, languageCode, options?)`** - Create/update word records
-- **`upsertWordDetails(tx, wordId, partOfSpeech, source, ...)`** - Create/update word details
-
-##### Utility Functions
-
-- **`extractSubjectLabels(labels)`** - Extract subject classification labels
-- **`extractGeneralLabels(labels)`** - Extract general usage labels
-- **`extractGrammaticalNote(labels)`** - Extract grammatical information
-- **`extractUsageNote(labels)`** - Extract usage notes
-- **`mapStemPosToEnum(stemPos)`** - Map stem part of speech
-- **`getRelationshipDescription(relationType)`** - Get relationship descriptions
-
-#### **Enhanced Validation System** (`utils/validations/danishDictionaryValidator.ts`) ✨
-
-**Comprehensive Danish dictionary data validation for careful data handling**
-
-##### Core Validation Functions
-
-- **`validateDanishDictionary(data, context)`** - Enhanced validation with detailed analysis
-
-  - **Returns**: `ValidationSummary` with complete validation results
-  - **Features**: Unknown entity detection, structural validation, type checking
-  - **Output**: Detailed issues list with paths and suggestions
-
-- **`extractEnumSuggestions(validationResult)`** - Extract enum suggestions from validation
-
-  - **Returns**: Record of enum names and suggested additions
-  - **Purpose**: Identify new types to add to enums
-
-- **`isValidationAcceptable(validationResult)`** - Check if validation passed acceptably
-  - **Returns**: Boolean indicating if processing should continue
-  - **Logic**: Returns true for warnings only, false for structural errors
-
-##### Validation Result Types
-
-- **`ValidationSummary`** - Complete validation analysis
-
-  - `isValid`: Overall validation status
-  - `totalIssues`: Count of all issues found
-  - `unknownEntitiesCount`: Count of unknown types/values
-  - `structuralIssuesCount`: Count of structural problems
-  - `issues`: Detailed array of `ValidationIssue` objects
-  - `unknownEntitiesByCategory`: Categorized unknown entities
-  - `suggestedEnumAdditions`: Formatted enum additions
-  - `contextInfo`: Word text, source, timestamp
-
-- **`ValidationIssue`** - Individual validation issue
-  - `category`: Type of issue (labels, partOfSpeech, etc.)
-  - `value`: The unknown/problematic value
-  - `path`: JSON path to the issue location
-  - `context`: Validation context (word text)
-  - `severity`: 'error' | 'warning' | 'info'
-  - `suggestion`: Recommended action for fix
-
-##### Enhanced Features
-
-- **Comprehensive Type Discovery**: Identifies all unknown enum values
-- **Structural Validation**: Validates data structure integrity
-- **Path Tracking**: Precise location of issues in data
-- **Enum Suggestions**: Ready-to-use enum additions
-- **Severity Levels**: Different handling for errors vs warnings
-- **Context Awareness**: Links issues to specific words
-- **Development Support**: Detailed logging for type discovery
+Types: `ValidationSummary`, `ValidationIssue`
 
 ### Other Legacy Actions (`lib/actions/`)
 
-- **`cleanupDatabase()`** - General database cleanup operations
-- **`processDanishVariantOnServer(variant, originalWord)`** - Process Danish word variants
-- **`processImagesForTranslatedDefinitions(definitions, wordText)`** - Generate images for definitions
+- `cleanupDatabase()` - Database cleanup operations
+- `processDanishVariantOnServer(variant, originalWord)` - Process Danish variants
+- `processImagesForTranslatedDefinitions(definitions, wordText)` - Generate images
 
----
+## Usage Guidelines
 
-## 🎯 **NEW USAGE GUIDELINES**
+1. Use domain-based imports for new code
+2. Legacy imports remain functional
+3. File size target: < 8KB per file
+4. Check existing functionality before creating new functions
+5. Follow domain organization for business logic
 
-### **Recommended Import Patterns** ✨
+## Migration Status
 
-```typescript
-// ✅ RECOMMENDED: Domain-based imports
-import { getWordDetails, updateWordDetails } from '@/core/domains/dictionary';
-import { authenticateUser } from '@/core/domains/auth';
-import { getUserStats } from '@/core/domains/user';
-
-// ✅ RECOMMENDED: Shared infrastructure
-import { handlePrismaError } from '@/core/shared/database';
-import { serverLog } from '@/core/infrastructure/monitoring';
-
-// ✅ RECOMMENDED: State management
-import { useAppDispatch, store } from '@/core/state';
-import { selectUser } from '@/core/state/slices/authSlice';
-
-// ✅ LEGACY: Still works (backward compatible)
-import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
-```
-
-### **File Organization Best Practices**
-
-1. **🏢 Domain Logic**: Business rules go in `domains/`
-2. **🔧 Shared Code**: Reusable utilities go in `shared/`
-3. **🏗️ Infrastructure**: Technical configuration in `infrastructure/`
-4. **📊 State**: All Redux code in `state/`
-
-### **Before Creating New Functions:**
-
-1. **Check domain structure** - Does your function belong to an existing domain?
-2. **Search this documentation** for existing functionality
-3. **Use clean imports** - Prefer domain-based imports
-4. **Follow size limits** - Keep files under 8KB when possible
-
-### **File Size Guidelines:**
-
-- ✅ **Target**: < 8KB per file
-- ✅ **Maximum**: < 25KB (exceptions for complex operations)
-- ✅ **Split criterion**: When file serves multiple purposes
-
----
-
-## 🚀 **OPTIMIZATION BENEFITS**
-
-### **Developer Experience**
-
-- ✅ **Faster Navigation**: Find code by business domain
-- ✅ **Better IntelliSense**: Smaller, focused files
-- ✅ **Cleaner Imports**: One-line domain imports
-- ✅ **Easier Testing**: Cohesive, focused modules
-
-### **Maintainability**
-
-- ✅ **Single Responsibility**: Each file has clear purpose
-- ✅ **Domain Separation**: Business logic properly organized
-- ✅ **Scalable Architecture**: Easy to extend and modify
-- ✅ **Type Safety**: Full TypeScript coverage maintained
-
-### **Team Collaboration**
-
-- ✅ **Clear Ownership**: Teams can own specific domains
-- ✅ **Reduced Conflicts**: Less overlap in large files
-- ✅ **Easier Onboarding**: Intuitive, logical structure
-
----
-
-## 🎯 **MIGRATION STATUS**
-
-| Component              | Status            | Notes                               |
-| ---------------------- | ----------------- | ----------------------------------- |
-| Dictionary Domain      | ✅ **COMPLETED**  | 5 focused files, clean imports      |
-| Auth Domain            | ✅ **COMPLETED**  | Domain structure ready              |
-| User Domain            | ✅ **COMPLETED**  | Domain structure ready              |
-| Translation Domain     | ✅ **COMPLETED**  | Domain structure ready              |
-| Shared Infrastructure  | ✅ **COMPLETED**  | Database, services, utils organized |
-| State Management       | ✅ **COMPLETED**  | Redux properly organized            |
-| Backward Compatibility | ✅ **MAINTAINED** | 100% compatibility preserved        |
-
----
-
-## 🔧 **Recent Fixes & Updates**
-
-### **TypeScript Compilation Issues - RESOLVED** ✅
-
-**Fixed Issues:**
-
-1. **React Import Syntax**: Updated `shared/types/navigation.ts` to use `import * as React from 'react'` for better compatibility
-2. **NextAuth Type Conflicts**: Made `id` property optional in User interface to match NextAuth's base types
-3. **Module Resolution**: Removed duplicate external API type declarations to prevent module conflicts
-4. **Cache Issues**: Cleared TypeScript build cache (`.next`, `tsconfig.tsbuildinfo`) for clean compilation
-
-**Result**: ✅ **All barrel exports now work correctly**
-
-### **Working Import Patterns** ✨
-
-```typescript
-// ✅ CONFIRMED WORKING: Domain-based imports
-import {
-  WordEntity,
-  DefinitionEntity,
-  FrequencyRequest,
-} from '@/core/domains/dictionary/types';
-
-import { AuthState, SessionUser } from '@/core/domains/auth/types';
-
-import {
-  ApiResponse,
-  PaginatedResponse,
-  LoadingState,
-} from '@/core/shared/types';
-
-// ✅ CONFIRMED WORKING: Action imports
-import {
-  getWordDetails,
-  updateWordDetails,
-  addWordToUserDictionary,
-} from '@/core/domains/dictionary';
-```
-
----
-
-## 🚨 **Important Notes**
-
-1. **🔄 Backward Compatibility**: All legacy imports still work
-2. **✨ Modern Patterns**: New code should use domain imports
-3. **📊 Performance**: Optimized for React 19 + Next.js 15.3.2
-4. **🔒 Type Safety**: Full TypeScript coverage maintained and working
-5. **🏗️ Architecture**: Enterprise-grade, scalable structure
-6. **✅ Status**: All TypeScript compilation issues resolved
-
----
-
-## 📚 **Type Definitions** (`types/`)
-
-### **Legacy Types** (maintained for compatibility)
-
-- **`definition.ts`** - Definition-related types
-- **`dictionary.ts`** - Dictionary and word types
-- **`nav.ts`** - Navigation types
-- **`next-auth.d.ts`** - NextAuth type extensions
-- **`translationDanishTypes.ts`** - Danish translation types
-- **`user.ts`** - User-related types
-- **`word.ts`** - Word entity types
-- **`wordDefinition.ts`** - Word definition types
-
-### **New Domain Types**
-
-- **Domain-specific types** in respective `domains/*/types/` folders
-- **Shared types** in `shared/types/`
-
----
-
-## 🎉 **CONCLUSION**
-
-**The core folder is now optimized with:**
-
-- 🏢 **Domain-Driven Design** for better organization
-- 🔧 **Clean Architecture** with separation of concerns
-- 📊 **Modern State Management** using Redux Toolkit
-- 🚀 **Performance Optimizations** for React 19 + Next.js 15.3.2
-- 🔄 **100% Backward Compatibility** for seamless transition
-
-**Use the new domain-based imports for new code, while legacy imports continue to work!**
-
----
-
-_Last Updated: 2024 (Post-Optimization + TypeScript Fixes)_
-_Version: 2.1 - Optimized Structure with Resolved Type Issues_
-_Status: ✅ **Production Ready & TypeScript Compilation Working**_
+All components completed with 100% backward compatibility maintained.

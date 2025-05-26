@@ -43,3 +43,7 @@ Now, proceed with the question: [
 question in the input window
 
 ]
+
+==================================
+
+Act as if you were a completely autonomous system. I will give you a document and you will only need to leave the necessary information from that document, which will be enough to fully understand what is contained in that document. The goal is to make this document shorter and easier for the autonomous system to follow in the future.@DESCRIPTION_OF_CORE_FOLDER.md

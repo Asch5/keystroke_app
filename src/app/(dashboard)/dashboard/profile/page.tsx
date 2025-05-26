@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense } from 'react';
-import ProfileForm from '@/components/forms/profile-form';
+import { ProfileForm } from '@/components/shared/forms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 

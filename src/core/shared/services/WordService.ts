@@ -238,10 +238,7 @@ export class WordService {
     });
 
     // Clean up alternative PoS state if configured (Danish style)
-    if (
-      config.cleanupUndefinedPos &&
-      dbPoSToPersist !== PartOfSpeech.undefined
-    ) {
+    if (dbPoSToPersist !== PartOfSpeech.undefined) {
       await tx.wordDetails.deleteMany({
         where: {
           wordId: wordId,

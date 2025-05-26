@@ -1,5 +1,5 @@
-import PageWrapper from '@/components/pageWrapper';
-import CheckWordForm from '@/components/forms/checkWord-form';
+import { PageWrapper } from '@/components/layouts';
+import { CheckWordForm } from '@/components/features/dictionary';
 export default function AddNewWord() {
   return (
     <PageWrapper title="Word Checker">

@@ -125,3 +125,90 @@ Invalid `prisma.definitionTranslation.findMany()` invocation:
 }
 
 Unknown argument `where`.
+[2025-05-26T07:43:29.461Z] [INFO] Fetching frequency data for "opstart" (da)
+[2025-05-26T07:43:29.538Z] [INFO] Cached frequency data for "opstart": general=0
+[2025-05-26T07:43:29.674Z] [INFO] Cached PoS frequency for "opstart" (noun): null
+[2025-05-26T07:43:30.829Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 13, POS noun: null
+[2025-05-26T07:43:31.722Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 13, POS noun: null
+[2025-05-26T07:43:32.986Z] [INFO] Fetching frequency data for "opstarten" (da)
+[2025-05-26T07:43:33.002Z] [INFO] Cached frequency data for "opstarten": general=0
+[2025-05-26T07:43:33.019Z] [INFO] Cached PoS frequency for "opstarten" (noun): null
+[2025-05-26T07:43:33.019Z] [INFO] Retrieved frequency data in upsertWord for "opstarten": 0
+[2025-05-26T07:43:33.124Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 154, POS noun: null
+[2025-05-26T07:43:33.407Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 154, POS noun: null
+[2025-05-26T07:43:33.778Z] [INFO] Fetching frequency data for "opstarter" (da)
+[2025-05-26T07:43:33.822Z] [INFO] Cached frequency data for "opstarter": general=0
+[2025-05-26T07:43:33.992Z] [INFO] Cached PoS frequency for "opstarter" (noun): null
+[2025-05-26T07:43:33.992Z] [INFO] Retrieved frequency data in upsertWord for "opstarter": 0
+[2025-05-26T07:43:34.113Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 155, POS noun: null
+[2025-05-26T07:43:34.381Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 155, POS noun: null
+[2025-05-26T07:43:34.718Z] [INFO] Fetching frequency data for "opstarterne" (da)
+[2025-05-26T07:43:34.727Z] [INFO] Cached frequency data for "opstarterne": general=0
+[2025-05-26T07:43:34.740Z] [INFO] Retrieved frequency data in upsertWord for "opstarterne": 0
+[2025-05-26T07:43:34.740Z] [INFO] Cached PoS frequency for "opstarterne" (noun): null
+[2025-05-26T07:43:34.851Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 156, POS noun: null
+[2025-05-26T07:43:35.054Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 156, POS noun: null
+[2025-05-26T07:43:35.419Z] [INFO] Fetching frequency data for "start" (da)
+[2025-05-26T07:43:35.442Z] [INFO] Cached frequency data for "start": general=1395
+[2025-05-26T07:43:35.442Z] [INFO] Retrieved frequency data in upsertWord for "start": 1395
+[2025-05-26T07:43:35.556Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 7, POS undefined: null
+[2025-05-26T07:43:35.556Z] [INFO] Cached PoS frequency for "start" (undefined): null
+[2025-05-26T07:43:35.625Z] [INFO] Retrieved frequency data in upsertWord for "start": 1395
+[2025-05-26T07:43:35.730Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 7, POS undefined: null
+[2025-05-26T07:43:35.793Z] [INFO] Fetching frequency data for "opstartsfase" (da)
+[2025-05-26T07:43:35.806Z] [INFO] Cached frequency data for "opstartsfase": general=0
+[2025-05-26T07:43:35.814Z] [INFO] Cached PoS frequency for "opstartsfase" (noun): null
+[2025-05-26T07:43:35.814Z] [INFO] Retrieved frequency data in upsertWord for "opstartsfase": 0
+[2025-05-26T07:43:35.914Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 159, POS noun: null
+[2025-05-26T07:43:36.110Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 154, POS noun: null
+[2025-05-26T07:43:36.654Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 154, POS noun: null
+[2025-05-26T07:43:37.502Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 155, POS noun: null
+[2025-05-26T07:43:38.520Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 156, POS noun: null
+[2025-05-26T07:43:39.184Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 7, POS undefined: null
+[2025-05-26T07:43:42.545Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Starting getOrCreateTranslatedDefinitionImage for word: "opstart", definitionId: 120
+[2025-05-26T07:43:42.545Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Starting getOrCreateTranslatedDefinitionImage for word: "opstart", definitionId: 121
+[2025-05-26T07:43:43.124Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Found 1 English translations for definition 120
+[2025-05-26T07:43:43.124Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Using English translation for search: "start of a difficult, laborious or demanding enterprise; initial stage of such an enterprise"
+[2025-05-26T07:43:43.125Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Final search query: "opstart start difficult laborious demanding enterprise"
+[2025-05-26T07:43:43.519Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Using English translation for search: "the setting-up of an engine, machine or similar, possibly for the first time or by a comprehensive procedure"
+[2025-05-26T07:43:43.519Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Found 1 English translations for definition 121
+[2025-05-26T07:43:43.520Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Final search query: "opstart settingup engine machine similar possibly"
+[2025-05-26T07:43:43.736Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Creating image from Pexels photo ID: 7661506
+[2025-05-26T07:43:43.922Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Creating image from Pexels photo ID: 32255379
+[2025-05-26T07:43:44.184Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Successfully created image 34 for definition 120
+[2025-05-26T07:43:44.241Z] [INFO] Successfully assigned image 34 to definition 120
+[2025-05-26T07:43:44.330Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Successfully created image 35 for definition 121
+[2025-05-26T07:43:44.378Z] [INFO] Successfully assigned image 35 to definition 121
+[2025-05-26T07:43:44.395Z] [INFO] Fetching frequency data for "opstarte" (da)
+[2025-05-26T07:43:44.406Z] [INFO] Cached frequency data for "opstarte": general=0
+[2025-05-26T07:43:44.429Z] [INFO] Cached PoS frequency for "opstarte" (verb): null
+[2025-05-26T07:43:44.524Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 52, POS verb: null
+[2025-05-26T07:43:45.102Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 52, POS verb: null
+[2025-05-26T07:43:45.537Z] [INFO] Fetching frequency data for "opstarter" (da)
+[2025-05-26T07:43:45.554Z] [INFO] Cached frequency data for "opstarter": general=0
+[2025-05-26T07:43:45.586Z] [INFO] Cached PoS frequency for "opstarter" (verb): null
+[2025-05-26T07:43:45.586Z] [INFO] Retrieved frequency data in upsertWord for "opstarter": 0
+[2025-05-26T07:43:45.741Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 155, POS verb: null
+[2025-05-26T07:43:45.949Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 155, POS verb: null
+[2025-05-26T07:43:46.280Z] [INFO] Fetching frequency data for "opstartede" (da)
+[2025-05-26T07:43:46.329Z] [INFO] Cached frequency data for "opstartede": general=0
+[2025-05-26T07:43:46.364Z] [INFO] Cached PoS frequency for "opstartede" (verb): null
+[2025-05-26T07:43:46.364Z] [INFO] Retrieved frequency data in upsertWord for "opstartede": 0
+[2025-05-26T07:43:46.479Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 162, POS verb: null
+[2025-05-26T07:43:46.684Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 162, POS verb: null
+[2025-05-26T07:43:47.036Z] [INFO] Fetching frequency data for "opstartet" (da)
+[2025-05-26T07:43:47.056Z] [INFO] Cached frequency data for "opstartet": general=0
+[2025-05-26T07:43:47.072Z] [INFO] Cached PoS frequency for "opstartet" (verb): null
+[2025-05-26T07:43:47.072Z] [INFO] Retrieved frequency data in upsertWord for "opstartet": 0
+[2025-05-26T07:43:47.180Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 163, POS verb: null
+[2025-05-26T07:43:47.392Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 163, POS verb: null
+[2025-05-26T07:43:47.767Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 155, POS verb: null
+[2025-05-26T07:43:48.434Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 162, POS verb: null
+[2025-05-26T07:43:49.066Z] [INFO] Retrieved POS frequency data in upsertWordDetails for word ID 163, POS verb: null
+[2025-05-26T07:43:50.310Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Starting getOrCreateTranslatedDefinitionImage for word: "opstarte", definitionId: 125
+[2025-05-26T07:43:50.616Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Final search query: "opstarte start"
+[2025-05-26T07:43:50.615Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Found 1 English translations for definition 125
+[2025-05-26T07:43:50.616Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Using English translation for search: "=start up"
+[2025-05-26T07:43:51.009Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Creating image from Pexels photo ID: 29562922
+[2025-05-26T07:43:51.235Z] [INFO] ======FROM getOrCreateTranslatedDefinitionImage===========: Successfully created image 2 for definition 125
+[2025-05-26T07:43:51.282Z] [INFO] Successfully assigned image 2 to definition 125

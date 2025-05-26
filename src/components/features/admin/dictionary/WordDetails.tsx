@@ -5,7 +5,6 @@ import type {
   AudioFileData,
   DetailRelationForPOS,
   WordEntryData,
-  WordDetails,
 } from '@/core/lib/actions/dictionaryActions';
 import {
   Accordion,

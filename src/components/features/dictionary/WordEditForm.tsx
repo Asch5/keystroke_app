@@ -9,7 +9,7 @@ import {
   SourceType,
   LanguageCode,
 } from '@prisma/client';
-import { WordDetails } from '@/core/lib/actions/dictionaryActions';
+import { WordFormData } from '@/core/types/wordDefinition';
 import {
   WordUpdateData,
   ExampleUpdateData,
@@ -50,7 +50,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { PlusCircle, Trash2, Save, Loader2, ImageIcon } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import { WordImage } from '@/components/dictionary/WordImage';
+import { WordImage } from '@/components/features/dictionary';
 import { toast } from 'sonner';
 
 // Form validation schema
@@ -112,7 +112,7 @@ type WordFormValues = z.infer<typeof wordFormSchema>;
 
 interface WordEditFormProps {
   wordId: string;
-  wordDetails: WordDetails | null;
+  wordDetails: WordFormData | null;
   isLoading: boolean;
 }
 
@@ -138,7 +138,7 @@ export default function WordEditForm({
   });
 
   // Extract mapping functions for form data
-  const mapDefinitions = (definitions: WordDetails['definitions']) =>
+  const mapDefinitions = (definitions: WordFormData['definitions']) =>
     definitions.map((def) => ({
       id: def.id,
       text: def.text,
@@ -157,7 +157,7 @@ export default function WordEditForm({
       })),
     }));
 
-  const mapRelatedWords = (relatedWords: WordDetails['relatedWords']) =>
+  const mapRelatedWords = (relatedWords: WordFormData['relatedWords']) =>
     Object.fromEntries(
       Object.entries(relatedWords).map(([type, words]) => [
         type,
@@ -170,7 +170,7 @@ export default function WordEditForm({
       ]),
     );
 
-  const mapAudioFiles = (audioFiles: WordDetails['word']['audioFiles']) =>
+  const mapAudioFiles = (audioFiles: WordFormData['word']['audioFiles']) =>
     audioFiles.map((audio) => ({
       id: audio.id,
       url: audio.url,

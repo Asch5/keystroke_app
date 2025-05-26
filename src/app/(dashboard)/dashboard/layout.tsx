@@ -1,7 +1,7 @@
 'use client';
 
-import SideNav from '@/components/dashboard/sidenav';
-import { PageBreadcrumb } from '@/components/navigation/breadcrumb';
+import { SideNav } from '@/components/features/dashboard';
+import { PageBreadcrumb } from '@/components/shared/navigation';
 import { dictionaryNavLinks } from '@/core/lib/data/navLinks';
 import { ScrollArea } from '@/components/ui/scroll-area';
 

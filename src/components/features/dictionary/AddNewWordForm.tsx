@@ -25,7 +25,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/core/lib/utils';
 import { Upload } from 'lucide-react';
-import { DatabaseCleanupDialog } from '@/components/DatabaseCleanupDialog';
+import { DatabaseCleanupDialog } from '@/components/shared/dialogs';
 import { DanishDictionaryObject } from '@/core/types/translationDanishTypes';
 
 interface ProcessedWord {

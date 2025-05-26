@@ -1,7 +1,5 @@
-import {
-  WordEntryData,
-  WordDetails,
-} from '@/core/lib/actions/dictionaryActions';
+import { WordEntryData } from '@/core/lib/actions/dictionaryActions';
+import { WordFormData } from '@/core/types/wordDefinition';
 import { WordFrequency } from '@/core/lib/utils/commonDictUtils/frequencyUtils';
 
 /**
@@ -9,7 +7,7 @@ import { WordFrequency } from '@/core/lib/utils/commonDictUtils/frequencyUtils';
  */
 export function convertWordEntryDataToWordDetails(
   wordEntryData: WordEntryData,
-): WordDetails {
+): WordFormData {
   // Extract primary WordDetails and aggregate data
   const primaryWordDetails = wordEntryData.details[0];
   const etymology = primaryWordDetails?.etymology || null;
@@ -21,7 +19,10 @@ export function convertWordEntryDataToWordDetails(
       text: def.text,
       partOfSpeech: detail.partOfSpeech, // Use the detail's partOfSpeech
       image: def.image,
-      frequencyPartOfSpeech: def.frequencyPartOfSpeech,
+      frequencyPartOfSpeech:
+        typeof def.frequencyPartOfSpeech === 'number'
+          ? def.frequencyPartOfSpeech
+          : 0,
       languageCode: def.languageCode,
       source: def.source,
       subjectStatusLabels: def.subjectStatusLabels,
@@ -61,7 +62,10 @@ export function convertWordEntryDataToWordDetails(
       wordFrequency: mapFrequencyToEnum(wordEntryData.frequencyGeneral),
       languageCode: wordEntryData.languageCode,
       createdAt: wordEntryData.createdAt,
-      additionalInfo: wordEntryData.additionalInfo,
+      additionalInfo:
+        typeof wordEntryData.additionalInfo === 'string'
+          ? wordEntryData.additionalInfo
+          : JSON.stringify(wordEntryData.additionalInfo),
     },
     relatedWords: wordEntryData.relatedWords,
     definitions: allDefinitions,

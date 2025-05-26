@@ -1,4 +1,4 @@
-import SignupForm from '@/components/forms/signup-form';
+import { SignupForm } from '@/components/features/auth';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { Separator } from '@/components/ui/separator';

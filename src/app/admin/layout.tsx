@@ -1,12 +1,12 @@
 'use client';
 
-import { PageBreadcrumb } from '@/components/navigation/breadcrumb';
+import { PageBreadcrumb } from '@/components/shared/navigation';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { RoleGate } from '@/components/auth/RoleGate';
+import { RoleGate } from '@/components/features/auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { getNavigationLinks } from '@/core/lib/utils/navigation';
-import SideNav from '@/components/dashboard/sidenav';
+import { SideNav } from '@/components/features/dashboard';
 
 export default function AdminLayout({
   children,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useSelector } from 'react-redux';
-import NavLinks from '@/components/dashboard/nav-links';
+import { NavLinks } from '@/components/features/dashboard';
 import { PowerIcon, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { NavLink } from '@/core/types/nav';

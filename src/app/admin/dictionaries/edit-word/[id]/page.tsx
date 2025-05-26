@@ -7,15 +7,15 @@ import {
   fetchWordById,
 } from '@/core/lib/actions/dictionaryActions';
 import { convertWordEntryDataToWordDetails } from '@/core/lib/utils/wordDetailsAdapter';
-import { WordDetails } from '@/core/lib/actions/dictionaryActions';
+import { WordFormData } from '@/core/types/wordDefinition';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import WordEditForm from '@/components/forms/wordEdit-form';
+import { WordEditForm } from '@/components/features/dictionary';
 
 export default function EditWordPage() {
   const params = useParams();
-  const [wordDetails, setWordDetails] = useState<WordDetails | null>(null);
+  const [wordDetails, setWordDetails] = useState<WordFormData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const wordId = params.id as string;
 

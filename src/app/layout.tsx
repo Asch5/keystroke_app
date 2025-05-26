@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import { geistSans, geistMono } from '@/components/ui/fonts';
 import './globals.css';
-import { ThemeProvider } from '@/components/theme/ThemeProvider';
-import AuthProvider from '@/components/AuthProvider';
-import { ReduxProvider } from '@/components/ReduxProvider';
+import { ThemeProvider } from '@/components/providers';
+import { AuthProvider } from '@/components/providers';
+import { ReduxProvider } from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {

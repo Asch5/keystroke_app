@@ -7,8 +7,8 @@ import {
   type WordEntryData,
 } from '@/core/lib/actions/dictionaryActions';
 import { LanguageCode } from '@prisma/client';
-import PageWrapper from '@/components/pageWrapper';
-import WordDetails from '@/components/admin/dictionary/WordDetails';
+import { PageWrapper } from '@/components/layouts';
+import { WordDetails } from '@/components/features/admin';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';

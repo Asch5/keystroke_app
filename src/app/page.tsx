@@ -1,6 +1,6 @@
 'use client';
 
-import { ModeToggle } from '@/components/theme/ThemeToggle';
+import { ModeToggle } from '@/components/shared/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { RoleGate } from '@/components/auth/RoleGate';
+import { RoleGate } from '@/components/features/auth';
 
 /**
  * Home page component.

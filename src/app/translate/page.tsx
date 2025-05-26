@@ -1,6 +1,6 @@
 'use client';
 
-import TranslateComponent from '@/components/dictionary/TranslateComponent';
+import { TranslateComponent } from '@/components/features/dictionary';
 
 export default function TranslatePage() {
   return (

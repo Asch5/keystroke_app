@@ -793,33 +793,34 @@ export class ImageService {
       // Get the actual word text
       const wordText = wordDefinition?.wordDetails?.word?.word || word;
 
-      // Try to find translations for this definition
       // Find definition translations to English
-      await prisma.definitionTranslation.findMany({
-        where: { definitionId },
-        include: {
-          translation: true,
-        },
-      });
-
-      // Get translations to English via the junction table
-      const translations = await prisma.translation.findMany({
-        where: {
-          languageCode: 'en',
-          definitionLinks: {
-            some: {
-              definitionId,
-            },
+      const definitionTranslations =
+        await prisma.definitionTranslation.findMany({
+          where: { definitionId },
+          include: {
+            translation: true,
           },
-        },
-      });
+        });
+
+      // Extract English translations from the junction table results
+      const englishTranslations = definitionTranslations
+        .map((dt) => dt.translation)
+        .filter(
+          (translation) =>
+            translation !== null && translation.languageCode === 'en',
+        );
+
+      serverLog(
+        `======FROM getOrCreateTranslatedDefinitionImage===========: Found ${englishTranslations.length} English translations for definition ${definitionId}`,
+        LogLevel.INFO,
+      );
 
       // Create search query from the most relevant information
       let searchQuery = wordText;
 
-      if (translations.length > 0) {
+      if (englishTranslations.length > 0) {
         // Use the first English translation
-        const englishTranslation = translations[0];
+        const englishTranslation = englishTranslations[0];
         const translatedContent = englishTranslation?.content || '';
 
         serverLog(
@@ -831,6 +832,11 @@ export class ImageService {
         searchQuery = this.createSearchQueryFromText(
           wordText,
           translatedContent,
+        );
+      } else {
+        serverLog(
+          `======FROM getOrCreateTranslatedDefinitionImage===========: No English translations found for definition ${definitionId}, using original word: "${wordText}"`,
+          LogLevel.WARN,
         );
       }
 

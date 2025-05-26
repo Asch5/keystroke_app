@@ -5,30 +5,38 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 /**
- * Marks audio records as orphaned if they're not referenced by any junction table
+ * Gets IDs of audio records that are orphaned (not referenced by any junction table)
+ * Note: user_word_audio table stores URLs directly and doesn't reference the audio table
  */
-export async function markOrphanedAudioRecords() {
-  // Find all audio records that are not referenced in any junction table
-  await prisma.$executeRaw`
-    UPDATE audio
-    SET is_orphaned = true
+export async function getOrphanedAudioRecords(): Promise<number[]> {
+  const result = await prisma.$queryRaw<Array<{ id: number }>>`
+    SELECT id FROM audio
     WHERE id NOT IN (
-      SELECT DISTINCT audio_id FROM word_audio
+      SELECT DISTINCT audio_id FROM word_details_audio
       UNION
-      SELECT DISTINCT audio_id FROM definition_example_audio
-    )
-    AND is_orphaned = false;
+      SELECT DISTINCT audio_id FROM definition_audio
+      UNION
+      SELECT DISTINCT audio_id FROM example_audio
+    );
   `;
+  return result.map((record) => record.id);
 }
 
 /**
- * Deletes all audio records that are marked as orphaned
+ * Deletes orphaned audio records by their IDs
+ * @param orphanedIds Array of audio IDs to delete
  * @returns The number of deleted records
  */
-export async function deleteOrphanedAudioRecords(): Promise<number> {
+export async function deleteOrphanedAudioRecords(
+  orphanedIds: number[],
+): Promise<number> {
+  if (orphanedIds.length === 0) {
+    return 0;
+  }
+
   // When you need to delete physical files, uncomment this section
   // const orphanedAudios = await prisma.$queryRaw<Array<{ id: number, url: string }>>`
-  //   SELECT id, url FROM audio WHERE is_orphaned = true
+  //   SELECT id, url FROM audio WHERE id = ANY(${orphanedIds})
   // `;
 
   // To delete files, uncomment and implement:
@@ -43,12 +51,16 @@ export async function deleteOrphanedAudioRecords(): Promise<number> {
   //   }
   // });
 
-  // Delete the database records using raw query to use the is_orphaned column
-  const result = await prisma.$executeRaw`
-    DELETE FROM audio WHERE is_orphaned = true
-  `;
+  // Delete the database records by ID
+  const result = await prisma.audio.deleteMany({
+    where: {
+      id: {
+        in: orphanedIds,
+      },
+    },
+  });
 
-  return result;
+  return result.count;
 }
 
 /**
@@ -56,8 +68,8 @@ export async function deleteOrphanedAudioRecords(): Promise<number> {
  * @returns The number of deleted records
  */
 export async function cleanupAudio(): Promise<number> {
-  await markOrphanedAudioRecords();
-  return await deleteOrphanedAudioRecords();
+  const orphanedIds = await getOrphanedAudioRecords();
+  return await deleteOrphanedAudioRecords(orphanedIds);
 }
 
 /**

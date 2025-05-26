@@ -23,7 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { LanguageCode } from '@prisma/client';
-import { importFrequencyJson } from '@/core/lib/services/frequencyService';
+import { importFrequencyJson } from '@/core/domains/dictionary/actions';
 
 type FrequencyWord = {
   word: string;

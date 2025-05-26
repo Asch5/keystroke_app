@@ -38,4 +38,5 @@ export {
 export {
   mapWordFrequency,
   mapFrequencyPartOfSpeech,
+  importFrequencyJson,
 } from './frequency-actions';

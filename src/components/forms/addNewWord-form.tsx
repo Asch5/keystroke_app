@@ -27,8 +27,6 @@ import { cn } from '@/core/lib/utils';
 import { Upload } from 'lucide-react';
 import { DatabaseCleanupDialog } from '@/components/DatabaseCleanupDialog';
 import { DanishDictionaryObject } from '@/core/types/translationDanishTypes';
-import { serverLog } from '@/core/lib/server/serverLogger';
-import { LogLevel } from '@/core/lib/utils/logUtils';
 
 interface ProcessedWord {
   word: string;
@@ -221,12 +219,6 @@ export default function AddNewWordForm() {
           const danishResult = await getWordsFromDanishDictionary([
             wordToProcess,
           ]);
-
-          serverLog(
-            `Danish result for "${wordToProcess}":`,
-            LogLevel.INFO,
-            danishResult,
-          );
 
           if (!danishResult || danishResult.length === 0) {
             toast.error(`No Danish definitions found for "${wordToProcess}"`);

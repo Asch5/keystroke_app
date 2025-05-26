@@ -19,11 +19,7 @@ import {
   Gender,
 } from '@prisma/client';
 import { LogLevel, clientLog } from '@/core/lib/utils/logUtils';
-import {
-  fetchWordFrequency,
-  getGeneralFrequency,
-  getPartOfSpeechFrequency,
-} from '@/core/lib/services/frequencyService';
+// Frequency services are now handled by FrequencyManager and WordService
 import { TranslationService } from '@/core/lib/services/translationService';
 import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
 import { mapDanishPosToEnum } from '@/core/lib/utils/danishDictionary/mapDaEng';
@@ -34,6 +30,8 @@ import {
   DetailCategoryDanish,
 } from '@/core/types/translationDanishTypes';
 import { serverLog } from '@/core/lib/server/serverLogger';
+import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
+import { WordService } from '@/core/shared/services/WordService';
 //import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**Definitions:
@@ -300,7 +298,7 @@ async function processAudioForWord(
   }
 }
 
-// Update the upsertWord function to use the new audio processing
+// Update the upsertWord function to use the shared WordService
 async function upsertWord(
   tx: Prisma.TransactionClient,
   source: SourceType,
@@ -317,55 +315,32 @@ async function upsertWord(
     variant?: string;
     isHighlighted?: boolean;
     frequencyGeneral?: number | null;
+    frequencyManager?: FrequencyManager;
   },
 ): Promise<Word> {
-  // Fetch frequency data if not provided
-  let frequencyGeneral = options?.frequencyGeneral;
-  if (frequencyGeneral === undefined) {
-    try {
-      const frequencyData = await fetchWordFrequency(wordText, languageCode);
-      frequencyGeneral = getGeneralFrequency(frequencyData);
-      clientLog(
-        `Fetched frequency data in upsertWord for "${wordText}": ${frequencyGeneral}`,
-        LogLevel.INFO,
-      );
-    } catch (error) {
-      clientLog(
-        `Error fetching frequency data in upsertWord for "${wordText}": ${error}`,
-        LogLevel.ERROR,
-      );
-      frequencyGeneral = null;
-    }
-  }
-
-  // Create word record (etymology removed from here)
-  const word = await tx.word.upsert({
-    where: {
-      word_languageCode: {
-        word: wordText,
-        languageCode,
-      },
-    },
-    update: {
-      sourceEntityId: options?.sourceEntityId ?? null,
-      updatedAt: new Date(),
-      isHighlighted: options?.isHighlighted ?? false,
-      phoneticGeneral: options?.phonetic ?? null,
-      frequencyGeneral: frequencyGeneral ?? null,
-    },
-    create: {
-      word: wordText,
-      phoneticGeneral: options?.phonetic ?? null,
-      languageCode,
-      sourceEntityId: options?.sourceEntityId ?? null,
-      isHighlighted: options?.isHighlighted ?? false,
-      frequencyGeneral: frequencyGeneral ?? null,
-    },
-  });
+  // Use shared WordService for word creation
+  const word = await WordService.upsertWord(
+    tx,
+    source,
+    wordText,
+    languageCode,
+    options,
+  );
 
   // Ensure that partOfSpeech passed to upsertWordDetails is PartOfSpeech | null
   const partOfSpeechForDetails: PartOfSpeech | null =
     options?.partOfSpeech === undefined ? null : options?.partOfSpeech || null;
+
+  // Get PoS-specific frequency using the frequency manager
+  let posSpecificFrequency: number | null = null;
+  if (partOfSpeechForDetails && options?.frequencyManager) {
+    const posFreqData = await options.frequencyManager.getFrequencyData(
+      wordText,
+      languageCode,
+      partOfSpeechForDetails,
+    );
+    posSpecificFrequency = posFreqData.posSpecific;
+  }
 
   const wordDetails = await upsertWordDetails(
     tx,
@@ -375,13 +350,15 @@ async function upsertWord(
     false,
     options?.variant ?? '', // Ensure this is an empty string for the variant argument
     options?.phonetic ?? null,
-    null, // frequency will be fetched in upsertWordDetails
+    posSpecificFrequency, // Pass the pre-fetched frequency
     null, // gender
     null, // forms
     options?.etymology ?? null, // Pass etymology to WordDetails
+    options?.frequencyManager, // Pass the frequency manager to avoid duplicate calls
   );
+
   clientLog(
-    `From upsertWord in processMerriamApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
+    `From upsertWord in processOrdnetApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
     LogLevel.INFO,
   );
 
@@ -401,7 +378,7 @@ async function upsertWord(
 }
 
 /**
- * Create or update a WordDetails record
+ * Create or update a WordDetails record using shared WordService
  * This is needed to establish relationships between words based on part of speech
  */
 async function upsertWordDetails(
@@ -416,88 +393,22 @@ async function upsertWordDetails(
   gender: Gender | null = null,
   forms: string | null = null,
   etymology: string | null = null,
+  frequencyManager?: FrequencyManager,
 ): Promise<{ id: number; wordId: number; partOfSpeech: PartOfSpeech }> {
-  // Determine the definitive PartOfSpeech to be persisted in the DB for this operation.
-  // If the input `partOfSpeech` is null, PartOfSpeech.undefined is used.
-  const dbPoSToPersist: PartOfSpeech = partOfSpeech || PartOfSpeech.undefined;
-
-  // Fetch frequency data using dbPoSToPersist for an accurate lookup.
-  let posFrequency = frequency;
-  if (posFrequency === null || posFrequency === undefined) {
-    try {
-      const wordRecord = await tx.word.findUnique({
-        where: { id: wordId },
-        select: { word: true, languageCode: true },
-      });
-
-      if (wordRecord) {
-        const frequencyData = await fetchWordFrequency(
-          wordRecord.word,
-          wordRecord.languageCode as LanguageCode,
-        );
-        posFrequency = getPartOfSpeechFrequency(frequencyData, dbPoSToPersist);
-        clientLog(
-          `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${dbPoSToPersist}: ${posFrequency}`,
-          LogLevel.INFO,
-        );
-      }
-    } catch (error) {
-      clientLog(
-        `Error fetching POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
-        LogLevel.ERROR,
-      );
-      posFrequency = null;
-    }
-  }
-
-  // Upsert the WordDetails record with the definitive dbPoSToPersist.
-  const wordDetails = await tx.wordDetails.upsert({
-    where: {
-      wordId_partOfSpeech_variant: {
-        wordId,
-        partOfSpeech: dbPoSToPersist,
-        variant: variant || '',
-      },
-    },
-    create: {
-      wordId,
-      partOfSpeech: dbPoSToPersist,
-      phonetic: phonetic,
-      variant: variant,
-      isPlural,
-      source: source,
-      frequency: posFrequency,
-      gender: gender,
-      forms: forms,
-      etymology: etymology,
-    },
-    update: {
-      // Update all relevant non-key fields.
-      // PoS is part of the where clause, so it matches the target state or creates it.
-      isPlural: isPlural,
-      phonetic: phonetic !== null ? phonetic : null, // Explicitly set, even if null, to clear existing values if needed
-      source: source !== 'user' ? source : SourceType.user,
-      frequency: posFrequency !== null ? posFrequency : null,
-      gender: gender !== null ? gender : null,
-      forms: forms !== null ? forms : null,
-      etymology: etymology !== null ? etymology : null,
-    },
-  });
-
-  // After ensuring the target PoS record exists and is up-to-date,
-  // clean up any alternative PoS state for the same wordId and variant.
-  if (dbPoSToPersist !== PartOfSpeech.undefined) {
-    // A specific PoS was persisted, so remove any lingering Undefined PoS record.
-    await tx.wordDetails.deleteMany({
-      where: {
-        wordId: wordId,
-        variant: variant || '',
-        partOfSpeech: PartOfSpeech.undefined,
-      },
-    });
-  }
-
-  return wordDetails;
+  return WordService.upsertWordDetailsDanish(
+    tx,
+    wordId,
+    partOfSpeech,
+    source,
+    isPlural,
+    variant,
+    phonetic,
+    frequency,
+    gender,
+    forms,
+    etymology,
+    frequencyManager,
+  );
 }
 
 /**
@@ -565,7 +476,7 @@ function getDanishFormDefinition(
           relationshipType as RelationshipType,
         )
       ) {
-        return ''; // It's a valid enum but not handled above
+        return 'unknown relationship type'; // It's a valid enum but not handled above
       }
       // If it's a string not matching any case and not in enum, it's an unknown/custom type
       clientLog(
@@ -606,19 +517,21 @@ export async function processAndSaveDanishWord(
   const audioFiles = danishWordData.word.audio || [];
   const etymology = danishWordData.word.etymology;
   const variant = danishWordData.word.variant || '';
-  const sourceEntityId = `${source}-${mainWordText}-${partOfSpeech}-(${variant})-(${danishWordData.word.forms.join(',')})`;
+  const sourceEntityId = `${source}- word: ${mainWordText} - pos: ${partOfSpeech} - variant: ${variant} - forms: ${danishWordData.word.forms.join(',')}`;
+  // Initialize frequency manager for this processing session
+  const frequencyManager = new FrequencyManager();
+
   let frequencyGeneral = null;
   let frequency = null;
-  try {
-    const frequencyData = await fetchWordFrequency(mainWordText, language);
-    frequencyGeneral = getGeneralFrequency(frequencyData);
-    frequency = getPartOfSpeechFrequency(frequencyData, partOfSpeech);
-  } catch (error) {
-    clientLog(
-      `Error fetching frequency data for "${mainWordText}": ${error}`,
-      LogLevel.ERROR,
-    );
-  }
+
+  // Fetch frequency data using the frequency manager
+  const frequencyData = await frequencyManager.getFrequencyData(
+    mainWordText,
+    language,
+    partOfSpeech,
+  );
+  frequencyGeneral = frequencyData.general;
+  frequency = frequencyData.posSpecific;
 
   const processedData: ProcessedWordData = {
     word: {
@@ -787,6 +700,7 @@ export async function processAndSaveDanishWord(
         word: relatedWord.word,
         languageCode: language,
         source: SourceType.danish_dictionary,
+
         partOfSpeech: mapDanishPosToEnum(relatedWord.partOfSpeech),
         phonetic: relatedWord.phonetic || null,
         audioFiles: relatedWord.audio
@@ -1139,6 +1053,7 @@ export async function processAndSaveDanishWord(
         subWordsArray.push({
           word: variantText,
           languageCode: language,
+
           source,
           partOfSpeech: partOfSpeech,
           phonetic: null,
@@ -1463,6 +1378,7 @@ export async function processAndSaveDanishWord(
       variant: processedData.word.variant || '',
       isHighlighted: false,
       frequencyGeneral: frequencyGeneral,
+      frequencyManager: frequencyManager,
     });
     processedData.word.id = mainWord.id; // Set the ID of the main word
 
@@ -1478,6 +1394,7 @@ export async function processAndSaveDanishWord(
       gender,
       processedData.word.forms,
       processedData.word.etymology,
+      frequencyManager,
     );
 
     for (const definitionData of processedData.definitions) {
@@ -1584,6 +1501,7 @@ export async function processAndSaveDanishWord(
           audioFiles: subWord.audioFiles || null,
           etymology: subWord.etymology || null,
           partOfSpeech: subWord.partOfSpeech,
+          frequencyManager: frequencyManager,
         },
       );
       const subWordIndex = subWordsArray.findIndex(
@@ -1649,6 +1567,7 @@ export async function processAndSaveDanishWord(
           subWord.gender || null,
           subWord.forms || null,
           subWord.etymology || null,
+          frequencyManager,
         );
         await tx.wordDefinition.upsert({
           where: {
@@ -1817,6 +1736,7 @@ export async function processAndSaveDanishWord(
                 null, // gender
                 null, // forms
                 null, // etymology
+                frequencyManager,
               );
               resolvedFromWordDetailsId = subFromDetails.id;
             }
@@ -1843,6 +1763,7 @@ export async function processAndSaveDanishWord(
                 null, // gender
                 null, // forms
                 null, // etymology
+                frequencyManager,
               );
               resolvedToWordDetailsId = subToDetails.id;
             }

@@ -22,12 +22,10 @@ import {
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 import { LogLevel, clientLog } from '@/core/lib/utils/logUtils';
 import { ImageService } from '@/core/lib/services/imageService';
-import {
-  fetchWordFrequency,
-  getGeneralFrequency,
-  getPartOfSpeechFrequency,
-} from '@/core/lib/services/frequencyService';
+import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
+import { WordService } from '@/core/shared/services/WordService';
 import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
+import { serverLog } from '../server/serverLogger';
 
 /**Definitions:
  * generalLabels "lbs" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs. (like capitalization indicators, usage notes, etc.)
@@ -536,7 +534,6 @@ export async function processAndSaveWord(
           processedData.definitions.push({
             source: source,
             languageCode: language,
-            //mainWordText is the form of the base word
             definition: definitionText,
             isInShortDef: false,
             examples: [],
@@ -1577,6 +1574,9 @@ sourceWordText processing
     }
   }
 
+  // Initialize frequency manager for this processing session
+  const frequencyManager = new FrequencyManager();
+
   let mainWordEntityId: number; // Declare mainWordEntityId here, outside the transaction
 
   try {
@@ -1625,7 +1625,7 @@ sourceWordText processing
           ) {
             // This refers to the 'currentSubWordInLoop' for context
             if (!currentSubWordInLoop.id) {
-              clientLog(
+              serverLog(
                 `Error: currentSubWordInLoop '${currentSubWordInLoop.word}' has no ID. RelationSide: ${relationSide}`,
                 LogLevel.ERROR,
               );
@@ -1740,6 +1740,7 @@ sourceWordText processing
             partOfSpeech: processedData.word.partOfSpeech, // Ensure partOfSpeech from initial processing
             variant: processedData.word.variant || '',
             isHighlighted: processedData.word.isHighlighted, // Ensure isHighlighted is defined
+            frequencyManager: frequencyManager,
           },
         );
         mainWordEntityId = mainWord.id; // Assign the ID here
@@ -1755,6 +1756,7 @@ sourceWordText processing
           processedData.word.phonetic,
           processedData.word.frequency,
           processedData.word.etymology || null, // Add etymology parameter
+          frequencyManager,
         );
         //postion 1
         clientLog(
@@ -1894,7 +1896,7 @@ sourceWordText processing
               }
             }
           } catch (error) {
-            clientLog(
+            serverLog(
               `Process in processMerriamApi.ts (definition section): Error processing definition: ${error}`,
               LogLevel.ERROR,
             );
@@ -1920,6 +1922,7 @@ sourceWordText processing
               audioFiles: subWord.audioFiles || null,
               etymology: subWord.etymology || null,
               partOfSpeech: subWord.partOfSpeech,
+              frequencyManager: frequencyManager,
             },
           );
 
@@ -1990,6 +1993,7 @@ sourceWordText processing
               subWord.phonetic || null,
               null, // frequency will be fetched in upsertWordDetails
               subWord.etymology || null, // Add etymology parameter
+              frequencyManager,
             );
 
             // Link definition to word details
@@ -2053,7 +2057,7 @@ sourceWordText processing
 
         for (const currentProcessingSubWord of allPopulatedSubWords) {
           if (!currentProcessingSubWord.id) {
-            clientLog(
+            serverLog(
               `Skipping relationships for subWord '${currentProcessingSubWord.word}' as it has no ID. This should not happen.`,
               LogLevel.ERROR,
             );
@@ -2141,6 +2145,7 @@ sourceWordText processing
                       fromInfo.phonetic,
                       null, // frequency
                       null, // etymology
+                      frequencyManager,
                     );
                     const toWordDetails = await upsertWordDetails(
                       tx,
@@ -2152,6 +2157,7 @@ sourceWordText processing
                       toInfo.phonetic,
                       null, // frequency
                       null, // etymology
+                      frequencyManager,
                     );
 
                     await tx.wordDetailsRelationship.upsert({
@@ -2394,7 +2400,7 @@ async function processImagesForDefinitions(
             );
           }
         } catch (error) {
-          clientLog(
+          serverLog(
             `FROM processImagesForDefinitions: Error processing image for definition ${definition.id}: ${error instanceof Error ? error.message : String(error)}`,
             LogLevel.ERROR,
           );
@@ -2912,55 +2918,32 @@ async function upsertWord(
     variant?: string;
     isHighlighted?: boolean;
     frequencyGeneral?: number | null;
+    frequencyManager?: FrequencyManager;
   },
 ): Promise<Word> {
-  // Fetch frequency data if not provided
-  let frequencyGeneral = options?.frequencyGeneral;
-  if (frequencyGeneral === undefined) {
-    try {
-      const frequencyData = await fetchWordFrequency(wordText, languageCode);
-      frequencyGeneral = getGeneralFrequency(frequencyData);
-      clientLog(
-        `Fetched frequency data in upsertWord for "${wordText}": ${frequencyGeneral}`,
-        LogLevel.INFO,
-      );
-    } catch (error) {
-      clientLog(
-        `Error fetching frequency data in upsertWord for "${wordText}": ${error}`,
-        LogLevel.ERROR,
-      );
-      frequencyGeneral = null;
-    }
-  }
-
-  // Create word record (etymology removed from here)
-  const word = await tx.word.upsert({
-    where: {
-      word_languageCode: {
-        word: wordText,
-        languageCode,
-      },
-    },
-    update: {
-      sourceEntityId: options?.sourceEntityId ?? null,
-      updatedAt: new Date(),
-      isHighlighted: options?.isHighlighted ?? false,
-      phoneticGeneral: options?.phonetic ?? null,
-      frequencyGeneral: frequencyGeneral ?? null,
-    },
-    create: {
-      word: wordText,
-      phoneticGeneral: options?.phonetic ?? null,
-      languageCode,
-      sourceEntityId: options?.sourceEntityId ?? null,
-      isHighlighted: options?.isHighlighted ?? false,
-      frequencyGeneral: frequencyGeneral ?? null,
-    },
-  });
+  // Use shared WordService for word creation
+  const word = await WordService.upsertWord(
+    tx,
+    source,
+    wordText,
+    languageCode,
+    options,
+  );
 
   // Ensure that partOfSpeech passed to upsertWordDetails is PartOfSpeech | null
   const partOfSpeechForDetails: PartOfSpeech | null =
     options?.partOfSpeech === undefined ? null : options?.partOfSpeech || null;
+
+  // Get PoS-specific frequency using the frequency manager
+  let posSpecificFrequency: number | null = null;
+  if (partOfSpeechForDetails && options?.frequencyManager) {
+    const posFreqData = await options.frequencyManager.getFrequencyData(
+      wordText,
+      languageCode,
+      partOfSpeechForDetails,
+    );
+    posSpecificFrequency = posFreqData.posSpecific;
+  }
 
   const wordDetails = await upsertWordDetails(
     tx,
@@ -2970,8 +2953,9 @@ async function upsertWord(
     false,
     options?.variant ?? '', // Ensure this is an empty string for the variant argument
     options?.phonetic ?? null,
-    null, // frequency will be fetched in upsertWordDetails
+    posSpecificFrequency, // Pass the pre-fetched frequency
     options?.etymology ?? null, // Pass etymology to WordDetails
+    options?.frequencyManager, // Pass the frequency manager to avoid duplicate calls
   );
   clientLog(
     `From upsertWord in processMerriamApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
@@ -2994,7 +2978,7 @@ async function upsertWord(
 }
 
 /**
- * Create or update a WordDetails record
+ * Create or update a WordDetails record using shared WordService
  * This is needed to establish relationships between words based on part of speech
  */
 async function upsertWordDetails(
@@ -3007,71 +2991,20 @@ async function upsertWordDetails(
   phonetic: string | null = null,
   frequency: number | null = null,
   etymology: string | null = null, // Add etymology parameter
+  frequencyManager?: FrequencyManager,
 ): Promise<{ id: number; wordId: number; partOfSpeech: PartOfSpeech }> {
-  // Ensure we have a valid part of speech, using the API's part of speech if available
-  const pos: PartOfSpeech = partOfSpeech || PartOfSpeech.undefined;
-
-  // Fetch the word text for frequency lookup if frequency is not provided
-  let posFrequency = frequency;
-  if (posFrequency === null || posFrequency === undefined) {
-    try {
-      // Get the word text from the database
-      const wordRecord = await tx.word.findUnique({
-        where: { id: wordId },
-        select: { word: true, languageCode: true },
-      });
-
-      if (wordRecord) {
-        const frequencyData = await fetchWordFrequency(
-          wordRecord.word,
-          wordRecord.languageCode as LanguageCode,
-        );
-
-        posFrequency = getPartOfSpeechFrequency(frequencyData, pos);
-
-        clientLog(
-          `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${pos}: ${posFrequency}`,
-          LogLevel.INFO,
-        );
-      }
-    } catch (error) {
-      clientLog(
-        `Error fetching POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
-        LogLevel.ERROR,
-      );
-      posFrequency = null;
-    }
-  }
-
-  // Create or find the WordDetails record
-  const wordDetails = await tx.wordDetails.upsert({
-    where: {
-      wordId_partOfSpeech_variant: {
-        wordId,
-        partOfSpeech: pos,
-        variant: variant || '',
-      },
-    },
-    create: {
-      wordId,
-      partOfSpeech: pos,
-      phonetic: phonetic || '',
-      variant: variant || '',
-      isPlural,
-      source: source,
-      frequency: posFrequency,
-      etymology: etymology || null, // Set etymology in WordDetails
-    },
-    update: {
-      isPlural: isPlural ?? undefined,
-      phonetic: phonetic !== null ? phonetic : null,
-      ...(source !== null && { source: source }),
-      ...(posFrequency !== null && { frequency: posFrequency }),
-      ...(etymology !== null && { etymology: etymology }),
-    },
-  });
-
-  return wordDetails;
+  return WordService.upsertWordDetailsMerriam(
+    tx,
+    wordId,
+    partOfSpeech,
+    source,
+    isPlural,
+    variant,
+    phonetic,
+    frequency,
+    etymology,
+    frequencyManager,
+  );
 }
 
 function getStringFromArray(

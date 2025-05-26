@@ -167,9 +167,237 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 #### **External Service Integrations**
 
 - **`frequencyService.ts`** - Word frequency analysis
-- **`imageService.ts`** - Image generation and management
+- **`FrequencyManager.ts`** - **NEW** ✨ Frequency data caching manager (prevents duplicate API calls)
+- **`imageService.ts`** - Image generation and management **FIXED** 🔧
 - **`pexelsService.ts`** - Pexels API integration for images
 - **`translationService.ts`** - Translation service integration
+
+#### **ImageService Fix** 🔧
+
+**Issue Fixed**: Danish definition image processing through translation was inefficient with dead code and redundant database queries.
+
+**Location**: `shared/services/imageService.ts` - `getOrCreateTranslatedDefinitionImage()` method
+
+**Problems Resolved**:
+
+1. **Dead Code Removal**: Removed unused `await prisma.definitionTranslation.findMany()` call that wasn't storing results
+2. **Query Optimization**: Combined two separate database queries into one optimized query with proper includes
+3. **Logic Enhancement**: Added better error handling and logging for translation lookup failures
+
+**Before (Problematic)**:
+
+```typescript
+// ❌ Dead code - result not used
+await prisma.definitionTranslation.findMany({
+  where: { definitionId },
+  include: { translation: true },
+});
+
+// ❌ Separate inefficient query
+const translations = await prisma.translation.findMany({
+  where: {
+    languageCode: 'en',
+    definitionLinks: { some: { definitionId } },
+  },
+});
+```
+
+**After (Fixed)**:
+
+```typescript
+// ✅ Corrected query without invalid where in include
+const definitionTranslations = await prisma.definitionTranslation.findMany({
+  where: { definitionId },
+  include: {
+    translation: true, // Get all translations, filter in application
+  },
+});
+
+// ✅ Clean extraction with proper filtering
+const englishTranslations = definitionTranslations
+  .map((dt) => dt.translation)
+  .filter(
+    (translation) => translation !== null && translation.languageCode === 'en',
+  );
+```
+
+**Impact**:
+
+- Improved performance for Danish word image processing
+- Better error logging and debugging information
+- Cleaner, more maintainable code
+- Reduced database load by eliminating redundant queries
+
+#### **Terminal Build Issues Fixed** 🔧
+
+**Date**: January 2025
+
+**Issues Resolved**:
+
+1. **Missing `importFrequencyJson` Function** ❌➡️✅
+
+   - **Problem**: Import error in `/admin/dictionaries/frequency/page.tsx`
+   - **Solution**: Created proper server action in `domains/dictionary/actions/frequency-actions.ts`
+   - **Details**: Function was being imported from frequency service but didn't exist. Moved to proper actions structure with `'use server'` directive.
+
+2. **Database Table Reference Errors** ❌➡️✅
+
+   - **Problem**: Raw SQL queries referencing non-existent tables:
+     - `word_audio` table (should be `word_details_audio`)
+     - `definition_example_audio` table (should be `definition_audio` + `example_audio`)
+   - **Solution**: Updated `dbUtils/audioCleanup.ts` with correct table names
+   - **Before**:
+     ```sql
+     SELECT DISTINCT audio_id FROM word_audio
+     UNION
+     SELECT DISTINCT audio_id FROM definition_example_audio
+     ```
+   - **After**:
+     ```sql
+     SELECT DISTINCT audio_id FROM word_details_audio
+     UNION
+     SELECT DISTINCT audio_id FROM definition_audio
+     UNION
+     SELECT DISTINCT audio_id FROM example_audio
+     UNION
+     SELECT DISTINCT audio_id FROM user_word_audio
+     ```
+
+3. **Non-existent `is_orphaned` Column** ❌➡️✅
+
+   - **Problem**: Audio cleanup functions trying to use `is_orphaned` column that doesn't exist in database schema
+   - **Solution**: Refactored audio cleanup to work without the column
+   - **Before**:
+     ```sql
+     UPDATE audio SET is_orphaned = true WHERE...
+     DELETE FROM audio WHERE is_orphaned = true
+     ```
+   - **After**:
+     ```typescript
+     // Get orphaned IDs first, then delete by ID
+     const orphanedIds = await getOrphanedAudioRecords();
+     return await deleteOrphanedAudioRecords(orphanedIds);
+     ```
+
+4. **Invalid Prisma Where in Include** ❌➡️✅
+   - **Problem**: Prisma query using invalid `where` clause inside `include` statement
+   - **Solution**: Removed invalid where clause, applied filtering in application code
+   - **Error**: `Unknown argument 'where'` in translation include
+   - **Before**: `include: { translation: { where: { languageCode: 'en' } } }`
+   - **After**: `include: { translation: true }` + application-level filtering
+
+**Files Modified**:
+
+- ✅ `src/core/domains/dictionary/actions/frequency-actions.ts` - Added `importFrequencyJson` server action
+- ✅ `src/core/domains/dictionary/actions/index.ts` - Exported new function
+- ✅ `src/app/admin/dictionaries/frequency/page.tsx` - Updated import path
+- ✅ `src/core/lib/utils/dbUtils/audioCleanup.ts` - Fixed table references + removed is_orphaned dependency
+
+**Build Status**: ✅ **Successfully compiling and running** - All TypeScript, compilation, and runtime database errors resolved
+
+#### **FrequencyManager Service** 🆕
+
+**Purpose**: Manages frequency data caching to eliminate duplicate API calls across word processing services.
+
+**Location**: `shared/services/FrequencyManager.ts`
+
+**Key Features**:
+
+- Caches both general and part-of-speech-specific frequency data
+- Shared between `processOrdnetApi.ts` and `processMerriamApi.ts`
+- Prevents duplicate frequency fetching within processing sessions
+- Error handling and logging for failed requests
+
+**Methods**:
+
+- **`getFrequencyData(word, languageCode, partOfSpeech?)`** - Get cached or fetch frequency data
+- **`clearCache()`** - Clear frequency cache for testing/memory management
+- **`getCacheSize()`** - Get current cache size for monitoring
+
+#### **WordService** 🆕
+
+**Purpose**: Shared word processing service that eliminates code duplication between API processors.
+
+**Location**: `shared/services/WordService.ts`
+
+**Key Features**:
+
+- Unified `upsertWord` and `upsertWordDetails` functions for both Danish and Merriam APIs
+- Configurable behavior for language-specific differences (Danish vs English)
+- Integrated FrequencyManager usage to prevent duplicate API calls
+- Supports both Danish-specific fields (gender, forms) and standard fields
+
+**Methods**:
+
+- **`WordService.upsertWord(tx, source, wordText, languageCode, options)`** - Create/update Word records
+- **`WordService.upsertWordDetails(..., config, gender?, forms?)`** - Create/update WordDetails with configuration
+- **`WordService.upsertWordDetailsDanish(...)`** - Convenience method for Danish API (includes gender, forms, fallback frequency, cleanup)
+- **`WordService.upsertWordDetailsMerriam(...)`** - Convenience method for Merriam API (standard fields only)
+
+**Configuration Options**:
+
+```typescript
+interface UpsertWordDetailsConfig {
+  includeDanishFields?: boolean; // Include gender/forms fields
+  useFallbackFrequency?: boolean; // Direct API calls if no FrequencyManager
+  cleanupUndefinedPos?: boolean; // Remove undefined PartOfSpeech records
+}
+```
+
+**Usage Example**:
+
+```typescript
+import { WordService } from '@/core/shared/services/WordService';
+
+// For Danish API processing
+const wordDetails = await WordService.upsertWordDetailsDanish(
+  tx,
+  wordId,
+  partOfSpeech,
+  source,
+  isPlural,
+  variant,
+  phonetic,
+  frequency,
+  gender,
+  forms,
+  etymology,
+  frequencyManager,
+);
+
+// For Merriam API processing
+const wordDetails = await WordService.upsertWordDetailsMerriam(
+  tx,
+  wordId,
+  partOfSpeech,
+  source,
+  isPlural,
+  variant,
+  phonetic,
+  frequency,
+  etymology,
+  frequencyManager,
+);
+```
+
+**Migration Impact**:
+
+- **`processOrdnetApi.ts`**: Now uses `WordService.upsertWordDetailsDanish()`
+- **`processMerriamApi.ts`**: Now uses `WordService.upsertWordDetailsMerriam()`
+- Eliminates ~200+ lines of duplicate code while maintaining all existing functionality
+
+**Usage Example for FrequencyManager**:
+
+```typescript
+import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
+
+const frequencyManager = new FrequencyManager();
+const { general, posSpecific } = await frequencyManager.getFrequencyData(
+  'word',
+  LanguageCode.en,
+  PartOfSpeech.noun,
+);
+```
 
 ### 🛠️ Shared Utilities (`shared/utils/`)
 

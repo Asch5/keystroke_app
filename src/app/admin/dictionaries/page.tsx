@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   fetchDictionaryWordDetails,
   type DictionaryWordDetails,
@@ -33,8 +34,10 @@ import {
   Pause,
   ChevronDown,
   Filter,
+  List,
 } from 'lucide-react';
 import { LanguageCode, PartOfSpeech, SourceType } from '@prisma/client';
+import Image from 'next/image';
 
 // Map for display names of language codes
 const languageDisplayNames: Record<LanguageCode, string> = {
@@ -96,6 +99,7 @@ interface FilterState {
 }
 
 export default function DictionariesPage() {
+  const router = useRouter();
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
     LanguageCode.en,
   );
@@ -113,6 +117,8 @@ export default function DictionariesPage() {
     hasVariant: null,
   });
   const [filtersOpen, setFiltersOpen] = useState(false);
+  // Word selection state
+  const [selectedWords, setSelectedWords] = useState<Set<string>>(new Set());
 
   // Get unique values for filters
   const availablePartsOfSpeech = React.useMemo(() => {
@@ -249,7 +255,84 @@ export default function DictionariesPage() {
     });
   };
 
+  // Word selection handlers
+  const toggleWordSelection = (wordDetailId: string) => {
+    const newSelected = new Set(selectedWords);
+    if (newSelected.has(wordDetailId)) {
+      newSelected.delete(wordDetailId);
+    } else {
+      newSelected.add(wordDetailId);
+    }
+    setSelectedWords(newSelected);
+  };
+
+  const selectAllWords = () => {
+    const allWordIds = new Set(
+      filteredWordDetails.map((word) => word.id.toString()),
+    );
+    setSelectedWords(allWordIds);
+  };
+
+  const clearSelection = () => {
+    setSelectedWords(new Set());
+  };
+
+  const handleCreateWordList = () => {
+    if (selectedWords.size === 0) {
+      alert('Please select at least one word to create a list.');
+      return;
+    }
+
+    // Convert selected word detail IDs to definition IDs
+    const selectedDefinitionIds = filteredWordDetails
+      .filter((word) => selectedWords.has(word.id.toString()))
+      .map((word) => word.definitionId)
+      .filter((id) => id !== undefined) as number[];
+
+    // Navigate to list creation page with selected words
+    const params = new URLSearchParams({
+      language: selectedLanguage,
+      selectedDefinitions: selectedDefinitionIds.join(','),
+    });
+
+    router.push(`/admin/dictionaries/create-list?${params.toString()}`);
+  };
+
   const columns: ColumnDef<DictionaryWordDetails>[] = [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && 'indeterminate')
+            }
+            onCheckedChange={(value) => {
+              table.toggleAllPageRowsSelected(!!value);
+              if (value) {
+                selectAllWords();
+              } else {
+                clearSelection();
+              }
+            }}
+            aria-label="Select all"
+          />
+          <span className="text-sm">Select</span>
+        </div>
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedWords.has(row.original.id.toString())}
+          onCheckedChange={() =>
+            toggleWordSelection(row.original.id.toString())
+          }
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: 'wordText',
       header: ({ column }) => (
@@ -269,7 +352,7 @@ export default function DictionariesPage() {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Part of Speech
+          POS
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -301,7 +384,7 @@ export default function DictionariesPage() {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Freq. General
+          F.G.
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -321,7 +404,7 @@ export default function DictionariesPage() {
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          Frequency
+          Freq.
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -356,7 +439,7 @@ export default function DictionariesPage() {
     },
     {
       accessorKey: 'definition',
-      header: 'Definition',
+      header: 'Definition of the word',
       cell: ({ row }) => {
         const definition = row.getValue('definition') as string;
         const fullDefinition = row.original.definitionFull;
@@ -426,9 +509,11 @@ export default function DictionariesPage() {
               </TooltipTrigger>
               <TooltipContent side="top">
                 <div className="max-w-xs">
-                  <img
+                  <Image
                     src={imageUrl}
                     alt="Word illustration"
+                    width={100}
+                    height={100}
                     className="max-w-full h-auto rounded"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
@@ -449,7 +534,7 @@ export default function DictionariesPage() {
 
         return (
           <div className="flex space-x-2">
-            <Link href={`/admin/dictionaries/edit-word/${wordDetail.id}`}>
+            <Link href={`/admin/dictionaries/edit-word/${wordDetail.wordId}`}>
               <Button variant="outline" size="sm">
                 <Edit className="h-4 w-4 mr-1" />
                 Edit
@@ -495,14 +580,24 @@ export default function DictionariesPage() {
                 </SelectContent>
               </Select>
             </div>
-            <Link
-              href={`/admin/dictionaries/add-new-word?language=${selectedLanguage}`}
-            >
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Word
+            <div className="flex items-center space-x-2">
+              <Link
+                href={`/admin/dictionaries/add-new-word?language=${selectedLanguage}`}
+              >
+                <Button variant="outline">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add New Word
+                </Button>
+              </Link>
+              <Button
+                onClick={handleCreateWordList}
+                disabled={selectedWords.size === 0}
+                variant="default"
+              >
+                <List className="h-4 w-4 mr-2" />
+                Create Word List ({selectedWords.size})
               </Button>
-            </Link>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">

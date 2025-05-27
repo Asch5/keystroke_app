@@ -83,6 +83,25 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 - `mapFrequencyPartOfSpeech(positionInPartOfSpeech)`
 - `importFrequencyJson()` - Server action for frequency import
 
+### List Management (`actions/list-actions.ts`)
+
+- `fetchCategories()` - Fetch all categories for list creation
+- `createListWithWords(listData)` - Create a new list with selected words
+- `createCategory(name, description?)` - Create a new category
+- `createListAction(prevState, formData)` - Server action for list creation with redirect
+- `addWordsToList(listId, definitionIds)` - Add words to existing list
+
+### Advanced List Management (`actions/list-management-actions.ts`)
+
+- `fetchAllLists(filters?)` - Comprehensive list fetching with filtering, search, and pagination
+- `getListDetails(listId)` - Get detailed information about a single list
+- `updateList(listId, data)` - Update list information
+- `deleteList(listId)` - Soft delete a list
+- `restoreList(listId)` - Restore a deleted list
+- `updateListAction(listId, prevState, formData)` - Server action for list updates with redirect
+
+Types: `ListWithDetails`, `ListFilters`, `ListsResponse`
+
 ## Auth Domain (`domains/auth/`)
 
 ### Actions

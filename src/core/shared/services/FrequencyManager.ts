@@ -1,6 +1,6 @@
 import { LanguageCode, PartOfSpeech } from '@prisma/client';
-import { LogLevel } from '@/core/lib/utils/logUtils';
-import { serverLog } from '@/core/lib/server/serverLogger';
+
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {
   fetchWordFrequency,
   getGeneralFrequency,
@@ -31,7 +31,7 @@ export class FrequencyManager {
       try {
         serverLog(
           `Fetching frequency data for "${word}" (${languageCode})`,
-          LogLevel.INFO,
+          'info',
         );
 
         const frequencyData = await fetchWordFrequency(word, languageCode);
@@ -47,12 +47,12 @@ export class FrequencyManager {
 
         serverLog(
           `Cached frequency data for "${word}": general=${generalFreq}`,
-          LogLevel.INFO,
+          'info',
         );
       } catch (error) {
         serverLog(
           `Error fetching frequency data for "${word}": ${error}`,
-          LogLevel.ERROR,
+          'error',
         );
 
         // Cache null values to avoid retrying failed requests
@@ -80,12 +80,12 @@ export class FrequencyManager {
 
           serverLog(
             `Cached PoS frequency for "${word}" (${partOfSpeech}): ${posSpecificFreq}`,
-            LogLevel.INFO,
+            'info',
           );
         } catch (error) {
           serverLog(
             `Error fetching PoS frequency for "${word}" (${partOfSpeech}): ${error}`,
-            LogLevel.ERROR,
+            'error',
           );
           cachedData.posSpecific.set(partOfSpeech, null);
           posSpecificFreq = null;

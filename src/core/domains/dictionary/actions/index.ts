@@ -34,6 +34,34 @@ export {
   createAudioForDefinition,
 } from './audio-actions';
 
+// List management
+export {
+  fetchCategories,
+  createListWithWords,
+  createCategory,
+  createListAction,
+  addWordsToList,
+  type CategoryData,
+  type CreateListData,
+  type ListWordData,
+} from './list-actions';
+
+// Advanced list management
+export {
+  fetchAllLists,
+  getListDetails,
+  updateList,
+  deleteList,
+  restoreList,
+  updateListAction,
+  type ListWithDetails,
+  type ListFilters,
+  type ListsResponse,
+} from './list-management-actions';
+
+// Category seeding utility
+export { seedDefaultCategories, seedCategoriesAction } from './seed-categories';
+
 // Frequency operations
 export {
   mapWordFrequency,

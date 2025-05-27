@@ -93,6 +93,7 @@ export type PartOfSpeechDanish =
   | 'adj. pl.'
   | 'adverbium'
   | 'pronomen'
+  | 'phrase'
   | 'præposition'
   | 'konjunktion'
   | 'interjektion'

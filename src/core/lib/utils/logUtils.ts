@@ -1,9 +1,3 @@
-export enum LogLevel {
-  INFO = 'INFO',
-  WARN = 'WARN',
-  ERROR = 'ERROR',
-}
-
 /**
  * Logs a message with a timestamp and optional context.
  * This version is safe to use in both client and server code.
@@ -13,7 +7,7 @@ export enum LogLevel {
  */
 export function clientLog(
   message: string,
-  level: LogLevel = LogLevel.INFO,
+  level: 'info' | 'warn' | 'error',
   context?: unknown,
 ): void {
   const timestamp = new Date().toISOString();
@@ -33,13 +27,13 @@ export function clientLog(
 
   // Console logging based on level
   switch (level) {
-    case LogLevel.WARN:
+    case 'warn':
       console.warn(logOutput);
       break;
-    case LogLevel.ERROR:
+    case 'error':
       console.error(logOutput);
       break;
-    case LogLevel.INFO:
+    case 'info':
     default:
       console.log(logOutput);
   }

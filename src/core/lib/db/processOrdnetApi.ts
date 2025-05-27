@@ -18,7 +18,7 @@ import {
   DifficultyLevel,
   Gender,
 } from '@prisma/client';
-import { LogLevel, clientLog } from '@/core/lib/utils/logUtils';
+import { clientLog } from '@/core/lib/utils/logUtils';
 // Frequency services are now handled by FrequencyManager and WordService
 import { TranslationService } from '@/core/lib/services/translationService';
 import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
@@ -29,7 +29,7 @@ import {
   PartOfSpeechDanish,
   DetailCategoryDanish,
 } from '@/core/types/translationDanishTypes';
-import { serverLog } from '@/core/lib/server/serverLogger';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
 import { WordService } from '@/core/shared/services/WordService';
 //import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
@@ -89,7 +89,7 @@ export async function processTranslationsForWord(
     if (!translationResponse) {
       clientLog(
         `No translation data returned for word: ${mainWordText}`,
-        LogLevel.WARN,
+        'warn',
       );
       return;
     }
@@ -108,7 +108,7 @@ export async function processTranslationsForWord(
     if (validationResult.totalIssues > 0) {
       serverLog(
         `Validation issues for "${mainWordText}": ${validationResult.totalIssues} total issues`,
-        LogLevel.INFO,
+        'info',
       );
 
       // Log enum suggestions for development
@@ -119,7 +119,7 @@ export async function processTranslationsForWord(
         enumSuggestions.forEach(([category, suggestions]) => {
           serverLog(
             `${category} enum needs these additions: ${suggestions.join(' ')}`,
-            LogLevel.INFO,
+            'info',
           );
         });
       }
@@ -128,7 +128,7 @@ export async function processTranslationsForWord(
       if (!validationResult.isValid) {
         serverLog(
           `Structural errors found in Danish dictionary data for "${mainWordText}". Skipping processing.`,
-          LogLevel.ERROR,
+          'error',
         );
         return;
       }
@@ -137,7 +137,7 @@ export async function processTranslationsForWord(
     if (!english_word_data) {
       serverLog(
         `No translation data returned for word: ${mainWordText}`,
-        LogLevel.WARN,
+        'warn',
       );
       return;
     }
@@ -357,9 +357,9 @@ async function upsertWord(
     options?.frequencyManager, // Pass the frequency manager to avoid duplicate calls
   );
 
-  clientLog(
+  serverLog(
     `From upsertWord in processOrdnetApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
-    LogLevel.INFO,
+    'info',
   );
 
   // Process audio files if present
@@ -481,7 +481,7 @@ function getDanishFormDefinition(
       // If it's a string not matching any case and not in enum, it's an unknown/custom type
       clientLog(
         `Unknown relationship type in getDanishFormDefinition: ${relationshipType}`,
-        LogLevel.WARN,
+        'warn',
       );
       return ''; // Return empty or a generic placeholder if preferred
   }
@@ -495,6 +495,19 @@ export async function processAndSaveDanishWord(
   const mainWordText = danishWordData.word.word;
   const language = LanguageCode.da;
   const source = SourceType.danish_dictionary;
+
+  /**
+   * CRITICAL ETYMOLOGY PRESERVATION FIX:
+   *
+   * This function implements multiple layers of protection to prevent the main word's
+   * etymology from being overwritten during sub-word and relationship processing:
+   *
+   * 1. Skip upsertWord calls for sub-words that match the main word text
+   * 2. Prevent WordDetails updates for main word during relationship processing
+   * 3. Only update sub-word WordDetails, never main word WordDetails
+   *
+   * This ensures the main word's full etymology is preserved throughout processing.
+   */
   const partOfSpeech = mapDanishPosToEnum(danishWordData.word.partOfSpeech[0]);
   const mainWordPartOfSpeechInfo = danishWordData.word.partOfSpeech;
   let determinedGender: Gender | null = null;
@@ -516,6 +529,7 @@ export async function processAndSaveDanishWord(
   const gender: Gender | null = determinedGender;
   const audioFiles = danishWordData.word.audio || [];
   const etymology = danishWordData.word.etymology;
+  serverLog(`etymology: ${etymology} `, 'info');
   const variant = danishWordData.word.variant || '';
   const sourceEntityId = `${source}- word: ${mainWordText} - pos: ${partOfSpeech} - variant: ${variant} - forms: ${danishWordData.word.forms.join(',')}`;
   // Initialize frequency manager for this processing session
@@ -812,7 +826,7 @@ export async function processAndSaveDanishWord(
             word: synonym,
             languageCode: language,
             source,
-            partOfSpeech: null, // Use the main word's partOfSpeech
+            partOfSpeech: partOfSpeech, // Use the main word's partOfSpeech
             definitions: [], // Synonyms from labels typically don't have their own new definitions here
             relationship: [
               {
@@ -846,7 +860,7 @@ export async function processAndSaveDanishWord(
               word: seOgsaWord,
               languageCode: language,
               source,
-              partOfSpeech: null, // "Se også" can refer to various PoS, safer to set null or determine later
+              partOfSpeech: partOfSpeech, // "Se også" can refer to various PoS, safer to set null or determine later
               definitions: [],
               relationship: [
                 {
@@ -903,7 +917,7 @@ export async function processAndSaveDanishWord(
             word: antonym,
             languageCode: language,
             source,
-            partOfSpeech: null, // Use the main word's partOfSpeech
+            partOfSpeech: partOfSpeech, // Use the main word's partOfSpeech
             definitions: [], // Antonyms from labels typically don't have their own new definitions here
             relationship: [
               {
@@ -989,7 +1003,7 @@ export async function processAndSaveDanishWord(
         } else {
           clientLog(
             `Could not parse composition with (s) pattern: ${composition.composition}`,
-            LogLevel.WARN,
+            'warn',
           );
           subWordsArray.push({
             word: composition.composition,
@@ -1268,7 +1282,7 @@ export async function processAndSaveDanishWord(
               word: synonym,
               languageCode: language,
               source,
-              partOfSpeech: null,
+              partOfSpeech: partOfSpeech,
               definitions: [],
               relationship: [
                 {
@@ -1315,7 +1329,7 @@ export async function processAndSaveDanishWord(
               word: antonym,
               languageCode: language,
               source,
-              partOfSpeech: null,
+              partOfSpeech: partOfSpeech,
               definitions: [],
               relationship: [
                 {
@@ -1350,7 +1364,7 @@ export async function processAndSaveDanishWord(
                 word: seOgsaWord,
                 languageCode: language,
                 source,
-                partOfSpeech: null, // "Se også" can refer to various PoS
+                partOfSpeech: partOfSpeech, // "Se også" can refer to various PoS
                 definitions: [],
                 relationship: [
                   {
@@ -1491,19 +1505,33 @@ export async function processAndSaveDanishWord(
     }
 
     for (const subWord of subWordsArray) {
-      const subWordEntity = await upsertWord(
-        tx,
-        source,
-        subWord.word,
-        subWord.languageCode as LanguageCode,
-        {
-          phonetic: subWord.phonetic || null,
-          audioFiles: subWord.audioFiles || null,
-          etymology: subWord.etymology || null,
-          partOfSpeech: subWord.partOfSpeech,
-          frequencyManager: frequencyManager,
-        },
-      );
+      // CRITICAL FIX: Skip upsertWord if this sub-word has the same text as the main word
+      // This prevents the main word from being overwritten with sub-word etymology data
+      let subWordEntity: Word;
+
+      if (subWord.word === mainWordText && subWord.languageCode === language) {
+        // This is actually the main word, don't call upsertWord - use existing main word
+        subWordEntity = mainWord;
+        serverLog(
+          `Skipping upsertWord for sub-word "${subWord.word}" because it matches main word - using existing main word entity`,
+          'info',
+        );
+      } else {
+        // This is a genuine sub-word, safe to call upsertWord
+        subWordEntity = await upsertWord(
+          tx,
+          source,
+          subWord.word,
+          subWord.languageCode as LanguageCode,
+          {
+            phonetic: subWord.phonetic || null,
+            audioFiles: subWord.audioFiles || null,
+            etymology: subWord.etymology || null,
+            partOfSpeech: subWord.partOfSpeech,
+            frequencyManager: frequencyManager,
+          },
+        );
+      }
       const subWordIndex = subWordsArray.findIndex(
         (sw) =>
           sw.word === subWord.word && sw.languageCode === subWord.languageCode,
@@ -1554,6 +1582,12 @@ export async function processAndSaveDanishWord(
           subWordsArray[subWordIndex].definitions[defDataIndex].id =
             subWordDef.id;
         }
+
+        // Debug: Log etymology before creating WordDetails
+        serverLog(
+          `Creating WordDetails for sub-word "${subWord.word}" with etymology: "${subWord.etymology}"`,
+          'info',
+        );
 
         const subWordDetails = await upsertWordDetails(
           tx,
@@ -1633,7 +1667,87 @@ export async function processAndSaveDanishWord(
         currentSubWord.relationship &&
         currentSubWord.relationship.length > 0
       ) {
-        for (const relation of currentSubWord.relationship) {
+        /**
+         * IMPROVEMENT: Order relationships processing for logical sequence
+         *
+         * Process relationships in order of importance:
+         * 1. Forms (plural, definite, tense, etc.) - Priority 1
+         * 2. Stem relationships - Priority 2
+         * 3. Related, synonym, antonym - Priority 3
+         * 4. Other relationships - Priority 4
+         */
+
+        // Helper function to determine relationship processing priority
+        const getRelationshipPriority = (
+          relationType: RelationshipType,
+        ): number => {
+          // Use switch statement for proper TypeScript type checking
+          switch (relationType) {
+            // Priority 1: Form relationships (Danish grammatical forms)
+            case RelationshipType.plural_da:
+            case RelationshipType.definite_form_da:
+            case RelationshipType.plural_definite_da:
+            case RelationshipType.present_tense_da:
+            case RelationshipType.past_tense_da:
+            case RelationshipType.past_participle_da:
+            case RelationshipType.imperative_da:
+            case RelationshipType.comparative_da:
+            case RelationshipType.superlative_da:
+            case RelationshipType.alternative_spelling:
+              return 1;
+
+            // Priority 2: Stem relationships
+            case RelationshipType.stem:
+              return 2;
+
+            // Priority 3: Semantic relationships
+            case RelationshipType.related:
+            case RelationshipType.synonym:
+            case RelationshipType.antonym:
+              return 3;
+
+            // Priority 4: Other relationships (phrase, composition, etc.)
+            default:
+              return 4;
+          }
+        };
+
+        // Sort relationships by priority before processing
+        const sortedRelationships = [...currentSubWord.relationship].sort(
+          (a, b) => {
+            const priorityA = getRelationshipPriority(a.type);
+            const priorityB = getRelationshipPriority(b.type);
+
+            if (priorityA !== priorityB) {
+              return priorityA - priorityB; // Lower number = higher priority
+            }
+
+            // If same priority, maintain original order
+            return 0;
+          },
+        );
+
+        serverLog(
+          `Processing ${sortedRelationships.length} relationships for "${currentSubWord.word}" in priority order`,
+          'info',
+        );
+
+        // Log the relationship processing order for debugging
+        const relationshipOrder = sortedRelationships
+          .map(
+            (rel, index) =>
+              `${index + 1}. ${rel.type} (priority ${getRelationshipPriority(rel.type)})`,
+          )
+          .join(', ');
+
+        if (sortedRelationships.length > 1) {
+          serverLog(
+            `Relationship processing order for "${currentSubWord.word}": ${relationshipOrder}`,
+            'info',
+          );
+        }
+
+        for (const relation of sortedRelationships) {
           let fromWordId: number | null = null;
           let toWordId: number | null = null;
           let fromWordPartOfSpeech: PartOfSpeech | null = null;
@@ -1686,9 +1800,9 @@ export async function processAndSaveDanishWord(
           }
 
           if (!fromWordId || !toWordId) {
-            clientLog(
+            serverLog(
               `Missing wordId for relationship: from='${relation.fromWord}'(id:${fromWordId}) to='${relation.toWord}'(id:${toWordId}), for subWord '${currentSubWord.word}'. Skipping.`,
-              LogLevel.WARN,
+              'warn',
             );
             continue;
           }
@@ -1701,6 +1815,32 @@ export async function processAndSaveDanishWord(
             relation.type === RelationshipType.alternative_spelling; // Treat alt_spelling as details level
 
           if (createDetailsRelation) {
+            /**
+             * RELATIONSHIP PROCESSING IMPROVEMENTS SUMMARY:
+             *
+             * 1. Skip WordDetails creation if they already exist for word+PoS combination
+             *    - Prevents duplicate WordDetails for the same word and part of speech
+             *    - Reuses existing records when found
+             *    - CRITICAL: Preserves main word data, only updates sub-words
+             *
+             * 2. Pass actual data instead of null values when upserting WordDetails
+             *    - Preserves original etymology, forms, phonetic, gender, and variant values
+             *    - Finds sub-word data by ID or text to retrieve actual values
+             *    - Prevents overwriting existing data with null placeholders
+             *
+             * 3. Protect main word etymology from being overwritten
+             *    - Main word WordDetails are NEVER updated during relationship processing
+             *    - Only sub-word WordDetails are updated with actual data when found
+             *    - Fixes critical bug where main word lost its etymology data
+             *
+             * 4. Update existing sub-word WordDetails with actual data
+             *    - When reusing existing sub-word WordDetails, update them with actual etymology, phonetic, forms, etc.
+             *    - Ensures that previously created minimal records get enriched with full data
+             *    - Only updates fields if new data is available (non-null)
+             *
+             * These improvements prevent data duplication, preserve original word information,
+             * and ensure existing records are enriched with complete data during relationship processing.
+             */
             let resolvedFromWordDetailsId: number;
             let resolvedToWordDetailsId: number;
 
@@ -1714,6 +1854,49 @@ export async function processAndSaveDanishWord(
               toWordId !== mainWord.id && // Only for actual sub-words
               toWordPartOfSpeech === PartOfSpeech.noun;
 
+            /**
+             * Helper functions to find actual sub-word data to preserve original values
+             * instead of overwriting with null values during relationship creation.
+             *
+             * This fixes the bug where WordDetails were being overwritten with null values
+             * for forms, etymology, phonetic, gender, and variant fields.
+             */
+            // Helper function to find sub-word data by word ID
+            const findSubWordDataById = (wordId: number) => {
+              const found = allPopulatedSubWords.find((sw) => sw.id === wordId);
+              if (found) {
+                serverLog(
+                  `Found sub-word data by ID ${wordId}: "${found.word}" with etymology: "${found.etymology}"`,
+                  'info',
+                );
+              } else {
+                serverLog(
+                  `No sub-word data found for wordId: ${wordId}`,
+                  'warn',
+                );
+              }
+              return found;
+            };
+
+            // Helper function to find sub-word data by word text
+            const findSubWordDataByText = (wordText: string) => {
+              const found = allPopulatedSubWords.find(
+                (sw) => sw.word === wordText,
+              );
+              if (found) {
+                serverLog(
+                  `Found sub-word data by text "${wordText}": etymology="${found.etymology}"`,
+                  'info',
+                );
+              } else {
+                serverLog(
+                  `No sub-word data found for word text: "${wordText}"`,
+                  'warn',
+                );
+              }
+              return found;
+            };
+
             // Resolve fromWordDetailsId
             if (
               fromWordId === mainWord.id &&
@@ -1722,23 +1905,149 @@ export async function processAndSaveDanishWord(
               // This refers to the main word's canonical WordDetails entry
               resolvedFromWordDetailsId = mainWordDetails.id;
             } else {
-              // This refers to a sub-word or another word. Upsert its details.
-              // Assume empty variant for sub-words in this relationship context for now.
-              const subFromDetails = await upsertWordDetails(
-                tx,
-                fromWordId!,
-                fromWordPartOfSpeech,
-                source,
-                isFromPlural, // Use here
-                '', // Default empty variant for sub-words here
-                null, // phonetic
-                null, // frequency
-                null, // gender
-                null, // forms
-                null, // etymology
-                frequencyManager,
-              );
-              resolvedFromWordDetailsId = subFromDetails.id;
+              /**
+               * IMPROVEMENT: Skip WordDetails creation if they already exist for that word+PoS combination
+               *
+               * Check if WordDetails already exist for this word+PoS combination before creating new ones.
+               * This prevents creating duplicate WordDetails for the same word and part of speech.
+               */
+              const existingFromWordDetails = await tx.wordDetails.findFirst({
+                where: {
+                  wordId: fromWordId!,
+                  partOfSpeech: fromWordPartOfSpeech || PartOfSpeech.undefined,
+                },
+                orderBy: {
+                  id: 'asc', // Get the earliest created one by ID
+                },
+              });
+
+              if (existingFromWordDetails) {
+                // CRITICAL: Don't update main word's WordDetails - they already have correct data
+                if (
+                  fromWordId === mainWord.id &&
+                  fromWordPartOfSpeech === partOfSpeech
+                ) {
+                  serverLog(
+                    `Reusing existing main word WordDetails ${existingFromWordDetails.id} for main word ID ${fromWordId}, preserving original data`,
+                    'info',
+                  );
+                  resolvedFromWordDetailsId = existingFromWordDetails.id;
+                } else {
+                  // WordDetails exist for sub-word, update them with actual data if available
+                  let fromSubWordData = findSubWordDataById(fromWordId!);
+
+                  // If not found by ID, try to find by relation.fromWord text
+                  if (
+                    !fromSubWordData &&
+                    typeof relation.fromWord === 'string'
+                  ) {
+                    fromSubWordData = findSubWordDataByText(relation.fromWord);
+                  }
+
+                  if (fromSubWordData) {
+                    // Update existing WordDetails with actual data from sub-word
+                    const fromVariant = fromSubWordData?.variant || '';
+                    const fromPhonetic = fromSubWordData?.phonetic || null;
+                    const fromGender = fromSubWordData?.gender || null;
+                    const fromForms = fromSubWordData?.forms || null;
+                    const fromEtymology = fromSubWordData?.etymology || null;
+
+                    serverLog(
+                      `Updating existing sub-word WordDetails ${existingFromWordDetails.id} for fromWord ID ${fromWordId} with actual data: etymology="${fromEtymology}", phonetic="${fromPhonetic}", forms="${fromForms}"`,
+                      'info',
+                    );
+
+                    await tx.wordDetails.update({
+                      where: { id: existingFromWordDetails.id },
+                      data: {
+                        variant: fromVariant,
+                        phonetic:
+                          fromPhonetic !== null
+                            ? fromPhonetic
+                            : existingFromWordDetails.phonetic,
+                        gender:
+                          fromGender !== null
+                            ? fromGender
+                            : existingFromWordDetails.gender,
+                        forms:
+                          fromForms !== null
+                            ? fromForms
+                            : existingFromWordDetails.forms,
+                        etymology:
+                          fromEtymology !== null
+                            ? fromEtymology
+                            : existingFromWordDetails.etymology,
+                        isPlural: isFromPlural,
+                      },
+                    });
+                  } else {
+                    serverLog(
+                      `Reusing existing WordDetails ${existingFromWordDetails.id} for fromWord ID ${fromWordId}, PoS ${fromWordPartOfSpeech} (no additional data to update)`,
+                      'info',
+                    );
+                  }
+
+                  resolvedFromWordDetailsId = existingFromWordDetails.id;
+                }
+              } else {
+                // WordDetails don't exist, create new ones with actual data
+                // Find the actual sub-word data to get real values instead of nulls
+                let fromSubWordData = findSubWordDataById(fromWordId!);
+
+                // If not found by ID, try to find by relation.fromWord text
+                if (!fromSubWordData && typeof relation.fromWord === 'string') {
+                  fromSubWordData = findSubWordDataByText(relation.fromWord);
+                }
+
+                // Use actual data from sub-word if available, otherwise use defaults
+                const fromVariant = fromSubWordData?.variant || '';
+                const fromPhonetic = fromSubWordData?.phonetic || null;
+                const fromGender = fromSubWordData?.gender || null;
+                const fromForms = fromSubWordData?.forms || null;
+                const fromEtymology = fromSubWordData?.etymology || null;
+
+                // Debug: Log the etymology value being used
+                if (fromEtymology) {
+                  serverLog(
+                    `Using etymology "${fromEtymology}" for fromWord with ID ${fromWordId}, etymology: ${fromEtymology}`,
+                    'info',
+                  );
+                } else {
+                  serverLog(
+                    `No etymology available for fromWord with ID ${fromWordId} - this might be the issue!`,
+                    'warn',
+                  );
+                }
+
+                // Log when we're preserving actual data vs using defaults
+                if (fromSubWordData) {
+                  serverLog(
+                    `Preserving actual data for fromWord "${fromSubWordData.word}": variant="${fromVariant}", phonetic="${fromPhonetic}", forms="${fromForms}", etymology="${fromEtymology}"`,
+                    'info',
+                  );
+                } else {
+                  serverLog(
+                    `No sub-word data found for fromWordId ${fromWordId}, using defaults`,
+                    'warn',
+                  );
+                }
+
+                const subFromDetails = await upsertWordDetails(
+                  tx,
+                  fromWordId!,
+                  fromWordPartOfSpeech,
+                  source,
+                  isFromPlural,
+                  fromVariant,
+                  fromPhonetic,
+                  null, // frequency - keep null as it's calculated separately
+                  fromGender,
+                  fromForms,
+                  fromEtymology,
+                  frequencyManager,
+                );
+                resolvedFromWordDetailsId = subFromDetails.id;
+              }
             }
 
             // Resolve toWordDetailsId
@@ -1749,23 +2058,146 @@ export async function processAndSaveDanishWord(
               // This refers to the main word's canonical WordDetails entry
               resolvedToWordDetailsId = mainWordDetails.id;
             } else {
-              // This refers to a sub-word or another word. Upsert its details.
-              // Assume empty variant for sub-words in this relationship context for now.
-              const subToDetails = await upsertWordDetails(
-                tx,
-                toWordId!,
-                toWordPartOfSpeech,
-                source,
-                isToPlural, // Use here
-                '', // Default empty variant for sub-words here
-                null, // phonetic
-                null, // frequency
-                null, // gender
-                null, // forms
-                null, // etymology
-                frequencyManager,
-              );
-              resolvedToWordDetailsId = subToDetails.id;
+              /**
+               * IMPROVEMENT: Skip WordDetails creation if they already exist for that word+PoS combination
+               *
+               * Check if WordDetails already exist for this word+PoS combination before creating new ones.
+               * This prevents creating duplicate WordDetails for the same word and part of speech.
+               */
+              const existingToWordDetails = await tx.wordDetails.findFirst({
+                where: {
+                  wordId: toWordId!,
+                  partOfSpeech: toWordPartOfSpeech || PartOfSpeech.undefined,
+                },
+                orderBy: {
+                  id: 'asc', // Get the earliest created one by ID
+                },
+              });
+
+              if (existingToWordDetails) {
+                // CRITICAL: Don't update main word's WordDetails - they already have correct data
+                if (
+                  toWordId === mainWord.id &&
+                  toWordPartOfSpeech === partOfSpeech
+                ) {
+                  serverLog(
+                    `Reusing existing main word WordDetails ${existingToWordDetails.id} for main word ID ${toWordId}, preserving original data`,
+                    'info',
+                  );
+                  resolvedToWordDetailsId = existingToWordDetails.id;
+                } else {
+                  // WordDetails exist for sub-word, update them with actual data if available
+                  let toSubWordData = findSubWordDataById(toWordId!);
+
+                  // If not found by ID, try to find by relation.toWord text
+                  if (!toSubWordData && typeof relation.toWord === 'string') {
+                    toSubWordData = findSubWordDataByText(relation.toWord);
+                  }
+
+                  if (toSubWordData) {
+                    // Update existing WordDetails with actual data from sub-word
+                    const toVariant = toSubWordData?.variant || '';
+                    const toPhonetic = toSubWordData?.phonetic || null;
+                    const toGender = toSubWordData?.gender || null;
+                    const toForms = toSubWordData?.forms || null;
+                    const toEtymology = toSubWordData?.etymology || null;
+
+                    serverLog(
+                      `Updating existing sub-word WordDetails ${existingToWordDetails.id} for toWord ID ${toWordId} with actual data: etymology="${toEtymology}", phonetic="${toPhonetic}", forms="${toForms}"`,
+                      'info',
+                    );
+
+                    await tx.wordDetails.update({
+                      where: { id: existingToWordDetails.id },
+                      data: {
+                        variant: toVariant,
+                        phonetic:
+                          toPhonetic !== null
+                            ? toPhonetic
+                            : existingToWordDetails.phonetic,
+                        gender:
+                          toGender !== null
+                            ? toGender
+                            : existingToWordDetails.gender,
+                        forms:
+                          toForms !== null
+                            ? toForms
+                            : existingToWordDetails.forms,
+                        etymology:
+                          toEtymology !== null
+                            ? toEtymology
+                            : existingToWordDetails.etymology,
+                        isPlural: isToPlural,
+                      },
+                    });
+                  } else {
+                    serverLog(
+                      `Reusing existing WordDetails ${existingToWordDetails.id} for toWord ID ${toWordId}, PoS ${toWordPartOfSpeech} (no additional data to update)`,
+                      'info',
+                    );
+                  }
+
+                  resolvedToWordDetailsId = existingToWordDetails.id;
+                }
+              } else {
+                // WordDetails don't exist, create new ones with actual data
+                // Find the actual sub-word data to get real values instead of nulls
+                let toSubWordData = findSubWordDataById(toWordId!);
+
+                // If not found by ID, try to find by relation.toWord text
+                if (!toSubWordData && typeof relation.toWord === 'string') {
+                  toSubWordData = findSubWordDataByText(relation.toWord);
+                }
+
+                // Use actual data from sub-word if available, otherwise use defaults
+                const toVariant = toSubWordData?.variant || '';
+                const toPhonetic = toSubWordData?.phonetic || null;
+                const toGender = toSubWordData?.gender || null;
+                const toForms = toSubWordData?.forms || null;
+                const toEtymology = toSubWordData?.etymology || null;
+
+                // Debug: Log the etymology value being used
+                if (toEtymology) {
+                  serverLog(
+                    `Using etymology "${toEtymology}" for toWord with ID ${toWordId}, etymology: ${toEtymology}`,
+                    'info',
+                  );
+                } else {
+                  serverLog(
+                    `No etymology available for toWord with ID ${toWordId} - this might be the issue!`,
+                    'warn',
+                  );
+                }
+
+                // Log when we're preserving actual data vs using defaults
+                if (toSubWordData) {
+                  serverLog(
+                    `Preserving actual data for toWord "${toSubWordData.word}": variant="${toVariant}", phonetic="${toPhonetic}", forms="${toForms}", etymology="${toEtymology}"`,
+                    'info',
+                  );
+                } else {
+                  serverLog(
+                    `No sub-word data found for toWordId ${toWordId}, using defaults`,
+                    'warn',
+                  );
+                }
+
+                const subToDetails = await upsertWordDetails(
+                  tx,
+                  toWordId!,
+                  toWordPartOfSpeech,
+                  source,
+                  isToPlural,
+                  toVariant,
+                  toPhonetic,
+                  null, // frequency - keep null as it's calculated separately
+                  toGender,
+                  toForms,
+                  toEtymology,
+                  frequencyManager,
+                );
+                resolvedToWordDetailsId = subToDetails.id;
+              }
             }
 
             await tx.wordDetailsRelationship.upsert({

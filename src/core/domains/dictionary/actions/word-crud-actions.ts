@@ -79,6 +79,7 @@ export interface DictionaryWordDetails {
   source: SourceType;
   definition: string;
   definitionFull: string;
+  definitionId: number | null; // Added for list creation
   audioUrl: string | null;
   hasImage: boolean;
   imageUrl: string | null;
@@ -224,6 +225,7 @@ export async function fetchDictionaryWordDetails(
           source: details.source,
           definition: truncatedDefinition,
           definitionFull: definitionText,
+          definitionId: firstDefinition?.id || null, // Added for list creation
           audioUrl: firstAudio?.url || null,
           hasImage,
           imageUrl: firstDefinition?.image?.url || null,

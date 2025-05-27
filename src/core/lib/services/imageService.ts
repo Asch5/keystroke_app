@@ -2,10 +2,10 @@ import { PexelsPhoto } from '@/core/lib/services/pexelsService';
 import { PexelsService } from '@/core/lib/services/pexelsService';
 import { Definition } from '@/core/types/definition';
 import { Image } from '@prisma/client';
-import { clientLog, LogLevel } from '@/core/lib/utils/logUtils';
+import { clientLog } from '@/core/lib/utils/logUtils';
 import { normalizeText } from '@/core/lib/utils/commonDictUtils/wordsFormators';
 import { prisma } from '@/core/lib/prisma';
-import { serverLog } from '@/core/lib/server/serverLogger';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 export interface ImageMetadata {
   id: number;
@@ -43,7 +43,7 @@ export class ImageService {
     try {
       clientLog(
         `Creating image from Pexels photo for definitionId: ${definitionId || 'none'}`,
-        LogLevel.INFO,
+        'info',
         { photoId: photo.id },
       );
 
@@ -63,7 +63,7 @@ export class ImageService {
 
       // Skip if URL is empty
       if (!imageData.url) {
-        clientLog('Cannot create image with empty URL', LogLevel.ERROR);
+        clientLog('Cannot create image with empty URL', 'error');
         return null;
       }
 
@@ -73,10 +73,7 @@ export class ImageService {
           // Check if the definition exists if definitionId is provided
           let definition = null;
           if (definitionId) {
-            clientLog(
-              `Checking if definition ${definitionId} exists`,
-              LogLevel.INFO,
-            );
+            clientLog(`Checking if definition ${definitionId} exists`, 'info');
             definition = await tx.definition.findUnique({
               where: { id: definitionId },
             });
@@ -84,18 +81,15 @@ export class ImageService {
             if (!definition) {
               clientLog(
                 `Definition with id ${definitionId} not found, skipping image association`,
-                LogLevel.WARN,
+                'warn',
               );
               return null;
             }
-            clientLog(`Definition ${definitionId} found`, LogLevel.INFO);
+            clientLog(`Definition ${definitionId} found`, 'info');
           }
 
           // Use upsert to either create a new image or update existing one
-          clientLog(
-            `Upserting image with URL: ${imageData.url}`,
-            LogLevel.INFO,
-          );
+          clientLog(`Upserting image with URL: ${imageData.url}`, 'info');
           const image = await tx.image.upsert({
             where: {
               url: imageData.url,
@@ -108,14 +102,14 @@ export class ImageService {
               description: imageData.description,
             },
           });
-          clientLog(`Image upserted with ID: ${image.id}`, LogLevel.INFO);
+          clientLog(`Image upserted with ID: ${image.id}`, 'info');
 
           // If definitionId is provided and we confirmed it exists, update the definition
           if (definitionId && definition) {
             try {
               clientLog(
                 `Updating definition ${definitionId} with imageId: ${image.id}`,
-                LogLevel.INFO,
+                'info',
               );
               await tx.definition.update({
                 where: { id: definitionId },
@@ -123,12 +117,12 @@ export class ImageService {
               });
               clientLog(
                 `Definition ${definitionId} updated with imageId: ${image.id}`,
-                LogLevel.INFO,
+                'info',
               );
             } catch (error) {
               clientLog(
                 `Error updating definition with image: ${error}`,
-                LogLevel.ERROR,
+                'error',
               );
               throw error; // Re-throw to trigger transaction rollback
             }
@@ -149,11 +143,11 @@ export class ImageService {
 
       clientLog(
         `Image created successfully with ID: ${result?.id || 'unknown'}`,
-        LogLevel.INFO,
+        'info',
       );
       return result;
     } catch (error) {
-      clientLog(`Error in createFromPexels: ${error}`, LogLevel.ERROR);
+      clientLog(`Error in createFromPexels: ${error}`, 'error');
       return null;
     }
   }
@@ -279,7 +273,7 @@ export class ImageService {
     try {
       clientLog(
         `Starting getOrCreateDefinitionImage for word: "${word}", definitionId: ${definitionId}`,
-        LogLevel.INFO,
+        'info',
       );
 
       // Get the definition with all its metadata
@@ -298,7 +292,7 @@ export class ImageService {
       if (!definition) {
         clientLog(
           `FROM getOrCreateDefinitionImage: Definition with id ${definitionId} not found`,
-          LogLevel.WARN,
+          'warn',
         );
         return null;
       }
@@ -307,14 +301,14 @@ export class ImageService {
       if (definition.image) {
         clientLog(
           `FROM getOrCreateDefinitionImage: Found existing image for definition ${definitionId}: ${definition.image.id}`,
-          LogLevel.INFO,
+          'info',
         );
         return this.transformImageToMetadata(definition.image);
       }
 
       clientLog(
         `FROM getOrCreateDefinitionImage: Found definition ${definitionId}, creating search query for word: "${word}"`,
-        LogLevel.INFO,
+        'info',
       );
 
       // Get the first associated WordDetails (if any)
@@ -353,7 +347,7 @@ export class ImageService {
 
         clientLog(
           `Searching Pexels API with query: "${uniqueSearchQuery}", page: ${randomPage} (attempt ${attempt}/${maxRetries})`,
-          LogLevel.INFO,
+          'info',
         );
 
         // Try with the unique search query first
@@ -368,12 +362,12 @@ export class ImageService {
 
           clientLog(
             `Pexels search returned ${searchResponse.photos?.length || 0} photos`,
-            LogLevel.INFO,
+            'info',
           );
         } catch (error) {
           clientLog(
             `Error in Pexels search attempt ${attempt}: ${error}`,
-            LogLevel.ERROR,
+            'error',
           );
 
           // Wait a short time before retrying
@@ -389,15 +383,12 @@ export class ImageService {
 
       // If we found a photo, create the image
       if (photo) {
-        clientLog(
-          `Creating image from Pexels photo ID: ${photo.id}`,
-          LogLevel.INFO,
-        );
+        clientLog(`Creating image from Pexels photo ID: ${photo.id}`, 'info');
         const image = await this.createFromPexels(photo, definitionId);
         if (image) {
           clientLog(
             `Successfully created image ${image.id} for definition ${definitionId}`,
-            LogLevel.INFO,
+            'info',
           );
           return image;
         }
@@ -407,7 +398,7 @@ export class ImageService {
       if (!photo) {
         clientLog(
           `No photos found with query "${uniqueSearchQuery}", trying fallback search with word: "${word}"`,
-          LogLevel.INFO,
+          'info',
         );
 
         // Reset retry attempts
@@ -428,7 +419,7 @@ export class ImageService {
 
           clientLog(
             `Fallback search with query: "${word}", page: ${fallbackRandomPage} (attempt ${attempt}/${maxRetries})`,
-            LogLevel.INFO,
+            'info',
           );
 
           try {
@@ -442,12 +433,12 @@ export class ImageService {
 
             clientLog(
               `Fallback search returned ${searchResponse.photos?.length || 0} photos`,
-              LogLevel.INFO,
+              'info',
             );
           } catch (error) {
             clientLog(
               `Error in fallback search attempt ${attempt}: ${error}`,
-              LogLevel.ERROR,
+              'error',
             );
 
             // Wait a short time before retrying
@@ -464,7 +455,7 @@ export class ImageService {
         if (fallbackPhoto) {
           clientLog(
             `Creating image from fallback Pexels photo ID: ${fallbackPhoto.id}`,
-            LogLevel.INFO,
+            'info',
           );
           const image = await this.createFromPexels(
             fallbackPhoto,
@@ -473,7 +464,7 @@ export class ImageService {
           if (image) {
             clientLog(
               `Successfully created fallback image ${image.id} for definition ${definitionId}`,
-              LogLevel.INFO,
+              'info',
             );
             return image;
           }
@@ -482,20 +473,20 @@ export class ImageService {
 
       clientLog(
         `No photos found for definition ${definitionId}, returning null`,
-        LogLevel.WARN,
+        'warn',
       );
       return null;
     } catch (error) {
       if (error instanceof Error) {
         clientLog(
           `Error in getOrCreateDefinitionImage for definition ${definitionId}: ${error.message}`,
-          LogLevel.ERROR,
+          'error',
           { error },
         );
       } else {
         clientLog(
           `Error in getOrCreateDefinitionImage for definition ${definitionId}: ${error}`,
-          LogLevel.ERROR,
+          'error',
         );
       }
       return null;
@@ -532,7 +523,7 @@ export class ImageService {
     const query = `${word} ${partOfSpeech} ${keyWords.join(' ')}`;
     clientLog(
       `FROM createSearchQueryFromDefinition: Search query: ${query}`,
-      LogLevel.INFO,
+      'info',
       {
         word,
         keyWords,
@@ -542,7 +533,7 @@ export class ImageService {
     const normalizedQuery = this.normalizeSearchQuery(query);
     clientLog(
       `FROM createSearchQueryFromDefinition: Normalized search query: ${normalizedQuery}`,
-      LogLevel.INFO,
+      'info',
       {
         normalizedQuery,
       },
@@ -752,7 +743,7 @@ export class ImageService {
     try {
       serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: Starting getOrCreateTranslatedDefinitionImage for word: "${word}", definitionId: ${definitionId}`,
-        LogLevel.INFO,
+        'info',
       );
 
       // First check if definition exists and has an image
@@ -764,7 +755,7 @@ export class ImageService {
       if (!definitionWithImage) {
         serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Definition with id ${definitionId} not found`,
-          LogLevel.WARN,
+          'warn',
         );
         return null;
       }
@@ -773,7 +764,7 @@ export class ImageService {
       if (definitionWithImage.imageId && definitionWithImage.image) {
         serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Found existing image for definition ${definitionId}: ${definitionWithImage.imageId}`,
-          LogLevel.INFO,
+          'info',
         );
         return this.transformImageToMetadata(definitionWithImage.image);
       }
@@ -812,7 +803,7 @@ export class ImageService {
 
       serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: Found ${englishTranslations.length} English translations for definition ${definitionId}`,
-        LogLevel.INFO,
+        'info',
       );
 
       // Create search query from the most relevant information
@@ -825,7 +816,7 @@ export class ImageService {
 
         serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Using English translation for search: "${translatedContent}"`,
-          LogLevel.INFO,
+          'info',
         );
 
         // Create search query with translation
@@ -836,13 +827,13 @@ export class ImageService {
       } else {
         serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: No English translations found for definition ${definitionId}, using original word: "${wordText}"`,
-          LogLevel.WARN,
+          'warn',
         );
       }
 
       serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: Final search query: "${searchQuery}"`,
-        LogLevel.INFO,
+        'info',
       );
 
       // Search for images using the query
@@ -862,13 +853,13 @@ export class ImageService {
       if (photo) {
         serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Creating image from Pexels photo ID: ${photo.id}`,
-          LogLevel.INFO,
+          'info',
         );
         const image = await this.createFromPexels(photo, definitionId);
         if (image) {
           serverLog(
             `======FROM getOrCreateTranslatedDefinitionImage===========: Successfully created image ${image.id} for definition ${definitionId}`,
-            LogLevel.INFO,
+            'info',
           );
           return image;
         }
@@ -877,13 +868,13 @@ export class ImageService {
       // Fall back to the standard method if no image was found
       serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: No image found using translations, falling back to standard method`,
-        LogLevel.INFO,
+        'info',
       );
       return this.getOrCreateDefinitionImage(word, definitionId);
     } catch (error) {
       serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: Error in getOrCreateTranslatedDefinitionImage: ${error}`,
-        LogLevel.ERROR,
+        'error',
       );
       return null;
     }

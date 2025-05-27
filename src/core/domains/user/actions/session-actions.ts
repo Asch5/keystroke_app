@@ -2,7 +2,7 @@
 
 import { revalidateTag } from 'next/cache';
 import { PrismaClient, SessionType } from '@prisma/client';
-import { serverLog } from '@/core/lib/server/serverLogger';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import type {
   UserLearningSession,
@@ -13,7 +13,7 @@ import type {
   SessionStatsResponse,
   SessionFilterOptions,
   PaginatedSessionsResponse,
-} from '../types/session';
+} from '@/core/domains/user/types/session';
 
 const prisma = new PrismaClient();
 
@@ -309,7 +309,9 @@ export async function getSessionStats(
   userId: string,
 ): Promise<{ success: boolean; stats?: SessionStatsResponse; error?: string }> {
   try {
-    serverLog(`Fetching session stats for user ${userId}`, 'info', { userId });
+    serverLog(`Fetching session stats for user ${userId}`, 'info', {
+      userId,
+    });
 
     const [totalSessions, sessions, recentSessions] = await Promise.all([
       // Total sessions count

@@ -103,6 +103,7 @@ Feature-specific components organized by domain:
 
 - `TranslateComponent` - Translation interface
 - `WordImage` - Word image management
+- `ImageSelector` - Reusable image selection component with Pexels API integration
 - `AddNewWordForm` - Add new word form
 - `CheckWordForm` - Word validation form
 - `WordEditForm` - Word editing interface

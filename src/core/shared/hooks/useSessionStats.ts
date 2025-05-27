@@ -6,7 +6,7 @@ import {
   updateSessionStatsCache,
 } from '@/core/state/features/sessionSlice';
 import { selectUser } from '@/core/state/features/authSlice';
-import { serverLog } from '@/core/lib/server/serverLogger';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import type { UseSessionStatsReturn } from '@/core/domains/user/types/session';
 
 /**

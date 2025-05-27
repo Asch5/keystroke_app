@@ -1,4 +1,4 @@
-import { clientLog, LogLevel } from '@/core/lib/utils/logUtils';
+import { clientLog } from '@/core/lib/utils/logUtils';
 import {
   DanishDictionaryObject,
   DetailCategoryDanish,
@@ -704,7 +704,7 @@ export function validateDanishDictionary(
           `${validationResult.totalIssues} issues found ` +
           `(${validationResult.unknownEntitiesCount} unknown entities, ` +
           `${validationResult.structuralIssuesCount} structural issues)`,
-        validationResult.isValid ? LogLevel.WARN : LogLevel.ERROR,
+        validationResult.isValid ? 'warn' : 'error',
       );
 
       // Log suggestions for enum updates
@@ -713,7 +713,7 @@ export function validateDanishDictionary(
           if (suggestions.length > 0) {
             clientLog(
               `Suggested ${category} enum additions: ${suggestions.join(' ')}`,
-              LogLevel.INFO,
+              'info',
             );
           }
         },
@@ -740,7 +740,7 @@ export function validateDanishDictionary(
 
     clientLog(
       `Error validating Danish dictionary data${context ? ` for ${context}` : ''}: ${errorMessage}`,
-      LogLevel.ERROR,
+      'error',
     );
   }
 

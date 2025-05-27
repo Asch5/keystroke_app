@@ -65,6 +65,16 @@ export const adminNavLinks: NavLink[] = [
 
 export const adminDictionariesNavLinks: NavLink[] = [
   {
+    name: 'Dictionary',
+    href: '/admin/dictionaries',
+    icon: BookOpenIcon,
+  },
+  {
+    name: 'Lists Management',
+    href: '/admin/dictionaries/lists',
+    icon: DocumentDuplicateIcon,
+  },
+  {
     name: 'Check Word',
     href: '/admin/dictionaries/check-word',
     icon: BookOpenIcon,

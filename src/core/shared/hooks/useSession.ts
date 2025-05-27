@@ -18,7 +18,7 @@ import {
   pauseSession,
   resumeSession,
 } from '@/core/state/features/sessionSlice';
-import { serverLog } from '@/core/lib/server/serverLogger';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import type {
   CreateSessionRequest,
   UpdateSessionRequest,
@@ -58,7 +58,9 @@ export function useSession(): UseSessionReturn {
 
         return result;
       } catch (error) {
-        serverLog('Failed to start session via hook', 'error', { error });
+        serverLog('Failed to start session via hook', 'error', {
+          error,
+        });
         throw error;
       }
     },
@@ -145,7 +147,9 @@ export function useSession(): UseSessionReturn {
 
         return result;
       } catch (error) {
-        serverLog('Failed to add session item via hook', 'error', { error });
+        serverLog('Failed to add session item via hook', 'error', {
+          error,
+        });
         throw error;
       }
     },
@@ -171,7 +175,9 @@ export function useSession(): UseSessionReturn {
         }),
       );
 
-      serverLog('Session paused', 'info', { sessionId: currentSession.id });
+      serverLog('Session paused', 'info', {
+        sessionId: currentSession.id,
+      });
     } catch (error) {
       serverLog('Failed to pause session', 'error', { error });
       throw error;
@@ -189,7 +195,9 @@ export function useSession(): UseSessionReturn {
     try {
       dispatch(resumeSession());
 
-      serverLog('Session resumed', 'info', { sessionId: currentSession.id });
+      serverLog('Session resumed', 'info', {
+        sessionId: currentSession.id,
+      });
     } catch (error) {
       serverLog('Failed to resume session', 'error', { error });
       throw error;

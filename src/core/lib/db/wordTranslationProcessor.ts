@@ -7,14 +7,14 @@ import {
   RelationshipType,
 } from '@prisma/client';
 import { TranslationService } from '@/core/lib/services/translationService';
-import { clientLog, LogLevel } from '@/core/lib/utils/logUtils';
+import { clientLog } from '@/core/lib/utils/logUtils';
 
 import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
 import { processAndSaveDanishWord } from '@/core/lib/db/processOrdnetApi';
 import { prisma } from '@/core/lib/prisma';
 import { ProcessedWordData } from '@/core/types/dictionary';
 import type { WordVariant } from '@/core/types/translationDanishTypes';
-import { serverLog } from '@/core/lib/server/serverLogger';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Process translations for a word and its related data
@@ -55,7 +55,7 @@ export async function processTranslationsForWord(
     if (!translationResponse) {
       clientLog(
         `No translation data returned for word: ${mainWordText}`,
-        LogLevel.WARN,
+        'warn',
       );
       return;
     }
@@ -110,7 +110,7 @@ export async function processTranslationsForWord(
               translatedDef.definition_translation;
             serverLog(
               `definitionTranslationText: ${definitionTranslationText}`,
-              LogLevel.INFO,
+              'info',
             );
             if (
               definitionTranslationText &&
@@ -223,7 +223,7 @@ export async function processTranslationsForWord(
   } catch (error) {
     clientLog(
       `Error processing translations for word: ${mainWordText} - ${error instanceof Error ? error.message : String(error)}`,
-      LogLevel.ERROR,
+      'error',
     );
     if (
       !(
@@ -254,7 +254,7 @@ export async function processEnglishTranslationsForDanishWord(
     if (!danishWordId) {
       serverLog(
         `Missing Danish word ID (danishWordData.word.id) for translation processing.`,
-        LogLevel.WARN,
+        'warn',
       );
       return;
     }
@@ -268,7 +268,7 @@ export async function processEnglishTranslationsForDanishWord(
         if (!defId) {
           serverLog(
             `Missing definition ID for Danish definition index ${i}`,
-            LogLevel.WARN,
+            'warn',
           );
           continue;
         }
@@ -343,7 +343,7 @@ export async function processEnglishTranslationsForDanishWord(
             ) {
               clientLog(
                 `Mismatch in length between processed examples (${processedDefinitionExamples.length}) and their combined English translations (${combinedEnglishExampleTranslations.length}) for definition index ${i} of word ID ${danishWordId}. Translations may be misaligned. Check input data structure and Helsinki NLP response.`,
-                LogLevel.WARN,
+                'warn',
               );
             }
 
@@ -363,7 +363,7 @@ export async function processEnglishTranslationsForDanishWord(
               ) {
                 clientLog(
                   `Skipping example translation due to missing data. Def Index: ${i}, Ex Index: ${j}, Word ID: ${danishWordId}, Example ID: ${currentProcessedExample?.id}, Translation: '${englishExampleTranslationText}'`,
-                  LogLevel.INFO,
+                  'info',
                 );
                 continue;
               }
@@ -413,7 +413,7 @@ export async function processEnglishTranslationsForDanishWord(
     ) {
       clientLog(
         `Processing ${variantData.fixed_expressions.length} fixed expressions with translations for Danish word ID ${danishWordId}`,
-        LogLevel.INFO,
+        'info',
       );
 
       for (const expression of variantData.fixed_expressions) {
@@ -428,14 +428,14 @@ export async function processEnglishTranslationsForDanishWord(
         if (!expressionSubWords || expressionSubWords.length === 0) {
           clientLog(
             `Could not find expression "${expression.expression}" in database for translation processing`,
-            LogLevel.WARN,
+            'warn',
           );
           continue;
         }
 
         clientLog(
           `Processing translations for expression "${expression.expression}" with ${expression.definition.length} definition(s)`,
-          LogLevel.INFO,
+          'info',
         );
 
         // For each definition in the expression
@@ -445,14 +445,14 @@ export async function processEnglishTranslationsForDanishWord(
 
           clientLog(
             `Processing expression definition ${i + 1}/${expression.definition.length}: "${expressionDef.definition?.substring(0, 30)}..."`,
-            LogLevel.INFO,
+            'info',
           );
 
           // Skip if no translation available
           if (!expressionDef.definition_translation_en) {
             clientLog(
               `No English translation found for definition ${i + 1} of expression "${expression.expression}"`,
-              LogLevel.INFO,
+              'info',
             );
             continue;
           }
@@ -468,7 +468,7 @@ export async function processEnglishTranslationsForDanishWord(
           if (!matchingDefinition) {
             clientLog(
               `Could not find definition "${expressionDef.definition.substring(0, 30)}..." in database for expression "${expression.expression}"`,
-              LogLevel.WARN,
+              'warn',
             );
             continue;
           }
@@ -483,7 +483,7 @@ export async function processEnglishTranslationsForDanishWord(
           if (!definitionExamples || definitionExamples.length === 0) {
             clientLog(
               `No examples found in the database for definition "${matchingDefinition.definition.substring(0, 30)}..." of expression "${expression.expression}"`,
-              LogLevel.WARN,
+              'warn',
             );
             continue;
           }
@@ -491,13 +491,13 @@ export async function processEnglishTranslationsForDanishWord(
           // Log found examples for debugging
           clientLog(
             `Found ${definitionExamples.length} examples in database for definition ID ${matchingDefinition.id}`,
-            LogLevel.INFO,
+            'info',
           );
 
           for (const dbEx of definitionExamples) {
             clientLog(
               `  - Example: "${dbEx.example.substring(0, 30)}..." (ID: ${dbEx.id})`,
-              LogLevel.INFO,
+              'info',
             );
           }
 
@@ -549,7 +549,7 @@ export async function processEnglishTranslationsForDanishWord(
             );
             clientLog(
               `Added ${expressionDef.labels_translation_en.Eksempler.length} Eksempler translations for expression "${expression.expression}"`,
-              LogLevel.INFO,
+              'info',
             );
           }
 
@@ -565,20 +565,20 @@ export async function processEnglishTranslationsForDanishWord(
             );
             clientLog(
               `Added ${expressionDef.examples_translation_en.length} examples translations for expression "${expression.expression}"`,
-              LogLevel.INFO,
+              'info',
             );
           }
 
           // Log the translations we've found for debugging
           clientLog(
             `Collected ${combinedExampleTranslations.length} translations for examples:`,
-            LogLevel.INFO,
+            'info',
           );
 
           for (const trans of combinedExampleTranslations) {
             clientLog(
               `  - Translation: "${trans.substring(0, 30)}..."`,
-              LogLevel.INFO,
+              'info',
             );
           }
 
@@ -586,7 +586,7 @@ export async function processEnglishTranslationsForDanishWord(
           if (combinedExampleTranslations.length === 0) {
             clientLog(
               `No example translations found for definition "${matchingDefinition.definition.substring(0, 30)}..." of expression "${expression.expression}"`,
-              LogLevel.WARN,
+              'warn',
             );
             continue;
           }
@@ -603,7 +603,7 @@ export async function processEnglishTranslationsForDanishWord(
             // When we have a perfect match between examples and translations, we can match them directly
             clientLog(
               `Direct matching of ${expressionDef.examples.length} examples to translations`,
-              LogLevel.INFO,
+              'info',
             );
 
             for (let j = 0; j < expressionDef.examples.length; j++) {
@@ -614,7 +614,7 @@ export async function processEnglishTranslationsForDanishWord(
               if (!exampleText || !translationText) {
                 clientLog(
                   `Skipping example at index ${j} due to undefined example or translation`,
-                  LogLevel.INFO,
+                  'info',
                 );
                 continue;
               }
@@ -627,7 +627,7 @@ export async function processEnglishTranslationsForDanishWord(
               if (!dbExample) {
                 clientLog(
                   `Could not find example "${exampleText.substring(0, 30)}..." in database`,
-                  LogLevel.WARN,
+                  'warn',
                 );
                 continue;
               }
@@ -667,14 +667,14 @@ export async function processEnglishTranslationsForDanishWord(
 
               clientLog(
                 `Saved DIRECT translation for example "${dbExample.example.substring(0, 30)}..." → "${translationText.substring(0, 30)}..."`,
-                LogLevel.INFO,
+                'info',
               );
             }
           } else {
             // Fall back to the existing index-based matching
             clientLog(
               `Falling back to index-based matching for examples (DB: ${definitionExamples.length}, Translations: ${combinedExampleTranslations.length})`,
-              LogLevel.INFO,
+              'info',
             );
 
             // Match examples with translations
@@ -690,7 +690,7 @@ export async function processEnglishTranslationsForDanishWord(
               if (!dbExample || !translationText) {
                 clientLog(
                   `Skipping example at index ${j} due to missing data for expression "${expression.expression}"`,
-                  LogLevel.INFO,
+                  'info',
                 );
                 continue;
               }
@@ -730,7 +730,7 @@ export async function processEnglishTranslationsForDanishWord(
 
               clientLog(
                 `Saved INDEX-BASED translation for example "${dbExample.example.substring(0, 30)}..." → "${translationText.substring(0, 30)}..."`,
-                LogLevel.INFO,
+                'info',
               );
             }
           }
@@ -741,13 +741,13 @@ export async function processEnglishTranslationsForDanishWord(
     if (variantData.compositions && variantData.compositions.length > 0) {
       clientLog(
         `Note: English translations of compositions are available but not currently saved`,
-        LogLevel.INFO,
+        'info',
       );
     }
   } catch (error) {
     clientLog(
       `Error processing English translations for Danish word: ${error instanceof Error ? error.message : String(error)}`,
-      LogLevel.ERROR,
+      'error',
     );
   }
 }

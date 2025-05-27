@@ -4,8 +4,8 @@ import { prisma } from '@/core/lib/prisma';
 import { processAndSaveDanishWord } from '@/core/lib/db/processOrdnetApi';
 import { processEnglishTranslationsForDanishWord } from '@/core/lib/db/wordTranslationProcessor';
 import type { WordVariant } from '@/core/types/translationDanishTypes';
-import { serverLog } from '@/core/lib/server/serverLogger';
-import { LogLevel } from '@/core/lib/utils/logUtils';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+
 import { ImageService } from '@/core/lib/services/imageService';
 
 interface ProcessDanishVariantResult {
@@ -37,7 +37,7 @@ export async function processDanishVariantOnServer(
     ) {
       serverLog(
         `Failed to process or save Danish word variant for "${originalWord}". processedWordData was insufficient.`,
-        LogLevel.ERROR,
+        'error',
         { variant },
       );
       return {
@@ -76,7 +76,7 @@ export async function processDanishVariantOnServer(
     } else {
       serverLog(
         `No valid definitions found for image processing. processedWordData.definitions: ${processedWordData.definitions ? `Array(${Array.isArray(processedWordData.definitions) ? processedWordData.definitions.length : 'not array'})` : 'null/undefined'}`,
-        LogLevel.WARN,
+        'warn',
         { variant },
       );
     }
@@ -90,7 +90,7 @@ export async function processDanishVariantOnServer(
     const errorMessage = error instanceof Error ? error.message : String(error);
     serverLog(
       `Error in server action processDanishVariantOnServer for "${originalWord}" (variant: ${variant.word.word}): ${errorMessage}`,
-      LogLevel.ERROR,
+      'error',
       { error, variant },
     );
     console.error('Error in processDanishVariantOnServer:', error);
@@ -142,18 +142,18 @@ export async function processImagesForTranslatedDefinitions(
             });
             serverLog(
               `Successfully assigned image ${image.id} to definition ${definition.id}`,
-              LogLevel.INFO,
+              'info',
             );
           } else {
             serverLog(
               `No image found for Danish definition ${definition.id} (word: "${wordText}")`,
-              LogLevel.WARN,
+              'warn',
             );
           }
         } catch (error) {
           serverLog(
             `Error processing image for definition ${definition.id}: ${error instanceof Error ? error.message : String(error)}`,
-            LogLevel.ERROR,
+            'error',
           );
         }
       }),

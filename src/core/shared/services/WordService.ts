@@ -7,8 +7,8 @@ import {
   DifficultyLevel,
   Gender,
 } from '@prisma/client';
-import { LogLevel, clientLog } from '@/core/lib/utils/logUtils';
-import { serverLog } from '@/core/lib/server/serverLogger';
+import { clientLog } from '@/core/lib/utils/logUtils';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {
   fetchWordFrequency,
   getPartOfSpeechFrequency,
@@ -75,7 +75,7 @@ export class WordService {
 
       serverLog(
         `Retrieved frequency data in upsertWord for "${wordText}": ${frequencyGeneral}`,
-        LogLevel.INFO,
+        'info',
       );
     }
 
@@ -150,13 +150,13 @@ export class WordService {
 
             serverLog(
               `Retrieved POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${dbPoSToPersist}: ${posFrequency}`,
-              LogLevel.INFO,
+              'info',
             );
           }
         } catch (error) {
           serverLog(
             `Error retrieving POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
-            LogLevel.ERROR,
+            'error',
           );
           posFrequency = null;
         }
@@ -179,13 +179,13 @@ export class WordService {
             );
             serverLog(
               `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${dbPoSToPersist}: ${posFrequency}`,
-              LogLevel.INFO,
+              'info',
             );
           }
         } catch (error) {
           serverLog(
             `Error fetching POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
-            LogLevel.ERROR,
+            'error',
           );
           posFrequency = null;
         }
@@ -193,7 +193,7 @@ export class WordService {
         // Merriam style - set to null with warning
         clientLog(
           `No frequency manager provided for word ID ${wordId}, POS ${dbPoSToPersist}. Setting frequency to null.`,
-          LogLevel.WARN,
+          'warn',
         );
         posFrequency = null;
       }
@@ -224,18 +224,66 @@ export class WordService {
       }),
     };
 
-    // Upsert the WordDetails record
-    const wordDetails = await tx.wordDetails.upsert({
+    /**
+     * IMPROVEMENT: Prevent empty WordDetails accumulation
+     *
+     * Before creating a new WordDetails record with a variant, check if there's already
+     * an existing WordDetails for the same wordId and partOfSpeech that has no linked definitions.
+     * If found, reuse that empty record instead of creating a new variant-specific one.
+     * This prevents the accumulation of empty WordDetails records in the database.
+     */
+    const existingEmptyWordDetails = await tx.wordDetails.findFirst({
       where: {
-        wordId_partOfSpeech_variant: {
-          wordId,
-          partOfSpeech: dbPoSToPersist,
-          variant: variant || '',
+        wordId,
+        partOfSpeech: dbPoSToPersist,
+        definitions: {
+          none: {}, // WordDetails with no linked definitions
         },
       },
-      create: createData,
-      update: updateData,
+      include: {
+        _count: {
+          select: {
+            definitions: true,
+          },
+        },
+      },
     });
+
+    let wordDetails;
+
+    if (
+      existingEmptyWordDetails &&
+      existingEmptyWordDetails._count.definitions === 0
+    ) {
+      // Reuse the existing empty WordDetails record by updating it
+      serverLog(
+        `Reusing existing empty WordDetails record ${existingEmptyWordDetails.id} for wordId ${wordId}, partOfSpeech ${dbPoSToPersist}`,
+        'info',
+      );
+
+      wordDetails = await tx.wordDetails.update({
+        where: {
+          id: existingEmptyWordDetails.id,
+        },
+        data: {
+          ...updateData,
+          variant: variant || '', // Update variant to the new one
+        },
+      });
+    } else {
+      // Upsert the WordDetails record using normal logic
+      wordDetails = await tx.wordDetails.upsert({
+        where: {
+          wordId_partOfSpeech_variant: {
+            wordId,
+            partOfSpeech: dbPoSToPersist,
+            variant: variant || '',
+          },
+        },
+        create: createData,
+        update: updateData,
+      });
+    }
 
     // Clean up alternative PoS state if configured (Danish style)
     if (dbPoSToPersist !== PartOfSpeech.undefined) {

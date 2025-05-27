@@ -1,5 +1,5 @@
 import { LanguageCode } from '@prisma/client';
-import { clientLog, LogLevel } from '@/core/lib/utils/logUtils';
+import { clientLog } from '@/core/lib/utils/logUtils';
 import {
   TranslationCombinedResponse,
   TranslationRequest,
@@ -67,10 +67,7 @@ export class TranslationService {
 
       const requestPayload = [translationRequest];
 
-      clientLog(
-        `Sent request: ${JSON.stringify(requestPayload)}`,
-        LogLevel.INFO,
-      );
+      clientLog(`Sent request: ${JSON.stringify(requestPayload)}`, 'info');
 
       const response = await fetch(this.API_URL, {
         method: 'POST',
@@ -93,11 +90,11 @@ export class TranslationService {
         `FROM TRANSLATION SERVICE: Translated data: ${JSON.stringify(
           translatedData,
         )}`,
-        LogLevel.INFO,
+        'info',
       );
       return translatedData;
     } catch (error) {
-      clientLog(`Translation error for word ${word}: ${error}`, LogLevel.ERROR);
+      clientLog(`Translation error for word ${word}: ${error}`, 'error');
       return null;
     }
   }

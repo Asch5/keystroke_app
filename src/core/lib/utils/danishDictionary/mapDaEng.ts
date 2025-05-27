@@ -30,7 +30,7 @@ export function mapDanishPosToEnum(
     forkortelse: PartOfSpeech.abbreviation,
     suffiks: PartOfSpeech.suffix,
     'adj. pl.': PartOfSpeech.adj_pl,
-
+    phrase: PartOfSpeech.phrase,
     sidsteled: PartOfSpeech.undefined,
     undefined: PartOfSpeech.undefined,
   };

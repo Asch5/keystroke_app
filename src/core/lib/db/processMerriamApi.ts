@@ -20,12 +20,12 @@ import {
   Gender,
 } from '@prisma/client';
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
-import { LogLevel, clientLog } from '@/core/lib/utils/logUtils';
+import { clientLog } from '@/core/lib/utils/logUtils';
 import { ImageService } from '@/core/lib/services/imageService';
 import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
 import { WordService } from '@/core/shared/services/WordService';
 import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
-import { serverLog } from '../server/serverLogger';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**Definitions:
  * generalLabels "lbs" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs. (like capitalization indicators, usage notes, etc.)
@@ -325,7 +325,7 @@ export async function processAndSaveWord(
 
   clientLog(
     `FROM processMerriamApi.ts: Processing word: ${mainWordText}`,
-    LogLevel.INFO,
+    'info',
   );
   //const section = apiResponse.meta.section;
   //const entrySource = apiResponse.meta.target.tsrc;
@@ -688,6 +688,9 @@ export async function processAndSaveWord(
       else if (inflection.il === 'past participle') {
         verbFormType = RelationshipType.past_participle_en;
         definition = `Past participle form of the verb {it}${mainWordText}{/it}`;
+      } else {
+        verbFormType = RelationshipType.related;
+        definition = `Undefined form of the verb {it}${mainWordText}{/it}`;
       }
 
       subWordsArray.push({
@@ -1562,7 +1565,7 @@ sourceWordText processing
               });
               clientLog(
                 `Process in processMerriamApi.ts (definition section): cleanDefinitionText: ${cleanDefinitionText}`,
-                LogLevel.INFO,
+                'info',
               );
               // Reset currentSenData after applying it to a sense
               // This ensures sen data only applies to the next sense, not all subsequent ones
@@ -1627,7 +1630,7 @@ sourceWordText processing
             if (!currentSubWordInLoop.id) {
               serverLog(
                 `Error: currentSubWordInLoop '${currentSubWordInLoop.word}' has no ID. RelationSide: ${relationSide}`,
-                LogLevel.ERROR,
+                'error',
               );
               // Attempt to find it in allSubWords as a fallback
               const foundSubWord = allSubWords.find(
@@ -1673,7 +1676,7 @@ sourceWordText processing
             } else {
               clientLog(
                 `Could not find subWord or its ID for relationSide string: '${relationSide}'`,
-                LogLevel.WARN,
+                'warn',
               );
               return {
                 wordId: null,
@@ -1685,10 +1688,7 @@ sourceWordText processing
               };
             }
           } else {
-            clientLog(
-              `Unknown relationSide type: ${relationSide}`,
-              LogLevel.WARN,
-            );
+            clientLog(`Unknown relationSide type: ${relationSide}`, 'warn');
             return {
               wordId: null,
               partOfSpeech: null,
@@ -1761,7 +1761,7 @@ sourceWordText processing
         //postion 1
         clientLog(
           `Position 1: From upsertWord in processMerriamApi.ts (upsertWord section): mainWordDetails: ${JSON.stringify(mainWordDetails)}`,
-          LogLevel.INFO,
+          'info',
         );
 
         //! 2. Process and save definitions
@@ -1898,7 +1898,7 @@ sourceWordText processing
           } catch (error) {
             serverLog(
               `Process in processMerriamApi.ts (definition section): Error processing definition: ${error}`,
-              LogLevel.ERROR,
+              'error',
             );
             throw error;
           }
@@ -1906,25 +1906,41 @@ sourceWordText processing
 
         clientLog(
           `+++++++++++++++Process in processMerriamApi.ts (definition section): subWordsArray: ${JSON.stringify(subWordsArray)}`,
-          LogLevel.INFO,
+          'info',
         );
 
         //! 3. Process sub-words
         for (const subWord of subWordsArray) {
-          // Create or update the sub-word
-          const subWordEntity = await upsertWord(
-            tx,
-            source as SourceType,
-            subWord.word,
-            subWord.languageCode as LanguageCode,
-            {
-              phonetic: subWord.phonetic || null,
-              audioFiles: subWord.audioFiles || null,
-              etymology: subWord.etymology || null,
-              partOfSpeech: subWord.partOfSpeech,
-              frequencyManager: frequencyManager,
-            },
-          );
+          // CRITICAL FIX: Skip upsertWord if this sub-word has the same text as the main word
+          // This prevents the main word from being overwritten with sub-word etymology data
+          let subWordEntity: Word;
+
+          if (
+            subWord.word === mainWordText &&
+            subWord.languageCode === language
+          ) {
+            // This is actually the main word, don't call upsertWord - use existing main word
+            subWordEntity = mainWord;
+            serverLog(
+              `Skipping upsertWord for sub-word "${subWord.word}" because it matches main word - using existing main word entity`,
+              'info',
+            );
+          } else {
+            // This is a genuine sub-word, safe to call upsertWord
+            subWordEntity = await upsertWord(
+              tx,
+              source as SourceType,
+              subWord.word,
+              subWord.languageCode as LanguageCode,
+              {
+                phonetic: subWord.phonetic || null,
+                audioFiles: subWord.audioFiles || null,
+                etymology: subWord.etymology || null,
+                partOfSpeech: subWord.partOfSpeech,
+                frequencyManager: frequencyManager,
+              },
+            );
+          }
 
           // Update the ID in the subWordsArray
           subWordsArray = subWordsArray.map((word) => {
@@ -1981,7 +1997,7 @@ sourceWordText processing
             // Prioritize the subword's overall partOfSpeech if available
             clientLog(
               `Position 5: From upsertWordDetails in processMerriamApi.ts (upsertWordDetails section): subWord.partOfSpeech: ${subWord.partOfSpeech}`,
-              LogLevel.INFO,
+              'info',
             );
             const subWordDetails = await upsertWordDetails(
               tx,
@@ -2059,7 +2075,7 @@ sourceWordText processing
           if (!currentProcessingSubWord.id) {
             serverLog(
               `Skipping relationships for subWord '${currentProcessingSubWord.word}' as it has no ID. This should not happen.`,
-              LogLevel.ERROR,
+              'error',
             );
             continue;
           }
@@ -2083,7 +2099,7 @@ sourceWordText processing
                   if (!relation.type) {
                     clientLog(
                       `Missing type for relationship on subWord ${currentProcessingSubWord.word} (ID: ${currentProcessingSubWord.id})`,
-                      LogLevel.WARN,
+                      'warn',
                     );
                     return;
                   }
@@ -2112,7 +2128,7 @@ sourceWordText processing
                   if (!fromInfo.wordId || !toInfo.wordId) {
                     clientLog(
                       `Missing wordId for relationship: from='${relation.fromWord}'(id:${fromInfo.wordId}) to='${relation.toWord}'(id:${toInfo.wordId}), for subWord '${currentProcessingSubWord.word}' (ID: ${currentProcessingSubWord.id}). Skipping.`,
-                      LogLevel.WARN,
+                      'warn',
                     );
                     return;
                   }
@@ -2127,6 +2143,28 @@ sourceWordText processing
                       relation.toWord.endsWith('Details'));
 
                   if (createDetailsRelation) {
+                    /**
+                     * IMPROVEMENT: Pass actual data instead of null values when upserting WordDetails
+                     *
+                     * Previously, we were passing null for etymology when creating WordDetails relationships.
+                     * Now we find the actual sub-word data and use its etymology value, ensuring that
+                     * WordDetails records contain the proper etymology information instead of null values.
+                     */
+
+                    // Helper function to find sub-word data by word ID
+                    const findSubWordDataById = (wordId: number) => {
+                      return allPopulatedSubWords.find(
+                        (sw) => sw.id === wordId,
+                      );
+                    };
+
+                    // Helper function to find sub-word data by word text
+                    const findSubWordDataByText = (wordText: string) => {
+                      return allPopulatedSubWords.find(
+                        (sw) => sw.word === wordText,
+                      );
+                    };
+
                     // For plural_en, isPlural is true if the WordDetail IS the plural noun form
                     const isFromPlural =
                       relationType === RelationshipType.plural_en &&
@@ -2134,6 +2172,43 @@ sourceWordText processing
                     const isToPlural =
                       relationType === RelationshipType.plural_en &&
                       toInfo.partOfSpeech === PartOfSpeech.noun;
+
+                    // Find the actual sub-word data to get real values instead of nulls
+                    let fromSubWordData = findSubWordDataById(fromInfo.wordId);
+
+                    // If not found by ID, try to find by relation.fromWord text
+                    if (
+                      !fromSubWordData &&
+                      typeof relation.fromWord === 'string'
+                    ) {
+                      fromSubWordData = findSubWordDataByText(
+                        relation.fromWord,
+                      );
+                    }
+
+                    // Use actual data from sub-word if available, otherwise use defaults
+                    const fromEtymology = fromSubWordData?.etymology || null;
+
+                    clientLog(
+                      `FROM processMerriamApi.ts: Found fromSubWordData for wordId ${fromInfo.wordId}: ${fromSubWordData ? 'YES' : 'NO'}, etymology: ${fromEtymology}`,
+                      'info',
+                    );
+
+                    // Find the actual sub-word data to get real values instead of nulls
+                    let toSubWordData = findSubWordDataById(toInfo.wordId);
+
+                    // If not found by ID, try to find by relation.toWord text
+                    if (!toSubWordData && typeof relation.toWord === 'string') {
+                      toSubWordData = findSubWordDataByText(relation.toWord);
+                    }
+
+                    // Use actual data from sub-word if available, otherwise use defaults
+                    const toEtymology = toSubWordData?.etymology || null;
+
+                    clientLog(
+                      `FROM processMerriamApi.ts: Found toSubWordData for wordId ${toInfo.wordId}: ${toSubWordData ? 'YES' : 'NO'}, etymology: ${toEtymology}`,
+                      'info',
+                    );
 
                     const fromWordDetails = await upsertWordDetails(
                       tx,
@@ -2144,7 +2219,7 @@ sourceWordText processing
                       fromInfo.variant,
                       fromInfo.phonetic,
                       null, // frequency
-                      null, // etymology
+                      fromEtymology, // Use actual etymology data
                       frequencyManager,
                     );
                     const toWordDetails = await upsertWordDetails(
@@ -2156,7 +2231,7 @@ sourceWordText processing
                       toInfo.variant,
                       toInfo.phonetic,
                       null, // frequency
-                      null, // etymology
+                      toEtymology, // Use actual etymology data
                       frequencyManager,
                     );
 
@@ -2294,7 +2369,7 @@ sourceWordText processing
 
     clientLog(
       `Process in processMerriamApi.ts: Found ${dbDefinitions.length} unique definitions in database for word "${mainWordText}" and related words`,
-      LogLevel.INFO,
+      'info',
     );
 
     // Process images outside the transaction to avoid long-running transactions
@@ -2306,7 +2381,7 @@ sourceWordText processing
 
       clientLog(
         `Process in processMerriamApi.ts: Found ${definitionsToProcess.length} definitions that need images of ${dbDefinitions.length} total definitions`,
-        LogLevel.INFO,
+        'info',
       );
 
       if (definitionsToProcess.length > 0) {
@@ -2380,7 +2455,7 @@ async function processImagesForDefinitions(
         try {
           clientLog(
             `FROM processImagesForDefinitions: Processing image for definition ${definition.id} of word "${wordText}"`,
-            LogLevel.INFO,
+            'info',
           );
 
           const image = await imageService.getOrCreateDefinitionImage(
@@ -2396,13 +2471,13 @@ async function processImagesForDefinitions(
           } else {
             clientLog(
               `FROM processImagesForDefinitions: No image found for definition ${definition.id}`,
-              LogLevel.WARN,
+              'warn',
             );
           }
         } catch (error) {
           serverLog(
             `FROM processImagesForDefinitions: Error processing image for definition ${definition.id}: ${error instanceof Error ? error.message : String(error)}`,
-            LogLevel.ERROR,
+            'error',
           );
         }
       }),
@@ -2959,7 +3034,7 @@ async function upsertWord(
   );
   clientLog(
     `From upsertWord in processMerriamApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
-    LogLevel.INFO,
+    'info',
   );
 
   // Process audio files if present

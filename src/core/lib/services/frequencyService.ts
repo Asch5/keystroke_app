@@ -1,6 +1,6 @@
 import { LanguageCode, PartOfSpeech } from '@prisma/client';
 import { FrequencyRequest, FrequencyResponse } from '@/core/types/dictionary';
-import { LogLevel } from '@/core/lib/utils/logUtils';
+
 import { clientLog } from '@/core/lib/utils/logUtils';
 
 /**
@@ -37,7 +37,7 @@ export async function fetchWordFrequency(
     const data = await response.json();
     clientLog(
       `Frequency data --- from Frequency Service first step: ${JSON.stringify(data)}`,
-      LogLevel.INFO,
+      'info',
     );
 
     // API returns an array of responses, we expect the first item
@@ -52,13 +52,13 @@ export async function fetchWordFrequency(
       ) {
         clientLog(
           `Error fetching frequency for word ---- from Frequency Service: ${word}: ${frequencyItem['error']}`,
-          LogLevel.ERROR,
+          'error',
         );
         return null;
       }
       clientLog(
         `Frequency frequencyItem ---- from Frequency Service: ${JSON.stringify(frequencyItem)}`,
-        LogLevel.INFO,
+        'info',
       );
       return frequencyItem;
     }

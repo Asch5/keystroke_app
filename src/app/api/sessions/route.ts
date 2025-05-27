@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { createLearningSession } from '@/core/domains/user/actions/session-actions';
-import { serverLog } from '@/core/lib/server/serverLogger';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import type { CreateSessionRequest } from '@/core/domains/user/types/session';
 
 /**

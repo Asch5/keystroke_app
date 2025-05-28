@@ -86,6 +86,37 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 - `mapFrequencyPartOfSpeech(positionInPartOfSpeech)`
 - `importFrequencyJson()` - Server action for frequency import
 
+### Text-to-Speech Operations (`actions/tts-actions.ts`)
+
+- `generateWordTTS(wordId, languageCode, options?)` - Generate speech for a word with quality control and blob storage
+- `generateDefinitionTTS(definitionId, languageCode, options?)` - Generate speech for definitions (standard quality, blob storage)
+- `generateExampleTTS(exampleId, languageCode, options?)` - Generate speech for examples (standard quality, blob storage)
+- `generateBatchWordTTS(wordIds, languageCode, options?)` - Batch TTS generation with rate limiting, word validation, and blob storage
+- `deleteWordAudio(wordId)` - Delete audio file from blob storage and database
+- `getTTSUsageStats()` - Get current usage statistics and costs
+- `resetTTSUsageStats()` - Reset usage statistics (admin only)
+- `getTTSQualityLevels()` - Get available quality levels and pricing
+- `validateWordIdsExist(wordIds)` - Validate word IDs exist in database before processing
+- `getAvailableVoiceGenders(languageCode)` - Get available voice genders for a specific language
+- `getDefaultVoiceGender(languageCode)` - Get the default voice gender for a specific language
+- `cleanupOrphanedAudio()` - Admin utility for blob storage cleanup
+
+Types: `GenerateTTSResult`, `TTSBatchResult`
+
+**Key Features:**
+
+- **Word Validation**: All batch operations now validate word IDs exist before processing
+- **ID Mapping**: UI properly converts WordDetails IDs to Word IDs for TTS processing
+- **Language-Aware Voice Selection**: Automatically selects appropriate voice genders based on language support
+  - **English (en)**: Supports both MALE and FEMALE voices
+  - **Danish (da)**: Only supports FEMALE voices (Google Cloud limitation)
+  - **Spanish, French, German, Russian**: Support both MALE and FEMALE voices
+- **Smart Gender Fallback**: If requested gender isn't available, automatically uses the first available gender
+- **Error Handling**: Invalid word IDs are filtered out and reported separately
+- **Rate Limiting**: Respects Google Cloud TTS API limits with batching and delays
+- **Cost Optimization**: Uses different quality levels for words vs definitions/examples
+- **Blob Storage**: Organized folder structure for audio files in Vercel Blob
+
 ### List Management (`actions/list-actions.ts`)
 
 - `fetchCategories()` - Fetch all categories for list creation
@@ -165,6 +196,8 @@ Types: `ListWithDetails`, `ListFilters`, `ListsResponse`
 - `imageService.ts` - Image generation and management
 - `pexelsService.ts` - Pexels API integration
 - `translationService.ts` - Translation service integration
+- `textToSpeechService.ts` - Google Cloud Text-to-Speech with cost optimization
+- `blobStorageService.ts` - Vercel Blob storage for audio files with organized folder structure
 
 ### WordService
 

@@ -66,6 +66,7 @@ import { useAppDispatch } from '@/core/state';
 - **Styling**: Tailwind CSS + shadcn/ui
 - **State**: Redux Toolkit + Redux Persist
 - **Auth**: NextAuth.js v5
+- **External APIs**: Google Cloud TTS, Pexels, Merriam-Webster
 - **Package Manager**: pnpm
 
 ## File Naming

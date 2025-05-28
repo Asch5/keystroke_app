@@ -71,3 +71,21 @@ export {
   mapFrequencyPartOfSpeech,
   importFrequencyJson,
 } from './frequency-actions';
+
+// Text-to-Speech operations
+export {
+  generateWordTTS,
+  generateDefinitionTTS,
+  generateExampleTTS,
+  generateBatchWordTTS,
+  getTTSUsageStats,
+  resetTTSUsageStats,
+  getTTSQualityLevels,
+  deleteWordAudio,
+  cleanupOrphanedAudio,
+  validateWordIdsExist,
+  getAvailableVoiceGenders,
+  getDefaultVoiceGender,
+  type GenerateTTSResult,
+  type TTSBatchResult,
+} from './tts-actions';

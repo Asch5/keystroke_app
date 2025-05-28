@@ -20,6 +20,7 @@ export const env = createEnv({
     PEXELS_API_KEY: z.string().min(1),
     DICTIONARY_LEARNERS_API_KEY: z.string().min(1),
     DICTIONARY_INTERMEDIATE_API_KEY: z.string().min(1),
+    GOOGLE_TTS_API_KEY: z.string().min(1).optional(),
     OPENAI_API_KEY: z.string().min(1).optional(),
 
     // Vercel Services
@@ -63,6 +64,7 @@ export const env = createEnv({
     DICTIONARY_LEARNERS_API_KEY: process.env.DICTIONARY_LEARNERS_API_KEY,
     DICTIONARY_INTERMEDIATE_API_KEY:
       process.env.DICTIONARY_INTERMEDIATE_API_KEY,
+    GOOGLE_TTS_API_KEY: process.env.GOOGLE_TTS_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
     API_SECRET_KEY: process.env.API_SECRET_KEY,

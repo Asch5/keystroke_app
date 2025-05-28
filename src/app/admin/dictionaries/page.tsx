@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import {
   fetchDictionaryWordDetails,
   deleteSelectedWords,
+  deleteWordAudio,
   type DictionaryWordDetails,
 } from '@/core/domains/dictionary/actions';
 import { ColumnDef } from '@tanstack/react-table';
@@ -27,6 +28,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
+import { TTSControls } from '@/components/features/admin/dictionary/TTSControls';
 import { toast } from 'sonner';
 import {
   ArrowUpDown,
@@ -345,6 +347,28 @@ export default function DictionariesPage() {
     setIsDeleteDialogOpen(true);
   };
 
+  const handleAudioGenerated = async () => {
+    // Refresh the word list to show updated audio status
+    const fetchedWordDetails =
+      await fetchDictionaryWordDetails(selectedLanguage);
+    setWordDetails(fetchedWordDetails);
+  };
+
+  const handleDeleteAudio = async (wordId: number) => {
+    try {
+      const result = await deleteWordAudio(wordId);
+      if (result.success) {
+        toast.success(result.message);
+        handleAudioGenerated(); // Refresh the list
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error('Failed to delete audio');
+      console.error('Audio deletion error:', error);
+    }
+  };
+
   const columns: ColumnDef<DictionaryWordDetails>[] = [
     {
       id: 'select',
@@ -514,24 +538,63 @@ export default function DictionariesPage() {
       header: 'Audio',
       cell: ({ row }) => {
         const audioUrl = row.getValue('audioUrl') as string | null;
+        const wordDetail = row.original;
 
         if (!audioUrl) {
           return <span className="text-muted-foreground">—</span>;
         }
 
+        const isVercelBlob = audioUrl.includes(
+          'public.blob.vercel-storage.com',
+        );
+
         return (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => playAudio(audioUrl)}
-            className="h-8 w-8 p-0"
-          >
-            {playingAudio === audioUrl ? (
-              <Pause className="h-4 w-4" />
-            ) : (
-              <Play className="h-4 w-4" />
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => playAudio(audioUrl)}
+              className="h-8 w-8 p-0"
+            >
+              {playingAudio === audioUrl ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
+            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    className={`text-xs px-1 py-0.5 rounded ${
+                      isVercelBlob
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    {isVercelBlob ? 'Blob' : 'B64'}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  <p className="text-sm">
+                    {isVercelBlob
+                      ? 'Stored in Vercel Blob Storage'
+                      : 'Base64 encoded audio'}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            {audioUrl && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleDeleteAudio(wordDetail.wordId)}
+                className="h-8 w-8 p-0 text-red-600 hover:text-red-800"
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
             )}
-          </Button>
+          </div>
         );
       },
     },
@@ -636,6 +699,12 @@ export default function DictionariesPage() {
                   Add New Word
                 </Button>
               </Link>
+              <TTSControls
+                selectedWords={selectedWords}
+                selectedLanguage={selectedLanguage}
+                wordDetails={filteredWordDetails}
+                onAudioGenerated={handleAudioGenerated}
+              />
               <Button
                 onClick={handleCreateWordList}
                 disabled={selectedWords.size === 0}

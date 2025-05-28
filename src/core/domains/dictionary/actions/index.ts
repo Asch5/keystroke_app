@@ -5,6 +5,9 @@ export {
   addWordToUserDictionary,
   checkWordExistsByUuid,
   fetchWordById,
+  deleteWordDetails,
+  deleteWords,
+  deleteSelectedWords,
   type DictionaryWordDetails,
 } from './word-crud-actions';
 

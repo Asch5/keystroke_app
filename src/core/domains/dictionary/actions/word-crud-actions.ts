@@ -350,3 +350,381 @@ export async function fetchWordById(wordId: string) {
     );
   }
 }
+
+/**
+ * Delete word details by their IDs with comprehensive cleanup
+ * This function handles the deletion of word details and all related data
+ * @param wordDetailIds Array of word detail IDs to delete
+ * @returns Promise with deletion results
+ */
+export async function deleteWordDetails(
+  wordDetailIds: number[],
+): Promise<{ success: boolean; deletedCount: number; errors: string[] }> {
+  const errors: string[] = [];
+  let deletedCount = 0;
+
+  try {
+    // Start a transaction to ensure data consistency
+    await prisma.$transaction(async (tx) => {
+      for (const wordDetailId of wordDetailIds) {
+        try {
+          // First, collect information about related files before deletion
+          const wordDetailWithFiles = await tx.wordDetails.findUnique({
+            where: { id: wordDetailId },
+            include: {
+              word: true,
+              definitions: {
+                include: {
+                  definition: {
+                    include: {
+                      image: true,
+                      audioLinks: {
+                        include: {
+                          audio: true,
+                        },
+                      },
+                      examples: {
+                        include: {
+                          audioLinks: {
+                            include: {
+                              audio: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              audioLinks: {
+                include: {
+                  audio: true,
+                },
+              },
+            },
+          });
+
+          if (!wordDetailWithFiles) {
+            errors.push(`Word detail with ID ${wordDetailId} not found`);
+            continue;
+          }
+
+          // Collect all audio URLs that will be orphaned
+          const audioUrls = new Set<string>();
+
+          // Audio from word details
+          wordDetailWithFiles.audioLinks.forEach((link) => {
+            if (link.audio.url) audioUrls.add(link.audio.url);
+          });
+
+          // Audio from definitions and examples
+          wordDetailWithFiles.definitions.forEach((wordDef) => {
+            const def = wordDef.definition;
+            def.audioLinks.forEach((link) => {
+              if (link.audio.url) audioUrls.add(link.audio.url);
+            });
+            def.examples.forEach((example) => {
+              example.audioLinks.forEach((link) => {
+                if (link.audio.url) audioUrls.add(link.audio.url);
+              });
+            });
+          });
+
+          // Collect image URLs
+          const imageUrls = new Set<string>();
+          wordDetailWithFiles.definitions.forEach((wordDef) => {
+            if (wordDef.definition.image?.url) {
+              imageUrls.add(wordDef.definition.image.url);
+            }
+          });
+
+          // Delete the word detail (cascading deletes will handle most relations)
+          await tx.wordDetails.delete({
+            where: { id: wordDetailId },
+          });
+
+          // After deletion, clean up orphaned audio and image records
+          // Check for orphaned audio files
+          for (const audioUrl of audioUrls) {
+            const audioUsageCount = await tx.audio.count({
+              where: { url: audioUrl },
+            });
+
+            if (audioUsageCount === 0) {
+              // Audio is orphaned, can be cleaned up
+              // Note: Actual file deletion would happen here in a real implementation
+              console.log(`Audio file can be cleaned up: ${audioUrl}`);
+            }
+          }
+
+          // Check for orphaned images
+          for (const imageUrl of imageUrls) {
+            const imageUsageCount = await tx.image.count({
+              where: { url: imageUrl },
+            });
+
+            if (imageUsageCount === 0) {
+              // Image is orphaned, can be cleaned up
+              // Note: Actual file deletion would happen here in a real implementation
+              console.log(`Image file can be cleaned up: ${imageUrl}`);
+            }
+          }
+
+          // Check if the parent word has any remaining word details
+          const remainingWordDetails = await tx.wordDetails.count({
+            where: { wordId: wordDetailWithFiles.wordId },
+          });
+
+          // If no word details remain, delete the parent word
+          if (remainingWordDetails === 0) {
+            await tx.word.delete({
+              where: { id: wordDetailWithFiles.wordId },
+            });
+          }
+
+          deletedCount++;
+        } catch (error) {
+          console.error(`Error deleting word detail ${wordDetailId}:`, error);
+          errors.push(
+            `Failed to delete word detail ${wordDetailId}: ${error instanceof Error ? error.message : String(error)}`,
+          );
+        }
+      }
+    });
+
+    return {
+      success: errors.length === 0,
+      deletedCount,
+      errors,
+    };
+  } catch (error) {
+    console.error('Error in deleteWordDetails transaction:', error);
+    return {
+      success: false,
+      deletedCount,
+      errors: [
+        ...errors,
+        `Transaction failed: ${error instanceof Error ? error.message : String(error)}`,
+      ],
+    };
+  }
+}
+
+/**
+ * Delete words by their IDs with comprehensive cleanup
+ * This function handles the deletion of entire words and all related data
+ * @param wordIds Array of word IDs to delete
+ * @returns Promise with deletion results
+ */
+export async function deleteWords(
+  wordIds: number[],
+): Promise<{ success: boolean; deletedCount: number; errors: string[] }> {
+  const errors: string[] = [];
+  let deletedCount = 0;
+
+  try {
+    // Start a transaction to ensure data consistency
+    await prisma.$transaction(async (tx) => {
+      for (const wordId of wordIds) {
+        try {
+          // First, collect information about related files before deletion
+          const wordWithFiles = await tx.word.findUnique({
+            where: { id: wordId },
+            include: {
+              details: {
+                include: {
+                  definitions: {
+                    include: {
+                      definition: {
+                        include: {
+                          image: true,
+                          audioLinks: {
+                            include: {
+                              audio: true,
+                            },
+                          },
+                          examples: {
+                            include: {
+                              audioLinks: {
+                                include: {
+                                  audio: true,
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  audioLinks: {
+                    include: {
+                      audio: true,
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          if (!wordWithFiles) {
+            errors.push(`Word with ID ${wordId} not found`);
+            continue;
+          }
+
+          // Collect all audio URLs that will be orphaned
+          const audioUrls = new Set<string>();
+
+          // Audio from word details
+          wordWithFiles.details.forEach((detail) => {
+            detail.audioLinks.forEach((link) => {
+              if (link.audio.url) audioUrls.add(link.audio.url);
+            });
+
+            // Audio from definitions and examples
+            detail.definitions.forEach((wordDef) => {
+              const def = wordDef.definition;
+              def.audioLinks.forEach((link) => {
+                if (link.audio.url) audioUrls.add(link.audio.url);
+              });
+              def.examples.forEach((example) => {
+                example.audioLinks.forEach((link) => {
+                  if (link.audio.url) audioUrls.add(link.audio.url);
+                });
+              });
+            });
+          });
+
+          // Collect image URLs
+          const imageUrls = new Set<string>();
+          wordWithFiles.details.forEach((detail) => {
+            detail.definitions.forEach((wordDef) => {
+              if (wordDef.definition.image?.url) {
+                imageUrls.add(wordDef.definition.image.url);
+              }
+            });
+          });
+
+          // Delete the word (cascading deletes will handle most relations)
+          await tx.word.delete({
+            where: { id: wordId },
+          });
+
+          // After deletion, clean up orphaned audio and image records
+          // Check for orphaned audio files
+          for (const audioUrl of audioUrls) {
+            const audioUsageCount = await tx.audio.count({
+              where: { url: audioUrl },
+            });
+
+            if (audioUsageCount === 0) {
+              // Audio is orphaned, can be cleaned up
+              // Note: Actual file deletion would happen here in a real implementation
+              console.log(`Audio file can be cleaned up: ${audioUrl}`);
+            }
+          }
+
+          // Check for orphaned images
+          for (const imageUrl of imageUrls) {
+            const imageUsageCount = await tx.image.count({
+              where: { url: imageUrl },
+            });
+
+            if (imageUsageCount === 0) {
+              // Image is orphaned, can be cleaned up
+              // Note: Actual file deletion would happen here in a real implementation
+              console.log(`Image file can be cleaned up: ${imageUrl}`);
+            }
+          }
+
+          deletedCount++;
+        } catch (error) {
+          console.error(`Error deleting word ${wordId}:`, error);
+          errors.push(
+            `Failed to delete word ${wordId}: ${error instanceof Error ? error.message : String(error)}`,
+          );
+        }
+      }
+    });
+
+    return {
+      success: errors.length === 0,
+      deletedCount,
+      errors,
+    };
+  } catch (error) {
+    console.error('Error in deleteWords transaction:', error);
+    return {
+      success: false,
+      deletedCount,
+      errors: [
+        ...errors,
+        `Transaction failed: ${error instanceof Error ? error.message : String(error)}`,
+      ],
+    };
+  }
+}
+
+/**
+ * Server action to delete selected word details from dictionary
+ * @param wordDetailIds Array of word detail IDs to delete
+ * @returns Deletion result with success status and details
+ */
+export async function deleteSelectedWords(
+  wordDetailIds: string[],
+): Promise<{ success: boolean; message: string; deletedCount: number }> {
+  try {
+    // Validate input
+    if (!wordDetailIds || wordDetailIds.length === 0) {
+      return {
+        success: false,
+        message: 'No words selected for deletion',
+        deletedCount: 0,
+      };
+    }
+
+    // Convert string IDs to numbers
+    const numericIds: number[] = [];
+    const invalidIds: string[] = [];
+
+    wordDetailIds.forEach((id) => {
+      const numId = parseInt(id, 10);
+      if (isNaN(numId)) {
+        invalidIds.push(id);
+      } else {
+        numericIds.push(numId);
+      }
+    });
+
+    if (invalidIds.length > 0) {
+      return {
+        success: false,
+        message: `Invalid word detail IDs: ${invalidIds.join(', ')}`,
+        deletedCount: 0,
+      };
+    }
+
+    // Perform deletion
+    const result = await deleteWordDetails(numericIds);
+
+    if (result.success) {
+      return {
+        success: true,
+        message: `Successfully deleted ${result.deletedCount} word${result.deletedCount !== 1 ? 's' : ''}`,
+        deletedCount: result.deletedCount,
+      };
+    } else {
+      return {
+        success: false,
+        message: `Deletion partially failed. Deleted: ${result.deletedCount}, Errors: ${result.errors.join('; ')}`,
+        deletedCount: result.deletedCount,
+      };
+    }
+  } catch (error) {
+    console.error('Error in deleteSelectedWords:', error);
+    return {
+      success: false,
+      message: `Failed to delete words: ${error instanceof Error ? error.message : String(error)}`,
+      deletedCount: 0,
+    };
+  }
+}

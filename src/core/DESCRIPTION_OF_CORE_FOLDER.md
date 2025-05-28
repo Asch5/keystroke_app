@@ -56,6 +56,9 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 - `getWordDetails(wordText, languageCode)`
 - `fetchWordById(wordId)`
 - `checkWordExistsByUuid(id, uuid)`
+- `deleteWordDetails(wordDetailIds)` - Delete word details with comprehensive cleanup
+- `deleteWords(wordIds)` - Delete entire words with comprehensive cleanup
+- `deleteSelectedWords(wordDetailIds)` - Server action for bulk word deletion
 
 ### Word Details & Complex Operations (`actions/word-details-actions.ts`)
 

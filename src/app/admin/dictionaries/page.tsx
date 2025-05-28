@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   fetchDictionaryWordDetails,
+  deleteSelectedWords,
   type DictionaryWordDetails,
 } from '@/core/domains/dictionary/actions';
 import { ColumnDef } from '@tanstack/react-table';
@@ -25,6 +26,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
+import { toast } from 'sonner';
 import {
   ArrowUpDown,
   Edit,
@@ -35,6 +38,7 @@ import {
   ChevronDown,
   Filter,
   List,
+  Trash2,
 } from 'lucide-react';
 import { LanguageCode, PartOfSpeech, SourceType } from '@prisma/client';
 import Image from 'next/image';
@@ -119,6 +123,9 @@ export default function DictionariesPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   // Word selection state
   const [selectedWords, setSelectedWords] = useState<Set<string>>(new Set());
+  // Delete state
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Get unique values for filters
   const availablePartsOfSpeech = React.useMemo(() => {
@@ -296,6 +303,46 @@ export default function DictionariesPage() {
     });
 
     router.push(`/admin/dictionaries/create-list?${params.toString()}`);
+  };
+
+  const handleDeleteSelectedWords = async () => {
+    if (selectedWords.size === 0) {
+      toast.error('Please select at least one word to delete.');
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const wordDetailIds = Array.from(selectedWords);
+      const result = await deleteSelectedWords(wordDetailIds);
+
+      if (result.success) {
+        toast.success(result.message);
+
+        // Refresh the word list
+        const fetchedWordDetails =
+          await fetchDictionaryWordDetails(selectedLanguage);
+        setWordDetails(fetchedWordDetails);
+
+        // Clear selection
+        setSelectedWords(new Set());
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error('Error deleting words:', error);
+      toast.error('An unexpected error occurred while deleting words.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const openDeleteDialog = () => {
+    if (selectedWords.size === 0) {
+      toast.error('Please select at least one word to delete.');
+      return;
+    }
+    setIsDeleteDialogOpen(true);
   };
 
   const columns: ColumnDef<DictionaryWordDetails>[] = [
@@ -597,6 +644,14 @@ export default function DictionariesPage() {
                 <List className="h-4 w-4 mr-2" />
                 Create Word List ({selectedWords.size})
               </Button>
+              <Button
+                onClick={openDeleteDialog}
+                disabled={selectedWords.size === 0}
+                variant="destructive"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Selected ({selectedWords.size})
+              </Button>
             </div>
           </div>
         </CardHeader>
@@ -780,6 +835,15 @@ export default function DictionariesPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <BulkDeleteConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDeleteSelectedWords}
+        selectedCount={selectedWords.size}
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

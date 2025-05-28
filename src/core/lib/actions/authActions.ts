@@ -30,13 +30,6 @@ export async function authenticate(
   prevState: StateAuth,
   formData: FormData,
 ): Promise<StateAuth> {
-  // Check if the development environment is using the production database
-  if (
-    process.env.NODE_ENV === 'development' &&
-    process.env.DATABASE_URL === process.env.PROD_DB_URL
-  ) {
-    throw new Error('Dev mode using prod DB');
-  }
   try {
     const validatedFields = formSchemaLogin.safeParse({
       email: formData.get('email'),

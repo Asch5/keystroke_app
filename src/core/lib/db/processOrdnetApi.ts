@@ -2364,6 +2364,10 @@ function mapStemPosToEnum(stemPos: string): PartOfSpeech {
       return PartOfSpeech.interjection;
     case 'num.':
       return PartOfSpeech.numeral;
+    case 'udråbsord':
+      return PartOfSpeech.exclamation;
+    case 'førsteled':
+      return PartOfSpeech.first_part;
     default:
       return PartOfSpeech.undefined;
   }

@@ -58,6 +58,8 @@ import { AuthProvider, ReduxProvider } from '@/components/providers';
 - `UsersTable` - User management
 - `Pagination` - Table pagination
 - `SearchBar` - Search functionality
+- `TTSControls` - Text-to-speech controls for audio generation
+- `ActionButtonsToolbar` - Organized action buttons toolbar for dictionary management
 
 ### Dictionary (`/features/dictionary/`)
 

@@ -99,6 +99,7 @@ enum PartOfSpeech {
   exclamation // udråbsord
   abbreviation // forkortelse
   suffix // suffiks
+  first_part // førsteled
   last_letter // sidsteled
   adj_pl // adj. pl.
   symbol // symbol

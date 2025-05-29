@@ -28,18 +28,16 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
-import { TTSControls } from '@/components/features/admin/dictionary/TTSControls';
+import { ActionButtonsToolbar } from '@/components/features/admin';
 import { toast } from 'sonner';
 import {
   ArrowUpDown,
   Edit,
   Search,
-  Plus,
   Play,
   Pause,
   ChevronDown,
   Filter,
-  List,
   Trash2,
 } from 'lucide-react';
 import { LanguageCode, PartOfSpeech, SourceType } from '@prisma/client';
@@ -691,36 +689,14 @@ export default function DictionariesPage() {
               </Select>
             </div>
             <div className="flex items-center space-x-2">
-              <Link
-                href={`/admin/dictionaries/add-new-word?language=${selectedLanguage}`}
-              >
-                <Button variant="outline">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add New Word
-                </Button>
-              </Link>
-              <TTSControls
-                selectedWords={selectedWords}
+              <ActionButtonsToolbar
                 selectedLanguage={selectedLanguage}
-                wordDetails={filteredWordDetails}
+                selectedWords={selectedWords}
+                filteredWordDetails={filteredWordDetails}
+                onCreateWordList={handleCreateWordList}
+                onDeleteSelected={openDeleteDialog}
                 onAudioGenerated={handleAudioGenerated}
               />
-              <Button
-                onClick={handleCreateWordList}
-                disabled={selectedWords.size === 0}
-                variant="default"
-              >
-                <List className="h-4 w-4 mr-2" />
-                Create Word List ({selectedWords.size})
-              </Button>
-              <Button
-                onClick={openDeleteDialog}
-                disabled={selectedWords.size === 0}
-                variant="destructive"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Selected ({selectedWords.size})
-              </Button>
             </div>
           </div>
         </CardHeader>

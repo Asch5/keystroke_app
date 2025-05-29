@@ -406,6 +406,7 @@ export async function processAndSaveWord(
     STEM = 'stem',
     PVA = 'pva',
     DRO_PHRASE = 'dro_phrase',
+    DEF_SYN = 'def_syn', // For synonyms found in definition patterns
   }
 
   interface SubWordDefinition {
@@ -955,6 +956,46 @@ export async function processAndSaveWord(
                         const getPhrasalVerbExamples = phrasalVerbData.examples;
                         const phrasalVerbUsage = phrasalVerbData.usageNote;
 
+                        // Extract synonyms from phrasal verb definition patterns
+                        const phrasalVerbSynonyms =
+                          extractSynonymsFromDefinitionPatterns(dt);
+
+                        // Add extracted synonyms to subWordsArray
+                        for (const synonym of phrasalVerbSynonyms) {
+                          // Skip if synonym is the same as the main word or phrasal verb
+                          if (synonym === mainWordText || synonym === cleanDrp)
+                            continue;
+
+                          // Check if this synonym is already in the subWordsArray
+                          const existingSynonym = subWordsArray.find(
+                            (sw) =>
+                              sw.word === synonym &&
+                              sw.sourceData.includes(SOURCE_OF_WORD.DEF_SYN),
+                          );
+
+                          if (!existingSynonym) {
+                            clientLog(
+                              `FROM processMerriamApi.ts: Found synonym "${synonym}" in phrasal verb definition pattern for "${cleanDrp}"`,
+                              'info',
+                            );
+                            subWordsArray.push({
+                              word: synonym,
+                              languageCode: language,
+                              source: source,
+                              partOfSpeech: PartOfSpeech.phrasal_verb, // Use phrasal verb part of speech
+                              definitions: [],
+                              relationship: [
+                                {
+                                  fromWord: cleanDrp as RelationshipFromTo,
+                                  toWord: 'subWordDetails',
+                                  type: RelationshipType.synonym,
+                                },
+                              ],
+                              sourceData: [SOURCE_OF_WORD.DEF_SYN],
+                            });
+                          }
+                        }
+
                         // Process grammatical notes
                         const grammaticalNote = senseData.sgram || null;
                         const bnote = senseData.bnote || null;
@@ -1151,10 +1192,50 @@ export async function processAndSaveWord(
                         const cleanedDefinition =
                           cleanupExampleText(definitionText);
 
-                        // Get phrasal verb examples and usage notes
-                        const phrasalVerbData = extractExamples(dt, language);
-                        const getPhrasalVerbExamples = phrasalVerbData.examples;
-                        const phrasalVerbUsage = phrasalVerbData.usageNote;
+                        // Get phrase examples and usage notes
+                        const phraseData = extractExamples(dt, language);
+                        const getPhraseExamples = phraseData.examples;
+                        const phraseUsage = phraseData.usageNote;
+
+                        // Extract synonyms from phrase definition patterns
+                        const phraseSynonyms =
+                          extractSynonymsFromDefinitionPatterns(dt);
+
+                        // Add extracted synonyms to subWordsArray
+                        for (const synonym of phraseSynonyms) {
+                          // Skip if synonym is the same as the main word or phrase
+                          if (synonym === mainWordText || synonym === cleanDrp)
+                            continue;
+
+                          // Check if this synonym is already in the subWordsArray
+                          const existingSynonym = subWordsArray.find(
+                            (sw) =>
+                              sw.word === synonym &&
+                              sw.sourceData.includes(SOURCE_OF_WORD.DEF_SYN),
+                          );
+
+                          if (!existingSynonym) {
+                            clientLog(
+                              `FROM processMerriamApi.ts: Found synonym "${synonym}" in phrase definition pattern for "${cleanDrp}"`,
+                              'info',
+                            );
+                            subWordsArray.push({
+                              word: synonym,
+                              languageCode: language,
+                              source: source,
+                              partOfSpeech: PartOfSpeech.phrase, // Use phrase part of speech
+                              definitions: [],
+                              relationship: [
+                                {
+                                  fromWord: cleanDrp as RelationshipFromTo,
+                                  toWord: 'subWordDetails',
+                                  type: RelationshipType.synonym,
+                                },
+                              ],
+                              sourceData: [SOURCE_OF_WORD.DEF_SYN],
+                            });
+                          }
+                        }
 
                         // Process grammatical notes
                         const grammaticalNote = senseData.sgram || null;
@@ -1191,16 +1272,16 @@ export async function processAndSaveWord(
                               senBnote,
                               senGramaticalNote,
                             ]) || null,
-                          usageNote: phrasalVerbUsage,
+                          usageNote: phraseUsage,
                           isInShortDef: false,
-                          examples: getPhrasalVerbExamples || [],
+                          examples: getPhraseExamples || [],
                         };
 
                         subWordPhrase.definitions.push(definitionData);
 
                         // Check for sphrasev (object with phrs array format)
 
-                        // Process each phrasal verb variant
+                        // Process each phrase variant (if any - currently none expected)
                       }
                     }
                   }
@@ -1536,6 +1617,45 @@ sourceWordText processing
               // Extract examples and usage notes
               const { examples, usageNote: extractedUsageNote } =
                 extractExamples(dt, language);
+
+              // Extract synonyms from definition patterns
+              const definitionSynonyms =
+                extractSynonymsFromDefinitionPatterns(dt);
+
+              // Add extracted synonyms to subWordsArray
+              for (const synonym of definitionSynonyms) {
+                // Skip if synonym is the same as the main word
+                if (synonym === mainWordText) continue;
+
+                // Check if this synonym is already in the subWordsArray
+                const existingSynonym = subWordsArray.find(
+                  (sw) =>
+                    sw.word === synonym &&
+                    sw.sourceData.includes(SOURCE_OF_WORD.DEF_SYN),
+                );
+
+                if (!existingSynonym) {
+                  clientLog(
+                    `FROM processMerriamApi.ts: Found synonym "${synonym}" in definition pattern for word "${mainWordText}"`,
+                    'info',
+                  );
+                  subWordsArray.push({
+                    word: synonym,
+                    languageCode: language,
+                    source: source,
+                    partOfSpeech: partOfSpeech, // Use the same part of speech as main word
+                    definitions: [],
+                    relationship: [
+                      {
+                        fromWord: 'mainWordDetails',
+                        toWord: 'subWordDetails',
+                        type: RelationshipType.synonym,
+                      },
+                    ],
+                    sourceData: [SOURCE_OF_WORD.DEF_SYN],
+                  });
+                }
+              }
 
               // Create definition object
               processedData.definitions.push({
@@ -2500,9 +2620,9 @@ function cleanupDefinitionText(text: unknown): string {
   }
 
   // Skip if it's a cross-reference
-  if (text.startsWith('{dx}')) {
-    return '';
-  }
+  // if (text.startsWith('{dx}')) {
+  //   return '';
+  // }
 
   return text
     .replace(/{[^}]+}/g, '')
@@ -2522,13 +2642,13 @@ function cleanupExampleText(text: unknown): string {
   }
 
   // Skip if it's a cross-reference
-  if (
-    text.startsWith('{dx}') ||
-    text.startsWith('{bc}{sx|') ||
-    text.startsWith('{sx|')
-  ) {
-    return '';
-  }
+  // if (
+  //   text.startsWith('{dx}') ||
+  //   text.startsWith('{bc}{sx|') ||
+  //   text.startsWith('{sx|')
+  // ) {
+  //   return '';
+  // }
 
   return (
     text
@@ -3171,4 +3291,61 @@ function getRelationshipDescription(
     default:
       return null;
   }
+}
+
+/**
+ * Helper function to extract synonyms from definition text patterns
+ * Detects patterns like {dx}see also {dxt|must-have||}{/dx} and {sx|photograph:1||}
+ * @param dt Definition data array
+ * @returns Array of extracted synonym words
+ */
+function extractSynonymsFromDefinitionPatterns(
+  dt: Array<[string, unknown]> | undefined,
+): string[] {
+  if (!dt || !Array.isArray(dt)) {
+    return [];
+  }
+
+  const synonyms: string[] = [];
+
+  for (const item of dt) {
+    if (!Array.isArray(item) || item.length < 2) continue;
+
+    const [type, content] = item;
+
+    // Process text content for synonym patterns
+    if (type === 'text' && typeof content === 'string') {
+      // Pattern 1: {dx}see also {dxt|WORD||}{/dx} or {dx}see also {dxt|WORD:NUMBER||}{/dx}
+      const dxtMatches = content.match(
+        /\{dx\}.*?\{dxt\|([^|:]+)(?::[^|]*)?(?:\|\|)?\}/g,
+      );
+      if (dxtMatches) {
+        for (const match of dxtMatches) {
+          const wordMatch = match.match(/\{dxt\|([^|:]+)/);
+          if (wordMatch && wordMatch[1]) {
+            const cleanWord = wordMatch[1].trim();
+            if (cleanWord && !synonyms.includes(cleanWord)) {
+              synonyms.push(cleanWord);
+            }
+          }
+        }
+      }
+
+      // Pattern 2: {sx|WORD||} or {sx|WORD:NUMBER||}
+      const sxMatches = content.match(/\{sx\|([^|:]+)(?::[^|]*)?(?:\|\|)?\}/g);
+      if (sxMatches) {
+        for (const match of sxMatches) {
+          const wordMatch = match.match(/\{sx\|([^|:]+)/);
+          if (wordMatch && wordMatch[1]) {
+            const cleanWord = wordMatch[1].trim();
+            if (cleanWord && !synonyms.includes(cleanWord)) {
+              synonyms.push(cleanWord);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return synonyms;
 }

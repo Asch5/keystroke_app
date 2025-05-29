@@ -53,3 +53,4 @@ documentation/schema_merriam.json
 # tests
 tests/
 scripts/
+logs/

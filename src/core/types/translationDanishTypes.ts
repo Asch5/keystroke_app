@@ -104,6 +104,7 @@ export type PartOfSpeechDanish =
   | 'udråbsord'
   | 'forkortelse'
   | 'suffiks'
+  | 'førsteled' //first part
   | 'sidsteled' //last letter
   | 'undefined'
   //gender
@@ -120,7 +121,10 @@ export type PartOfSpeechForStems =
   | 'konj.'
   | 'pron.'
   | 'num.'
-  | 'interj.';
+  | 'interj.'
+  //new ones
+  | 'udråbsord'
+  | 'førsteled';
 
 export type GenderTypeDanish =
   | 'fælleskøn'
@@ -182,7 +186,8 @@ export type DetailCategoryDanish =
   | 'som interjektion' // as interjection (give part of speech of this definition as interjection)
   | 'som talord' // as numeral (give part of speech of this definition as numeral)
   | 'som udråbsord' // as exclamation (give part of speech of this definition as exclamation)
-  | 'som forkortelse'; // as abbreviation (give part of speech of this definition as abbreviation)
+  | 'som forkortelse' // as abbreviation (give part of speech of this definition as abbreviation)
+  | 'som førsteled'; // as first part (give part of speech of this definition as first part)
 
 export type SourceOfExample = {
   short: string;

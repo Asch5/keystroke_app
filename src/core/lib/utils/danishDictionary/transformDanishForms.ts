@@ -152,7 +152,8 @@ function processContextualForms(
   };
 
   for (const [contextKey, formEntries] of Object.entries(contextualForms)) {
-    if (!formEntries || formEntries.length === 0) continue;
+    if (!formEntries || formEntries.length === 0 || !Array.isArray(formEntries))
+      continue;
 
     const usageNote = contextKey.replace(/[:;,.]$/, '').trim();
     const definitionNumbers: number[] = [];
@@ -721,7 +722,8 @@ function processAdjectiveContextualForms(
 
   // Process each contextual form group
   for (const [contextKey, formEntries] of Object.entries(contextualForms)) {
-    if (!formEntries || formEntries.length === 0) continue;
+    if (!formEntries || formEntries.length === 0 || !Array.isArray(formEntries))
+      continue;
 
     // Extract the usage note from the context key
     // Clean up the context key by removing any trailing colons or other punctuation
@@ -1157,7 +1159,12 @@ function processPronounForms(
   // Handle contextual forms for pronouns (e.g., "nogen" -> "nogle")
   if (contextualForms) {
     for (const [contextKey, formEntries] of Object.entries(contextualForms)) {
-      if (!formEntries || formEntries.length === 0) continue;
+      if (
+        !formEntries ||
+        formEntries.length === 0 ||
+        !Array.isArray(formEntries)
+      )
+        continue;
       const usageNote = contextKey.replace(/[:;,.]$/, '').trim();
 
       formEntries.forEach((formEntry) => {

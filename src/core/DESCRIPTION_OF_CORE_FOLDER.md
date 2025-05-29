@@ -320,6 +320,15 @@ Core Functions: `processTranslationsForWord(tx, mainWordId, mainWordText, wordDa
 
 Utility Functions: `extractSubjectLabels(labels)`, `extractGeneralLabels(labels)`, `extractGrammaticalNote(labels)`, `extractUsageNote(labels)`, `mapStemPosToEnum(stemPos)`, `getRelationshipDescription(relationType)`
 
+**Recent Updates:**
+
+- **Enhanced PartOfSpeech Support**: Added support for new Danish part-of-speech types:
+  - `'udråbsord'` → `PartOfSpeech.exclamation`
+  - `'førsteled'` → `PartOfSpeech.first_part` (new enum value)
+- **Type System Integration**: Updated `PartOfSpeechForStems`, `PartOfSpeechDanish`, and `DetailCategoryDanish` types to include the new values
+- **Validation Updates**: Enhanced Danish dictionary validator to recognize the new part-of-speech categories
+- **Database Schema**: Added `first_part // førsteled` to the PartOfSpeech enum in Prisma schema with corresponding migration
+
 #### Validation System (`utils/validations/danishDictionaryValidator.ts`)
 
 Core Functions: `validateDanishDictionary(data, context)`, `extractEnumSuggestions(validationResult)`, `isValidationAcceptable(validationResult)`

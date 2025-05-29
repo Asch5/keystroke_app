@@ -31,6 +31,7 @@ export function mapDanishPosToEnum(
     suffiks: PartOfSpeech.suffix,
     'adj. pl.': PartOfSpeech.adj_pl,
     phrase: PartOfSpeech.phrase,
+    førsteled: PartOfSpeech.first_part,
     sidsteled: PartOfSpeech.undefined,
     undefined: PartOfSpeech.undefined,
   };

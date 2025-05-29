@@ -87,6 +87,9 @@ export function validateDanishDictionary(
       'talord (mængdetal)',
       'udråbsord',
       'forkortelse',
+      'suffiks',
+      'førsteled',
+      'sidsteled',
       'undefined',
     ];
 
@@ -106,6 +109,8 @@ export function validateDanishDictionary(
       'pron.',
       'num.',
       'interj.',
+      'udråbsord',
+      'førsteled',
     ];
 
     const KNOWN_AUDIO_RELATIONSHIPS: RelationshipTypeVerbsInAudio[] = [
@@ -169,6 +174,7 @@ export function validateDanishDictionary(
       'som talord',
       'som udråbsord',
       'som forkortelse',
+      'som førsteled',
     ];
 
     // Expected root level fields

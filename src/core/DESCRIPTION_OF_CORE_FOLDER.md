@@ -117,6 +117,30 @@ Types: `GenerateTTSResult`, `TTSBatchResult`
 - **Cost Optimization**: Uses different quality levels for words vs definitions/examples
 - **Blob Storage**: Organized folder structure for audio files in Vercel Blob
 
+### Image Operations (`actions/image-actions.ts`)
+
+- `generateWordImages(wordId, options?)` - Generate images for a word's definitions using Pexels API
+- `generateBatchWordImages(wordIds, options?)` - Batch image generation with rate limiting and word validation
+- `deleteWordImages(wordId)` - Delete all images for a word's definitions
+- `getImageStats()` - Get image statistics for admin dashboard
+
+Types: `GenerateImageResult`, `ImageBatchResult`
+
+**Key Features:**
+
+- **Word Validation**: All batch operations validate word IDs exist before processing
+- **Definition-Based**: Images are generated for word definitions, not just words
+- **Language-Aware Processing**:
+  - **English words**: Uses definitions directly for Pexels image search
+  - **Non-English words (Danish, etc.)**: Uses English translations of definitions for better search results
+  - This ensures optimal image quality and relevance across all languages
+- **Pexels Integration**: Uses Pexels API for high-quality, relevant images
+- **Smart Search**: Uses word text and definition content for better image matching
+- **Overwrite Control**: Option to replace existing images or skip words with images
+- **Rate Limiting**: Respects Pexels API limits with conservative concurrent requests
+- **Error Handling**: Invalid word IDs are filtered out and reported separately
+- **Statistics**: Provides comprehensive stats for admin monitoring
+
 ### List Management (`actions/list-actions.ts`)
 
 - `fetchCategories()` - Fetch all categories for list creation
@@ -352,3 +376,164 @@ Types: `ValidationSummary`, `ValidationIssue`
 ## Migration Status
 
 All components completed with 100% backward compatibility maintained.
+
+# Core Folder Architecture
+
+## Overview
+
+The `core` folder contains the fundamental business logic, data access layers, and shared utilities for the keystroke application. It follows Domain-Driven Design principles and clean architecture patterns.
+
+## Structure
+
+### `/domains`
+
+Contains domain-specific business logic organized by functional areas:
+
+- **auth/**: Authentication and authorization logic
+- **dictionary/**: Word and definition management
+- **translation/**: Translation services and logic
+- **user/**: User management and profiles
+
+Each domain follows this structure:
+
+- `actions/`: Server actions and business operations
+- `services/`: Core business services
+- `types/`: Domain-specific TypeScript interfaces
+- `utils/`: Domain-specific utilities
+
+### `/infrastructure`
+
+Infrastructure concerns and external integrations:
+
+- **auth/**: Authentication providers and middleware
+- **monitoring/**: Logging and error tracking
+- **storage/**: File and data storage abstractions
+- **types/**: Infrastructure-related types
+
+### `/lib`
+
+Legacy library code and utilities:
+
+- Database connections, actions, and utilities
+- Redux store configuration
+- Service integrations
+- Validation utilities
+
+### `/shared`
+
+Shared services and utilities used across domains:
+
+- **constants/**: Application-wide constants
+- **database/**: Database schemas and middleware
+- **hooks/**: Reusable React hooks
+- **services/**: Cross-domain services (WordService, FrequencyManager, etc.)
+- **types/**: Shared TypeScript interfaces
+- **utils/**: Common utilities
+
+### `/state`
+
+State management (Redux):
+
+- **features/**: Feature-specific state slices
+- **middleware/**: Redux middleware
+- **slices/**: Redux toolkit slices
+
+### `/types`
+
+Global TypeScript type definitions
+
+## Key Services
+
+### WordService
+
+Central service for word and word details operations. Located in `/shared/services/WordService.ts`.
+
+**Conditional Update Strategy**:
+To prevent overwriting existing database values with null or empty strings, the service uses a conditional update pattern:
+
+```typescript
+// Only add properties to update object if they have meaningful values
+const updateData: WordDetailsUpdateData = {
+  isPlural: isPlural, // Always update required fields
+  source: source,
+};
+
+// Conditionally add optional fields
+if (phonetic !== null && phonetic !== undefined && phonetic.trim() !== '') {
+  updateData.phonetic = phonetic;
+}
+
+if (frequency !== null && frequency !== undefined) {
+  updateData.frequency = frequency;
+}
+```
+
+**Benefits**:
+
+- Preserves existing data when new data is empty/null
+- Prevents accidental data loss during updates
+- Maintains data integrity across API integrations
+- Type-safe with proper TypeScript interfaces
+
+**Usage Pattern**:
+This pattern should be applied to any update operations where preserving existing data is important, especially when:
+
+- Integrating with external APIs that may return incomplete data
+- Updating records where some fields are optional
+- Merging data from multiple sources
+
+### FrequencyManager
+
+Manages word frequency data across different sources and languages.
+
+### ImageService
+
+Handles image search and assignment for dictionary definitions.
+
+## Design Principles
+
+1. **Domain Separation**: Clear boundaries between different business domains
+2. **Dependency Direction**: Dependencies flow inward toward the core domain logic
+3. **Shared Abstractions**: Common functionality is abstracted into shared services
+4. **Type Safety**: Strong TypeScript typing throughout
+5. **Data Integrity**: Conditional update strategies prevent accidental data loss
+6. **Clean Interfaces**: Well-defined interfaces between layers
+
+## Database Interaction Patterns
+
+### Conditional Updates
+
+When updating database records, always consider whether null/empty values should overwrite existing data:
+
+```typescript
+// ❌ Avoid - may overwrite existing data with null
+const updateData = {
+  field1: value1 || null,
+  field2: value2 || null,
+};
+
+// ✅ Preferred - preserve existing data
+const updateData: UpdateInterface = { requiredField: value };
+if (value1 !== null && value1 !== undefined) {
+  updateData.field1 = value1;
+}
+```
+
+### Transaction Management
+
+Use Prisma transactions for complex operations involving multiple database writes to ensure data consistency.
+
+## Integration Points
+
+The core folder integrates with:
+
+- Next.js API routes (through actions)
+- React components (through hooks and services)
+- External APIs (through infrastructure services)
+- Database (through Prisma ORM)
+
+## Future Considerations
+
+- Consider moving legacy `/lib` code into appropriate domain folders
+- Evaluate extracting common patterns into reusable abstractions
+- Monitor for opportunities to further improve type safety and data integrity patterns

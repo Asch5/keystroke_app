@@ -89,3 +89,13 @@ export {
   type GenerateTTSResult,
   type TTSBatchResult,
 } from './tts-actions';
+
+// Image operations
+export {
+  generateWordImages,
+  generateBatchWordImages,
+  deleteWordImages,
+  getImageStats,
+  type GenerateImageResult,
+  type ImageBatchResult,
+} from './image-actions';

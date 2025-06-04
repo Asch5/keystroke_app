@@ -59,6 +59,7 @@ import { AuthProvider, ReduxProvider } from '@/components/providers';
 - `Pagination` - Table pagination
 - `SearchBar` - Search functionality
 - `TTSControls` - Text-to-speech controls for audio generation
+- `ImageControls` - Batch image generation controls for word definitions using Pexels API
 - `ActionButtonsToolbar` - Organized action buttons toolbar for dictionary management
 
 ### Dictionary (`/features/dictionary/`)

@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { TTSControls } from './TTSControls';
+import { ImageControls } from './ImageControls';
 import { Plus, List, Trash2, Settings, Download, Upload } from 'lucide-react';
 import { LanguageCode } from '@prisma/client';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
@@ -85,13 +86,19 @@ export function ActionButtonsToolbar({
 
         <Separator orientation="vertical" className="h-8" />
 
-        {/* Audio Management Group */}
+        {/* Media Generation Group */}
         <div className="flex items-center gap-2">
           <TTSControls
             selectedWords={selectedWords}
             selectedLanguage={selectedLanguage}
             wordDetails={filteredWordDetails}
             onAudioGenerated={onAudioGenerated}
+          />
+
+          <ImageControls
+            selectedWords={selectedWords}
+            wordDetails={filteredWordDetails}
+            onImagesGenerated={onAudioGenerated}
           />
         </div>
 

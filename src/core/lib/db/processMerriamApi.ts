@@ -826,7 +826,7 @@ export async function processAndSaveWord(
           word: synonym,
           languageCode: language,
           source: source,
-          partOfSpeech: partOfSpeech,
+          partOfSpeech: PartOfSpeech.undefined,
           definitions: [],
           relationship: [
             {
@@ -1643,7 +1643,7 @@ sourceWordText processing
                     word: synonym,
                     languageCode: language,
                     source: source,
-                    partOfSpeech: partOfSpeech, // Use the same part of speech as main word
+                    partOfSpeech: PartOfSpeech.undefined, // Use the same part of speech as main word
                     definitions: [],
                     relationship: [
                       {
@@ -1661,7 +1661,7 @@ sourceWordText processing
               processedData.definitions.push({
                 source: source,
                 languageCode: language,
-                definition: cleanDefinitionText,
+                definition: cleanDefinitionText || unsNoteText || '',
                 subjectStatusLabels:
                   getStringFromArray([
                     senSubjectStatusLabels,
@@ -2046,6 +2046,7 @@ sourceWordText processing
               'info',
             );
           } else {
+            //
             // This is a genuine sub-word, safe to call upsertWord
             subWordEntity = await upsertWord(
               tx,

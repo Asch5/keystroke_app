@@ -17,6 +17,19 @@ import { FrequencyManager } from './FrequencyManager';
 import { AudioFile } from '@/core/types/dictionary';
 
 /**
+ * Interface for WordDetails update data - only includes properties with meaningful values
+ */
+interface WordDetailsUpdateData {
+  isPlural: boolean;
+  source: SourceType;
+  phonetic?: string;
+  frequency?: number;
+  etymology?: string;
+  gender?: Gender;
+  forms?: string;
+}
+
+/**
  * Configuration options for upsertWordDetails to handle language-specific differences
  */
 export interface UpsertWordDetailsConfig {
@@ -199,30 +212,39 @@ export class WordService {
       }
     }
 
-    // Prepare create/update data
-    const createData = {
-      wordId,
-      partOfSpeech: dbPoSToPersist,
-      phonetic: phonetic || (config.includeDanishFields ? null : ''),
-      variant: variant || '',
-      isPlural,
-      source: source,
-      frequency: posFrequency,
-      etymology: etymology || null,
-      ...(config.includeDanishFields && { gender, forms }),
+    // Build updateData conditionally to avoid null/empty overwrites
+    const updateData: WordDetailsUpdateData = {
+      isPlural: isPlural, // Always update boolean values
+      source: source, // Always update source
     };
 
-    const updateData = {
-      isPlural: isPlural,
-      phonetic: phonetic !== null ? phonetic : null,
-      source: source,
-      frequency: posFrequency !== null ? posFrequency : null,
-      etymology: etymology !== null ? etymology : null,
-      ...(config.includeDanishFields && {
-        gender: gender !== null ? gender : null,
-        forms: forms !== null ? forms : null,
-      }),
-    };
+    // Only add properties if they have meaningful values
+    if (phonetic !== null && phonetic !== undefined && phonetic.trim() !== '') {
+      updateData.phonetic = phonetic;
+    }
+
+    if (posFrequency !== null && posFrequency !== undefined) {
+      updateData.frequency = posFrequency;
+    }
+
+    if (
+      etymology !== null &&
+      etymology !== undefined &&
+      etymology.trim() !== ''
+    ) {
+      updateData.etymology = etymology;
+    }
+
+    // For Danish fields, only add if the config includes them and they have values
+    if (config.includeDanishFields) {
+      if (gender !== null && gender !== undefined) {
+        updateData.gender = gender;
+      }
+
+      if (forms !== null && forms !== undefined && forms.trim() !== '') {
+        updateData.forms = forms;
+      }
+    }
 
     /**
      * IMPROVEMENT: Prevent empty WordDetails accumulation
@@ -236,6 +258,7 @@ export class WordService {
       where: {
         wordId,
         partOfSpeech: dbPoSToPersist,
+
         definitions: {
           none: {}, // WordDetails with no linked definitions
         },
@@ -276,23 +299,22 @@ export class WordService {
         where: {
           wordId_partOfSpeech_variant: {
             wordId,
-            partOfSpeech: dbPoSToPersist,
+            partOfSpeech: dbPoSToPersist || PartOfSpeech.undefined,
             variant: variant || '',
           },
         },
-        create: createData,
-        update: updateData,
-      });
-    }
-
-    // Clean up alternative PoS state if configured (Danish style)
-    if (dbPoSToPersist !== PartOfSpeech.undefined) {
-      await tx.wordDetails.deleteMany({
-        where: {
-          wordId: wordId,
+        create: {
+          wordId,
+          partOfSpeech: dbPoSToPersist,
+          phonetic: phonetic || (config.includeDanishFields ? null : ''),
           variant: variant || '',
-          partOfSpeech: PartOfSpeech.undefined,
+          isPlural,
+          source: source,
+          frequency: posFrequency,
+          etymology: etymology || null,
+          ...(config.includeDanishFields && { gender, forms }),
         },
+        update: updateData,
       });
     }
 

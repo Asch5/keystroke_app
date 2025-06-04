@@ -826,7 +826,7 @@ export async function processAndSaveDanishWord(
             word: synonym,
             languageCode: language,
             source,
-            partOfSpeech: partOfSpeech, // Use the main word's partOfSpeech
+            partOfSpeech: PartOfSpeech.undefined, // Use the main word's partOfSpeech
             definitions: [], // Synonyms from labels typically don't have their own new definitions here
             relationship: [
               {
@@ -860,7 +860,7 @@ export async function processAndSaveDanishWord(
               word: seOgsaWord,
               languageCode: language,
               source,
-              partOfSpeech: partOfSpeech, // "Se også" can refer to various PoS, safer to set null or determine later
+              partOfSpeech: PartOfSpeech.undefined, // "Se også" can refer to various PoS, safer to set null or determine later
               definitions: [],
               relationship: [
                 {
@@ -917,7 +917,7 @@ export async function processAndSaveDanishWord(
             word: antonym,
             languageCode: language,
             source,
-            partOfSpeech: partOfSpeech, // Use the main word's partOfSpeech
+            partOfSpeech: PartOfSpeech.undefined, // Use the main word's partOfSpeech
             definitions: [], // Antonyms from labels typically don't have their own new definitions here
             relationship: [
               {
@@ -1282,7 +1282,7 @@ export async function processAndSaveDanishWord(
               word: synonym,
               languageCode: language,
               source,
-              partOfSpeech: partOfSpeech,
+              partOfSpeech: PartOfSpeech.undefined,
               definitions: [],
               relationship: [
                 {
@@ -1329,7 +1329,7 @@ export async function processAndSaveDanishWord(
               word: antonym,
               languageCode: language,
               source,
-              partOfSpeech: partOfSpeech,
+              partOfSpeech: PartOfSpeech.undefined,
               definitions: [],
               relationship: [
                 {
@@ -1364,7 +1364,7 @@ export async function processAndSaveDanishWord(
                 word: seOgsaWord,
                 languageCode: language,
                 source,
-                partOfSpeech: partOfSpeech, // "Se også" can refer to various PoS
+                partOfSpeech: PartOfSpeech.undefined, // "Se også" can refer to various PoS
                 definitions: [],
                 relationship: [
                   {

@@ -61,6 +61,7 @@ const languageDisplayNames: Record<LanguageCode, string> = {
 
 // Map for display names of parts of speech
 const partOfSpeechDisplayNames: Record<PartOfSpeech, string> = {
+  first_part: 'First Part',
   noun: 'Noun',
   verb: 'Verb',
   phrasal_verb: 'Phrasal Verb',
@@ -100,6 +101,7 @@ interface FilterState {
   hasAudio: boolean | null;
   hasImage: boolean | null;
   hasVariant: boolean | null;
+  hasDefinition: boolean | null;
 }
 
 export default function DictionariesPage() {
@@ -119,6 +121,7 @@ export default function DictionariesPage() {
     hasAudio: null,
     hasImage: null,
     hasVariant: null,
+    hasDefinition: null,
   });
   const [filtersOpen, setFiltersOpen] = useState(false);
   // Word selection state
@@ -173,6 +176,13 @@ export default function DictionariesPage() {
     if (filters.hasVariant !== null) {
       filtered = filtered.filter(
         (item) => !!item.variant === filters.hasVariant,
+      );
+    }
+
+    // Filter by definition
+    if (filters.hasDefinition !== null) {
+      filtered = filtered.filter(
+        (item) => !!item.definition === filters.hasDefinition,
       );
     }
 
@@ -259,6 +269,7 @@ export default function DictionariesPage() {
       hasAudio: null,
       hasImage: null,
       hasVariant: null,
+      hasDefinition: null,
     });
   };
 
@@ -849,6 +860,29 @@ export default function DictionariesPage() {
                             <SelectItem value="all">All</SelectItem>
                             <SelectItem value="true">Has Variant</SelectItem>
                             <SelectItem value="false">No Variant</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Definition Filter */}
+                      <div className="space-y-2">
+                        <span className="text-sm font-medium">Definition</span>
+                        <Select
+                          value={filters.hasDefinition?.toString() || 'all'}
+                          onValueChange={(value) =>
+                            handleFilterChange(
+                              'hasDefinition',
+                              value === 'all' ? null : value === 'true',
+                            )
+                          }
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="true">Has Definition</SelectItem>
+                            <SelectItem value="false">No Definition</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

@@ -102,9 +102,10 @@ import { AuthProvider, ReduxProvider } from '@/components/providers';
 - `WordEditForm` - Edit words (admin)
 - `DictionaryOverview` - Main dictionary overview with statistics and quick actions
 - `MyDictionaryContent` - Comprehensive user dictionary management with filtering, sorting, search, pagination, and word-to-list management
-- `AddNewWordContent` - User word search and dictionary addition interface
+- `AddNewWordContent` - User word search and dictionary addition interface with integrated list management workflow
 - `WordListsContent` - User list management and public list discovery interface
 - `AddToListDialog` - Modal dialog for adding words from user dictionary to lists (existing or new custom lists)
+- `ListDetailContent` - Individual list management page for viewing and managing words within a specific list
 
 **MyDictionaryContent Features:**
 
@@ -131,6 +132,9 @@ import { AuthProvider, ReduxProvider } from '@/components/providers';
 - **Rich Word Display**: Shows phonetic transcription, part of speech, variants, and metadata (audio, images, examples)
 - **Pagination Support**: Navigate through large search result sets with previous/next controls
 - **Interactive Actions**: Add/remove definitions with optimistic UI updates and toast notifications
+- **Seamless List Integration**: After adding a word to dictionary, users get a toast notification with "Add to List" action button for immediate list organization
+- **Workflow Optimization**: Creates a smooth Search → Dictionary → List workflow using the reused AddToListDialog component
+- **Translation-Aware Display**: Shows definitions in user's native language when translations are available with original definition reference
 - **Empty States**: Helpful guidance for initial state and no results scenarios
 - **Responsive Design**: Mobile-friendly layout with proper spacing and typography
 
@@ -159,6 +163,51 @@ import { AuthProvider, ReduxProvider } from '@/components/providers';
 - **User Language Context**: Automatically uses user's language preferences for new list creation
 - **Success Feedback**: Toast notifications and dialog state management for smooth UX
 - **Responsive Design**: Mobile-friendly layout with proper scrolling and spacing
+
+**ListDetailContent Features:**
+
+- **Individual List Management**: Dedicated page for managing words within a specific vocabulary list
+- **Comprehensive Statistics**: Overview cards showing total words, learned count, progress percentage, and remaining words
+- **Progress Visualization**: Progress bar and percentage indicators for learning completion tracking
+- **Word Management Table**: Sortable table displaying word, definition, learning status, and progress for each word in the list
+- **Search and Filter**: Real-time search functionality to find specific words within the list
+- **Word Removal**: Remove individual words from the list with confirmation dialog (does not delete from user dictionary)
+- **Learning Status Display**: Color-coded badges showing learning progress (learned, in progress, needs review, difficult)
+- **Navigation Integration**: Seamless navigation back to main lists page and clickable list cards for easy access
+- **Translation-Aware Display**: Shows definitions in user's native language when translations are available
+- **Responsive Design**: Mobile-optimized layout with proper table scrolling and touch-friendly interactions
+- **Loading States**: Skeleton loading animations for smooth user experience during data fetching
+- **Error Handling**: Graceful error handling with user-friendly messages and fallback states
+
+### Practice (`/features/practice/`)
+
+- `TypingPracticeContent` - Comprehensive typing practice interface with real-time feedback and session management
+
+**Barrel Export (`/features/practice/index.ts`):**
+
+```typescript
+export { TypingPracticeContent } from './TypingPracticeContent';
+```
+
+**Typing Practice Features:**
+
+- **Character-by-Character Input**: Uses shadcn/ui InputOTP component for precise character input with visual feedback
+- **Real-Time Validation**: Instant feedback on typing accuracy with color-coded character slots (green/red/gray)
+- **Session Management**: Complete session lifecycle from creation to completion with progress tracking
+- **Intelligent Word Selection**: Prioritizes words needing review based on learning status and time since last practice
+- **Adaptive Difficulty**: Configurable difficulty levels affecting session parameters (word count, time limits, hints)
+- **Progress Tracking**: Live session statistics including correct/incorrect answers, score, and completion percentage
+- **Timer Integration**: Countdown timer with visual warnings when time is running low
+- **Achievement System**: Automatic achievement detection and celebration (Perfect Score, Excellence, Quick Learner, Speed Demon)
+- **Learning Metrics Integration**: Updates user dictionary with new learning progress after each word
+- **Audio Support**: Audio pronunciation playback for words (placeholder for future implementation)
+- **Skip Functionality**: Allow users to skip difficult words with penalty scoring
+- **Session Summary**: Detailed completion summary with accuracy, score, achievements, and option to practice again
+- **Responsive Design**: Mobile-optimized layout with proper touch targets and visual feedback
+- **Error Handling**: Graceful error handling with user-friendly messages and retry options
+- **Auto-Submission**: Automatically submits word when user completes typing the full word length
+- **Typo Tolerance**: Configurable character-level tolerance for minor spelling mistakes
+- **Partial Credit System**: Awards partial points for close attempts based on character accuracy
 
 ### Settings (`/features/settings/`)
 

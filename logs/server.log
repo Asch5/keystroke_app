@@ -10055,3 +10055,39 @@ Unique constraint failed on the fields: (`word_id`,`part_of_speech`,`variant`) C
 [2025-06-05T17:09:42.352Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
 [2025-06-05T17:09:42.414Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
 [2025-06-05T17:09:42.516Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T20:20:33.047Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:20:34.407Z] [info] Typing practice session created: bbc027d7-7d38-43ee-b32c-d3e52afd7941 Context: {"sessionId":"bbc027d7-7d38-43ee-b32c-d3e52afd7941","wordsCount":5}
+[2025-06-05T20:21:21.490Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:21:21.717Z] [info] Typing practice session created: e933d42e-a3ae-484a-b0c6-4fe40d2c4977 Context: {"sessionId":"e933d42e-a3ae-484a-b0c6-4fe40d2c4977","wordsCount":5}
+[2025-06-05T20:24:58.574Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:24:59.830Z] [info] Typing practice session created: c2f2ba26-3336-4322-b4a6-69479c36f5be Context: {"sessionId":"c2f2ba26-3336-4322-b4a6-69479c36f5be","wordsCount":5}
+[2025-06-05T20:25:12.709Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:25:13.722Z] [info] Typing practice session created: 06d268ee-a72a-4f04-8883-6fb3f5bfe52b Context: {"sessionId":"06d268ee-a72a-4f04-8883-6fb3f5bfe52b","wordsCount":5}
+[2025-06-05T20:26:13.798Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:26:14.530Z] [info] Typing practice session created: 40aaa4fb-e8f3-409e-821f-ffbd02588e1a Context: {"sessionId":"40aaa4fb-e8f3-409e-821f-ffbd02588e1a","wordsCount":5}
+[2025-06-05T20:31:48.467Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:31:49.834Z] [info] Typing practice session created: ce37e1d0-5aa7-412a-8b15-b16d6b08f6e0 Context: {"sessionId":"ce37e1d0-5aa7-412a-8b15-b16d6b08f6e0","wordsCount":5}
+[2025-06-05T20:32:28.210Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:32:28.865Z] [info] Typing practice session created: edc180ca-f324-4c6c-9411-a7678db98ee1 Context: {"sessionId":"edc180ca-f324-4c6c-9411-a7678db98ee1","wordsCount":5}
+[2025-06-05T20:33:08.124Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:33:08.595Z] [info] Typing practice session created: 49ff18b8-6ff2-46f8-bae9-a085c68347b3 Context: {"sessionId":"49ff18b8-6ff2-46f8-bae9-a085c68347b3","wordsCount":5}
+[2025-06-05T20:33:53.728Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:33:54.259Z] [info] Typing practice session created: a78b80db-675c-4929-bb38-ac3732831175 Context: {"sessionId":"a78b80db-675c-4929-bb38-ac3732831175","wordsCount":5}
+[2025-06-05T20:38:14.522Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:38:16.205Z] [info] Typing practice session created: a335e9ae-f9f2-4434-b9a1-5136749b7210 Context: {"sessionId":"a335e9ae-f9f2-4434-b9a1-5136749b7210","wordsCount":5}
+[2025-06-05T20:44:52.171Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:44:53.703Z] [info] Typing practice session created: 34598e50-865d-4ed6-8d40-b2e5a4f4dfab Context: {"sessionId":"34598e50-865d-4ed6-8d40-b2e5a4f4dfab","wordsCount":5}
+[2025-06-05T20:47:15.642Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:47:16.486Z] [info] Typing practice session created: 32af83cf-a0f2-4fff-90cf-2a98ae53447e Context: {"sessionId":"32af83cf-a0f2-4fff-90cf-2a98ae53447e","wordsCount":4}
+[2025-06-05T20:49:46.485Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T20:49:47.922Z] [info] Typing practice session created: bd2416d4-91d6-4ec0-907b-ad1140056d0f Context: {"sessionId":"bd2416d4-91d6-4ec0-907b-ad1140056d0f","wordsCount":3}
+[2025-06-05T20:50:34.142Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T20:50:35.757Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T20:50:35.814Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T20:50:36.841Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T20:50:36.914Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T20:50:37.546Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T20:50:37.594Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T20:50:37.705Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T21:16:13.030Z] [info] Creating typing practice session for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-05T21:16:14.981Z] [info] Typing practice session created: 3c89a156-e170-4041-aafb-43d030f2c0cb Context: {"sessionId":"3c89a156-e170-4041-aafb-43d030f2c0cb","wordsCount":3}

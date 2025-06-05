@@ -64,6 +64,16 @@ export interface UserDictionaryItem {
   // Languages
   baseLanguageCode: LanguageCode;
   targetLanguageCode: LanguageCode;
+
+  // Lists this word belongs to
+  lists: string[];
+
+  // Translation data
+  translations: Array<{
+    id: number;
+    languageCode: LanguageCode;
+    content: string;
+  }>;
 }
 
 /**
@@ -178,13 +188,31 @@ export const getUserDictionary = cache(
         where: whereConditions,
       });
 
-      // Get paginated results with simplified include
+      // Get paginated results with lists included
       const userDictionaryEntries = await prisma.userDictionary.findMany({
         where: whereConditions,
         include: {
           definition: {
             include: {
               image: true,
+              translationLinks: {
+                include: {
+                  translation: true,
+                },
+              },
+            },
+          },
+          userListWords: {
+            include: {
+              userList: {
+                include: {
+                  list: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -193,22 +221,75 @@ export const getUserDictionary = cache(
         take: pageSize,
       });
 
-      // Transform to UserDictionaryItem with basic data
-      const items: UserDictionaryItem[] = userDictionaryEntries.map(
-        (entry) => ({
+      // Get word data for all definitions in a separate query
+      const definitionIds = userDictionaryEntries.map(
+        (entry) => entry.definitionId,
+      );
+      const wordDataMap = new Map<
+        number,
+        {
+          word: string;
+          partOfSpeech: PartOfSpeech;
+          variant: string | null;
+          wordId: number;
+        }
+      >();
+
+      if (definitionIds.length > 0) {
+        const wordDefinitions = await prisma.wordDefinition.findMany({
+          where: {
+            definitionId: { in: definitionIds },
+          },
+          include: {
+            wordDetails: {
+              include: {
+                word: true,
+              },
+            },
+          },
+        });
+
+        // Build a map of definitionId -> word data
+        wordDefinitions.forEach((wd) => {
+          if (!wordDataMap.has(wd.definitionId)) {
+            wordDataMap.set(wd.definitionId, {
+              word: wd.wordDetails.word.word,
+              partOfSpeech: wd.wordDetails.partOfSpeech,
+              variant: wd.wordDetails.variant,
+              wordId: wd.wordDetails.word.id,
+            });
+          }
+        });
+      }
+
+      // Transform to UserDictionaryItem with complete data
+      const items: UserDictionaryItem[] = userDictionaryEntries.map((entry) => {
+        const wordData = wordDataMap.get(entry.definitionId);
+
+        // Extract lists this word belongs to
+        const lists: string[] =
+          entry.userListWords?.map((userListWord) => {
+            // Use custom list name if available, otherwise use the original list name
+            const listName =
+              userListWord.userList?.customNameOfList ||
+              userListWord.userList?.list?.name;
+            return listName || 'Unnamed List';
+          }) || [];
+
+        return {
           id: entry.id,
           userId: entry.userId,
           definitionId: entry.definitionId,
-          word: 'Word', // Placeholder - would need proper word lookup
-          wordId: 0, // Placeholder
-          partOfSpeech: PartOfSpeech.undefined,
-          variant: null,
-          gender: null,
-          phonetic: null,
-          forms: null,
+          word: wordData?.word || 'Unknown Word',
+          wordId: wordData?.wordId || 0,
+          partOfSpeech: wordData?.partOfSpeech || PartOfSpeech.undefined,
+          variant: wordData?.variant || null,
+          gender: null, // TODO: Get from actual word data
+          phonetic: null, // TODO: Get from actual word data
+          forms: null, // TODO: Get from actual word data
           definition: entry.definition.definition,
           imageUrl: entry.definition.image?.url || null,
-          audioUrl: null, // Placeholder
+          audioUrl: null, // TODO: Add audio URL from wordDetails if available
 
           // Learning progress
           learningStatus: entry.learningStatus,
@@ -245,8 +326,19 @@ export const getUserDictionary = cache(
           // Languages
           baseLanguageCode: entry.baseLanguageCode,
           targetLanguageCode: entry.targetLanguageCode,
-        }),
-      );
+
+          // Lists this word belongs to
+          lists,
+
+          // Translation data
+          translations:
+            entry.definition.translationLinks?.map((tl) => ({
+              id: tl.translation.id,
+              languageCode: tl.translation.languageCode,
+              content: tl.translation.content,
+            })) || [],
+        };
+      });
 
       // Calculate pagination data
       const totalPages = Math.ceil(totalCount / pageSize);

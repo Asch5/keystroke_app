@@ -152,6 +152,22 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 - `createAudioForDefinition(definitionId, data)`
 - `updateAudio(audioId, data)`
 
+### Audio Playback Service (`services/audio-service.ts`)
+
+- `AudioService.playAudioFromDatabase(audioUrl)` - Play audio files directly from database URLs
+- `AudioService.playAudioWithFallback(audioUrl?, text, language)` - Play database audio with Web Speech API fallback
+- `AudioService.playTextToSpeech(text, language)` - Web Speech API text-to-speech playback
+- `AudioService.stopCurrentAudio()` - Stop any currently playing audio
+- `AudioService.isPlaying()` - Check if audio is currently playing
+
+**Key Features:**
+
+- **Database Audio Priority**: Uses real audio files from database when available
+- **Intelligent Fallback**: Automatically falls back to Web Speech API if database audio fails
+- **Audio Management**: Prevents multiple audio files playing simultaneously
+- **Language Support**: Supports both Danish (da-DK) and English (en-US) pronunciation
+- **Error Handling**: Graceful error handling with fallback mechanisms
+
 ### Frequency Utilities (`actions/frequency-actions.ts`)
 
 - `mapWordFrequency(wordPosition)`
@@ -197,6 +213,31 @@ Types: `GenerateTTSResult`, `TTSBatchResult`
 - `getImageStats()` - Get image statistics for admin dashboard
 
 Types: `GenerateImageResult`, `ImageBatchResult`
+
+### User List Operations (`actions/user-list-actions.ts`)
+
+- `getUserLists(userId, filters?)` - Get user's personal lists with full details and filtering options
+- `getAvailablePublicLists(userId, userLanguages, filters?)` - Get public lists available for user collection
+- `addListToUserCollection(userId, listId, userLanguages)` - Add public list to user's collection
+- `removeListFromUserCollection(userId, userListId)` - Remove list from user's collection
+- `createCustomUserList(userId, data)` - Create custom user-defined list
+- `updateUserList(userId, userListId, data)` - Update user list customizations
+- `addWordToUserList(userId, userListId, userDictionaryId)` - Add word from dictionary to list
+- `removeWordFromUserList(userId, userListId, userDictionaryId)` - Remove word from list
+- `getUserListWords(userId, userListId, options?)` - Get words in list with full details
+- `reorderUserListWords(userId, userListId, wordOrderUpdates)` - Update word order in list
+
+Types: `UserListWithDetails`, `PublicListSummary`, `UserListWordWithDetails`, `UserListFilters`
+
+**Key Features:**
+
+- **Composite Key Support**: Properly handles UserListWord composite primary key (userListId, userDictionaryId)
+- **List Type Management**: Supports both inherited public lists and custom user-created lists
+- **Advanced Filtering**: Search, difficulty, language, custom/inherited list filtering
+- **Translation Integration**: Displays definitions in user's native language when available
+- **Image Support**: Includes image associations through Definition model
+- **Proper Type Safety**: Corrected TypeScript types for all database operations
+- **Schema Compliance**: Fixed invalid property references and relationship includes
 
 **Key Features:**
 
@@ -245,6 +286,12 @@ Types: `GenerateImageResult`, `ImageBatchResult`
 - `createListAction(prevState, formData)` - Server action for list creation with redirect
 - `addWordsToList(listId, definitionIds)` - Add words to existing list
 
+### User List Word Management (`actions/user-list-actions.ts`)
+
+- `addWordToUserList(userId, userListId, userDictionaryId)` - Add a word from user's dictionary to a specific list
+- `removeWordFromUserList(userId, userListId, userDictionaryId)` - Remove a word from a user's list (does not delete from dictionary)
+- `getUserListBasicInfo(userId, userListId)` - Get basic information about a user list including word counts and learning progress
+
 ### Advanced List Management (`actions/list-management-actions.ts`)
 
 - `fetchAllLists(filters?)` - Comprehensive list fetching with filtering, search, and pagination
@@ -255,6 +302,37 @@ Types: `GenerateImageResult`, `ImageBatchResult`
 - `updateListAction(listId, prevState, formData)` - Server action for list updates with redirect
 
 Types: `ListWithDetails`, `ListFilters`, `ListsResponse`
+
+### Word Search with Translation Support (`actions/word-search-actions.ts`)
+
+- `searchWords(searchQuery, languageCode, userId?, page?, pageSize?)` - Basic word search with translations included
+- `searchWordsForUser(searchQuery, languageCode, userId, userNativeLanguage, page?, pageSize?)` - User-specific search that applies translation logic based on user's native language
+- `addDefinitionToUserDictionary(userId, definitionId, baseLanguageCode, targetLanguageCode)` - Add definition to user's dictionary
+- `removeDefinitionFromUserDictionary(userId, userDictionaryId)` - Remove definition from user's dictionary
+
+**Translation Features:**
+
+- **Native Language Support**: Automatically shows translations in user's native language when available
+- **Fallback Logic**: Falls back to original definitions when translations aren't available
+- **Enhanced Search Results**: Includes translation data in search results for user-specific display
+- **Language-Aware Display**: Prioritizes user's native language for better learning experience
+
+Types: `WordSearchResult`, `WordDefinitionResult` (enhanced with translation fields)
+
+### Translation Utilities (`utils/translation-utils.ts`)
+
+- `getBestDefinitionForUser(originalDefinition, originalLanguageCode, translations, userNativeLanguage)` - Get the best definition/translation to display based on user's native language
+- `getBestExampleForUser(originalExample, originalLanguageCode, translations, userNativeLanguage)` - Get the best example translation to display
+- `shouldUseTranslations(userNativeLanguage, contentLanguage)` - Check if translations should be used for this user's language configuration
+
+**Translation Logic:**
+
+- **Priority System**: Native language translation > Original definition
+- **Language Matching**: Automatically detects when user's native language matches content language
+- **Flexible Display**: Returns both translated content and original for reference
+- **Type Safety**: Comprehensive TypeScript interfaces for translation data
+
+Types: `TranslationData`, `DefinitionDisplayData`
 
 ## Auth Domain (`domains/auth/`)
 
@@ -363,6 +441,56 @@ Types: `UserStatistics`, `LearningAnalytics`, `ProficiencyLevel`
 
 Types: `UserDictionaryItem`, `UserDictionaryFilters`, `UserDictionaryResponse`
 
+### Dictionary Display Utilities (`utils/dictionary-display-utils.ts`)
+
+- `getDisplayDefinition(word, userNativeLanguage)` - Get the best definition to display for a user based on their native language
+- `shouldShowTranslations(userNativeLanguage, targetLanguageCode)` - Check if a user should see translations based on their language settings
+
+**Display Logic:**
+
+- **Translation-Aware Display**: Automatically shows translations when user's native language differs from target language
+- **Fallback Support**: Returns original definition when translations aren't available
+- **Flexible Interface**: Works with any word object that has definition and translations
+- **User Experience**: Improves comprehension by showing definitions in user's native language
+
+Types: `WordWithTranslations`
+
+### Practice Actions (`actions/practice-actions.ts`)
+
+- `createTypingPracticeSession(request)` - Create a new typing practice session with intelligent word selection
+- `validateTypingInput({sessionId, userDictionaryId, userInput, responseTime})` - Validate user typing input with accuracy calculation and learning progress updates
+- `completePracticeSession(sessionId)` - Complete practice session with achievements detection and summary generation
+- `getPracticeSessionProgress(sessionId)` - Get live practice session progress and statistics
+
+Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `TypingValidationResult`, `PracticeSessionSummary`
+
+**Practice System Features:**
+
+- **Intelligent Word Selection**: Prioritizes words needing review based on learning status (notStarted, inProgress, difficult) and time since last review
+- **Adaptive Difficulty**: 5 difficulty levels affecting session parameters (word count, time limits, typo tolerance)
+- **Real-Time Validation**: Character-by-character accuracy calculation with configurable typo tolerance
+- **Spaced Repetition Integration**: Updates SRS intervals and next review dates based on performance
+- **Achievement System**: Automatic detection of achievements (Perfect Score, Excellence, Quick Learner, Speed Demon)
+- **Progress Tracking**: Updates learning status, mastery scores, and review counts in user dictionary
+- **Performance Analytics**: Tracks response times, accuracy, and learning patterns
+- **Session Management**: Complete lifecycle from creation to completion with detailed summaries
+
+### Learning Metrics Configuration (`utils/learning-metrics.ts`)
+
+- `LearningMetricsCalculator` - Class with methods for accuracy calculation, mastery scoring, learning status determination, and typing validation
+- `LEARNING_METRICS` - Core learning thresholds (min correct attempts: 3, accuracy threshold: 80%, mastery score: 85%)
+- `PRACTICE_SESSION_CONFIG` - Session parameters per difficulty level (words per session: 10, time limit: 30s)
+- `TYPING_PRACTICE_METRICS` - Typing-specific metrics (typo tolerance: 10%, speed thresholds, partial credit system)
+- `DIFFICULTY_ADJUSTMENT` - 5 difficulty levels with adaptive triggers for progression
+
+**Key Algorithms:**
+
+- **Character-Level Accuracy**: Precise typing validation with character-by-character comparison
+- **Spaced Repetition**: Calculates next review dates based on performance and current SRS level
+- **Mastery Scoring**: Complex scoring system considering accuracy, speed, and difficulty
+- **Adaptive Difficulty**: Automatic difficulty adjustment based on sustained performance
+- **Learning Status Progression**: Smart progression from notStarted → inProgress → learned based on multiple success criteria
+
 ### Legacy User Actions
 
 - `getUsers(page, limit, searchQuery?, sortBy?, sortOrder?)`
@@ -434,6 +562,11 @@ Types: `UserDictionaryItem`, `UserDictionaryFilters`, `UserDictionaryResponse`
 
 - `useSetUserDataToRedux()` - Sync user data to Redux
 - `syncUserData()` - Internal sync function
+- `useUser()` - Redux-based hook for accessing current user state with type safety
+
+### Utility Functions
+
+- `cn()` - Utility function for conditional classnames using clsx and tailwind-merge
 
 ### Session Management Hooks
 
@@ -574,6 +707,47 @@ Types: `UserListWithDetails`, `PublicListSummary`, `UserListFilters`
 - **Rich Metadata**: Includes progress tracking, word counts, sample words
 - **Language Filtering**: Shows lists matching user's language preferences
 - **Ownership Validation**: Ensures users can only modify their own lists and words
+
+### Practice Session Management (`actions/practice-actions.ts`)
+
+- `createTypingPracticeSession(request)` - Create new typing practice session with intelligent word selection and audio integration
+- `validateTypingInput(request)` - Validate user's typing input with accuracy calculation and learning progress updates
+- `completePracticeSession(sessionId)` - Complete practice session with summary and achievements
+- `getPracticeSessionProgress(sessionId)` - Get current session progress and statistics
+
+Types: `PracticeWord`, `CreatePracticeSessionRequest`, `ValidateTypingRequest`, `PracticeSessionProgress`
+
+**Key Features:**
+
+- **Intelligent Word Selection**: Prioritizes words needing review based on learning status, progress, and time since last review
+- **Audio Integration**: Includes database audio URLs for each practice word with automatic fallback to TTS
+- **Real-Time Validation**: Character-by-character accuracy checking with typo tolerance
+- **Learning Progress Tracking**: Updates user dictionary with new learning metrics after each word
+- **Adaptive Difficulty**: Configurable difficulty levels affecting session parameters
+- **Session Management**: Complete session lifecycle from creation to completion with statistics
+- **Achievement System**: Automatic achievement detection and notification
+- **Spaced Repetition**: Integrates with learning metrics for optimal review scheduling
+- **Performance Analytics**: Tracks response times, accuracy, and learning patterns
+- **Translation Support**: Shows definitions in user's base language while practicing target language words
+
+### Learning Metrics Configuration (`utils/learning-metrics.ts`)
+
+Comprehensive configuration system for learning thresholds and progress calculation:
+
+- **Learning Thresholds**: Configurable criteria for marking words as learned, difficult, or mastered
+- **Practice Session Config**: Default settings for session duration, word counts, and scoring
+- **Typing Practice Metrics**: Character-level accuracy requirements and typo tolerance
+- **Difficulty Adjustment**: Automatic difficulty scaling based on user performance
+- **LearningMetricsCalculator**: Utility class for accuracy, mastery score, and learning status calculations
+
+**Key Metrics:**
+
+- Minimum 3 correct attempts to mark word as "learned"
+- 80% accuracy threshold for learned status
+- 85% mastery score for full mastery
+- Spaced repetition intervals: [1, 3, 7, 14, 30, 60] days
+- 10% character tolerance for minor typos
+- Adaptive time limits based on difficulty level
 
 ### Other Legacy Actions (`lib/actions/`)
 

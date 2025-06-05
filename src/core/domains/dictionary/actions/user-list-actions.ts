@@ -684,3 +684,374 @@ export async function addWordToUserList(
     return { success: false, message: 'Failed to add word to list' };
   }
 }
+
+/**
+ * Remove a word from a user list
+ */
+export async function removeWordFromUserList(
+  userId: string,
+  userListId: string,
+  userDictionaryId: string,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    // First check if the user owns this list
+    const userList = await prisma.userList.findFirst({
+      where: {
+        id: userListId,
+        userId,
+        deletedAt: null,
+      },
+    });
+
+    if (!userList) {
+      return { success: false, message: 'List not found or access denied' };
+    }
+
+    // Check if the word exists in this list
+    const userListWord = await prisma.userListWord.findUnique({
+      where: {
+        userListId_userDictionaryId: {
+          userListId,
+          userDictionaryId,
+        },
+      },
+    });
+
+    if (!userListWord) {
+      return { success: false, message: 'Word not found in this list' };
+    }
+
+    // Remove the word from the list
+    await prisma.userListWord.delete({
+      where: {
+        userListId_userDictionaryId: {
+          userListId,
+          userDictionaryId,
+        },
+      },
+    });
+
+    return { success: true, message: 'Word removed from list successfully' };
+  } catch (error) {
+    console.error('Error removing word from user list:', error);
+    return { success: false, message: 'Failed to remove word from list' };
+  }
+}
+
+/**
+ * Interface for user list word with full details
+ */
+export interface UserListWordWithDetails {
+  userListId: string;
+  userDictionaryId: string;
+  orderIndex: number;
+
+  // Word details
+  word: string;
+  definition: string;
+  partOfSpeech: string | null;
+  phoneticTranscription: string | null;
+  audioUrl: string | null;
+  imageUrl: string | null;
+
+  // Learning details
+  learningStatus: string;
+  masteryScore: number;
+  reviewCount: number;
+  lastReviewedAt: Date | null;
+  isFavorite: boolean;
+
+  // Translation details
+  translations: Array<{
+    id: number;
+    languageCode: LanguageCode;
+    translatedText: string;
+  }>;
+}
+
+/**
+ * Get all words in a user list with full details
+ */
+export async function getUserListWords(
+  userId: string,
+  userListId: string,
+  options: {
+    search?: string;
+    sortBy?: 'word' | 'progress' | 'lastReviewed' | 'orderIndex';
+    sortOrder?: 'asc' | 'desc';
+    limit?: number;
+    offset?: number;
+  } = {},
+): Promise<{
+  words: UserListWordWithDetails[];
+  totalCount: number;
+  listDetails: {
+    id: string;
+    displayName: string;
+    displayDescription: string | null;
+    wordCount: number;
+    learnedWordCount: number;
+  } | null;
+}> {
+  try {
+    const {
+      search,
+      sortBy = 'orderIndex',
+      sortOrder = 'asc',
+      limit,
+      offset,
+    } = options;
+
+    // First check if the user owns this list
+    const userList = await prisma.userList.findFirst({
+      where: {
+        id: userListId,
+        userId,
+        deletedAt: null,
+      },
+      include: {
+        list: true,
+      },
+    });
+
+    if (!userList) {
+      return {
+        words: [],
+        totalCount: 0,
+        listDetails: null,
+      };
+    }
+
+    // Build where conditions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const whereConditions: any = {
+      userListId,
+      userDictionary: {
+        deletedAt: null,
+      },
+    };
+
+    // Add search condition if provided
+    if (search) {
+      whereConditions.userDictionary = {
+        ...whereConditions.userDictionary,
+        definition: {
+          wordDetails: {
+            some: {
+              wordDetails: {
+                word: {
+                  word: {
+                    contains: search,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+    }
+
+    // Build orderBy conditions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let orderBy: any = {};
+    switch (sortBy) {
+      case 'word':
+        orderBy = {
+          userDictionary: {
+            definition: {
+              wordDetails: {
+                wordDetails: {
+                  word: {
+                    word: sortOrder,
+                  },
+                },
+              },
+            },
+          },
+        };
+        break;
+      case 'progress':
+        orderBy = {
+          userDictionary: {
+            masteryScore: sortOrder,
+          },
+        };
+        break;
+      case 'lastReviewed':
+        orderBy = {
+          userDictionary: {
+            lastReviewedAt: sortOrder,
+          },
+        };
+        break;
+      default:
+        orderBy = { orderIndex: sortOrder };
+    }
+
+    // Get total count
+    const totalCount = await prisma.userListWord.count({
+      where: whereConditions,
+    });
+
+    // Get words with full details
+    const userListWords = await prisma.userListWord.findMany({
+      where: whereConditions,
+      include: {
+        userDictionary: {
+          include: {
+            definition: {
+              include: {
+                image: true,
+                wordDetails: {
+                  include: {
+                    wordDetails: {
+                      include: {
+                        word: true,
+                      },
+                    },
+                  },
+                },
+                translationLinks: {
+                  include: {
+                    translation: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy,
+      ...(limit && { take: limit }),
+      ...(offset && { skip: offset }),
+    });
+
+    // Transform data
+    const words: UserListWordWithDetails[] = userListWords.map(
+      (userListWord) => {
+        const userDictionary = userListWord.userDictionary;
+        const definition = userDictionary.definition;
+        const wordDetails = definition.wordDetails[0]?.wordDetails;
+        const word = wordDetails?.word;
+
+        // Audio and image URLs would be available through separate relations if needed
+        const audioUrl = null; // Would need to implement through WordDetailsAudio if needed
+        const imageUrl = definition.image?.url || null;
+
+        // Get translations with proper typing
+        const translations = definition.translationLinks.map(
+          (link: {
+            translation: {
+              id: number;
+              languageCode: LanguageCode;
+              content: string;
+            };
+          }) => ({
+            id: link.translation.id,
+            languageCode: link.translation.languageCode,
+            translatedText: link.translation.content, // Correct field name
+          }),
+        );
+
+        return {
+          userListId: userListWord.userListId,
+          userDictionaryId: userListWord.userDictionaryId,
+          orderIndex: userListWord.orderIndex,
+
+          // Word details
+          word: word?.word || 'Unknown word',
+          definition: definition.definition,
+          partOfSpeech: wordDetails?.partOfSpeech || null,
+          phoneticTranscription: wordDetails?.phonetic || null,
+          audioUrl,
+          imageUrl,
+
+          // Learning details
+          learningStatus: userDictionary.learningStatus,
+          masteryScore: userDictionary.masteryScore,
+          reviewCount: userDictionary.reviewCount,
+          lastReviewedAt: userDictionary.lastReviewedAt,
+          isFavorite: userDictionary.isFavorite,
+
+          // Translation details
+          translations,
+        };
+      },
+    );
+
+    // Get list details
+    const displayName =
+      userList.customNameOfList || userList.list?.name || 'Untitled List';
+    const displayDescription =
+      userList.customDescriptionOfList || userList.list?.description || null;
+
+    const listDetails = {
+      id: userList.id,
+      displayName,
+      displayDescription,
+      wordCount: totalCount,
+      learnedWordCount: words.filter((w) => w.learningStatus === 'learned')
+        .length,
+    };
+
+    return {
+      words,
+      totalCount,
+      listDetails,
+    };
+  } catch (error) {
+    console.error('Error fetching user list words:', error);
+    throw new Error('Failed to fetch user list words');
+  }
+}
+
+/**
+ * Update the order of words in a user list
+ */
+export async function reorderUserListWords(
+  userId: string,
+  userListId: string,
+  wordOrderUpdates: Array<{ userDictionaryId: string; newOrderIndex: number }>,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    // First check if the user owns this list
+    const userList = await prisma.userList.findFirst({
+      where: {
+        id: userListId,
+        userId,
+        deletedAt: null,
+      },
+    });
+
+    if (!userList) {
+      return { success: false, message: 'List not found or access denied' };
+    }
+
+    // Update order indices in a transaction
+    // Note: Since UserListWord uses composite key, we need userDictionaryId for each update
+    // This function signature needs to be updated to include userDictionaryId
+    // For now, we'll implement a workaround by finding the records first
+
+    await prisma.$transaction(
+      wordOrderUpdates.map(({ userDictionaryId, newOrderIndex }) =>
+        prisma.userListWord.update({
+          where: {
+            userListId_userDictionaryId: {
+              userListId,
+              userDictionaryId,
+            },
+          },
+          data: {
+            orderIndex: newOrderIndex,
+          },
+        }),
+      ),
+    );
+
+    return { success: true, message: 'Word order updated successfully' };
+  } catch (error) {
+    console.error('Error reordering user list words:', error);
+    return { success: false, message: 'Failed to update word order' };
+  }
+}

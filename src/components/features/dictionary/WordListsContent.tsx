@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { LanguageCode, DifficultyLevel } from '@prisma/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,6 +33,7 @@ import {
   Globe,
   Loader2,
   Heart,
+  ExternalLink,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -76,6 +78,7 @@ export function WordListsContent({
   userId,
   userLanguages,
 }: WordListsContentProps) {
+  const router = useRouter();
   const [userLists, setUserLists] = useState<UserListWithDetails[]>([]);
   const [publicLists, setPublicLists] = useState<PublicListSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -409,6 +412,9 @@ export function WordListsContent({
                   list={list}
                   onEdit={() => setEditingList(list)}
                   onRemove={() => handleRemoveFromCollection(list.id)}
+                  onNavigate={() =>
+                    router.push(`/dashboard/dictionary/lists/${list.id}`)
+                  }
                 />
               ))}
             </div>
@@ -550,17 +556,22 @@ function UserListCard({
   list,
   onEdit,
   onRemove,
+  onNavigate,
 }: {
   list: UserListWithDetails;
   onEdit: () => void;
   onRemove: () => void;
+  onNavigate: () => void;
 }) {
   const isCustomList = !list.listId;
   const progressPercentage =
     list.wordCount > 0 ? (list.learnedWordCount / list.wordCount) * 100 : 0;
 
   return (
-    <Card className="group hover:shadow-md transition-shadow">
+    <Card
+      className="group hover:shadow-md transition-shadow cursor-pointer"
+      onClick={onNavigate}
+    >
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
@@ -587,17 +598,38 @@ function UserListCard({
                 variant="ghost"
                 size="sm"
                 className="opacity-0 group-hover:opacity-100"
+                onClick={(e) => e.stopPropagation()}
               >
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onEdit}>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onNavigate();
+                }}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Open List
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit();
+                }}
+              >
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onRemove} className="text-red-600">
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemove();
+                }}
+                className="text-red-600"
+              >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Remove
               </DropdownMenuItem>

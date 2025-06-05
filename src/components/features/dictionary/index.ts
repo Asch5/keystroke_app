@@ -9,3 +9,4 @@ export { MyDictionaryContent } from './MyDictionaryContent';
 export { AddNewWordContent } from './AddNewWordContent';
 export { WordListsContent } from './WordListsContent';
 export { AddToListDialog } from './AddToListDialog';
+export { ListDetailContent } from './ListDetailContent';

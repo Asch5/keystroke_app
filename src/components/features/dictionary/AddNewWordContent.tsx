@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
-  searchWords,
+  searchWordsForUser,
   addDefinitionToUserDictionary,
   removeDefinitionFromUserDictionary,
   type WordSearchResult,
@@ -32,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { AddToListDialog } from './AddToListDialog';
 
 interface AddNewWordContentProps {
   userId: string;
@@ -99,6 +100,18 @@ export function AddNewWordContent({
   const [totalCount, setTotalCount] = useState(0);
   const [isPending, startTransition] = useTransition();
 
+  // Add to List Dialog state
+  const [addToListDialog, setAddToListDialog] = useState<{
+    open: boolean;
+    wordText: string;
+    userDictionaryId: string;
+  }>({ open: false, wordText: '', userDictionaryId: '' });
+
+  const userLanguages = {
+    base: baseLanguageCode,
+    target: targetLanguageCode,
+  };
+
   const pageSize = 10;
 
   /**
@@ -116,10 +129,11 @@ export function AddNewWordContent({
       setIsSearching(true);
 
       try {
-        const result = await searchWords(
+        const result = await searchWordsForUser(
           query.trim(),
           selectedLanguage,
           userId,
+          baseLanguageCode,
           page,
           pageSize,
         );
@@ -139,7 +153,7 @@ export function AddNewWordContent({
   );
 
   /**
-   * Handle adding a definition to user's dictionary
+   * Handle adding a definition to user's dictionary only
    */
   const handleAddDefinition = async (definitionId: number) => {
     startTransition(async () => {
@@ -152,14 +166,55 @@ export function AddNewWordContent({
         );
 
         if (result.success) {
-          if (result.isRestored) {
-            toast.success('Word restored to your dictionary!');
-          } else {
-            toast.success('Word added to your dictionary!');
-          }
+          const message = result.isRestored
+            ? 'Word restored to your dictionary!'
+            : 'Word added to your dictionary!';
+
+          toast.success(message);
 
           // Refresh search results to update the button states
           await handleSearch(searchQuery, currentPage);
+        } else {
+          toast.error(result.error || 'Failed to add word to dictionary');
+        }
+      } catch (error) {
+        console.error('Error adding definition:', error);
+        toast.error('Failed to add word to dictionary');
+      }
+    });
+  };
+
+  /**
+   * Handle adding a definition to user's dictionary AND opening list dialog
+   */
+  const handleAddToList = async (definitionId: number, wordText: string) => {
+    startTransition(async () => {
+      try {
+        const result = await addDefinitionToUserDictionary(
+          userId,
+          definitionId,
+          baseLanguageCode,
+          targetLanguageCode,
+        );
+
+        if (result.success) {
+          const message = result.isRestored
+            ? 'Word restored to your dictionary!'
+            : 'Word added to your dictionary!';
+
+          toast.success(message);
+
+          // Refresh search results to update the button states
+          await handleSearch(searchQuery, currentPage);
+
+          // Open list dialog with the new user dictionary entry
+          if (result.data?.id) {
+            setAddToListDialog({
+              open: true,
+              wordText: wordText,
+              userDictionaryId: result.data.id,
+            });
+          }
         } else {
           toast.error(result.error || 'Failed to add word to dictionary');
         }
@@ -217,6 +272,14 @@ export function AddNewWordContent({
     if (searchQuery.trim()) {
       handleSearch(searchQuery, 1);
     }
+  };
+
+  /**
+   * Handle word added to list
+   */
+  const handleWordAddedToList = (listName: string) => {
+    toast.success(`Word added to "${listName}"`);
+    setAddToListDialog({ open: false, wordText: '', userDictionaryId: '' });
   };
 
   return (
@@ -325,7 +388,16 @@ export function AddNewWordContent({
                             </div>
 
                             <div className="prose prose-sm max-w-none">
-                              <p>{definition.definition}</p>
+                              <p>
+                                {definition.displayDefinition ||
+                                  definition.definition}
+                              </p>
+                              {definition.isTranslation &&
+                                definition.originalDefinition && (
+                                  <p className="text-xs text-muted-foreground mt-1 italic">
+                                    Original: {definition.originalDefinition}
+                                  </p>
+                                )}
                             </div>
 
                             {definition.phonetic &&
@@ -381,22 +453,44 @@ export function AddNewWordContent({
                                 )}
                               </Button>
                             ) : (
-                              <Button
-                                size="sm"
-                                onClick={() =>
-                                  handleAddDefinition(definition.definitionId)
-                                }
-                                disabled={isPending}
-                              >
-                                {isPending ? (
-                                  <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                  <>
-                                    <Plus className="h-4 w-4 mr-1" />
-                                    Add
-                                  </>
-                                )}
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleAddDefinition(definition.definitionId)
+                                  }
+                                  disabled={isPending}
+                                >
+                                  {isPending ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <>
+                                      <Plus className="h-4 w-4 mr-1" />
+                                      Add to Dictionary
+                                    </>
+                                  )}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() =>
+                                    handleAddToList(
+                                      definition.definitionId,
+                                      word.wordText,
+                                    )
+                                  }
+                                  disabled={isPending}
+                                >
+                                  {isPending ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <>
+                                      <Plus className="h-4 w-4 mr-1" />
+                                      Add to List
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -475,6 +569,23 @@ export function AddNewWordContent({
           </CardContent>
         </Card>
       )}
+
+      {/* Add to List Dialog */}
+      <AddToListDialog
+        isOpen={addToListDialog.open}
+        onClose={() =>
+          setAddToListDialog({
+            open: false,
+            wordText: '',
+            userDictionaryId: '',
+          })
+        }
+        userId={userId}
+        userLanguages={userLanguages}
+        wordText={addToListDialog.wordText}
+        userDictionaryId={addToListDialog.userDictionaryId}
+        onWordAddedToList={handleWordAddedToList}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { LanguageCode, LearningStatus, PartOfSpeech } from '@prisma/client';
 import { prisma } from '@/core/shared/database/client';
+import { getBestDefinitionForUser } from '../utils/translation-utils';
 
 /**
  * Interface for search results grouped by word
@@ -32,6 +33,15 @@ export interface WordDefinitionResult {
   isInUserDictionary?: boolean;
   userDictionaryId?: string | null;
   userLearningStatus?: LearningStatus | null;
+  // Translation-related fields
+  translations?: Array<{
+    id: number;
+    languageCode: LanguageCode;
+    content: string;
+  }>;
+  displayDefinition?: string; // The definition to display (could be translation)
+  isTranslation?: boolean; // Whether displayDefinition is a translation
+  originalDefinition?: string | undefined; // Original definition when showing translation
 }
 
 /**
@@ -85,6 +95,11 @@ export async function searchWords(
                     image: true,
                     examples: {
                       select: { id: true },
+                    },
+                    translationLinks: {
+                      include: {
+                        translation: true,
+                      },
                     },
                   },
                 },
@@ -156,6 +171,11 @@ export async function searchWords(
               isInUserDictionary: !!userDictEntry,
               userDictionaryId: userDictEntry?.id || null,
               userLearningStatus: userDictEntry?.learningStatus || null,
+              translations: definition.translationLinks.map((tl) => ({
+                id: tl.translation.id,
+                languageCode: tl.translation.languageCode,
+                content: tl.translation.content,
+              })),
             };
           }),
       );
@@ -269,5 +289,63 @@ export async function removeDefinitionFromUserDictionary(
   } catch (error) {
     console.error('Error removing definition from user dictionary:', error);
     throw new Error('Failed to remove word from dictionary');
+  }
+}
+
+/**
+ * Search words with user-specific display preferences (using native language translations when available)
+ */
+export async function searchWordsForUser(
+  searchQuery: string,
+  languageCode: LanguageCode,
+  userId: string,
+  userNativeLanguage: LanguageCode,
+  page: number = 1,
+  pageSize: number = 10,
+): Promise<{
+  results: WordSearchResult[];
+  totalCount: number;
+  totalPages: number;
+}> {
+  try {
+    // First get the basic search results with translations
+    const searchResults = await searchWords(
+      searchQuery,
+      languageCode,
+      userId,
+      page,
+      pageSize,
+    );
+
+    // Apply translation logic to each definition
+    const processedResults: WordSearchResult[] = searchResults.results.map(
+      (word) => ({
+        ...word,
+        definitions: word.definitions.map((definition) => {
+          const bestDefinition = getBestDefinitionForUser(
+            definition.definition,
+            languageCode,
+            definition.translations || [],
+            userNativeLanguage,
+          );
+
+          return {
+            ...definition,
+            displayDefinition: bestDefinition.content,
+            isTranslation: bestDefinition.isTranslation,
+            originalDefinition: bestDefinition.originalDefinition,
+          };
+        }),
+      }),
+    );
+
+    return {
+      results: processedResults,
+      totalCount: searchResults.totalCount,
+      totalPages: searchResults.totalPages,
+    };
+  } catch (error) {
+    console.error('Error searching words for user:', error);
+    throw new Error('Failed to search words with user preferences');
   }
 }

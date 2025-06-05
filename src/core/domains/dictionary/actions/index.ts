@@ -103,6 +103,7 @@ export {
 // Word search operations
 export {
   searchWords,
+  searchWordsForUser,
   addDefinitionToUserDictionary,
   removeDefinitionFromUserDictionary,
   type WordSearchResult,
@@ -117,7 +118,10 @@ export {
   removeListFromUserCollection,
   createCustomUserList,
   updateUserList,
+  addWordToUserList,
+  removeWordFromUserList,
   type UserListWithDetails,
   type PublicListSummary,
   type UserListFilters,
+  type UserListWordWithDetails,
 } from './user-list-actions';

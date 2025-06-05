@@ -58,7 +58,9 @@ import {
   Edit,
   Trash2,
   Clock,
+  X,
   TrendingUp,
+  TrendingDown,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -79,6 +81,10 @@ import {
 } from '@prisma/client';
 import { toast } from 'sonner';
 import { AddToListDialog } from './AddToListDialog';
+import {
+  getDisplayDefinition,
+  shouldShowTranslations,
+} from '@/core/domains/user/utils/dictionary-display-utils';
 
 interface MyDictionaryContentProps {
   userId: string;
@@ -594,6 +600,7 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
               <TableRow>
                 <TableHead>Word</TableHead>
                 <TableHead>Definition</TableHead>
+                <TableHead>Lists</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Progress</TableHead>
                 <TableHead>Mastery</TableHead>
@@ -625,11 +632,52 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
                   </TableCell>
                   <TableCell>
                     <div className="max-w-xs">
-                      <p className="text-sm truncate">{word.definition}</p>
+                      <p className="text-sm truncate">
+                        {userLanguages &&
+                        shouldShowTranslations(
+                          userLanguages.base,
+                          userLanguages.target,
+                        )
+                          ? getDisplayDefinition(
+                              {
+                                definition: word.definition,
+                                targetLanguageCode: userLanguages.target,
+                                translations: word.translations,
+                              },
+                              userLanguages.base,
+                            ).content
+                          : word.definition}
+                      </p>
                       {word.customNotes && (
                         <p className="text-xs text-muted-foreground mt-1 truncate">
                           Note: {word.customNotes}
                         </p>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="max-w-xs">
+                      {word.lists && word.lists.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {word.lists.slice(0, 2).map((listName, index) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              {listName}
+                            </Badge>
+                          ))}
+                          {word.lists.length > 2 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{word.lists.length - 2} more
+                            </Badge>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          No lists
+                        </span>
                       )}
                     </div>
                   </TableCell>
@@ -707,25 +755,59 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
                           <Book className="h-4 w-4 mr-2" />
                           Add to List
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleStatusUpdate(word.id, LearningStatus.learned)
-                          }
-                        >
-                          <TrendingUp className="h-4 w-4 mr-2" />
-                          Mark as Learned
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleStatusUpdate(
-                              word.id,
-                              LearningStatus.needsReview,
-                            )
-                          }
-                        >
-                          <Clock className="h-4 w-4 mr-2" />
-                          Mark for Review
-                        </DropdownMenuItem>
+
+                        {/* Dynamic Learning Status Actions */}
+                        {word.learningStatus === LearningStatus.learned ? (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleStatusUpdate(
+                                word.id,
+                                LearningStatus.inProgress,
+                              )
+                            }
+                          >
+                            <TrendingDown className="h-4 w-4 mr-2" />
+                            Unmark as Learned
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleStatusUpdate(
+                                word.id,
+                                LearningStatus.learned,
+                              )
+                            }
+                          >
+                            <TrendingUp className="h-4 w-4 mr-2" />
+                            Mark as Learned
+                          </DropdownMenuItem>
+                        )}
+
+                        {word.learningStatus === LearningStatus.needsReview ? (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleStatusUpdate(
+                                word.id,
+                                LearningStatus.inProgress,
+                              )
+                            }
+                          >
+                            <X className="h-4 w-4 mr-2" />
+                            Unmark for Review
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleStatusUpdate(
+                                word.id,
+                                LearningStatus.needsReview,
+                              )
+                            }
+                          >
+                            <Clock className="h-4 w-4 mr-2" />
+                            Mark for Review
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           onClick={() => handleRemoveWord(word.id, word.word)}

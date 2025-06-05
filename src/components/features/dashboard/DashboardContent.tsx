@@ -218,13 +218,13 @@ export function DashboardContent({ userId }: DashboardContentProps) {
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
             <Button asChild className="h-auto p-4">
               <Link
-                href="/dashboard/dictionary"
+                href="/dashboard/practice"
                 className="flex flex-col items-center gap-2"
               >
                 <Play className="h-6 w-6" />
-                <span className="text-sm font-medium">Start Learning</span>
+                <span className="text-sm font-medium">Start Practice</span>
                 <span className="text-xs text-muted-foreground">
-                  Practice words
+                  Typing practice
                 </span>
               </Link>
             </Button>

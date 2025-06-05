@@ -47,6 +47,35 @@ import { WordService } from '@/core/shared/services/WordService';
  */
 
 /**
+ * Helper function to determine the appropriate part of speech for a synonym or antonym
+ * based on the part of speech of the related word and the structure of the synonym
+ * @param synonymText The synonym text to analyze
+ * @param relatedPartOfSpeech The part of speech of the related word
+ * @returns The appropriate PartOfSpeech for the synonym
+ */
+function determineSynonymPartOfSpeech(
+  synonymText: string,
+  relatedPartOfSpeech: PartOfSpeech | null,
+): PartOfSpeech {
+  // If we don't have a related part of speech, default to undefined
+  if (!relatedPartOfSpeech || relatedPartOfSpeech === PartOfSpeech.undefined) {
+    return PartOfSpeech.undefined;
+  }
+
+  // Count words in the synonym (split by spaces and filter out empty strings)
+  const wordCount = synonymText
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+
+  if (wordCount === 1) {
+    return relatedPartOfSpeech;
+  } else {
+    return PartOfSpeech.phrase;
+  }
+}
+
+/**
  * Process translations for a word and its related data
  * @param tx Prisma transaction client
  * @param mainWordId ID of the main word
@@ -826,7 +855,7 @@ export async function processAndSaveDanishWord(
             word: synonym,
             languageCode: language,
             source,
-            partOfSpeech: PartOfSpeech.undefined, // Use the main word's partOfSpeech
+            partOfSpeech: determineSynonymPartOfSpeech(synonym, partOfSpeech),
             definitions: [], // Synonyms from labels typically don't have their own new definitions here
             relationship: [
               {
@@ -860,7 +889,10 @@ export async function processAndSaveDanishWord(
               word: seOgsaWord,
               languageCode: language,
               source,
-              partOfSpeech: PartOfSpeech.undefined, // "Se også" can refer to various PoS, safer to set null or determine later
+              partOfSpeech: determineSynonymPartOfSpeech(
+                seOgsaWord,
+                partOfSpeech,
+              ),
               definitions: [],
               relationship: [
                 {
@@ -917,7 +949,7 @@ export async function processAndSaveDanishWord(
             word: antonym,
             languageCode: language,
             source,
-            partOfSpeech: PartOfSpeech.undefined, // Use the main word's partOfSpeech
+            partOfSpeech: determineSynonymPartOfSpeech(antonym, partOfSpeech),
             definitions: [], // Antonyms from labels typically don't have their own new definitions here
             relationship: [
               {
@@ -1209,7 +1241,10 @@ export async function processAndSaveDanishWord(
                 word: variant,
                 languageCode: language,
                 source,
-                partOfSpeech: PartOfSpeech.phrase,
+                partOfSpeech: determineSynonymPartOfSpeech(
+                  variant,
+                  PartOfSpeech.phrase,
+                ),
                 definitions: [
                   {
                     source: source.toString(),
@@ -1282,7 +1317,7 @@ export async function processAndSaveDanishWord(
               word: synonym,
               languageCode: language,
               source,
-              partOfSpeech: PartOfSpeech.undefined,
+              partOfSpeech: determineSynonymPartOfSpeech(synonym, partOfSpeech),
               definitions: [],
               relationship: [
                 {
@@ -1300,7 +1335,7 @@ export async function processAndSaveDanishWord(
         const antonymsFromLabels: string[] = [];
         if (defItem.labels) {
           // Check 'Synonym' label which can be a string or array
-          if (defItem.labels.Synonym) {
+          if (defItem.labels.Antonym) {
             if (typeof defItem.labels.Antonym === 'string') {
               antonymsFromLabels.push(defItem.labels.Antonym);
             } else if (Array.isArray(defItem.labels.Antonym)) {
@@ -1329,7 +1364,7 @@ export async function processAndSaveDanishWord(
               word: antonym,
               languageCode: language,
               source,
-              partOfSpeech: PartOfSpeech.undefined,
+              partOfSpeech: determineSynonymPartOfSpeech(antonym, partOfSpeech),
               definitions: [],
               relationship: [
                 {
@@ -1364,7 +1399,10 @@ export async function processAndSaveDanishWord(
                 word: seOgsaWord,
                 languageCode: language,
                 source,
-                partOfSpeech: PartOfSpeech.undefined, // "Se også" can refer to various PoS
+                partOfSpeech: determineSynonymPartOfSpeech(
+                  seOgsaWord,
+                  partOfSpeech,
+                ),
                 definitions: [],
                 relationship: [
                   {

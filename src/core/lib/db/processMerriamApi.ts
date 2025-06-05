@@ -220,6 +220,49 @@ export type StateMerriamWebster =
       data?: never;
     };
 
+/**
+ * Helper function to determine the appropriate part of speech for a synonym
+ * based on the part of speech of the related word and the structure of the synonym
+ * @param synonymText The synonym text to analyze
+ * @param relatedPartOfSpeech The part of speech of the related word
+ * @returns The appropriate PartOfSpeech for the synonym
+ */
+function determineSynonymPartOfSpeech(
+  synonymText: string,
+  relatedPartOfSpeech: PartOfSpeech | null,
+): PartOfSpeech {
+  // If we don't have a related part of speech, default to undefined
+  if (!relatedPartOfSpeech || relatedPartOfSpeech === PartOfSpeech.undefined) {
+    return PartOfSpeech.undefined;
+  }
+
+  // Count words in the synonym (split by spaces and filter out empty strings)
+  const wordCount = synonymText
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+
+  // Special handling for verbs, phrases, and phrasal verbs
+  if (relatedPartOfSpeech === PartOfSpeech.verb) {
+    if (wordCount === 1) {
+      return PartOfSpeech.verb;
+    } else {
+      return PartOfSpeech.phrasal_verb;
+    }
+  }
+
+  if (relatedPartOfSpeech === PartOfSpeech.phrasal_verb) {
+    if (wordCount === 1) {
+      return PartOfSpeech.verb;
+    } else {
+      return PartOfSpeech.phrasal_verb;
+    }
+  }
+
+  // For all other cases, use the same part of speech as the related word
+  return relatedPartOfSpeech;
+}
+
 export async function getWordFromMerriamWebster(
   _prevState: StateMerriamWebster,
   formData: FormData,
@@ -826,7 +869,7 @@ export async function processAndSaveWord(
           word: synonym,
           languageCode: language,
           source: source,
-          partOfSpeech: PartOfSpeech.undefined,
+          partOfSpeech: determineSynonymPartOfSpeech(synonym, partOfSpeech),
           definitions: [],
           relationship: [
             {
@@ -849,7 +892,7 @@ export async function processAndSaveWord(
           word: antonym,
           languageCode: language,
           source: source,
-          partOfSpeech: partOfSpeech,
+          partOfSpeech: determineSynonymPartOfSpeech(antonym, partOfSpeech),
           definitions: [],
           relationship: [
             {
@@ -982,7 +1025,10 @@ export async function processAndSaveWord(
                               word: synonym,
                               languageCode: language,
                               source: source,
-                              partOfSpeech: PartOfSpeech.phrasal_verb, // Use phrasal verb part of speech
+                              partOfSpeech: determineSynonymPartOfSpeech(
+                                synonym,
+                                PartOfSpeech.phrasal_verb,
+                              ),
                               definitions: [],
                               relationship: [
                                 {
@@ -1223,7 +1269,10 @@ export async function processAndSaveWord(
                               word: synonym,
                               languageCode: language,
                               source: source,
-                              partOfSpeech: PartOfSpeech.phrase, // Use phrase part of speech
+                              partOfSpeech: determineSynonymPartOfSpeech(
+                                synonym,
+                                PartOfSpeech.phrase,
+                              ),
                               definitions: [],
                               relationship: [
                                 {
@@ -1643,7 +1692,10 @@ sourceWordText processing
                     word: synonym,
                     languageCode: language,
                     source: source,
-                    partOfSpeech: PartOfSpeech.undefined, // Use the same part of speech as main word
+                    partOfSpeech: determineSynonymPartOfSpeech(
+                      synonym,
+                      partOfSpeech,
+                    ),
                     definitions: [],
                     relationship: [
                       {

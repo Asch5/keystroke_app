@@ -22,7 +22,7 @@ keystroke_app/
 ```bash
 # Development
 pnpm dev                 # Start dev server (:3000)
-pnpm build              # Production build
+pnpm build              # Production build (with env validation)
 pnpm lint               # Code quality check
 
 # Database
@@ -31,8 +31,12 @@ pnpm run p-migrate      # Apply migrations
 pnpm run p-generate     # Generate Prisma client
 
 # Environment
-pnpm run validate-env   # Validate environment
+pnpm run validate-env   # Validate environment variables
 pnpm run env:check      # Check .env files exist
+pnpm run env:template   # Generate environment template
+
+# Build Optimization
+# See BUILD_OPTIMIZATION_REPORT.md for performance analysis
 ```
 
 ## Environment Files Priority
@@ -48,10 +52,12 @@ pnpm run env:check      # Check .env files exist
 // Components
 import { Button } from '@/components/ui/button';
 import { LoginForm } from '@/components/features/auth';
+import { ProfileSettingsForm } from '@/components/features/settings';
 
 // Core business logic
 import { getWordDetails } from '@/core/domains/dictionary';
 import { authenticateUser } from '@/core/domains/auth';
+import { updateUserProfile, getUserSettings } from '@/core/domains/user';
 
 // Infrastructure
 import { handlePrismaError } from '@/core/shared/database';
@@ -87,3 +93,19 @@ import { useAppDispatch } from '@/core/state';
 
 - **Production**: https://keystroke-app-v2.vercel.app/
 - **Development**: http://localhost:3000
+
+## Build Status & Performance
+
+- **Build Process**: ✅ Optimized with environment validation
+- **Bundle Size**: ✅ Well-optimized (102 kB shared bundle)
+- **Security**: ✅ Environment variables properly secured
+- **Performance**: ⭐⭐⭐⭐ (4/5) - See BUILD_OPTIMIZATION_REPORT.md
+
+## Recent Improvements
+
+- Fixed dynamic server rendering error on settings page
+- Secured environment variable exposure in build logs
+- Comprehensive build performance analysis completed
+- **NEW**: Comprehensive user statistics dashboard with learning analytics, progress tracking, and performance metrics
+- **NEW**: User statistics actions with comprehensive analytics including learning progress, session statistics, mistake analysis, achievements, and language proficiency estimation
+- **NEW**: Main dashboard overview page with key metrics, quick actions, recent activity, and progress visualization following educational app best practices

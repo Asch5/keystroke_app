@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import {
   getWordDetails,
   fetchWordById,
-} from '@/core/lib/actions/dictionaryActions';
+} from '@/core/domains/dictionary/actions';
 import { convertWordEntryDataToWordDetails } from '@/core/lib/utils/wordDetailsAdapter';
 import { WordFormData } from '@/core/types/wordDefinition';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,8 +34,11 @@ export default function EditWordPage() {
           return;
         }
 
-        // Then get the full word details
-        const details = await getWordDetails(wordRecord.word);
+        // Then get the full word details using the correct language code
+        const details = await getWordDetails(
+          wordRecord.word,
+          wordRecord.languageCode,
+        );
 
         if (details) {
           // Convert WordEntryData to WordDetails for the form

@@ -34,6 +34,137 @@ export interface ImageUploadMetadata {
  */
 export class ImageService {
   /**
+   * Check if a definition is a grammatical form definition that should not have images
+   * These are definitions that describe relationships to base words (inflections, forms, etc.)
+   * rather than providing actual meaning
+   */
+  private isGrammaticalFormDefinition(definitionText: string): boolean {
+    if (!definitionText || typeof definitionText !== 'string') {
+      return false;
+    }
+
+    // Normalize the text for pattern matching
+    const normalizedText = definitionText.toLowerCase().trim();
+
+    // English grammatical form patterns from Merriam-Webster API
+    const englishGrammaticalPatterns = [
+      // Verb forms
+      /^past tense (and past participle )?of \{it\}.*\{\/it\}\.?$/,
+      /^past participle of \{it\}.*\{\/it\}\.?$/,
+      /^present participle of \{it\}.*\{\/it\}\.?$/,
+      /^third person singular (form )?of( the verb)? \{it\}.*\{\/it\}\.?$/,
+      /^past tense and past participle form of the verb \{it\}.*\{\/it\}\.?$/,
+      /^past tense form of the verb \{it\}.*\{\/it\}\.?$/,
+      /^past participle form of the verb \{it\}.*\{\/it\}\.?$/,
+      /^present participle form of the verb \{it\}.*\{\/it\}\.?$/,
+      /^undefined form of the verb \{it\}.*\{\/it\}\.?$/,
+
+      // Noun forms
+      /^plural (form )?of \{it\}.*\{\/it\}\.?$/,
+      /^(inflected|variant) form of \{it\}.*\{\/it\}\.?$/,
+
+      // Spelling variants
+      /^less common spelling of \{it\}.*\{\/it\}\.?$/,
+      /^variant form of \{it\}.*\{\/it\}\.?$/,
+      /^alternative spelling of \{it\}.*\{\/it\}\.?$/,
+
+      // General form descriptions
+      /^form of \{it\}.*\{\/it\}\.?$/,
+      /^(plural|inflected) form of \{it\}.*\{\/it\}\.?$/,
+    ];
+
+    // Danish grammatical form patterns from Ordnet API
+    const danishGrammaticalPatterns = [
+      // Danish verb forms
+      /^present tense \(nutid\) of \{it\}.*\{\/it\}\.?$/,
+      /^past tense \(datid\) of \{it\}.*\{\/it\}\.?$/,
+      /^past participle \(førnutid\) of \{it\}.*\{\/it\}\.?$/,
+      /^imperative form \(bydeform\) of \{it\}.*\{\/it\}\.?$/,
+
+      // Danish noun forms
+      /^definite form \(bestemt form\) of \{it\}.*\{\/it\}\.?$/,
+      /^plural form \(flertal\) of \{it\}.*\{\/it\}\.?$/,
+      /^plural definite form \(bestemt form flertal\) of \{it\}.*\{\/it\}\.?$/,
+
+      // Danish adjective forms
+      /^comparative form \(komparativ\) of \{it\}.*\{\/it\}\.?$/,
+      /^superlative form \(superlativ\) of \{it\}.*\{\/it\}\.?$/,
+      /^neuter form \(intetkønsform\) of \{it\}.*\{\/it\}\.?$/,
+
+      // Danish gender forms
+      /^common gender form \(fælleskøn\) of \{it\}.*\{\/it\}\.?$/,
+      /^neuter gender form \(intetkøn\) of \{it\}.*\{\/it\}\.?$/,
+      /^neuter form of the pronoun \{it\}.*\{\/it\}\.?$/,
+      /^plural form of the pronoun \{it\}.*\{\/it\}\.?$/,
+
+      // Other Danish forms
+      /^adverbial form of \{it\}.*\{\/it\}\.?$/,
+      /^contextual usage of \{it\}.*\{\/it\}\.?$/,
+    ];
+
+    // Combine all patterns
+    const allPatterns = [
+      ...englishGrammaticalPatterns,
+      ...danishGrammaticalPatterns,
+    ];
+
+    // Check if the definition matches any grammatical form pattern
+    for (const pattern of allPatterns) {
+      if (pattern.test(normalizedText)) {
+        const formType = this.getGrammaticalFormType(definitionText);
+        clientLog(
+          `Definition identified as grammatical form (type: ${formType}): "${definitionText.substring(0, 100)}..."`,
+          'info',
+        );
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Get the grammatical form type from a definition text
+   * This can be used to categorize grammatical forms for potential standard images
+   */
+  private getGrammaticalFormType(definitionText: string): string | null {
+    if (!definitionText || typeof definitionText !== 'string') {
+      return null;
+    }
+
+    const normalizedText = definitionText.toLowerCase().trim();
+
+    // English forms
+    if (/^past tense/.test(normalizedText)) return 'past_tense';
+    if (/^past participle/.test(normalizedText)) return 'past_participle';
+    if (/^present participle/.test(normalizedText)) return 'present_participle';
+    if (/^third person singular/.test(normalizedText)) return 'third_person';
+    if (/^plural/.test(normalizedText)) return 'plural';
+    if (/^variant form/.test(normalizedText)) return 'variant';
+    if (/^less common spelling/.test(normalizedText)) return 'spelling_variant';
+
+    // Danish forms
+    if (/^present tense \(nutid\)/.test(normalizedText))
+      return 'present_tense_da';
+    if (/^past tense \(datid\)/.test(normalizedText)) return 'past_tense_da';
+    if (/^past participle \(førnutid\)/.test(normalizedText))
+      return 'past_participle_da';
+    if (/^imperative form \(bydeform\)/.test(normalizedText))
+      return 'imperative_da';
+    if (/^definite form \(bestemt form\)/.test(normalizedText))
+      return 'definite_da';
+    if (/^plural form \(flertal\)/.test(normalizedText)) return 'plural_da';
+    if (/^comparative form \(komparativ\)/.test(normalizedText))
+      return 'comparative_da';
+    if (/^superlative form \(superlativ\)/.test(normalizedText))
+      return 'superlative_da';
+    if (/^neuter form/.test(normalizedText)) return 'neuter_da';
+    if (/^common gender form/.test(normalizedText)) return 'common_gender_da';
+
+    return 'grammatical_form';
+  }
+
+  /**
    * Create a new image record from a Pexels photo
    */
   async createFromPexels(
@@ -293,6 +424,16 @@ export class ImageService {
         clientLog(
           `FROM getOrCreateDefinitionImage: Definition with id ${definitionId} not found`,
           'warn',
+        );
+        return null;
+      }
+
+      // Check if this is a grammatical form definition that shouldn't have images
+      if (this.isGrammaticalFormDefinition(definition.definition)) {
+        const formType = this.getGrammaticalFormType(definition.definition);
+        clientLog(
+          `FROM getOrCreateDefinitionImage: Skipping image generation for grammatical form definition ${definitionId} (type: ${formType}): "${definition.definition.substring(0, 100)}..."`,
+          'info',
         );
         return null;
       }
@@ -756,6 +897,18 @@ export class ImageService {
         serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Definition with id ${definitionId} not found`,
           'warn',
+        );
+        return null;
+      }
+
+      // Check if this is a grammatical form definition that shouldn't have images
+      if (this.isGrammaticalFormDefinition(definitionWithImage.definition)) {
+        const formType = this.getGrammaticalFormType(
+          definitionWithImage.definition,
+        );
+        serverLog(
+          `======FROM getOrCreateTranslatedDefinitionImage===========: Skipping image generation for grammatical form definition ${definitionId} (type: ${formType}): "${definitionWithImage.definition.substring(0, 100)}..."`,
+          'info',
         );
         return null;
       }

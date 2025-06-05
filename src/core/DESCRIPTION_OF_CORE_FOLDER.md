@@ -26,6 +26,74 @@ src/core/
 └── lib/ (legacy)         # Legacy - Maintained for compatibility
 ```
 
+## Critical Redux-Persist Considerations
+
+### **IMPORTANT: Redux Store Location**
+
+⚠️ **The active Redux store uses slices from `src/core/lib/redux/features/`**, not `src/core/state/features/`.
+
+**Problem**: When updating Redux actions, developers might modify the wrong auth slice location.
+
+**Solution Pattern**:
+
+```typescript
+// ❌ Wrong import - creates actions that don't work with the actual store
+import { updateUserProfile } from '@/core/state/features/authSlice';
+
+// ✅ Correct import - uses the actual store configuration
+import { updateUserProfile } from '@/core/lib/redux/features/authSlice';
+```
+
+### **Redux-Persist and Server Actions Integration**
+
+When server actions update user data, Redux state must be synchronized for UI components to reflect changes immediately.
+
+**Pattern for Profile Updates**:
+
+1. **Server Action**: Updates database and returns changed fields
+2. **Custom Hook**: Automatically dispatches Redux action with updated data
+3. **Redux-Persist**: Automatically saves to localStorage
+4. **UI Update**: Components re-render with new data
+
+**Example Implementation**:
+
+```typescript
+// Custom hook that syncs server action with Redux
+export function useUserProfileUpdate() {
+  const dispatch = useDispatch();
+  const [state, formAction, isPending] = useActionState(
+    updateUserProfile,
+    initialState,
+  );
+
+  useEffect(() => {
+    if (state.success && state.updatedUser) {
+      // This automatically triggers redux-persist to save to localStorage
+      dispatch(updateReduxUserProfile(state.updatedUser));
+    }
+  }, [state.success, state.updatedUser, dispatch]);
+
+  return { state, formAction, isPending };
+}
+```
+
+**Key Points**:
+
+- Redux-persist automatically handles localStorage persistence when state changes
+- No need to manually call `persistor.flush()` or localStorage methods
+- Custom hooks prevent infinite re-render loops by managing dependencies properly
+- Server action responses should include updated fields for Redux sync
+
+**Debugging Redux-Persist Issues**:
+
+```javascript
+// Check localStorage for persisted state
+console.log('Persisted state:', localStorage.getItem('persist:root'));
+
+// Verify correct store slice is being used
+console.log('Store auth slice:', store.getState().auth);
+```
+
 ## Import Patterns
 
 ```typescript
@@ -38,9 +106,13 @@ import { getUserStats } from '@/core/domains/user';
 import { handlePrismaError } from '@/core/shared/database';
 import { serverLog } from '@/core/infrastructure/monitoring';
 
-// State management
-import { useAppDispatch, store } from '@/core/state';
-import { selectUser } from '@/core/state/slices/authSlice';
+// State management - CRITICAL: Use correct store location
+import { useAppDispatch, store } from '@/core/lib/redux/store'; // ✅ Correct
+import { updateUserProfile } from '@/core/lib/redux/features/authSlice'; // ✅ Correct
+import { selectUser } from '@/core/lib/redux/features/authSlice'; // ✅ Correct
+
+// Custom hooks for server action + Redux sync
+import { useUserProfileUpdate } from '@/core/shared/hooks/useUserProfileUpdate';
 
 // Legacy imports (still work)
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
@@ -141,6 +213,30 @@ Types: `GenerateImageResult`, `ImageBatchResult`
 - **Error Handling**: Invalid word IDs are filtered out and reported separately
 - **Statistics**: Provides comprehensive stats for admin monitoring
 
+### Grammatical Form Handling
+
+**Feature Overview**:
+
+- Skips image generation for grammatical form definitions (e.g., "Past participle of", "Past tense of {it}${baseWord}{/it}")
+- Applies to both English (Merriam-Webster) and Danish (Ordnet) dictionary processing
+- Improves performance by avoiding unnecessary image generation
+
+**Implementation Details**:
+
+- Added `isGrammaticalFormDefinition` method to detect grammatical forms using regex patterns
+- Added `getGrammaticalFormType` helper method to categorize grammatical forms
+- Modified `getOrCreateDefinitionImage` and `getOrCreateTranslatedDefinitionImage` to skip image generation for grammatical forms
+
+**Patterns Detected**:
+
+- **English**: Past tense, past participle, present participle, third person singular, plural forms, spelling variants
+- **Danish**: Present tense (nutid), past tense (datid), past participle (førnutid), imperative (bydeform), definite forms, comparative/superlative forms
+
+**Testing**:
+
+- Comprehensive test cases in `imageService-grammatical-forms.test.ts`
+- Detailed documentation in `imageService-grammatical-forms-summary.md`
+
 ### List Management (`actions/list-actions.ts`)
 
 - `fetchCategories()` - Fetch all categories for list creation
@@ -174,14 +270,23 @@ Types: `ListWithDetails`, `ListFilters`, `ListsResponse`
 
 ## User Domain (`domains/user/`)
 
-### User Management Actions
+### User Settings Actions (`actions/user-settings-actions.ts`)
 
-- `updateUserProfile(prevState, formData)`
-- `getUsers(page, limit, searchQuery?, sortBy?, sortOrder?)`
-- `getUserDetails(userId)`
-- `getUserByEmail(email)`
-- `updateUserStatus(userId, status)`
-- `deleteUser(userId)`
+- `updateUserProfile(prevState, formData)` - Update user profile information (name, email, languages, profile picture)
+- `updateUserLearningSettings(prevState, formData)` - Update learning preferences (goals, notifications, session settings)
+- `updateAppSettings(prevState, formData)` - Update application settings (theme, language, notifications)
+- `getUserSettings()` - Get user's complete settings
+- `deleteUserAccount(prevState, formData)` - Soft delete user account
+
+**Settings Management Features:**
+
+- **Profile Management**: Name, email, profile picture upload with Vercel Blob storage
+- **Language Configuration**: Base and target language selection from 12 supported languages
+- **Learning Preferences**: Daily goals (1-100 words), difficulty levels (1-5), session duration (5-120 min)
+- **Audio & Sound**: Sound effects, auto-play audio, audio quality preferences
+- **Notifications**: Learning reminders, progress notifications, review intervals (1-30 days)
+- **Theme & Appearance**: Light/dark/system theme, interface language
+- **Privacy Controls**: Account deletion with confirmation, data export (planned)
 
 ### Session Management Actions
 
@@ -196,6 +301,53 @@ Types: `ListWithDetails`, `ListFilters`, `ListsResponse`
 
 - `calculateUserStats(user)`
 - `calculateLearningProgress(user)`
+
+### Settings Types (`types/user-settings.ts`)
+
+- `CompleteUserSettings` - Combined user and settings interface
+- `UserProfileUpdateData`, `LearningSettingsUpdateData`, `AppSettingsUpdateData` - Update data types
+- `LanguageOption`, `DifficultyOption`, `ThemeOption` - UI option types
+- `NotificationSettings`, `LearningReminderSettings` - Detailed settings structures
+- `UserLearningPreferences` - Learning style and preference types
+
+### Settings Constants (`utils/settings-constants.ts`)
+
+- `LANGUAGE_OPTIONS` - 12 supported languages with flags and native names
+- `DIFFICULTY_OPTIONS` - 5 difficulty levels with descriptions
+- `SESSION_DURATION_OPTIONS` - Session duration choices (5 min - 2 hours)
+- `REVIEW_INTERVAL_OPTIONS` - Review frequency options (daily to monthly)
+- `THEME_OPTIONS` - Theme choices with descriptions
+- `DEFAULT_USER_SETTINGS` - Default values for new users
+- Helper functions: `getLanguageByCode()`, `getDifficultyByValue()`, etc.
+
+### User Statistics Actions (`actions/user-stats-actions.ts`)
+
+- `getUserStatistics(userId)` - Get comprehensive user statistics including learning progress, session analytics, mistake analysis, achievements, daily progress, and language proficiency
+- `getLearningAnalytics(userId, days?)` - Get detailed learning analytics for charts and analysis including daily progress, mistake patterns, learning behaviors, and vocabulary growth
+- `calculateStreak(userId)` - Calculate current and longest learning streaks
+- `calculateImprovementRate(sessions)` - Calculate improvement rate based on recent performance
+- `calculateGoalAchievementRate(sessions, dailyGoal)` - Calculate goal achievement percentage
+- `estimateProficiencyLevel(vocabularySize, averageMasteryScore)` - Estimate user's language proficiency level
+
+**Statistics Features:**
+
+- **Learning Progress**: Total vocabulary, words learned/in-progress/needing review, mastery scores, learning streaks
+- **Session Analytics**: Total sessions, study time, accuracy rates, performance trends, activity patterns
+- **Mistake Analysis**: Error tracking, improvement rates, difficult words identification, mistake type distribution
+- **Achievement System**: Points, badges, recent achievements, gamification elements
+- **Daily Goals**: Progress tracking, goal achievement rates, weekly/monthly summaries
+- **Language Proficiency**: Estimated level based on vocabulary size and performance metrics
+- **Visual Analytics**: Charts for progress tracking, vocabulary growth, weekly activity distribution
+
+Types: `UserStatistics`, `LearningAnalytics`, `ProficiencyLevel`
+
+### Legacy User Actions
+
+- `getUsers(page, limit, searchQuery?, sortBy?, sortOrder?)`
+- `getUserDetails(userId)`
+- `getUserByEmail(email)`
+- `updateUserStatus(userId, status)`
+- `deleteUser(userId)`
 
 ### Types
 

@@ -339,7 +339,7 @@ export async function fetchWordById(wordId: string) {
 
     const word = await prisma.word.findUnique({
       where: { id },
-      select: { word: true },
+      select: { word: true, languageCode: true },
     });
 
     return word;

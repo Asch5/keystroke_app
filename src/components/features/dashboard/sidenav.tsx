@@ -27,13 +27,18 @@ function SideNavContent({
 }) {
   const user = useSelector((state: RootState) => state.auth.user);
 
+  // Add cache-busting for profile picture
+  const profilePictureUrl = user?.profilePictureUrl
+    ? `${user.profilePictureUrl}?t=${Date.now()}`
+    : undefined;
+
   return (
     <div className="flex h-full flex-col space-y-4 py-4">
       {!collapsed && (
         <div className="px-3 py-2">
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarImage src={user?.profilePictureUrl ?? undefined} />
+              <AvatarImage src={profilePictureUrl} />
               <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="space-y-1">
@@ -46,7 +51,7 @@ function SideNavContent({
       {collapsed && (
         <div className="flex justify-center py-2">
           <Avatar>
-            <AvatarImage src={user?.profilePictureUrl ?? undefined} />
+            <AvatarImage src={profilePictureUrl} />
             <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
         </div>

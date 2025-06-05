@@ -7,6 +7,7 @@ import {
   BuildingLibraryIcon,
   LanguageIcon,
   UserCircleIcon,
+  Cog6ToothIcon,
 } from '@heroicons/react/24/outline';
 import { NavLink } from '@/core/types/nav';
 
@@ -24,6 +25,7 @@ export const dashboardNavLinks: NavLink[] = [
   },
   { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon },
   { name: 'Profile', href: '/dashboard/profile', icon: UserCircleIcon },
+  { name: 'Settings', href: '/dashboard/settings', icon: Cog6ToothIcon },
   { name: 'Admin', href: '/dashboard/admin', icon: BuildingLibraryIcon },
 ];
 
@@ -42,6 +44,16 @@ export const dictionaryNavLinks: NavLink[] = [
     name: 'New Word',
     href: '/dashboard/dictionary/add-new-word',
     icon: UserGroupIcon,
+  },
+  {
+    name: 'Statistics',
+    href: '/dashboard/statistics',
+    icon: ChartPieIcon,
+  },
+  {
+    name: 'Settings',
+    href: '/dashboard/settings',
+    icon: Cog6ToothIcon,
   },
 ];
 

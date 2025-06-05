@@ -99,3 +99,25 @@ export {
   type GenerateImageResult,
   type ImageBatchResult,
 } from './image-actions';
+
+// Word search operations
+export {
+  searchWords,
+  addDefinitionToUserDictionary,
+  removeDefinitionFromUserDictionary,
+  type WordSearchResult,
+  type WordDefinitionResult,
+} from './word-search-actions';
+
+// User list management
+export {
+  getUserLists,
+  getAvailablePublicLists,
+  addListToUserCollection,
+  removeListFromUserCollection,
+  createCustomUserList,
+  updateUserList,
+  type UserListWithDetails,
+  type PublicListSummary,
+  type UserListFilters,
+} from './user-list-actions';

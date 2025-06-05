@@ -1,0 +1,480 @@
+'use client';
+
+import { useState, useCallback, useTransition } from 'react';
+import { LanguageCode, PartOfSpeech } from '@prisma/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import {
+  Search,
+  Plus,
+  Loader2,
+  Volume2,
+  Image as ImageIcon,
+  BookOpen,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+import { toast } from 'sonner';
+import {
+  searchWords,
+  addDefinitionToUserDictionary,
+  removeDefinitionFromUserDictionary,
+  type WordSearchResult,
+} from '@/core/domains/dictionary';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+interface AddNewWordContentProps {
+  userId: string;
+  baseLanguageCode: LanguageCode;
+  targetLanguageCode: LanguageCode;
+}
+
+/**
+ * Part of speech display names for better UX
+ */
+const partOfSpeechDisplayNames: Record<PartOfSpeech, string> = {
+  noun: 'Noun',
+  verb: 'Verb',
+  phrasal_verb: 'Phrasal Verb',
+  adjective: 'Adjective',
+  adverb: 'Adverb',
+  pronoun: 'Pronoun',
+  preposition: 'Preposition',
+  conjunction: 'Conjunction',
+  interjection: 'Interjection',
+  numeral: 'Numeral',
+  article: 'Article',
+  exclamation: 'Exclamation',
+  abbreviation: 'Abbreviation',
+  suffix: 'Suffix',
+  first_part: 'First Part',
+  last_letter: 'Last Letter',
+  adj_pl: 'Adjective Plural',
+  symbol: 'Symbol',
+  phrase: 'Phrase',
+  sentence: 'Sentence',
+  undefined: 'Other',
+};
+
+/**
+ * Language display names
+ */
+const languageDisplayNames: Record<LanguageCode, string> = {
+  en: 'English',
+  ru: 'Russian',
+  da: 'Danish',
+  es: 'Spanish',
+  fr: 'French',
+  de: 'German',
+  it: 'Italian',
+  pt: 'Portuguese',
+  zh: 'Chinese',
+  ja: 'Japanese',
+  ko: 'Korean',
+  ar: 'Arabic',
+};
+
+export function AddNewWordContent({
+  userId,
+  baseLanguageCode,
+  targetLanguageCode,
+}: AddNewWordContentProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLanguage, setSelectedLanguage] =
+    useState<LanguageCode>(targetLanguageCode);
+  const [searchResults, setSearchResults] = useState<WordSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isPending, startTransition] = useTransition();
+
+  const pageSize = 10;
+
+  /**
+   * Handle search for words
+   */
+  const handleSearch = useCallback(
+    async (query: string, page = 1) => {
+      if (!query.trim()) {
+        setSearchResults([]);
+        setTotalPages(0);
+        setTotalCount(0);
+        return;
+      }
+
+      setIsSearching(true);
+
+      try {
+        const result = await searchWords(
+          query.trim(),
+          selectedLanguage,
+          userId,
+          page,
+          pageSize,
+        );
+
+        setSearchResults(result.results);
+        setTotalPages(result.totalPages);
+        setTotalCount(result.totalCount);
+        setCurrentPage(page);
+      } catch (error) {
+        console.error('Error searching words:', error);
+        toast.error('Failed to search words. Please try again.');
+      } finally {
+        setIsSearching(false);
+      }
+    },
+    [selectedLanguage, userId],
+  );
+
+  /**
+   * Handle adding a definition to user's dictionary
+   */
+  const handleAddDefinition = async (definitionId: number) => {
+    startTransition(async () => {
+      try {
+        const result = await addDefinitionToUserDictionary(
+          userId,
+          definitionId,
+          baseLanguageCode,
+          targetLanguageCode,
+        );
+
+        if (result.success) {
+          if (result.isRestored) {
+            toast.success('Word restored to your dictionary!');
+          } else {
+            toast.success('Word added to your dictionary!');
+          }
+
+          // Refresh search results to update the button states
+          await handleSearch(searchQuery, currentPage);
+        } else {
+          toast.error(result.error || 'Failed to add word to dictionary');
+        }
+      } catch (error) {
+        console.error('Error adding definition:', error);
+        toast.error('Failed to add word to dictionary');
+      }
+    });
+  };
+
+  /**
+   * Handle removing a definition from user's dictionary
+   */
+  const handleRemoveDefinition = async (userDictionaryId: string) => {
+    startTransition(async () => {
+      try {
+        const result = await removeDefinitionFromUserDictionary(
+          userId,
+          userDictionaryId,
+        );
+
+        if (result.success) {
+          toast.success('Word removed from your dictionary');
+
+          // Refresh search results to update the button states
+          await handleSearch(searchQuery, currentPage);
+        }
+      } catch (error) {
+        console.error('Error removing definition:', error);
+        toast.error('Failed to remove word from dictionary');
+      }
+    });
+  };
+
+  /**
+   * Handle page navigation
+   */
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      handleSearch(searchQuery, newPage);
+    }
+  };
+
+  /**
+   * Handle language change
+   */
+  const handleLanguageChange = (newLanguage: LanguageCode) => {
+    setSelectedLanguage(newLanguage);
+    setSearchResults([]);
+    setCurrentPage(1);
+    setTotalPages(0);
+    setTotalCount(0);
+
+    // Re-search if there's a query
+    if (searchQuery.trim()) {
+      handleSearch(searchQuery, 1);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Search Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Search className="h-5 w-5" />
+            Search Words
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex gap-2">
+            <Input
+              placeholder="Enter word to search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearch(searchQuery);
+                }
+              }}
+              className="flex-1"
+            />
+            <Select
+              value={selectedLanguage}
+              onValueChange={handleLanguageChange}
+            >
+              <SelectTrigger className="w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(languageDisplayNames).map(([code, name]) => (
+                  <SelectItem key={code} value={code}>
+                    {name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              onClick={() => handleSearch(searchQuery)}
+              disabled={isSearching || !searchQuery.trim()}
+            >
+              {isSearching ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Search className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+
+          {/* Search Results Summary */}
+          {totalCount > 0 && (
+            <div className="text-sm text-muted-foreground">
+              Found {totalCount} word{totalCount !== 1 ? 's' : ''} matching
+              &ldquo;
+              {searchQuery}&rdquo;
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Search Results */}
+      {searchResults.length > 0 && (
+        <div className="space-y-4">
+          {searchResults.map((word) => (
+            <Card key={word.wordId}>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-xl">{word.wordText}</CardTitle>
+                    {word.phoneticGeneral && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        /{word.phoneticGeneral}/
+                      </p>
+                    )}
+                  </div>
+                  <Badge variant="outline">
+                    {languageDisplayNames[word.languageCode]}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {word.definitions.map((definition, index) => (
+                    <div key={definition.definitionId}>
+                      {index > 0 && <Separator className="my-4" />}
+
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary">
+                                {
+                                  partOfSpeechDisplayNames[
+                                    definition.partOfSpeech
+                                  ]
+                                }
+                              </Badge>
+                              {definition.variant && (
+                                <Badge variant="outline" className="text-xs">
+                                  {definition.variant}
+                                </Badge>
+                              )}
+                            </div>
+
+                            <div className="prose prose-sm max-w-none">
+                              <p>{definition.definition}</p>
+                            </div>
+
+                            {definition.phonetic &&
+                              definition.phonetic !== word.phoneticGeneral && (
+                                <p className="text-xs text-muted-foreground">
+                                  /{definition.phonetic}/
+                                </p>
+                              )}
+
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              {definition.hasAudio && (
+                                <span className="flex items-center gap-1">
+                                  <Volume2 className="h-3 w-3" />
+                                  Audio
+                                </span>
+                              )}
+                              {definition.hasImage && (
+                                <span className="flex items-center gap-1">
+                                  <ImageIcon className="h-3 w-3" />
+                                  Image
+                                </span>
+                              )}
+                              {definition.exampleCount > 0 && (
+                                <span className="flex items-center gap-1">
+                                  <BookOpen className="h-3 w-3" />
+                                  {definition.exampleCount} example
+                                  {definition.exampleCount !== 1 ? 's' : ''}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="ml-4">
+                            {definition.isInUserDictionary ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleRemoveDefinition(
+                                    definition.userDictionaryId!,
+                                  )
+                                }
+                                disabled={isPending}
+                                className="text-red-600 border-red-200 hover:bg-red-50"
+                              >
+                                {isPending ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <>
+                                    <X className="h-4 w-4 mr-1" />
+                                    Remove
+                                  </>
+                                )}
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  handleAddDefinition(definition.definitionId)
+                                }
+                                disabled={isPending}
+                              >
+                                {isPending ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <>
+                                    <Plus className="h-4 w-4 mr-1" />
+                                    Add
+                                  </>
+                                )}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    Page {currentPage} of {totalPages}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage <= 1 || isSearching}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      Previous
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage >= totalPages || isSearching}
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {searchQuery && !isSearching && searchResults.length === 0 && (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center py-8">
+              <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium">No words found</h3>
+              <p className="text-muted-foreground mt-2">
+                No words found matching &ldquo;{searchQuery}&rdquo; in{' '}
+                {languageDisplayNames[selectedLanguage]}. Try a different search
+                term or check the spelling.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Initial State */}
+      {!searchQuery && (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center py-8">
+              <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium">Search for words</h3>
+              <p className="text-muted-foreground mt-2">
+                Enter a word above to search our dictionary and add new words to
+                your vocabulary.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}

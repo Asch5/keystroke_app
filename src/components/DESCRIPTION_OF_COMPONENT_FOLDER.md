@@ -98,8 +98,67 @@ import { AuthProvider, ReduxProvider } from '@/components/providers';
 - `TranslateComponent` - Translation interface
 - `WordImage` - Image management
 - `ImageSelector` - Pexels API integration
-- `AddNewWordForm` - Add words
-- `WordEditForm` - Edit words
+- `AddNewWordForm` - Add words (admin)
+- `WordEditForm` - Edit words (admin)
+- `DictionaryOverview` - Main dictionary overview with statistics and quick actions
+- `MyDictionaryContent` - Comprehensive user dictionary management with filtering, sorting, search, pagination, and word-to-list management
+- `AddNewWordContent` - User word search and dictionary addition interface
+- `WordListsContent` - User list management and public list discovery interface
+- `AddToListDialog` - Modal dialog for adding words from user dictionary to lists (existing or new custom lists)
+
+**MyDictionaryContent Features:**
+
+- **Comprehensive Filtering**: Filter by learning status, part of speech, difficulty level, favorites, modified words, and review status
+- **Advanced Search**: Real-time search across word text with debounced input for performance
+- **Flexible Sorting**: Sort by word, progress, last reviewed date, mastery score, or creation date with ascending/descending options
+- **Pagination Support**: Navigate through large vocabularies with configurable page sizes
+- **Actions Dropdown**: Multi-action dropdown for each word including favorites, learning status, review scheduling, and list management
+- **Add to List Feature**: Direct integration with AddToListDialog for organizing words into custom or existing lists
+- **Learning Status Management**: Mark words as learned, needing review, with visual status indicators and color-coded badges
+- **Progress Tracking**: Visual progress bars showing learning completion and mastery scores with review counts
+- **Audio Integration**: Play audio pronunciations directly from the word list
+- **Image Support**: View associated images for visual learning enhancement
+- **Bulk Operations**: Clear filters, reset views, and manage multiple words efficiently
+- **Empty State Guidance**: Helpful messaging and links for users with no vocabulary or filtered results
+- **Responsive Design**: Mobile-optimized table layout with proper touch targets and scrolling
+
+**AddNewWordContent Features:**
+
+- **Multi-Language Search**: Search words across different language dictionaries with language selector
+- **Real-Time Search**: Debounced search with loading states and error handling
+- **Definition-Level Management**: Add/remove individual word definitions rather than entire words
+- **User Context Awareness**: Shows which definitions are already in user's dictionary with appropriate action buttons
+- **Rich Word Display**: Shows phonetic transcription, part of speech, variants, and metadata (audio, images, examples)
+- **Pagination Support**: Navigate through large search result sets with previous/next controls
+- **Interactive Actions**: Add/remove definitions with optimistic UI updates and toast notifications
+- **Empty States**: Helpful guidance for initial state and no results scenarios
+- **Responsive Design**: Mobile-friendly layout with proper spacing and typography
+
+**WordListsContent Features:**
+
+- **Dual Tab Interface**: Separate views for "My Lists" and "Discover" with independent filtering
+- **List Type Management**: Handles both inherited public lists and custom user-created lists
+- **Collection Operations**: Add/remove public lists to/from user's personal collection
+- **Custom List Creation**: Users can create and manage their own word lists
+- **List Customization**: Users can customize names, descriptions, and difficulty levels for inherited lists
+- **Progress Tracking**: Visual progress indicators showing learning completion for each list
+- **Rich Metadata Display**: Shows word counts, learned counts, difficulty levels, and sample words
+- **Search and Filtering**: Real-time search across list names, descriptions, and tags
+- **Responsive Card Layout**: Grid-based responsive design with hover effects and smooth transitions
+- **Language Compatibility**: Filters public lists based on user's language preferences
+
+**AddToListDialog Features:**
+
+- **Two-Tab Interface**: Switch between "Add to Existing List" and "Create New List" options
+- **Visual List Selection**: Interactive cards showing existing lists with difficulty badges, word counts, and custom/inherited indicators
+- **New List Creation**: Complete form with name, description, difficulty selection, and cover image upload
+- **Advanced Image Selection**: Integrated ImageSelector component with Pexels API search for cover images
+- **Duplicate Prevention**: Validates against adding same word to a list multiple times
+- **Order Management**: Automatically maintains proper word ordering within lists
+- **Real-Time Validation**: Form validation with helpful error messages and loading states
+- **User Language Context**: Automatically uses user's language preferences for new list creation
+- **Success Feedback**: Toast notifications and dialog state management for smooth UX
+- **Responsive Design**: Mobile-friendly layout with proper scrolling and spacing
 
 ### Settings (`/features/settings/`)
 
@@ -131,6 +190,7 @@ import { AuthProvider, ReduxProvider } from '@/components/providers';
 
 - `DashboardLoadingSkeleton` - Main dashboard loading skeleton with structured placeholders for key metrics, quick actions, progress cards, and achievements
 - `StatisticsLoadingSkeleton` - Statistics page loading skeleton matching the detailed analytics layout
+- `MyDictionaryLoadingSkeleton` - My Dictionary page loading skeleton with search filters, table structure, and pagination placeholders
 
 ## File Naming
 

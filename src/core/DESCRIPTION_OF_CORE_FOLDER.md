@@ -341,6 +341,28 @@ Types: `ListWithDetails`, `ListFilters`, `ListsResponse`
 
 Types: `UserStatistics`, `LearningAnalytics`, `ProficiencyLevel`
 
+### User Dictionary Actions (`actions/user-dictionary-actions.ts`)
+
+- `getUserDictionary(userId, filters?)` - Get user's dictionary words with comprehensive filtering, sorting, search, and pagination
+- `updateWordLearningStatus(userId, userDictionaryId, learningStatus, additionalData?)` - Update learning status for a word in user's dictionary
+- `toggleWordFavorite(userId, userDictionaryId)` - Add/remove word from favorites
+- `updateUserWordCustomData(userId, userDictionaryId, customData)` - Update user's custom word data (notes, tags, custom definitions)
+- `removeWordFromUserDictionary(userId, userDictionaryId)` - Remove word from user's dictionary (soft delete)
+- `getUserDictionaryStats(userId)` - Get user dictionary statistics and status breakdown
+
+**Dictionary Management Features:**
+
+- **Comprehensive Filtering**: Learning status, part of speech, difficulty level, favorites, modified words, review status
+- **Advanced Search**: Search across words, definitions, custom notes, and translations
+- **Flexible Sorting**: Sort by word, progress, mastery score, last reviewed date, creation date
+- **Pagination**: Efficient pagination with configurable page sizes
+- **Learning Progress**: Track learning status, progress percentage, mastery scores, review counts
+- **Customization**: Custom definitions, notes, tags, difficulty levels, phonetic transcriptions
+- **Favorites System**: Mark important words for quick access
+- **Review Management**: SRS-based review scheduling and tracking
+
+Types: `UserDictionaryItem`, `UserDictionaryFilters`, `UserDictionaryResponse`
+
 ### Legacy User Actions
 
 - `getUsers(page, limit, searchQuery?, sortBy?, sortOrder?)`
@@ -510,6 +532,48 @@ Utility Functions: `extractSubjectLabels(labels)`, `extractGeneralLabels(labels)
 Core Functions: `validateDanishDictionary(data, context)`, `extractEnumSuggestions(validationResult)`, `isValidationAcceptable(validationResult)`
 
 Types: `ValidationSummary`, `ValidationIssue`
+
+### Word Search Operations (`actions/word-search-actions.ts`)
+
+- `searchWords(searchQuery, languageCode, userId?, page?, pageSize?)` - Search words in database with pagination and user dictionary status
+- `addDefinitionToUserDictionary(userId, definitionId, baseLanguageCode, targetLanguageCode)` - Add specific definition to user's dictionary
+- `removeDefinitionFromUserDictionary(userId, userDictionaryId)` - Remove definition from user's dictionary (soft delete)
+
+Types: `WordSearchResult`, `WordDefinitionResult`
+
+**Key Features:**
+
+- **Comprehensive Search**: Searches words by text with case-insensitive matching
+- **User Context**: Shows which definitions are already in user's dictionary
+- **Pagination Support**: Built-in pagination for large result sets
+- **Definition-Level Management**: Users can add/remove individual definitions rather than entire words
+- **Soft Delete**: Removed words can be restored if re-added
+- **Multi-Language Support**: Search across different language dictionaries
+- **Rich Metadata**: Returns audio, image, example count, and learning status information
+
+### User List Management Operations (`actions/user-list-actions.ts`)
+
+- `getUserLists(userId, filters?)` - Get user's personal lists with filtering and sorting
+- `getAvailablePublicLists(userId, userLanguages, filters?)` - Get public lists user can add to collection
+- `addListToUserCollection(userId, listId, userLanguages)` - Add public list to user's collection
+- `removeListFromUserCollection(userId, userListId)` - Remove list from user's collection (soft delete)
+- `createCustomUserList(userId, data)` - Create custom user list
+- `updateUserList(userId, userListId, data)` - Update user list customizations
+- `addWordToUserList(userId, userListId, userDictionaryId)` - Add word from user dictionary to a list
+
+Types: `UserListWithDetails`, `PublicListSummary`, `UserListFilters`
+
+**Key Features:**
+
+- **Dual List Types**: Manages both inherited public lists and custom user lists
+- **Customization Support**: Users can customize names, descriptions, difficulty for inherited lists
+- **Collection Management**: Add/remove public lists from personal collection
+- **Word Management**: Add individual words from user dictionary to specific lists
+- **Order Management**: Maintains proper ordering of words within lists
+- **Duplicate Prevention**: Validates against adding same word twice to a list
+- **Rich Metadata**: Includes progress tracking, word counts, sample words
+- **Language Filtering**: Shows lists matching user's language preferences
+- **Ownership Validation**: Ensures users can only modify their own lists and words
 
 ### Other Legacy Actions (`lib/actions/`)
 

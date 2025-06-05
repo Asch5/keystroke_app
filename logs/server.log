@@ -9915,3 +9915,143 @@ Unique constraint failed on the fields: (`word_id`,`part_of_speech`,`variant`) C
 [2025-06-05T11:40:32.743Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
 [2025-06-05T11:40:32.794Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
 [2025-06-05T11:40:32.891Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:45:06.861Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:45:08.245Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:45:08.485Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:45:09.089Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:48:33.170Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:48:34.425Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:48:34.658Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:48:35.333Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:50:17.161Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:50:18.539Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:50:19.004Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:50:19.628Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:57:22.600Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:57:24.029Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:57:24.062Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:57:24.903Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:57:24.963Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:57:25.424Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T11:57:25.535Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T11:57:25.656Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:32:04.474Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:32:06.086Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:32:06.154Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:32:07.053Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:32:07.121Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:32:07.744Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:32:07.776Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:32:07.901Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:34:04.365Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:34:05.649Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:34:05.709Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:34:06.490Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:34:06.545Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:34:07.069Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:34:07.117Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:34:07.211Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:34:42.162Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-06-05T12:34:43.444Z] [info] Fetching categories for list creation
+[2025-06-05T12:34:43.562Z] [info] Fetched 1 categories
+[2025-06-05T12:34:43.644Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-06-05T12:34:44.412Z] [info] Fetching categories for list creation
+[2025-06-05T12:34:44.481Z] [info] Fetched 1 categories
+[2025-06-05T12:40:01.517Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:40:03.096Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T12:40:03.439Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T12:40:03.869Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T13:50:59.847Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-06-05T13:51:01.554Z] [info] Fetching categories for list creation
+[2025-06-05T13:51:01.649Z] [info] Fetched 1 categories
+[2025-06-05T13:51:01.771Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-06-05T13:51:02.299Z] [info] Fetching categories for list creation
+[2025-06-05T13:51:02.343Z] [info] Fetched 1 categories
+[2025-06-05T14:35:05.057Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:35:06.402Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:35:06.457Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:35:07.293Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:35:07.342Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:35:07.922Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:35:07.973Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:35:08.083Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:35:39.412Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:35:40.141Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:35:40.230Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:35:40.427Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:35:40.538Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:35:41.244Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:35:41.293Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:35:41.393Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:36:11.886Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:36:13.380Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:36:13.554Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:36:14.068Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:36:23.903Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:36:24.370Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:36:24.413Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:36:25.243Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:36:25.299Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:36:25.932Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:36:25.988Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:36:26.098Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:36:54.994Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:36:55.716Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:36:55.918Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:36:56.264Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:37:28.322Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:37:28.849Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:37:28.921Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:37:29.099Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:37:29.162Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:37:29.593Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:37:29.631Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T14:37:29.689Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T14:38:13.886Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-06-05T14:38:15.082Z] [info] Fetching categories for list creation
+[2025-06-05T14:38:15.178Z] [info] Fetched 1 categories
+[2025-06-05T14:38:15.275Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-06-05T14:38:15.812Z] [info] Fetching categories for list creation
+[2025-06-05T14:38:15.859Z] [info] Fetched 1 categories
+[2025-06-05T17:00:43.241Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:00:44.795Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:00:44.998Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:00:45.718Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:05:49.635Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:05:51.050Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:05:51.103Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:05:51.891Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:05:51.945Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:05:52.488Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:05:52.555Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:05:52.653Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:06:27.087Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-06-05T17:06:28.157Z] [info] Fetching categories for list creation
+[2025-06-05T17:06:28.557Z] [info] Fetched 1 categories
+[2025-06-05T17:06:28.660Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-06-05T17:06:29.220Z] [info] Fetching categories for list creation
+[2025-06-05T17:06:29.271Z] [info] Fetched 1 categories
+[2025-06-05T17:06:35.254Z] [info] Fetching categories for list creation
+[2025-06-05T17:06:35.363Z] [info] Fetched 1 categories
+[2025-06-05T17:06:35.446Z] [info] Fetching categories for list creation
+[2025-06-05T17:06:35.491Z] [info] Fetched 1 categories
+[2025-06-05T17:06:47.307Z] [info] Fetching categories for list creation
+[2025-06-05T17:06:47.366Z] [info] Fetched 1 categories
+[2025-06-05T17:06:47.511Z] [info] Fetching categories for list creation
+[2025-06-05T17:06:47.576Z] [info] Fetched 1 categories
+[2025-06-05T17:06:56.718Z] [info] Fetching categories for list creation
+[2025-06-05T17:06:56.801Z] [info] Fetched 1 categories
+[2025-06-05T17:06:56.914Z] [info] Fetching categories for list creation
+[2025-06-05T17:06:56.966Z] [info] Fetched 1 categories
+[2025-06-05T17:07:07.584Z] [info] Fetching categories for list creation
+[2025-06-05T17:07:07.726Z] [info] Fetched 1 categories
+[2025-06-05T17:07:07.804Z] [info] Fetching categories for list creation
+[2025-06-05T17:07:07.862Z] [info] Fetched 1 categories
+[2025-06-05T17:09:38.755Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:09:40.246Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:09:40.306Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:09:41.273Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:09:41.582Z] [info] Fetching comprehensive statistics for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:09:42.352Z] [info] Statistics fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d
+[2025-06-05T17:09:42.414Z] [info] Fetching session stats for user bf8e698b-5b15-4092-a670-1107d442ac6d Context: {"userId":"bf8e698b-5b15-4092-a670-1107d442ac6d"}
+[2025-06-05T17:09:42.516Z] [info] Session stats fetched successfully for user bf8e698b-5b15-4092-a670-1107d442ac6d

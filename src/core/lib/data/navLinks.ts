@@ -35,14 +35,10 @@ export const dictionaryNavLinks: NavLink[] = [
     href: '/dashboard/practice',
     icon: PresentationChartBarIcon,
   },
+
   {
-    name: 'Catalogue',
-    href: '/dashboard/dictionary/catalogue',
-    icon: DocumentDuplicateIcon,
-  },
-  {
-    name: 'New Word',
-    href: '/dashboard/dictionary/add-new-word',
+    name: 'Dictionary',
+    href: '/dashboard/dictionary',
     icon: UserGroupIcon,
   },
   {

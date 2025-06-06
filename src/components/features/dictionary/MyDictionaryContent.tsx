@@ -63,6 +63,8 @@ import {
   TrendingDown,
   ChevronLeft,
   ChevronRight,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import {
   getUserDictionary,
@@ -85,6 +87,8 @@ import {
   getDisplayDefinition,
   shouldShowTranslations,
 } from '@/core/domains/user/utils/dictionary-display-utils';
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import { cn } from '@/core/shared/utils/common/cn';
 
 interface MyDictionaryContentProps {
   userId: string;
@@ -137,6 +141,10 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
     'word' | 'progress' | 'lastReviewedAt' | 'masteryScore' | 'createdAt'
   >('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Audio state
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [playingWordId, setPlayingWordId] = useState<string | null>(null);
 
   const pageSize = 20;
 
@@ -356,6 +364,82 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
     setSortOrder('desc');
     setCurrentPage(1);
   };
+
+  // Play word audio from database only (no fallback)
+  const playWordAudio = useCallback(
+    async (word: string, audioUrl: string | null, wordId: string) => {
+      // Debug logging
+      console.log('🔊 Audio playback requested:', {
+        word,
+        audioUrl,
+        wordId,
+        urlType: typeof audioUrl,
+        urlLength: audioUrl?.length,
+      });
+
+      // Check if audio is available in database
+      if (!audioUrl) {
+        console.log('❌ No audio URL provided');
+        toast.error('🔇 No audio available for this word', {
+          description: 'Audio will be added to the database soon',
+          duration: 3000,
+        });
+        return;
+      }
+
+      if (isPlayingAudio && playingWordId === wordId) {
+        // Stop if already playing this word
+        console.log('⏹️ Stopping current audio playback');
+        setIsPlayingAudio(false);
+        setPlayingWordId(null);
+        return;
+      }
+
+      setIsPlayingAudio(true);
+      setPlayingWordId(wordId);
+
+      try {
+        console.log('🎵 Attempting to play audio from URL:', audioUrl);
+        // Only play from database - no fallback
+        await AudioService.playAudioFromDatabase(audioUrl);
+        console.log('✅ Audio playback successful');
+        toast.success('🔊 Playing pronunciation', { duration: 2000 });
+      } catch (error) {
+        console.error('❌ Database audio playback failed:', error);
+        console.error('Error details:', {
+          error,
+          audioUrl,
+          word,
+          errorMessage: error instanceof Error ? error.message : String(error),
+        });
+
+        // More specific error message based on the error
+        let errorDescription = 'Please try again or contact support';
+        if (error instanceof Error) {
+          if (error.message.includes('timeout')) {
+            errorDescription =
+              'Audio file is taking too long to load. Check your internet connection.';
+          } else if (error.message.includes('Network error')) {
+            errorDescription =
+              'Network error - please check your internet connection.';
+          } else if (error.message.includes('not supported')) {
+            errorDescription = 'Audio format not supported by your browser.';
+          } else if (error.message.includes('corrupted')) {
+            errorDescription = 'Audio file appears to be corrupted.';
+          }
+        }
+
+        toast.error('Failed to play audio from database', {
+          description: errorDescription,
+          duration: 4000,
+        });
+      } finally {
+        setIsPlayingAudio(false);
+        setPlayingWordId(null);
+      }
+    },
+    [isPlayingAudio, playingWordId],
+  );
 
   if (loading && words.length === 0) {
     return (
@@ -613,7 +697,7 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
                 <TableRow key={word.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div>
+                      <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{word.word}</span>
                           {word.isFavorite && (
@@ -628,6 +712,37 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
                           {word.variant && `• ${word.variant}`}
                         </div>
                       </div>
+                      {/* Audio Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          'h-6 w-6 p-0 hover:bg-muted',
+                          !word.audioUrl && 'opacity-50 cursor-not-allowed',
+                        )}
+                        title={
+                          word.audioUrl
+                            ? 'Play pronunciation'
+                            : 'No audio available'
+                        }
+                        disabled={isPlayingAudio && playingWordId !== word.id}
+                        onClick={() =>
+                          playWordAudio(word.word, word.audioUrl, word.id)
+                        }
+                      >
+                        {word.audioUrl ? (
+                          <Volume2
+                            className={cn(
+                              'h-3 w-3 text-blue-600',
+                              isPlayingAudio &&
+                                playingWordId === word.id &&
+                                'animate-pulse',
+                            )}
+                          />
+                        ) : (
+                          <VolumeX className="h-3 w-3 text-muted-foreground" />
+                        )}
+                      </Button>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -736,10 +851,19 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
                             </>
                           )}
                         </DropdownMenuItem>
-                        {word.audioUrl && (
-                          <DropdownMenuItem>
+                        {word.audioUrl ? (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              playWordAudio(word.word, word.audioUrl, word.id)
+                            }
+                          >
                             <Play className="h-4 w-4 mr-2" />
                             Play Audio
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem disabled>
+                            <VolumeX className="h-4 w-4 mr-2" />
+                            No Audio Available
                           </DropdownMenuItem>
                         )}
                         {word.imageUrl && (

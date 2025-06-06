@@ -199,8 +199,8 @@ export async function updateUserProfile(
         data: updateData as Prisma.UserUpdateInput,
       });
 
-      // Revalidate the profile page
-      revalidatePath('/dashboard/settings/profile');
+      // Revalidate the settings page
+      revalidatePath('/dashboard/settings');
       return { message: 'Profile updated successfully.', success: true };
     } else {
       return { message: 'No changes to update.' };

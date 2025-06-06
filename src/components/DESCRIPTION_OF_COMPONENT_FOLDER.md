@@ -54,6 +54,29 @@ import { AuthProvider, ReduxProvider } from '@/components/providers';
 
 ### Dashboard (`/features/dashboard/`)
 
+**Navigation Components:**
+
+- `AppSidebar` - Modern sidebar component using shadcn/ui Sidebar primitives with collapsible functionality, user profile display, and navigation menu
+- `SideNav` - Legacy sidebar component (deprecated, use AppSidebar instead)
+- `NavLinks` - Navigation links renderer (still used by legacy SideNav)
+
+**AppSidebar Features:**
+
+- **shadcn/ui Integration**: Built using official shadcn/ui Sidebar primitives for consistency and theming
+- **Collapsible Design**: Supports icon-only collapsed state with tooltips for space efficiency
+- **User Profile Display**: Modern avatar layout in footer with name, email, and clickable settings link
+- **Active State Management**: Highlights current page with proper visual feedback
+- **Sub-Navigation Support**: Expandable dictionary section with collapsible sub-menus for internal routes
+- **Dictionary Sub-Routes**: Overview, My Dictionary, Add New Word, and Word Lists with proper active state detection
+- **Brand Header**: Application logo and name in the header section following shadcn/ui patterns
+- **Responsive Mobile Support**: Automatic mobile sheet overlay using shadcn/ui Sheet component
+- **Keyboard Shortcuts**: Built-in Cmd/Ctrl+B keyboard shortcut for toggle functionality
+- **Persistent State**: Remembers sidebar state using cookies across sessions
+- **Collapsible Groups**: Uses shadcn/ui Collapsible component for expandable menu sections
+- **Sign Out Integration**: Dedicated sign out button in footer with NextAuth.js integration
+- **Rail Toggle**: Clickable rail for easy sidebar toggle interaction
+- **Proper Semantic Structure**: Uses SidebarHeader, SidebarContent, SidebarFooter, SidebarMenu, and SidebarMenuSub for organized layout
+
 **Main Dashboard Components:**
 
 - `DashboardContent` - Main dashboard overview with key metrics, quick actions, and progress visualization

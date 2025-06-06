@@ -25,6 +25,7 @@ import {
   Trophy,
   Clock,
   BookOpen,
+  VolumeX,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/core/shared/utils/common/cn';
@@ -141,30 +142,40 @@ export function TypingPracticeContent({
     };
   }, [sessionState.isActive, sessionState.timeRemaining]);
 
-  // Audio playback function using database audio with fallback
+  // Audio playback function using database audio only (no fallback)
   const playWordAudio = useCallback(
     async (word: string, audioUrl: string | undefined, isCorrect: boolean) => {
+      // Check if audio is available in database
+      if (!audioUrl) {
+        toast.error('🔇 No audio available for this word', {
+          description: 'Audio will be added to the database soon',
+          duration: 3000,
+        });
+        return;
+      }
+
       setIsPlayingAudio(true);
       try {
-        // Try to play from database first, fallback to TTS
-        const language = user?.targetLanguageCode === 'en' ? 'en-US' : 'da-DK';
-
-        await AudioService.playAudioWithFallback(audioUrl, word, language);
+        // Only play from database - no fallback
+        await AudioService.playAudioFromDatabase(audioUrl);
 
         // Add visual feedback with sound
         if (isCorrect) {
           toast.success('🔊 Perfect!', { duration: 2000 });
         } else {
-          toast.error('🔊 Listen and try again', { duration: 2000 });
+          toast.success('🔊 Listen and learn', { duration: 2000 });
         }
       } catch (error) {
-        console.error('Audio playback failed:', error);
-        toast.error('Audio playback failed', { duration: 1500 });
+        console.error('Database audio playback failed:', error);
+        toast.error('Failed to play audio from database', {
+          description: 'Please try again or contact support',
+          duration: 3000,
+        });
       } finally {
         setIsPlayingAudio(false);
       }
     },
-    [user?.targetLanguageCode],
+    [],
   );
 
   // Analyze mistakes function
@@ -779,8 +790,12 @@ export function TypingPracticeContent({
               <Button
                 variant="outline"
                 size="icon"
-                title="Play pronunciation"
-                disabled={isPlayingAudio}
+                title={
+                  sessionState.currentWord.audioUrl
+                    ? 'Play pronunciation'
+                    : 'No audio available'
+                }
+                disabled={isPlayingAudio || !sessionState.currentWord.audioUrl}
                 onClick={() => {
                   if (sessionState.currentWord) {
                     playWordAudio(
@@ -790,10 +805,22 @@ export function TypingPracticeContent({
                     );
                   }
                 }}
+                className={cn(
+                  'transition-opacity',
+                  !sessionState.currentWord.audioUrl &&
+                    'opacity-50 cursor-not-allowed',
+                )}
               >
-                <Volume2
-                  className={cn('h-4 w-4', isPlayingAudio && 'animate-pulse')}
-                />
+                {sessionState.currentWord.audioUrl ? (
+                  <Volume2
+                    className={cn(
+                      'h-4 w-4 text-blue-600',
+                      isPlayingAudio && 'animate-pulse',
+                    )}
+                  />
+                ) : (
+                  <VolumeX className="h-4 w-4 text-muted-foreground" />
+                )}
               </Button>
             </div>
           </CardContent>

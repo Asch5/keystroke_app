@@ -5,13 +5,13 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/core/lib/prisma';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
-import { LanguageCode, DifficultyLevel } from '@prisma/client';
+import { LanguageCode, DifficultyLevel, PartOfSpeech } from '@prisma/client';
 
 // Types for list management
 export interface CategoryData {
   id: number;
   name: string;
-  description?: string;
+  description: string | null;
 }
 
 export interface CreateListData {
@@ -31,6 +31,23 @@ export interface ListWordData {
   listId: string;
   definitionId: number;
   orderIndex: number;
+}
+
+// Add new interface for list word with details
+export interface AdminListWordWithDetails {
+  listId: string;
+  definitionId: number;
+  orderIndex: number;
+  // Word details
+  word: string;
+  definition: string;
+  partOfSpeech: PartOfSpeech | null;
+  phoneticTranscription: string | null;
+  audioUrl: string | null;
+  imageUrl: string | null;
+  // Metadata
+  wordId: number;
+  wordDetailId: number;
 }
 
 /**
@@ -62,12 +79,12 @@ export async function fetchCategories(): Promise<{
       categories,
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to fetch categories: ${errorMessage}`, 'error');
+    const errorResponse = handlePrismaError(error);
+    serverLog(`Failed to fetch categories: ${errorResponse.message}`, 'error');
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }
@@ -92,14 +109,14 @@ export async function createListWithWords(listData: CreateListData): Promise<{
       const list = await tx.list.create({
         data: {
           name: listData.name,
-          description: listData.description,
+          description: listData.description || null,
           categoryId: listData.categoryId,
           baseLanguageCode: listData.baseLanguageCode,
           targetLanguageCode: listData.targetLanguageCode,
           difficultyLevel: listData.difficultyLevel,
           isPublic: listData.isPublic,
           tags: listData.tags,
-          coverImageUrl: listData.coverImageUrl,
+          coverImageUrl: listData.coverImageUrl || null,
           wordCount: listData.selectedDefinitionIds.length,
           learnedWordCount: 0,
         },
@@ -132,15 +149,15 @@ export async function createListWithWords(listData: CreateListData): Promise<{
       listId: result.id,
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to create list: ${errorMessage}`, 'error', {
+    const errorResponse = handlePrismaError(error);
+    serverLog(`Failed to create list: ${errorResponse.message}`, 'error', {
       listName: listData.name,
-      error: errorMessage,
+      error: errorResponse.message,
     });
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }
@@ -162,7 +179,7 @@ export async function createCategory(
     const category = await prisma.category.create({
       data: {
         name: name.trim(),
-        description: description?.trim(),
+        description: description?.trim() || null,
       },
       select: {
         id: true,
@@ -181,12 +198,12 @@ export async function createCategory(
       category,
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to create category: ${errorMessage}`, 'error');
+    const errorResponse = handlePrismaError(error);
+    serverLog(`Failed to create category: ${errorResponse.message}`, 'error');
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }
@@ -325,12 +342,242 @@ export async function addWordsToList(
 
     return { success: true };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to add words to list: ${errorMessage}`, 'error');
+    const errorResponse = handlePrismaError(error);
+    serverLog(`Failed to add words to list: ${errorResponse.message}`, 'error');
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
+  }
+}
+
+/**
+ * Get all words in a list with full details for admin management
+ */
+export async function getListWords(
+  listId: string,
+  options: {
+    search?: string;
+    sortBy?: 'word' | 'orderIndex' | 'partOfSpeech';
+    sortOrder?: 'asc' | 'desc';
+    limit?: number;
+    offset?: number;
+  } = {},
+): Promise<{
+  words: AdminListWordWithDetails[];
+  totalCount: number;
+  listDetails: {
+    id: string;
+    name: string;
+    description: string | null;
+    wordCount: number;
+  } | null;
+}> {
+  try {
+    const {
+      search,
+      sortBy = 'orderIndex',
+      sortOrder = 'asc',
+      limit,
+      offset,
+    } = options;
+
+    // First check if the list exists
+    const list = await prisma.list.findUnique({
+      where: { id: listId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        wordCount: true,
+      },
+    });
+
+    if (!list) {
+      return {
+        words: [],
+        totalCount: 0,
+        listDetails: null,
+      };
+    }
+
+    // Build where conditions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const whereConditions: any = {
+      listId,
+    };
+
+    // Add search condition if provided
+    if (search) {
+      whereConditions.definition = {
+        wordDetails: {
+          some: {
+            wordDetails: {
+              word: {
+                word: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          },
+        },
+      };
+    }
+
+    // Build orderBy conditions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let orderBy: any = {};
+
+    switch (sortBy) {
+      case 'word':
+        orderBy = {
+          definition: {
+            wordDetails: {
+              wordDetails: {
+                word: {
+                  word: sortOrder,
+                },
+              },
+            },
+          },
+        };
+        break;
+      case 'partOfSpeech':
+        orderBy = {
+          definition: {
+            wordDetails: {
+              wordDetails: {
+                partOfSpeech: sortOrder,
+              },
+            },
+          },
+        };
+        break;
+      case 'orderIndex':
+      default:
+        orderBy = { orderIndex: sortOrder };
+        break;
+    }
+
+    // Get total count
+    const totalCount = await prisma.listWord.count({
+      where: whereConditions,
+    });
+
+    // Fetch list words with all related data
+    const listWords = await prisma.listWord.findMany({
+      where: whereConditions,
+      include: {
+        definition: {
+          include: {
+            wordDetails: {
+              include: {
+                wordDetails: {
+                  include: {
+                    word: true,
+                    // Include audio from WordDetailsAudio
+                    audioLinks: {
+                      include: {
+                        audio: true,
+                      },
+                      where: {
+                        isPrimary: true, // Only get primary audio
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            image: true,
+          },
+        },
+      },
+      orderBy,
+      ...(limit && { take: limit }),
+      ...(offset && { skip: offset }),
+    });
+
+    // Transform data
+    const words: AdminListWordWithDetails[] = listWords.map((listWord) => {
+      const definition = listWord.definition;
+      const wordDetails = definition.wordDetails[0]?.wordDetails;
+      const word = wordDetails?.word;
+
+      // Get primary audio URL from database
+      const primaryAudio = wordDetails?.audioLinks?.[0]?.audio;
+      const audioUrl = primaryAudio?.url || null;
+      const imageUrl = definition.image?.url || null;
+
+      return {
+        listId: listWord.listId,
+        definitionId: listWord.definitionId,
+        orderIndex: listWord.orderIndex,
+
+        // Word details
+        word: word?.word || 'Unknown word',
+        definition: definition.definition,
+        partOfSpeech: wordDetails?.partOfSpeech || null,
+        phoneticTranscription: wordDetails?.phonetic || null,
+        audioUrl,
+        imageUrl,
+
+        // Metadata
+        wordId: word?.id || 0,
+        wordDetailId: wordDetails?.id || 0,
+      };
+    });
+
+    return {
+      words,
+      totalCount,
+      listDetails: list,
+    };
+  } catch (error) {
+    console.error('Error fetching list words:', error);
+    throw new Error('Failed to fetch list words');
+  }
+}
+
+/**
+ * Remove words from a list
+ */
+export async function removeWordsFromList(
+  listId: string,
+  definitionIds: number[],
+): Promise<{ success: boolean; message: string }> {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Remove the words from the list
+      await tx.listWord.deleteMany({
+        where: {
+          listId,
+          definitionId: {
+            in: definitionIds,
+          },
+        },
+      });
+
+      // Update word count
+      await tx.list.update({
+        where: { id: listId },
+        data: {
+          wordCount: {
+            decrement: definitionIds.length,
+          },
+          lastModified: new Date(),
+        },
+      });
+    });
+
+    // Revalidate cache
+    revalidateTag(`list-${listId}`);
+    revalidateTag('lists');
+
+    return { success: true, message: 'Words removed from list successfully' };
+  } catch (error) {
+    console.error('Error removing words from list:', error);
+    return { success: false, message: 'Failed to remove words from list' };
   }
 }

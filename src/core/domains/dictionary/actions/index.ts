@@ -44,9 +44,12 @@ export {
   createCategory,
   createListAction,
   addWordsToList,
+  getListWords,
+  removeWordsFromList,
   type CategoryData,
   type CreateListData,
   type ListWordData,
+  type AdminListWordWithDetails,
 } from './list-actions';
 
 // Advanced list management

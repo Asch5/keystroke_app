@@ -1,7 +1,7 @@
 'use server';
 
 import { cache } from 'react';
-import { prisma } from '@/core/lib/prisma';
+import { prisma } from '@/core/shared/database/client';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import {
   LearningStatus,
@@ -232,6 +232,7 @@ export const getUserDictionary = cache(
           partOfSpeech: PartOfSpeech;
           variant: string | null;
           wordId: number;
+          audioUrl: string | null;
         }
       >();
 
@@ -244,6 +245,14 @@ export const getUserDictionary = cache(
             wordDetails: {
               include: {
                 word: true,
+                audioLinks: {
+                  include: {
+                    audio: true,
+                  },
+                  where: {
+                    isPrimary: true,
+                  },
+                },
               },
             },
           },
@@ -252,11 +261,17 @@ export const getUserDictionary = cache(
         // Build a map of definitionId -> word data
         wordDefinitions.forEach((wd) => {
           if (!wordDataMap.has(wd.definitionId)) {
+            // Get primary audio URL if available
+            const primaryAudio =
+              wd.wordDetails.audioLinks.find((link) => link.isPrimary)?.audio
+                ?.url || null;
+
             wordDataMap.set(wd.definitionId, {
               word: wd.wordDetails.word.word,
               partOfSpeech: wd.wordDetails.partOfSpeech,
               variant: wd.wordDetails.variant,
               wordId: wd.wordDetails.word.id,
+              audioUrl: primaryAudio,
             });
           }
         });
@@ -289,7 +304,7 @@ export const getUserDictionary = cache(
           forms: null, // TODO: Get from actual word data
           definition: entry.definition.definition,
           imageUrl: entry.definition.image?.url || null,
-          audioUrl: null, // TODO: Add audio URL from wordDetails if available
+          audioUrl: wordData?.audioUrl || null, // Now properly getting audio URL from database
 
           // Learning progress
           learningStatus: entry.learningStatus,

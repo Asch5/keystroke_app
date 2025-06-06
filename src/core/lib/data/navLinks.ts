@@ -1,13 +1,16 @@
 import {
-  DocumentDuplicateIcon,
   PresentationChartBarIcon,
   ChartPieIcon,
   BookOpenIcon,
   UserGroupIcon,
-  BuildingLibraryIcon,
   LanguageIcon,
-  UserCircleIcon,
   Cog6ToothIcon,
+  PlusIcon,
+  MagnifyingGlassIcon,
+  PencilSquareIcon,
+  ChartBarIcon,
+  ListBulletIcon,
+  ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
 import { NavLink } from '@/core/types/nav';
 
@@ -24,9 +27,8 @@ export const dashboardNavLinks: NavLink[] = [
     icon: PresentationChartBarIcon,
   },
   { name: 'Statistics', href: '/dashboard/statistics', icon: ChartPieIcon },
-  { name: 'Profile', href: '/dashboard/profile', icon: UserCircleIcon },
   { name: 'Settings', href: '/dashboard/settings', icon: Cog6ToothIcon },
-  { name: 'Admin', href: '/dashboard/admin', icon: BuildingLibraryIcon },
+  { name: 'Admin', href: '/admin', icon: ShieldCheckIcon },
 ];
 
 export const dictionaryNavLinks: NavLink[] = [
@@ -80,26 +82,26 @@ export const adminDictionariesNavLinks: NavLink[] = [
   {
     name: 'Lists Management',
     href: '/admin/dictionaries/lists',
-    icon: DocumentDuplicateIcon,
+    icon: ListBulletIcon,
   },
   {
     name: 'Check Word',
     href: '/admin/dictionaries/check-word',
-    icon: BookOpenIcon,
+    icon: MagnifyingGlassIcon,
   },
   {
     name: 'Add New Word',
     href: '/admin/dictionaries/add-new-word',
-    icon: BookOpenIcon,
+    icon: PlusIcon,
   },
   {
     name: 'Frequency',
     href: '/admin/dictionaries/frequency',
-    icon: BookOpenIcon,
+    icon: ChartBarIcon,
   },
   {
     name: 'Edit Word',
     href: '/admin/dictionaries/edit-word',
-    icon: BookOpenIcon,
+    icon: PencilSquareIcon,
   },
 ];

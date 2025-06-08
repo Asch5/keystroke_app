@@ -60,12 +60,7 @@ export function ImageSelector({
         `/api/images/search?query=${encodeURIComponent(searchQuery)}`,
       );
 
-      const contentType = response.headers.get('content-type');
-      if (
-        !response.ok ||
-        !contentType ||
-        !contentType.includes('application/json')
-      ) {
+      if (!response.ok) {
         const text = await response.text();
         if (
           text.trim().startsWith('<!DOCTYPE') ||
@@ -75,9 +70,12 @@ export function ImageSelector({
             `Server error: ${response.status} ${response.statusText}`,
           );
         }
-        throw new Error(
-          `Invalid response: ${response.status} ${response.statusText}`,
-        );
+        throw new Error(`API error: ${response.status} ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Invalid response: Expected JSON content type');
       }
 
       const data = await response.json();

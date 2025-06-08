@@ -6,6 +6,7 @@ import { useFormState } from 'react-dom';
 import {
   fetchCategories,
   createListAction,
+  createCategory,
   type CategoryData,
 } from '@/core/domains/dictionary/actions';
 import { fetchDictionaryWordDetails } from '@/core/domains/dictionary/actions';
@@ -77,6 +78,7 @@ function CreateListContent() {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryDescription, setNewCategoryDescription] = useState('');
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -151,6 +153,47 @@ function CreateListContent() {
 
   const removeWord = (wordId: string) => {
     setSelectedWords((prev) => prev.filter((word) => word.id !== wordId));
+  };
+
+  /**
+   * Handle creating a new category
+   */
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) {
+      return;
+    }
+
+    setIsCreatingCategory(true);
+    try {
+      const result = await createCategory(
+        newCategoryName,
+        newCategoryDescription || undefined,
+      );
+
+      if (result.success && result.category) {
+        // Update categories list with the new category
+        setCategories((prev) => [...prev, result.category!]);
+
+        // Select the new category
+        setFormData((prev) => ({
+          ...prev,
+          categoryId: result.category!.id.toString(),
+        }));
+
+        // Reset and close the form
+        setNewCategoryName('');
+        setNewCategoryDescription('');
+        setShowNewCategoryForm(false);
+      } else {
+        console.error('Failed to create category:', result.error);
+        // Could add toast notification here for better UX
+      }
+    } catch (error) {
+      console.error('Error creating category:', error);
+      // Could add toast notification here for better UX
+    } finally {
+      setIsCreatingCategory(false);
+    }
   };
 
   const handleSubmit = (formDataSubmit: FormData) => {
@@ -345,20 +388,16 @@ function CreateListContent() {
                     <Button
                       type="button"
                       size="sm"
-                      onClick={() => {
-                        // TODO: Implement category creation
-                        console.log('Create category:', {
-                          newCategoryName,
-                          newCategoryDescription,
-                        });
-                      }}
+                      onClick={handleCreateCategory}
+                      disabled={!newCategoryName.trim() || isCreatingCategory}
                     >
-                      Create
+                      {isCreatingCategory ? 'Creating...' : 'Create'}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
+                      disabled={isCreatingCategory}
                       onClick={() => {
                         setShowNewCategoryForm(false);
                         setNewCategoryName('');

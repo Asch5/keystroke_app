@@ -3,6 +3,7 @@
 import { prisma } from '@/core/shared/database/client';
 import { LanguageCode, DifficultyLevel } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 export interface UserListWithDetails {
   id: string;
@@ -58,6 +59,25 @@ export interface PublicListSummary {
   sampleWords: string[];
   isInUserCollection: boolean;
   userListId?: string | undefined;
+}
+
+export interface PublicUserListSummary {
+  id: string;
+  name: string;
+  description: string | null;
+  baseLanguageCode: LanguageCode;
+  targetLanguageCode: LanguageCode;
+  difficultyLevel: DifficultyLevel;
+  coverImageUrl: string | null;
+  wordCount: number;
+  createdBy: {
+    id: string;
+    name: string;
+  };
+  isInUserCollection: boolean;
+  userListId?: string | undefined;
+  sampleWords: string[];
+  createdAt: Date;
 }
 
 export interface UserListFilters {
@@ -137,15 +157,33 @@ export async function getUserLists(
       ];
     }
 
+    // Debug logging
+    await serverLog(`getUserLists - userId: ${userId}`, 'info');
+    await serverLog('getUserLists - whereConditions', 'info', whereConditions);
+
+    // First, let's check how many UserList records exist for this user (without includes)
+    const basicUserLists = await prisma.userList.findMany({
+      where: whereConditions,
+      select: { id: true, customNameOfList: true, listId: true },
+    });
+    await serverLog(
+      `getUserLists - Basic query found: ${basicUserLists.length} records`,
+      'info',
+    );
+
+    for (const [index, list] of basicUserLists.entries()) {
+      await serverLog(`Basic List ${index + 1}`, 'info', {
+        id: list.id,
+        customName: list.customNameOfList,
+        listId: list.listId,
+      });
+    }
+
     // Get user lists with related data
+    // First get all UserList records (this ensures we get ALL lists for the user)
     const userLists = await prisma.userList.findMany({
       where: whereConditions,
       include: {
-        list: {
-          include: {
-            category: true,
-          },
-        },
         userListWords: {
           include: {
             userDictionary: {
@@ -172,24 +210,99 @@ export async function getUserLists(
       },
       orderBy:
         sortBy === 'name'
-          ? [{ customNameOfList: sortOrder }, { list: { name: sortOrder } }]
+          ? [{ customNameOfList: sortOrder }]
           : { [sortBy]: sortOrder },
     });
+
+    // Separately fetch the referenced Lists to avoid losing UserList records
+    const referencedListIds = userLists
+      .map((ul) => ul.listId)
+      .filter(Boolean) as string[];
+
+    const referencedLists =
+      referencedListIds.length > 0
+        ? await prisma.list.findMany({
+            where: { id: { in: referencedListIds } },
+            include: {
+              category: true,
+            },
+          })
+        : [];
+
+    // Create a map for quick lookup
+    const listMap = new Map(referencedLists.map((list) => [list.id, list]));
+
+    // Check if referenced Lists exist (using basicUserLists to avoid conflict)
+    const basicReferencedListIds = basicUserLists
+      .map((ul) => ul.listId)
+      .filter(Boolean) as string[];
+
+    if (basicReferencedListIds.length > 0) {
+      const existingLists = await prisma.list.findMany({
+        where: { id: { in: basicReferencedListIds } },
+        select: { id: true, name: true },
+      });
+      await serverLog(
+        'getUserLists - Referenced List IDs',
+        'info',
+        basicReferencedListIds,
+      );
+      await serverLog(
+        `getUserLists - Existing Lists found: ${existingLists.length}`,
+        'info',
+      );
+
+      for (const list of existingLists) {
+        await serverLog(`Existing List: ${list.id} - ${list.name}`, 'info');
+      }
+
+      const missingListIds = basicReferencedListIds.filter(
+        (id) => !existingLists.some((existing) => existing.id === id),
+      );
+      if (missingListIds.length > 0) {
+        await serverLog(
+          'getUserLists - MISSING List IDs',
+          'warn',
+          missingListIds,
+        );
+      }
+    }
+
+    // Debug logging
+    await serverLog(
+      `getUserLists - Found ${userLists.length} raw user lists`,
+      'info',
+    );
+
+    for (const [index, list] of userLists.entries()) {
+      const referencedList = list.listId ? listMap.get(list.listId) : null;
+      await serverLog(`List ${index + 1}`, 'info', {
+        id: list.id,
+        customName: list.customNameOfList,
+        listId: list.listId,
+        hasOriginalList: !!referencedList,
+        originalListName: referencedList?.name,
+        userListWordsCount: list.userListWords.length,
+      });
+    }
 
     // Filter by search if provided
     let filteredLists = userLists;
     if (search) {
       filteredLists = userLists.filter((userList) => {
+        const referencedList = userList.listId
+          ? listMap.get(userList.listId)
+          : null;
         const displayName =
-          userList.customNameOfList || userList.list?.name || '';
+          userList.customNameOfList || referencedList?.name || '';
         const displayDescription =
-          userList.customDescriptionOfList || userList.list?.description || '';
+          userList.customDescriptionOfList || referencedList?.description || '';
         const searchLower = search.toLowerCase();
 
         return (
           displayName.toLowerCase().includes(searchLower) ||
           displayDescription.toLowerCase().includes(searchLower) ||
-          userList.list?.tags.some((tag) =>
+          referencedList?.tags.some((tag) =>
             tag.toLowerCase().includes(searchLower),
           )
         );
@@ -216,18 +329,23 @@ export async function getUserLists(
             userListWord.userDictionary.learningStatus === 'learned',
         ).length;
 
+        // Get the referenced List (if it exists)
+        const referencedList = userList.listId
+          ? listMap.get(userList.listId)
+          : null;
+
         const displayName =
-          userList.customNameOfList || userList.list?.name || 'Untitled List';
+          userList.customNameOfList || referencedList?.name || 'Untitled List';
         const displayDescription =
           userList.customDescriptionOfList ||
-          userList.list?.description ||
+          referencedList?.description ||
           null;
         const displayDifficulty =
           userList.customDifficulty ||
-          userList.list?.difficultyLevel ||
+          referencedList?.difficultyLevel ||
           'beginner';
         const displayCoverImageUrl =
-          userList.customCoverImageUrl || userList.list?.coverImageUrl || null;
+          userList.customCoverImageUrl || referencedList?.coverImageUrl || null;
 
         return {
           id: userList.id,
@@ -243,17 +361,17 @@ export async function getUserLists(
           createdAt: userList.createdAt,
           updatedAt: userList.updatedAt,
 
-          originalList: userList.list
+          originalList: referencedList
             ? {
-                id: userList.list.id,
-                name: userList.list.name,
-                description: userList.list.description,
-                categoryName: userList.list.category.name,
-                difficultyLevel: userList.list.difficultyLevel,
-                isPublic: userList.list.isPublic,
-                tags: userList.list.tags,
-                coverImageUrl: userList.list.coverImageUrl,
-                wordCount: userList.list.wordCount,
+                id: referencedList.id,
+                name: referencedList.name,
+                description: referencedList.description,
+                categoryName: referencedList.category.name,
+                difficultyLevel: referencedList.difficultyLevel,
+                isPublic: referencedList.isPublic,
+                tags: referencedList.tags,
+                coverImageUrl: referencedList.coverImageUrl,
+                wordCount: referencedList.wordCount,
               }
             : undefined,
 
@@ -267,6 +385,21 @@ export async function getUserLists(
         };
       },
     );
+
+    // Final debug logging
+    await serverLog(
+      `getUserLists - Returning ${userListsWithDetails.length} processed user lists`,
+      'info',
+    );
+
+    for (const [index, list] of userListsWithDetails.entries()) {
+      await serverLog(`Processed List ${index + 1}`, 'info', {
+        id: list.id,
+        displayName: list.displayName,
+        wordCount: list.wordCount,
+        hasOriginalList: !!list.originalList,
+      });
+    }
 
     return {
       userLists: userListsWithDetails,
@@ -293,35 +426,17 @@ export async function getAvailablePublicLists(
     const { search = '', difficulty } = filters;
 
     // Build where conditions for public lists
-    const whereConditions: {
-      isPublic: boolean;
-      deletedAt: null;
-      difficultyLevel?: DifficultyLevel;
-      OR?: Array<
-        | { baseLanguageCode: LanguageCode; targetLanguageCode: LanguageCode }
-        | { name: { contains: string; mode: 'insensitive' } }
-        | { description: { contains: string; mode: 'insensitive' } }
-        | { tags: { hasSome: string[] } }
-      >;
-    } = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const whereConditions: any = {
       isPublic: true,
       deletedAt: null,
-      OR: [
-        {
-          baseLanguageCode: userLanguages.base,
-          targetLanguageCode: userLanguages.target,
-        },
-        {
-          baseLanguageCode: userLanguages.target,
-          targetLanguageCode: userLanguages.base,
-        },
-      ],
     };
 
     if (difficulty) {
       whereConditions.difficultyLevel = difficulty;
     }
 
+    // For now, let's disable language filtering to see all lists
     if (search) {
       whereConditions.OR = [
         { name: { contains: search, mode: 'insensitive' } },
@@ -336,7 +451,10 @@ export async function getAvailablePublicLists(
       include: {
         category: true,
         userLists: {
-          where: { userId },
+          where: {
+            userId,
+            deletedAt: null,
+          },
           select: { id: true },
         },
         listWords: {
@@ -408,6 +526,401 @@ export async function getAvailablePublicLists(
 }
 
 /**
+ * Get public user lists that other users have shared
+ */
+export async function getPublicUserLists(
+  userId: string,
+  userLanguages: { base: LanguageCode; target: LanguageCode },
+  filters: { search?: string; difficulty?: DifficultyLevel } = {},
+): Promise<{
+  publicUserLists: PublicUserListSummary[];
+  totalCount: number;
+}> {
+  try {
+    const { search = '', difficulty } = filters;
+
+    // Build where conditions for public user lists
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const whereConditions: any = {
+      isPublic: true,
+      deletedAt: null,
+      userId: { not: userId }, // Exclude current user's lists
+    };
+
+    if (difficulty) {
+      whereConditions.customDifficulty = difficulty;
+    }
+
+    // For now, let's disable language filtering to see all lists
+    if (search) {
+      whereConditions.OR = [
+        { customNameOfList: { contains: search, mode: 'insensitive' } },
+        {
+          customDescriptionOfList: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+
+    // Get public user lists
+    const publicUserLists = await prisma.userList.findMany({
+      where: whereConditions,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        list: {
+          select: {
+            name: true,
+            description: true,
+            difficultyLevel: true,
+            coverImageUrl: true,
+          },
+        },
+        userListWords: {
+          include: {
+            userDictionary: {
+              include: {
+                definition: {
+                  include: {
+                    wordDetails: {
+                      include: {
+                        wordDetails: {
+                          include: {
+                            word: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          take: 5,
+          orderBy: { orderIndex: 'asc' },
+        },
+        _count: {
+          select: {
+            userListWords: true,
+          },
+        },
+      },
+      orderBy: [{ createdAt: 'desc' }],
+      take: 50, // Limit to reasonable number
+    });
+
+    // Check which lists are already in user's collection
+    // Since community lists get copied as new UserList records, we need to check
+    // if the user has any UserList that was copied from these public lists
+
+    // We need to find UserLists where the user has copied the content
+    // This is complex because copied lists become new records
+    // For now, let's check if any of the user's lists have matching content/source
+    const userCollectionLists = await prisma.userList.findMany({
+      where: {
+        userId,
+        deletedAt: null,
+        // This is a simplified check - in practice, we might need to add
+        // a sourceUserListId field to track the original community list
+      },
+      select: { id: true, customNameOfList: true, listId: true },
+    });
+
+    // For now, we'll check by name matching as a temporary solution
+    const userListNames = new Set(
+      userCollectionLists
+        .map((ul) => ul.customNameOfList?.toLowerCase())
+        .filter(Boolean),
+    );
+
+    // Transform data
+    const publicUserListsSummary: PublicUserListSummary[] = publicUserLists.map(
+      (list) => {
+        const sampleWords = list.userListWords
+          .slice(0, 3)
+          .map((userListWord) => {
+            const wordDetails =
+              userListWord.userDictionary.definition.wordDetails[0]
+                ?.wordDetails;
+            return wordDetails?.word.word || 'Unknown word';
+          })
+          .filter(Boolean);
+
+        const displayName =
+          list.customNameOfList || list.list?.name || 'Untitled List';
+        const displayDescription =
+          list.customDescriptionOfList || list.list?.description || null;
+        const displayDifficulty =
+          list.customDifficulty || list.list?.difficultyLevel || 'beginner';
+        const displayCoverImageUrl =
+          list.customCoverImageUrl || list.list?.coverImageUrl || null;
+
+        // Check if user has a list with matching name (temporary solution)
+        const isInCollection = userListNames.has(displayName.toLowerCase());
+        const userListRecord = userCollectionLists.find(
+          (ul) =>
+            ul.customNameOfList?.toLowerCase() === displayName.toLowerCase(),
+        );
+
+        return {
+          id: list.id,
+          name: displayName,
+          description: displayDescription,
+          baseLanguageCode: list.baseLanguageCode,
+          targetLanguageCode: list.targetLanguageCode,
+          difficultyLevel: displayDifficulty,
+          coverImageUrl: displayCoverImageUrl,
+          wordCount: list._count.userListWords,
+          createdBy: {
+            id: list.user.id,
+            name: list.user.name,
+          },
+          isInUserCollection: isInCollection,
+          userListId: isInCollection ? userListRecord?.id : undefined,
+          sampleWords,
+          createdAt: list.createdAt,
+        };
+      },
+    );
+
+    return {
+      publicUserLists: publicUserListsSummary,
+      totalCount: publicUserListsSummary.length,
+    };
+  } catch (error) {
+    console.error('Error fetching public user lists:', error);
+    throw new Error('Failed to fetch public user lists');
+  }
+}
+
+/**
+ * Get detailed preview of a public list with word definitions and translations
+ */
+export async function getPublicListPreview(
+  listId: string,
+  userLanguages: { base: LanguageCode; target: LanguageCode },
+): Promise<{
+  words: Array<{
+    id: string;
+    word: string;
+    pronunciation?: string | null;
+    audioUrl?: string | null;
+    definition: string;
+    translatedDefinition?: string | null;
+    examples: Array<{
+      text: string;
+      translation?: string | null;
+    }>;
+    tags: string[];
+    difficultyLevel: string;
+  }>;
+}> {
+  try {
+    // Get list words with comprehensive data
+    const listWords = await prisma.listWord.findMany({
+      where: {
+        list: {
+          id: listId,
+          isPublic: true,
+        },
+      },
+      include: {
+        definition: {
+          include: {
+            wordDetails: {
+              include: {
+                wordDetails: {
+                  include: {
+                    word: true,
+                    audioLinks: {
+                      include: {
+                        audio: true,
+                      },
+                      where: {
+                        isPrimary: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            examples: {
+              include: {
+                translationLinks: {
+                  include: {
+                    translation: true,
+                  },
+                },
+              },
+              take: 3,
+            },
+            translationLinks: {
+              include: {
+                translation: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { orderIndex: 'asc' },
+      take: 10, // Limit preview to first 10 words
+    });
+
+    // Transform the data
+    const words = listWords
+      .map((listWord) => {
+        const definition = listWord.definition;
+        const wordDetail = definition.wordDetails[0]?.wordDetails;
+
+        if (!wordDetail) {
+          return null;
+        }
+
+        const word = wordDetail.word;
+
+        // Get translated definition if available (filter for base language)
+        const translatedDefinition =
+          definition.translationLinks.find(
+            (link) => link.translation.languageCode === userLanguages.base,
+          )?.translation?.content || null;
+
+        // Get audio URL
+        const audioUrl = wordDetail.audioLinks[0]?.audio?.url || null;
+
+        // Process examples with translations
+        const examples = definition.examples.map((example) => ({
+          text: example.example,
+          translation:
+            example.translationLinks.find(
+              (link) => link.translation.languageCode === userLanguages.base,
+            )?.translation?.content || null,
+        }));
+
+        return {
+          id: definition.id.toString(),
+          word: word.word,
+          pronunciation: wordDetail.phonetic,
+          audioUrl,
+          definition: definition.definition,
+          translatedDefinition,
+          examples,
+          tags: definition.subjectStatusLabels
+            ? definition.subjectStatusLabels.split(',').map((tag) => tag.trim())
+            : [],
+          difficultyLevel: 'beginner', // Default since Definition model doesn't have difficulty
+        };
+      })
+      .filter((word): word is NonNullable<typeof word> => word !== null);
+
+    return { words };
+  } catch (error) {
+    console.error('Error fetching public list preview:', error);
+    throw new Error('Failed to fetch list preview');
+  }
+}
+
+/**
+ * Get detailed preview of a public user list with word definitions and translations
+ */
+export async function getPublicUserListPreview(
+  publicUserListId: string,
+): Promise<{
+  words: Array<{
+    id: string;
+    word: string;
+    pronunciation?: string | null;
+    audioUrl?: string | null;
+    definition: string;
+    translatedDefinition?: string | null;
+    examples: Array<{
+      text: string;
+      translation?: string | null;
+    }>;
+    tags: string[];
+    difficultyLevel: string;
+  }>;
+}> {
+  try {
+    // Check if user list exists and is public
+    const userList = await prisma.userList.findUnique({
+      where: { id: publicUserListId },
+      include: {
+        userListWords: {
+          include: {
+            userDictionary: {
+              include: {
+                definition: {
+                  include: {
+                    wordDetails: {
+                      include: {
+                        wordDetails: {
+                          include: {
+                            word: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          orderBy: { orderIndex: 'asc' },
+          take: 10, // Limit preview to first 10 words
+        },
+      },
+    });
+
+    if (!userList || !userList.isPublic) {
+      throw new Error('List not found or not public');
+    }
+
+    // Transform the data - simplified approach
+    const words = userList.userListWords
+      .map((userListWord) => {
+        const definition = userListWord.userDictionary.definition;
+        const wordDetail = definition.wordDetails[0]?.wordDetails;
+
+        if (!wordDetail) {
+          return null;
+        }
+
+        const word = wordDetail.word;
+
+        return {
+          id: definition.id.toString(),
+          word: word.word,
+          pronunciation: wordDetail.phonetic,
+          audioUrl: null, // No direct audio in this simplified version
+          definition: definition.definition,
+          translatedDefinition: null, // Simplified - no translations for preview
+          examples: [] as Array<{
+            text: string;
+            translation?: string | null;
+          }>, // Simplified - no examples for preview
+          tags:
+            definition.subjectStatusLabels
+              ?.split(',')
+              .map((tag) => tag.trim()) || [],
+          difficultyLevel: 'beginner', // Default since not in schema
+        };
+      })
+      .filter((word): word is NonNullable<typeof word> => word !== null);
+
+    return { words };
+  } catch (error) {
+    console.error('Error fetching public user list preview:', error);
+    throw new Error('Failed to fetch user list preview');
+  }
+}
+
+/**
  * Add a public list to user's collection
  */
 export async function addListToUserCollection(
@@ -419,7 +932,19 @@ export async function addListToUserCollection(
     // Check if list exists and is public
     const list = await prisma.list.findUnique({
       where: { id: listId },
-      select: { id: true, isPublic: true, name: true },
+      select: {
+        id: true,
+        isPublic: true,
+        name: true,
+        listWords: {
+          include: {
+            definition: true,
+          },
+          orderBy: {
+            orderIndex: 'asc',
+          },
+        },
+      },
     });
 
     if (!list || !list.isPublic) {
@@ -445,26 +970,246 @@ export async function addListToUserCollection(
       };
     }
 
-    // Create user list
-    const userList = await prisma.userList.create({
-      data: {
-        userId,
-        listId,
-        baseLanguageCode: userLanguages.base,
-        targetLanguageCode: userLanguages.target,
-        progress: 0,
-      },
+    // Use transaction to ensure data consistency
+    const result = await prisma.$transaction(async (tx) => {
+      // Double-check if user already has this list (to handle race conditions)
+      const existingInTransaction = await tx.userList.findFirst({
+        where: {
+          userId,
+          listId,
+          deletedAt: null,
+        },
+      });
+
+      if (existingInTransaction) {
+        throw new Error('LIST_ALREADY_EXISTS');
+      }
+
+      // Create user list
+      const userList = await tx.userList.create({
+        data: {
+          userId,
+          listId,
+          baseLanguageCode: userLanguages.base,
+          targetLanguageCode: userLanguages.target,
+          progress: 0,
+        },
+      });
+
+      // For each word in the public list, add it to user's dictionary if not already there,
+      // then add it to the user's list
+      const userListWordData = [];
+
+      for (const listWord of list.listWords) {
+        // Check if user already has this definition in their dictionary
+        let userDictionary = await tx.userDictionary.findFirst({
+          where: {
+            userId,
+            definitionId: listWord.definitionId,
+            deletedAt: null,
+          },
+        });
+
+        // If not in user dictionary, add it
+        if (!userDictionary) {
+          userDictionary = await tx.userDictionary.create({
+            data: {
+              userId,
+              definitionId: listWord.definitionId,
+              baseLanguageCode: userLanguages.base,
+              targetLanguageCode: userLanguages.target,
+              learningStatus: 'notStarted',
+              progress: 0,
+              isModified: false,
+              reviewCount: 0,
+              timeWordWasStartedToLearn: new Date(),
+              jsonbData: {},
+              customDifficultyLevel: null,
+            },
+          });
+        }
+
+        // Add to user list words
+        userListWordData.push({
+          userListId: userList.id,
+          userDictionaryId: userDictionary.id,
+          orderIndex: listWord.orderIndex,
+        });
+      }
+
+      // Create all UserListWord entries
+      if (userListWordData.length > 0) {
+        await tx.userListWord.createMany({
+          data: userListWordData,
+          skipDuplicates: true,
+        });
+      }
+
+      return userList;
     });
 
     revalidatePath('/dashboard/dictionary/lists');
 
     return {
       success: true,
-      message: `"${list.name}" added to your collection`,
-      userListId: userList.id,
+      message: `"${list.name}" added to your collection with ${list.listWords.length} words`,
+      userListId: result.id,
     };
   } catch (error) {
     console.error('Error adding list to user collection:', error);
+
+    // Handle specific error cases
+    if (error instanceof Error && error.message === 'LIST_ALREADY_EXISTS') {
+      return {
+        success: false,
+        message: 'List already in your collection',
+      };
+    }
+
+    // Handle Prisma unique constraint violation
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2002'
+    ) {
+      return {
+        success: false,
+        message: 'List already in your collection',
+      };
+    }
+
+    return {
+      success: false,
+      message: 'Failed to add list to collection',
+    };
+  }
+}
+
+/**
+ * Add a public user list to user's collection (clone it)
+ */
+export async function addPublicUserListToCollection(
+  userId: string,
+  publicUserListId: string,
+  userLanguages: { base: LanguageCode; target: LanguageCode },
+): Promise<{ success: boolean; message: string; userListId?: string }> {
+  try {
+    // Check if the source list exists and is public
+    const sourceList = await prisma.userList.findUnique({
+      where: { id: publicUserListId },
+      include: {
+        userListWords: {
+          include: {
+            userDictionary: {
+              include: {
+                definition: true,
+              },
+            },
+          },
+          orderBy: {
+            orderIndex: 'asc',
+          },
+        },
+      },
+    });
+
+    if (!sourceList || !sourceList.isPublic || sourceList.userId === userId) {
+      return {
+        success: false,
+        message: 'List not found, not public, or you cannot copy your own list',
+      };
+    }
+
+    // Check if user already has this list
+    const existingUserList = await prisma.userList.findFirst({
+      where: {
+        userId,
+        id: publicUserListId,
+        deletedAt: null,
+      },
+    });
+
+    if (existingUserList) {
+      return {
+        success: false,
+        message: 'List already in your collection',
+      };
+    }
+
+    // Use transaction to ensure data consistency
+    const result = await prisma.$transaction(async (tx) => {
+      // Create a copy of the user list
+      const newUserList = await tx.userList.create({
+        data: {
+          userId,
+          listId: sourceList.listId, // Keep the original list reference if it exists
+          baseLanguageCode: userLanguages.base,
+          targetLanguageCode: userLanguages.target,
+          customNameOfList: sourceList.customNameOfList,
+          customDescriptionOfList: sourceList.customDescriptionOfList,
+          customDifficulty: sourceList.customDifficulty,
+          customCoverImageUrl: sourceList.customCoverImageUrl,
+          progress: 0,
+          isModified: false,
+        },
+      });
+
+      // For each word in the source list, add it to user's dictionary if not already there,
+      // then add it to the user's list
+      const userListWordData = [];
+
+      for (const sourceListWord of sourceList.userListWords) {
+        // Check if user already has this definition in their dictionary
+        let userDictionary = await tx.userDictionary.findFirst({
+          where: {
+            userId,
+            definitionId: sourceListWord.userDictionary.definitionId,
+            deletedAt: null,
+          },
+        });
+
+        // If user doesn't have this word, add it to their dictionary
+        if (!userDictionary) {
+          userDictionary = await tx.userDictionary.create({
+            data: {
+              userId,
+              definitionId: sourceListWord.userDictionary.definitionId,
+              baseLanguageCode: userLanguages.base,
+              targetLanguageCode: userLanguages.target,
+              learningStatus: 'notStarted',
+              masteryScore: 0,
+              reviewCount: 0,
+              isFavorite: false,
+            },
+          });
+        }
+
+        // Add to user list words
+        userListWordData.push({
+          userListId: newUserList.id,
+          userDictionaryId: userDictionary.id,
+          orderIndex: sourceListWord.orderIndex,
+        });
+      }
+
+      // Batch create user list words
+      if (userListWordData.length > 0) {
+        await tx.userListWord.createMany({
+          data: userListWordData,
+        });
+      }
+
+      return newUserList;
+    });
+
+    return {
+      success: true,
+      message: `Successfully added "${sourceList.customNameOfList || 'list'}" to your collection with ${sourceList.userListWords.length} words`,
+      userListId: result.id,
+    };
+  } catch (error) {
+    console.error('Error adding public user list to collection:', error);
     return {
       success: false,
       message: 'Failed to add list to collection',
@@ -908,6 +1653,14 @@ export async function getUserListWords(
                     wordDetails: {
                       include: {
                         word: true,
+                        audioLinks: {
+                          include: {
+                            audio: true,
+                          },
+                          where: {
+                            isPrimary: true,
+                          },
+                        },
                       },
                     },
                   },
@@ -935,8 +1688,8 @@ export async function getUserListWords(
         const wordDetails = definition.wordDetails[0]?.wordDetails;
         const word = wordDetails?.word;
 
-        // Audio and image URLs would be available through separate relations if needed
-        const audioUrl = null; // Would need to implement through WordDetailsAudio if needed
+        // Audio and image URLs
+        const audioUrl = wordDetails?.audioLinks?.[0]?.audio?.url || null;
         const imageUrl = definition.image?.url || null;
 
         // Get translations with proper typing
@@ -1053,5 +1806,128 @@ export async function reorderUserListWords(
   } catch (error) {
     console.error('Error reordering user list words:', error);
     return { success: false, message: 'Failed to update word order' };
+  }
+}
+
+/**
+ * Populate an empty inherited list with words from its original public list
+ * This is useful for lists that were added before the fix was implemented
+ */
+export async function populateInheritedListWithWords(
+  userId: string,
+  userListId: string,
+): Promise<{ success: boolean; message: string; wordsAdded?: number }> {
+  try {
+    // Get the user list and check if it's inherited (has a listId)
+    const userList = await prisma.userList.findFirst({
+      where: {
+        id: userListId,
+        userId,
+        deletedAt: null,
+      },
+      include: {
+        list: {
+          include: {
+            listWords: {
+              include: {
+                definition: true,
+              },
+              orderBy: {
+                orderIndex: 'asc',
+              },
+            },
+          },
+        },
+        userListWords: true,
+      },
+    });
+
+    if (!userList) {
+      return {
+        success: false,
+        message: 'List not found or access denied',
+      };
+    }
+
+    if (!userList.listId || !userList.list) {
+      return {
+        success: false,
+        message: 'This is not an inherited list',
+      };
+    }
+
+    if (userList.userListWords.length > 0) {
+      return {
+        success: false,
+        message: 'List already contains words',
+      };
+    }
+
+    // Use transaction to ensure data consistency
+    const wordsAdded = await prisma.$transaction(async (tx) => {
+      const userListWordData = [];
+
+      for (const listWord of userList.list!.listWords) {
+        // Check if user already has this definition in their dictionary
+        let userDictionary = await tx.userDictionary.findFirst({
+          where: {
+            userId,
+            definitionId: listWord.definitionId,
+            deletedAt: null,
+          },
+        });
+
+        // If not in user dictionary, add it
+        if (!userDictionary) {
+          userDictionary = await tx.userDictionary.create({
+            data: {
+              userId,
+              definitionId: listWord.definitionId,
+              baseLanguageCode: userList.baseLanguageCode,
+              targetLanguageCode: userList.targetLanguageCode,
+              learningStatus: 'notStarted',
+              progress: 0,
+              isModified: false,
+              reviewCount: 0,
+              timeWordWasStartedToLearn: new Date(),
+              jsonbData: {},
+              customDifficultyLevel: null,
+            },
+          });
+        }
+
+        // Add to user list words
+        userListWordData.push({
+          userListId: userList.id,
+          userDictionaryId: userDictionary.id,
+          orderIndex: listWord.orderIndex,
+        });
+      }
+
+      // Create all UserListWord entries
+      if (userListWordData.length > 0) {
+        await tx.userListWord.createMany({
+          data: userListWordData,
+          skipDuplicates: true,
+        });
+      }
+
+      return userListWordData.length;
+    });
+
+    revalidatePath('/dashboard/dictionary/lists');
+    revalidatePath(`/dashboard/dictionary/lists/${userListId}`);
+
+    return {
+      success: true,
+      message: `Successfully added ${wordsAdded} words to your list`,
+      wordsAdded,
+    };
+  } catch (error) {
+    console.error('Error populating inherited list:', error);
+    return {
+      success: false,
+      message: 'Failed to populate list with words',
+    };
   }
 }

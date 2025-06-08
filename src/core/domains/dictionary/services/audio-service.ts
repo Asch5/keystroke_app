@@ -1,6 +1,6 @@
 /**
  * Audio Service for playing database audio files
- * Handles playing real audio files from the database instead of using Web Speech API
+ * Simplified approach based on the working admin implementation
  */
 
 export class AudioService {
@@ -12,161 +12,76 @@ export class AudioService {
    * @returns Promise that resolves when audio starts playing or rejects on error
    */
   static async playAudioFromDatabase(audioUrl: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      try {
-        // Validate URL
-        if (!audioUrl || typeof audioUrl !== 'string') {
-          reject(new Error('Invalid audio URL provided'));
-          return;
-        }
-
-        console.log('Attempting to play audio from:', audioUrl);
-
-        // Check if it's an external URL that needs proxying
-        let finalAudioUrl = audioUrl;
-        try {
-          const url = new URL(audioUrl);
-          const isExternalUrl = !url.hostname.includes(
-            window.location.hostname,
-          );
-
-          if (isExternalUrl) {
-            // Use proxy for external URLs to avoid CORS issues
-            finalAudioUrl = `/api/audio/proxy?url=${encodeURIComponent(audioUrl)}`;
-            console.log('Using proxy for external URL:', finalAudioUrl);
-          }
-        } catch (urlError) {
-          console.warn('Could not parse URL, using as-is:', urlError);
-        }
-
-        // Stop any currently playing audio
-        this.stopCurrentAudio();
-
-        // Create new audio element
-        const audio = new Audio();
-        audio.src = finalAudioUrl;
-        audio.preload = 'auto';
-
-        // Add crossOrigin attribute for external URLs
-        audio.crossOrigin = 'anonymous';
-
-        // Set timeout for loading
-        const timeoutId = setTimeout(() => {
-          audio.removeEventListener('canplaythrough', onCanPlayThrough);
-          audio.removeEventListener('error', onError);
-          audio.removeEventListener('loadeddata', onLoadedData);
-          reject(new Error('Audio loading timeout - file may be inaccessible'));
-        }, 15000); // Increased to 15 seconds for external URLs
-
-        const cleanup = () => {
-          clearTimeout(timeoutId);
-        };
-
-        // Try multiple events to ensure compatibility
-        const onCanPlayThrough = () => {
-          cleanup();
-          audio.removeEventListener('error', onError);
-          audio.removeEventListener('loadeddata', onLoadedData);
-
-          console.log('Audio ready to play');
-          audio
-            .play()
-            .then(() => {
-              this.currentAudio = audio;
-              console.log('Audio playback started successfully');
-              resolve();
-            })
-            .catch((error) => {
-              console.error('Error during audio.play():', error);
-              reject(new Error(`Playback failed: ${error.message}`));
-            });
-        };
-
-        const onLoadedData = () => {
-          // Fallback if canplaythrough doesn't fire
-          if (!audio.readyState || audio.readyState < 2) {
-            return;
-          }
-
-          console.log('Audio data loaded, attempting playback');
-          cleanup();
-          audio.removeEventListener('canplaythrough', onCanPlayThrough);
-          audio.removeEventListener('error', onError);
-
-          audio
-            .play()
-            .then(() => {
-              this.currentAudio = audio;
-              console.log('Audio playback started via loadeddata');
-              resolve();
-            })
-            .catch((error) => {
-              console.error('Error during audio.play() via loadeddata:', error);
-              reject(new Error(`Playback failed: ${error.message}`));
-            });
-        };
-
-        const onError = (event: Event) => {
-          cleanup();
-          audio.removeEventListener('canplaythrough', onCanPlayThrough);
-          audio.removeEventListener('loadeddata', onLoadedData);
-
-          console.error('Audio loading error:', event);
-          console.error('Audio error details:', {
-            error: audio.error,
-            networkState: audio.networkState,
-            readyState: audio.readyState,
-            src: audio.src,
-          });
-
-          let errorMessage = 'Failed to load audio file';
-          if (audio.error) {
-            switch (audio.error.code) {
-              case 1:
-                errorMessage = 'Audio loading was aborted';
-                break;
-              case 2:
-                errorMessage =
-                  'Network error while loading audio - this may be a CORS issue with external audio files';
-                break;
-              case 3:
-                errorMessage = 'Audio file is corrupted or invalid format';
-                break;
-              case 4:
-                errorMessage = 'Audio format not supported';
-                break;
-              default:
-                errorMessage = `Audio error (code: ${audio.error.code})`;
-            }
-          }
-
-          reject(new Error(errorMessage));
-        };
-
-        // Set up event listeners
-        audio.addEventListener('canplaythrough', onCanPlayThrough, {
-          once: true,
-        });
-        audio.addEventListener('loadeddata', onLoadedData, { once: true });
-        audio.addEventListener('error', onError, { once: true });
-
-        audio.addEventListener('ended', () => {
-          // Clean up when audio finishes
-          this.currentAudio = null;
-          console.log('Audio playback completed');
-        });
-
-        // Start loading the audio
-        audio.load();
-      } catch (error) {
-        console.error('Error setting up audio element:', error);
-        reject(
-          new Error(
-            `Setup failed: ${error instanceof Error ? error.message : String(error)}`,
-          ),
-        );
+    try {
+      // Validate URL
+      if (!audioUrl || typeof audioUrl !== 'string') {
+        throw new Error('Invalid audio URL provided');
       }
-    });
+
+      console.log('🎵 Attempting to play audio from:', audioUrl);
+
+      // Check if we need to use proxy for external URLs
+      let finalAudioUrl = audioUrl;
+      try {
+        const url = new URL(audioUrl);
+        const isExternalUrl = !url.hostname.includes(window.location.hostname);
+
+        if (isExternalUrl) {
+          // Use proxy for external URLs like static.ordnet.dk
+          finalAudioUrl = `/api/audio/proxy?url=${encodeURIComponent(audioUrl)}`;
+          console.log('🔄 Using proxy for external URL');
+        }
+      } catch {
+        // If URL parsing fails, use original URL
+        console.warn('⚠️ Could not parse URL, using as-is');
+      }
+
+      // Stop any currently playing audio
+      this.stopCurrentAudio();
+
+      // Create new audio element - simple approach like admin page
+      const audio = new Audio(finalAudioUrl);
+
+      // Set up basic event handlers like admin page
+      audio.onended = () => {
+        this.currentAudio = null;
+        console.log('🏁 Audio playback completed');
+      };
+
+      audio.onerror = () => {
+        this.currentAudio = null;
+        console.error('❌ Audio playback error occurred');
+        // Don't throw here - just cleanup like admin page
+      };
+
+      // Try to play the audio
+      await audio.play();
+
+      // If successful, store reference
+      this.currentAudio = audio;
+      console.log('🔊 Audio playback started successfully');
+    } catch (error) {
+      console.error('❌ Audio service error:', error);
+
+      // Provide user-friendly error messages
+      if (error instanceof Error) {
+        if (error.name === 'NotAllowedError') {
+          throw new Error(
+            'Audio playback was prevented by browser policy. Please interact with the page first.',
+          );
+        } else if (error.name === 'NotSupportedError') {
+          throw new Error('Audio format not supported by your browser');
+        } else if (error.name === 'AbortError') {
+          throw new Error('Audio loading was aborted');
+        } else if (error.message.includes('fetch')) {
+          throw new Error(
+            'Network error while loading audio - check your internet connection',
+          );
+        }
+      }
+
+      throw new Error('Failed to play audio file');
+    }
   }
 
   /**
@@ -185,7 +100,7 @@ export class AudioService {
         await this.playAudioFromDatabase(audioUrl);
         return;
       } catch (error) {
-        console.warn('Database audio failed, falling back to TTS:', error);
+        console.warn('⚠️ Database audio failed, falling back to TTS:', error);
       }
     }
 
@@ -204,26 +119,30 @@ export class AudioService {
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!('speechSynthesis' in window)) {
-        reject(new Error('Speech synthesis not supported'));
+        reject(new Error('Speech synthesis not supported in this browser'));
         return;
       }
 
-      // Stop any currently playing audio
+      // Stop any currently playing audio first
       this.stopCurrentAudio();
-      window.speechSynthesis.cancel();
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = language;
-      utterance.rate = 0.8;
-
-      // Adjust pitch based on context
+      utterance.rate = 0.8; // Slightly slower for learning
       utterance.pitch = 1.0;
 
-      utterance.onstart = () => resolve();
-      utterance.onerror = (event) =>
-        reject(new Error(`Speech error: ${event.error}`));
+      utterance.onend = () => {
+        console.log('🔊 Text-to-speech completed');
+        resolve();
+      };
 
-      window.speechSynthesis.speak(utterance);
+      utterance.onerror = (event) => {
+        console.error('❌ Text-to-speech error:', event);
+        reject(new Error(`Speech synthesis failed: ${event.error}`));
+      };
+
+      speechSynthesis.speak(utterance);
+      console.log('🗣️ Text-to-speech started for:', text);
     });
   }
 
@@ -232,14 +151,20 @@ export class AudioService {
    */
   static stopCurrentAudio(): void {
     if (this.currentAudio) {
+      console.log('⏹️ Stopping current audio');
       this.currentAudio.pause();
       this.currentAudio.currentTime = 0;
       this.currentAudio = null;
     }
+
+    // Also stop speech synthesis if active
+    if ('speechSynthesis' in window && speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+    }
   }
 
   /**
-   * Checks if audio is currently playing
+   * Check if audio is currently playing
    */
   static isPlaying(): boolean {
     return this.currentAudio !== null && !this.currentAudio.paused;

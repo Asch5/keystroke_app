@@ -571,6 +571,7 @@ model UserList {
   listId                  String?               @map("list_id") @db.Uuid
   baseLanguageCode        LanguageCode          @map("base_language_code")
   targetLanguageCode      LanguageCode          @map("target_language_code")
+  isPublic                Boolean               @default(false) @map("is_public")
   isModified              Boolean               @default(false) @map("is_modified")
   customNameOfList        String?               @map("custom_name_of_list") @db.VarChar(255)
   customDescriptionOfList String?               @map("custom_description_of_list") @db.VarChar(1000)

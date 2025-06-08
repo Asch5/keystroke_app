@@ -3,7 +3,7 @@
 import { authenticate, StateAuth } from '@/core/lib/actions/authActions';
 import { useActionState } from 'react';
 import { useAppDispatch } from '@/core/lib/redux/store';
-import { useEffect } from 'react';
+import { useEffect, useCallback, memo } from 'react';
 import { setUser } from '@/core/lib/redux/features/authSlice';
 import { UserBasicData } from '@/core/types/user';
 import { Input } from '@/components/ui/input';
@@ -12,14 +12,37 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useRouter } from 'next/navigation';
 
-export default function LoginForm() {
+/**
+ * LoginForm component provides user authentication functionality
+ *
+ * Handles user login with email/password credentials, form validation,
+ * error display, and redirects to dashboard upon successful authentication.
+ * Integrates with Redux for global user state management.
+ *
+ * @returns {JSX.Element} The login form component
+ */
+function LoginForm() {
   const initialState: StateAuth = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(
     authenticate,
     initialState,
   );
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  /**
+   * Handles successful user authentication
+   * Updates Redux store and navigates to dashboard
+   */
+  const handleAuthSuccess = useCallback(
+    (user: UserBasicData) => {
+      dispatch(setUser(user));
+      router.push('/dashboard');
+    },
+    [dispatch, router],
+  );
 
   useEffect(() => {
     if (state?.user) {
@@ -34,11 +57,9 @@ export default function LoginForm() {
         profilePictureUrl: state.user.profilePictureUrl,
       };
 
-      dispatch(setUser(userBasicData));
-      //Hard redirect to dashboard to avoid any issues with the router
-      window.location.href = '/dashboard';
+      handleAuthSuccess(userBasicData);
     }
-  }, [state, dispatch]);
+  }, [state, handleAuthSuccess]);
 
   return (
     <Card className="w-full">
@@ -48,7 +69,7 @@ export default function LoginForm() {
       <CardContent>
         <form action={formAction} className="space-y-4">
           {state?.message && (
-            <Alert variant="destructive">
+            <Alert variant="destructive" role="alert">
               <AlertDescription>{state.message}</AlertDescription>
             </Alert>
           )}
@@ -62,9 +83,20 @@ export default function LoginForm() {
               placeholder="name@example.com"
               disabled={isPending}
               className={state?.errors?.email ? 'border-destructive' : ''}
+              aria-describedby={
+                state?.errors?.email ? 'email-error' : undefined
+              }
+              aria-invalid={!!state?.errors?.email}
+              autoComplete="email"
+              required
             />
             {state?.errors?.email && (
-              <p className="text-sm text-destructive">
+              <p
+                id="email-error"
+                className="text-sm text-destructive"
+                role="alert"
+                aria-live="polite"
+              >
                 {state.errors.email[0]}
               </p>
             )}
@@ -78,19 +110,38 @@ export default function LoginForm() {
               type="password"
               disabled={isPending}
               className={state?.errors?.password ? 'border-destructive' : ''}
+              aria-describedby={
+                state?.errors?.password ? 'password-error' : undefined
+              }
+              aria-invalid={!!state?.errors?.password}
+              autoComplete="current-password"
+              required
             />
             {state?.errors?.password && (
-              <p className="text-sm text-destructive">
+              <p
+                id="password-error"
+                className="text-sm text-destructive"
+                role="alert"
+                aria-live="polite"
+              >
                 {state.errors.password[0]}
               </p>
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isPending}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isPending}
+            aria-describedby={isPending ? 'login-loading' : undefined}
+          >
             {isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Loading
+                <Loader2
+                  className="mr-2 h-4 w-4 animate-spin"
+                  aria-hidden="true"
+                />
+                <span id="login-loading">Loading</span>
               </>
             ) : (
               'Login'
@@ -101,3 +152,6 @@ export default function LoginForm() {
     </Card>
   );
 }
+
+// Memoize the component to prevent unnecessary re-renders
+export default memo(LoginForm);

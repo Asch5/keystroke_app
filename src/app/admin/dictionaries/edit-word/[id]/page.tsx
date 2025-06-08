@@ -3,89 +3,99 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import {
-  getWordDetails,
-  fetchWordById,
+  fetchWordDetailById,
+  type WordDetailEditData,
 } from '@/core/domains/dictionary/actions';
-import { convertWordEntryDataToWordDetails } from '@/core/lib/utils/wordDetailsAdapter';
-import { WordFormData } from '@/core/types/wordDefinition';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { WordEditForm } from '@/components/features/dictionary';
+import { WordDetailEditForm } from '@/components/features/dictionary';
 
-export default function EditWordPage() {
+export default function EditWordDetailPage() {
   const params = useParams();
-  const [wordDetails, setWordDetails] = useState<WordFormData | null>(null);
+  const [wordDetailData, setWordDetailData] =
+    useState<WordDetailEditData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const wordId = params.id as string;
+  const [error, setError] = useState<string | null>(null);
+  const wordDetailId = params.id as string;
 
-  // Fetch word details
+  // Fetch word detail data
   useEffect(() => {
-    async function fetchWordDetails() {
+    async function fetchWordDetailData() {
       setIsLoading(true);
+      setError(null);
+
       try {
-        if (!wordId) return;
-
-        // First, get the word record by ID using a server action
-        const wordRecord = await fetchWordById(wordId);
-
-        if (!wordRecord) {
-          toast.error('Word not found');
-          return;
+        if (!wordDetailId || isNaN(Number(wordDetailId))) {
+          throw new Error('Invalid WordDetail ID');
         }
 
-        // Then get the full word details using the correct language code
-        const details = await getWordDetails(
-          wordRecord.word,
-          wordRecord.languageCode,
-        );
+        const data = await fetchWordDetailById(Number(wordDetailId));
 
-        if (details) {
-          // Convert WordEntryData to WordDetails for the form
-          const wordDetailsForForm = convertWordEntryDataToWordDetails(details);
-          setWordDetails(wordDetailsForForm);
-        } else {
-          toast.error('Word details not found');
+        if (!data) {
+          throw new Error('WordDetail not found');
         }
+
+        setWordDetailData(data);
       } catch (error) {
-        console.error('Error fetching word details:', error);
-        toast.error('Failed to load word details');
+        console.error('Error fetching WordDetail:', error);
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to load WordDetail';
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setIsLoading(false);
       }
     }
 
-    fetchWordDetails();
-  }, [wordId]);
+    fetchWordDetailData();
+  }, [wordDetailId]);
 
-  // If loading, show a loading spinner
-  if (isLoading && !wordDetails) {
+  // Loading state
+  if (isLoading) {
     return (
       <div className="container mx-auto py-8 flex justify-center items-center min-h-screen">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-lg">Loading word details...</p>
+          <p className="text-lg">Loading WordDetail...</p>
         </div>
       </div>
     );
   }
 
+  // Error state
+  if (error || !wordDetailData) {
+    return (
+      <div className="container mx-auto py-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-red-600">
+              Error Loading WordDetail
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              {error || 'WordDetail data is not available'}
+            </p>
+            <div className="mt-4">
+              <a
+                href="/admin/dictionaries"
+                className="text-blue-600 hover:underline"
+              >
+                ← Back to Dictionary
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Render the edit form
   return (
-    <div className="container mx-auto py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            Edit Word: {wordDetails?.word.text || 'Loading...'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <WordEditForm
-            wordId={wordId}
-            wordDetails={wordDetails}
-            isLoading={isLoading}
-          />
-        </CardContent>
-      </Card>
-    </div>
+    <WordDetailEditForm
+      wordDetailId={Number(wordDetailId)}
+      initialData={wordDetailData}
+    />
   );
 }

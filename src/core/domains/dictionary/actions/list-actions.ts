@@ -285,7 +285,7 @@ export async function createListAction(
 }
 
 /**
- * Add words to existing list
+ * Add words to existing list with language validation
  */
 export async function addWordsToList(
   listId: string,
@@ -301,6 +301,63 @@ export async function addWordsToList(
     });
 
     await prisma.$transaction(async (tx) => {
+      // First, get the list details to check its languages
+      const list = await tx.list.findUnique({
+        where: { id: listId },
+        select: {
+          id: true,
+          name: true,
+          baseLanguageCode: true,
+          targetLanguageCode: true,
+        },
+      });
+
+      if (!list) {
+        throw new Error('List not found');
+      }
+
+      // Validate that all words being added match the list's languages
+      const wordsToValidate = await tx.definition.findMany({
+        where: {
+          id: { in: definitionIds },
+        },
+        include: {
+          wordDetails: {
+            include: {
+              wordDetails: {
+                include: {
+                  word: {
+                    select: {
+                      languageCode: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Check language compatibility
+      const incompatibleWords = wordsToValidate.filter((definition) => {
+        const word = definition.wordDetails[0]?.wordDetails?.word;
+        if (!word) return true; // Skip if word data is missing
+
+        // Check if the word's language matches either of the list's languages
+        const wordMatchesListLanguages =
+          word.languageCode === list.baseLanguageCode ||
+          word.languageCode === list.targetLanguageCode;
+
+        return !wordMatchesListLanguages;
+      });
+
+      if (incompatibleWords.length > 0) {
+        const listLanguages = `${list.baseLanguageCode}-${list.targetLanguageCode}`;
+        throw new Error(
+          `Cannot add words to list "${list.name}". ${incompatibleWords.length} word(s) have incompatible languages. List supports: ${listLanguages}`,
+        );
+      }
+
       // Get current max order index
       const maxOrder = await tx.listWord.findFirst({
         where: { listId },

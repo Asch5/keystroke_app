@@ -99,6 +99,8 @@ export async function fetchAllLists(
     }
 
     if (language) {
+      // More specific language filtering - only include lists that match the target language
+      // This ensures we get lists where the selected language is either the base or target language
       whereConditions.OR = [
         { baseLanguageCode: language },
         { targetLanguageCode: language },

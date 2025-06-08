@@ -270,6 +270,7 @@ CREATE TABLE "user_lists" (
     "list_id" UUID,
     "base_language_code" "LanguageCode" NOT NULL,
     "target_language_code" "LanguageCode" NOT NULL,
+    "is_public" BOOLEAN NOT NULL DEFAULT false,
     "is_modified" BOOLEAN NOT NULL DEFAULT false,
     "custom_name_of_list" VARCHAR(255),
     "custom_description_of_list" VARCHAR(1000),

@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/tooltip';
 import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
 import { ActionButtonsToolbar } from '@/components/features/admin';
+import { AddWordsToListDialog } from '@/components/features/admin/dictionary/AddWordsToListDialog';
 import { toast } from 'sonner';
 import {
   ArrowUpDown,
@@ -129,6 +130,9 @@ export default function DictionariesPage() {
   // Delete state
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  // Add words to list state
+  const [isAddWordsToListDialogOpen, setIsAddWordsToListDialogOpen] =
+    useState(false);
 
   // Get unique values for filters
   const availablePartsOfSpeech = React.useMemo(() => {
@@ -354,6 +358,20 @@ export default function DictionariesPage() {
       return;
     }
     setIsDeleteDialogOpen(true);
+  };
+
+  const openAddWordsToListDialog = () => {
+    if (selectedWords.size === 0) {
+      toast.error('Please select at least one word to add to a list.');
+      return;
+    }
+    setIsAddWordsToListDialogOpen(true);
+  };
+
+  const handleWordsAddedToList = () => {
+    // Clear selection after adding words to list
+    setSelectedWords(new Set());
+    setIsAddWordsToListDialogOpen(false);
   };
 
   const handleAudioGenerated = async () => {
@@ -653,7 +671,7 @@ export default function DictionariesPage() {
 
         return (
           <div className="flex space-x-2">
-            <Link href={`/admin/dictionaries/edit-word/${wordDetail.wordId}`}>
+            <Link href={`/admin/dictionaries/edit-word/${wordDetail.id}`}>
               <Button variant="outline" size="sm">
                 <Edit className="h-4 w-4 mr-1" />
                 Edit
@@ -707,6 +725,7 @@ export default function DictionariesPage() {
                 onCreateWordList={handleCreateWordList}
                 onDeleteSelected={openDeleteDialog}
                 onAudioGenerated={handleAudioGenerated}
+                onAddWordsToList={openAddWordsToListDialog}
               />
             </div>
           </div>
@@ -922,6 +941,21 @@ export default function DictionariesPage() {
         onConfirm={handleDeleteSelectedWords}
         selectedCount={selectedWords.size}
         isLoading={isDeleting}
+      />
+
+      {/* Add Words to List Dialog */}
+      <AddWordsToListDialog
+        isOpen={isAddWordsToListDialogOpen}
+        onClose={() => setIsAddWordsToListDialogOpen(false)}
+        selectedWords={selectedWords}
+        selectedDefinitionIds={
+          filteredWordDetails
+            .filter((word) => selectedWords.has(word.id.toString()))
+            .map((word) => word.definitionId)
+            .filter((id) => id !== undefined) as number[]
+        }
+        selectedLanguage={selectedLanguage}
+        onWordsAdded={handleWordsAddedToList}
       />
     </div>
   );

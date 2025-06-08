@@ -217,8 +217,10 @@ Types: `GenerateImageResult`, `ImageBatchResult`
 ### User List Operations (`actions/user-list-actions.ts`)
 
 - `getUserLists(userId, filters?)` - Get user's personal lists with full details and filtering options
-- `getAvailablePublicLists(userId, userLanguages, filters?)` - Get public lists available for user collection
+- `getAvailablePublicLists(userId, userLanguages, filters?)` - Get public lists available for user collection (official lists from List table)
+- `getPublicUserLists(userId, userLanguages, filters?)` - Get community lists shared by other users (from UserList table with isPublic=true)
 - `addListToUserCollection(userId, listId, userLanguages)` - Add public list to user's collection
+- `addPublicUserListToCollection(userId, publicUserListId, userLanguages)` - Clone public user list to user's collection with full word copying
 - `removeListFromUserCollection(userId, userListId)` - Remove list from user's collection
 - `createCustomUserList(userId, data)` - Create custom user-defined list
 - `updateUserList(userId, userListId, data)` - Update user list customizations
@@ -227,10 +229,15 @@ Types: `GenerateImageResult`, `ImageBatchResult`
 - `getUserListWords(userId, userListId, options?)` - Get words in list with full details
 - `reorderUserListWords(userId, userListId, wordOrderUpdates)` - Update word order in list
 
-Types: `UserListWithDetails`, `PublicListSummary`, `UserListWordWithDetails`, `UserListFilters`
+Types: `UserListWithDetails`, `PublicListSummary`, `PublicUserListSummary`, `UserListWordWithDetails`, `UserListFilters`
 
 **Key Features:**
 
+- **Dual List System**: Supports both official lists (List table) and community lists (UserList table with isPublic=true)
+- **Public List Discovery**: Simplified filtering without language constraints for broader list discovery
+- **Community List Support**: Users can share their custom lists with isPublic flag and others can clone them
+- **Creator Attribution**: Community lists show who created them for proper attribution
+- **Full List Cloning**: Adding community lists copies all words via transaction-based operations
 - **Composite Key Support**: Properly handles UserListWord composite primary key (userListId, userDictionaryId)
 - **List Type Management**: Supports both inherited public lists and custom user-created lists
 - **Advanced Filtering**: Search, difficulty, language, custom/inherited list filtering
@@ -238,6 +245,12 @@ Types: `UserListWithDetails`, `PublicListSummary`, `UserListWordWithDetails`, `U
 - **Image Support**: Includes image associations through Definition model
 - **Proper Type Safety**: Corrected TypeScript types for all database operations
 - **Schema Compliance**: Fixed invalid property references and relationship includes
+
+**Recent Fixes:**
+
+- **Fixed Filtering Logic**: Resolved issue where language filtering was preventing public lists from appearing by default
+- **Consistent Search Behavior**: Both official and community lists now show all available lists by default, with search filtering applied when needed
+- **Simplified Query Logic**: Removed conflicting AND/OR conditions that were causing empty results
 
 **Key Features:**
 
@@ -687,17 +700,24 @@ Types: `WordSearchResult`, `WordDefinitionResult`
 ### User List Management Operations (`actions/user-list-actions.ts`)
 
 - `getUserLists(userId, filters?)` - Get user's personal lists with filtering and sorting
-- `getAvailablePublicLists(userId, userLanguages, filters?)` - Get public lists user can add to collection
+- `getAvailablePublicLists(userId, userLanguages, filters?)` - Get public lists user can add to collection (official lists from List table)
+- `getPublicUserLists(userId, userLanguages, filters?)` - Get community lists shared by other users (from UserList table with isPublic=true)
 - `addListToUserCollection(userId, listId, userLanguages)` - Add public list to user's collection
+- `addPublicUserListToCollection(userId, publicUserListId, userLanguages)` - Clone public user list to user's collection with full word copying
 - `removeListFromUserCollection(userId, userListId)` - Remove list from user's collection (soft delete)
 - `createCustomUserList(userId, data)` - Create custom user list
 - `updateUserList(userId, userListId, data)` - Update user list customizations
 - `addWordToUserList(userId, userListId, userDictionaryId)` - Add word from user dictionary to a list
 
-Types: `UserListWithDetails`, `PublicListSummary`, `UserListFilters`
+Types: `UserListWithDetails`, `PublicListSummary`, `PublicUserListSummary`, `UserListFilters`
 
 **Key Features:**
 
+- **Dual List System**: Supports both official lists (List table) and community lists (UserList table with isPublic=true)
+- **Public List Discovery**: Simplified filtering without language constraints for broader list discovery
+- **Community List Support**: Users can share their custom lists with isPublic flag and others can clone them
+- **Creator Attribution**: Community lists show who created them for proper attribution
+- **Full List Cloning**: Adding community lists copies all words via transaction-based operations
 - **Dual List Types**: Manages both inherited public lists and custom user lists
 - **Customization Support**: Users can customize names, descriptions, difficulty for inherited lists
 - **Collection Management**: Add/remove public lists from personal collection
@@ -705,8 +725,13 @@ Types: `UserListWithDetails`, `PublicListSummary`, `UserListFilters`
 - **Order Management**: Maintains proper ordering of words within lists
 - **Duplicate Prevention**: Validates against adding same word twice to a list
 - **Rich Metadata**: Includes progress tracking, word counts, sample words
-- **Language Filtering**: Shows lists matching user's language preferences
 - **Ownership Validation**: Ensures users can only modify their own lists and words
+
+**Recent Fixes:**
+
+- **Fixed Filtering Logic**: Resolved issue where language filtering was preventing public lists from appearing by default
+- **Consistent Search Behavior**: Both official and community lists now show all available lists by default, with search filtering applied when needed
+- **Simplified Query Logic**: Removed conflicting AND/OR conditions that were causing empty results
 
 ### Practice Session Management (`actions/practice-actions.ts`)
 

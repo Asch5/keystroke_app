@@ -145,6 +145,24 @@ export const getUserDictionary = cache(
         ...(needsReview && { nextReviewDue: { lte: new Date() } }),
         ...(searchQuery && {
           OR: [
+            // Search in the actual word text (most important)
+            {
+              definition: {
+                wordDetails: {
+                  some: {
+                    wordDetails: {
+                      word: {
+                        word: {
+                          contains: searchQuery,
+                          mode: 'insensitive' as const,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            // Search in definition text
             {
               definition: {
                 definition: {
@@ -153,6 +171,7 @@ export const getUserDictionary = cache(
                 },
               },
             },
+            // Search in custom fields
             {
               customDefinitionBase: {
                 contains: searchQuery,
@@ -169,6 +188,21 @@ export const getUserDictionary = cache(
               customNotes: {
                 contains: searchQuery,
                 mode: 'insensitive' as const,
+              },
+            },
+            // Search in translations
+            {
+              definition: {
+                translationLinks: {
+                  some: {
+                    translation: {
+                      content: {
+                        contains: searchQuery,
+                        mode: 'insensitive' as const,
+                      },
+                    },
+                  },
+                },
               },
             },
           ],

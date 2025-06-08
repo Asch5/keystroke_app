@@ -125,3 +125,31 @@ import { useAppDispatch } from '@/core/state';
 - **IMPROVED**: Header Layout Coordination - Updated dashboard and admin layouts to match shadcn/ui sidebar documentation patterns with proper spacing, visual separators, responsive transitions, and optimized trigger positioning for consistent design language.
 - **ENHANCED**: Admin Navigation Icons - Updated admin navigation with more appropriate and descriptive icons: ShieldCheck for Admin access, List for Lists Management, MagnifyingGlass for Check Word, Plus for Add New Word, ChartBar for Frequency analysis, and PencilSquare for Edit Word functionality.
 - **NEW**: Admin List Word Management - Implemented comprehensive word management functionality for admin public lists. Admins can now view, search, sort, and remove words from public vocabulary lists through a dedicated management interface at `/admin/dictionaries/lists/[id]/words`. Features include bulk selection, real-time search, sortable columns (word, order, part of speech), audio playback, pagination, and confirmation dialogs for word removal. This complements the existing user list management and provides full administrative control over public vocabulary collections.
+- **MODERNIZED**: Admin WordDetail Edit System - Completely modernized the admin edit-word functionality to edit specific WordDetails instead of entire Words. The system now navigates using WordDetail IDs, allowing precise editing of individual word variants/parts of speech without affecting other WordDetails of the same word. Features include: 1) WordDetail-specific editing with clear separation between Word fields (shared across all WordDetails) and WordDetail fields (specific to the variant), 2) Comprehensive form with all WordDetail properties (part of speech, variant, gender, etymology, phonetic, forms, frequency, source), 3) Inline editing of related definitions and audio files, 4) Warning system about Word field impacts, 5) Modern shadcn/ui interface with proper validation and error handling. The new `fetchWordDetailById` and `updateWordDetailById` actions provide targeted CRUD operations for WordDetail management.
+
+## Critical Issues Identified
+
+### Database Schema Enhancement Needed
+
+**Community List Tracking**: The current schema lacks proper tracking of copied community lists. When a user adds a community list to their collection via `addPublicUserListToCollection()`, it creates a new `UserList` record, but there's no way to track which original public UserList it was copied from.
+
+**Recommended Schema Change**:
+
+```prisma
+model UserList {
+  // ... existing fields ...
+  sourceUserListId    String?               @map("source_user_list_id") @db.Uuid
+  sourceUserList      UserList?             @relation("UserListCopies", fields: [sourceUserListId], references: [id])
+  copiedByUsers       UserList[]            @relation("UserListCopies")
+  // ... rest of fields ...
+}
+```
+
+This would enable:
+
+1. Proper tracking of community list copies
+2. Accurate `isInUserCollection` detection
+3. Update propagation from original to copies
+4. Community list popularity metrics
+
+**Current Workaround**: The system uses name matching as a temporary solution, which is unreliable and could cause false positives.

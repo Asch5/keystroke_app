@@ -15,11 +15,15 @@ export {
 export {
   getWordDetails,
   updateWordDetails,
+  fetchWordDetailById,
+  updateWordDetailById,
+  searchWordsForRelationships,
   type WordEntryData,
   type WordPartOfSpeechDetails,
   type DefinitionData,
   type AudioFileData,
   type DetailRelationForPOS,
+  type WordDetailEditData,
 } from './word-details-actions';
 
 // Update operations
@@ -117,14 +121,20 @@ export {
 export {
   getUserLists,
   getAvailablePublicLists,
+  getPublicUserLists,
+  getPublicListPreview,
+  getPublicUserListPreview,
   addListToUserCollection,
+  addPublicUserListToCollection,
   removeListFromUserCollection,
   createCustomUserList,
   updateUserList,
   addWordToUserList,
   removeWordFromUserList,
+  populateInheritedListWithWords,
   type UserListWithDetails,
   type PublicListSummary,
+  type PublicUserListSummary,
   type UserListFilters,
   type UserListWordWithDetails,
 } from './user-list-actions';

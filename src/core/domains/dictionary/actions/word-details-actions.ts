@@ -7,6 +7,7 @@ import {
   PartOfSpeech,
   SourceType,
   RelationshipType,
+  Gender,
 } from '@prisma/client';
 import {
   getFrequencyPartOfSpeechEnum,
@@ -630,6 +631,1183 @@ export async function updateWordDetails(
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
+    };
+  }
+}
+
+/**
+ * Interface for WordDetail edit form data
+ */
+export interface WordDetailEditData {
+  // WordDetail fields
+  id: number;
+  partOfSpeech: PartOfSpeech;
+  variant: string | null;
+  gender: Gender | null;
+  etymology: string | null;
+  phonetic: string | null;
+  forms: string | null;
+  frequency: number | null;
+  isPlural: boolean;
+  source: SourceType;
+
+  // Word fields (shared across all WordDetails)
+  wordText: string;
+  phoneticGeneral: string | null;
+  frequencyGeneral: number | null;
+  languageCode: LanguageCode;
+
+  // Enhanced definitions with examples
+  definitions: Array<{
+    id: number | null; // null for new definitions
+    definition: string;
+    languageCode: LanguageCode;
+    source: SourceType;
+    subjectStatusLabels: string | null;
+    generalLabels: string | null;
+    grammaticalNote: string | null;
+    usageNote: string | null;
+    isInShortDef: boolean;
+    imageId: number | null;
+    imageUrl: string | null;
+    examples: Array<{
+      id: number | null; // null for new examples
+      example: string;
+      grammaticalNote: string | null;
+      sourceOfExample: string | null;
+    }>;
+    _toDelete?: boolean; // Flag for deletion
+  }>;
+
+  audioFiles: Array<{
+    id: number | null; // null for new audio files
+    url: string;
+    isPrimary: boolean;
+    languageCode: LanguageCode;
+    source: SourceType;
+    note: string | null;
+    _toDelete?: boolean; // Flag for deletion
+  }>;
+
+  // WordDetails relationships (from this WordDetail to others)
+  wordDetailRelationships: Array<{
+    id: string | null; // composite key as string or null for new
+    toWordDetailsId: number;
+    toWordText: string;
+    toPartOfSpeech: PartOfSpeech;
+    toVariant: string | null;
+    type: RelationshipType;
+    description: string | null;
+    orderIndex: number | null;
+    _toDelete?: boolean; // Flag for deletion
+  }>;
+
+  // Word relationships (from this Word to others - affects all WordDetails)
+  wordRelationships: Array<{
+    id: string | null; // composite key as string or null for new
+    toWordId: number;
+    toWordText: string;
+    type: RelationshipType;
+    description: string | null;
+    orderIndex: number | null;
+    _toDelete?: boolean; // Flag for deletion
+  }>;
+}
+
+/**
+ * Fetch a specific WordDetail by ID for editing
+ */
+export async function fetchWordDetailById(
+  wordDetailId: number,
+): Promise<WordDetailEditData | null> {
+  try {
+    const wordDetail = await prisma.wordDetails.findUnique({
+      where: { id: wordDetailId },
+      include: {
+        word: {
+          include: {
+            // Word-level relationships
+            relatedFromWords: {
+              include: {
+                toWord: true,
+              },
+            },
+          },
+        },
+        definitions: {
+          include: {
+            definition: {
+              include: {
+                image: true,
+                examples: true,
+              },
+            },
+          },
+        },
+        audioLinks: {
+          include: {
+            audio: true,
+          },
+        },
+        // WordDetail-level relationships
+        relatedFrom: {
+          include: {
+            toWordDetails: {
+              include: {
+                word: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!wordDetail) {
+      return null;
+    }
+
+    return {
+      // WordDetail fields
+      id: wordDetail.id,
+      partOfSpeech: wordDetail.partOfSpeech,
+      variant: wordDetail.variant,
+      gender: wordDetail.gender,
+      etymology: wordDetail.etymology,
+      phonetic: wordDetail.phonetic,
+      forms: wordDetail.forms,
+      frequency: wordDetail.frequency,
+      isPlural: wordDetail.isPlural,
+      source: wordDetail.source,
+
+      // Word fields
+      wordText: wordDetail.word.word,
+      phoneticGeneral: wordDetail.word.phoneticGeneral,
+      frequencyGeneral: wordDetail.word.frequencyGeneral,
+      languageCode: wordDetail.word.languageCode,
+
+      // Enhanced definitions with examples
+      definitions: wordDetail.definitions.map((wd) => ({
+        id: wd.definition.id,
+        definition: wd.definition.definition,
+        languageCode: wd.definition.languageCode,
+        source: wd.definition.source,
+        subjectStatusLabels: wd.definition.subjectStatusLabels,
+        generalLabels: wd.definition.generalLabels,
+        grammaticalNote: wd.definition.grammaticalNote,
+        usageNote: wd.definition.usageNote,
+        isInShortDef: wd.definition.isInShortDef,
+        imageId: wd.definition.imageId,
+        imageUrl: wd.definition.image?.url || null,
+        examples: wd.definition.examples.map((ex) => ({
+          id: ex.id,
+          example: ex.example,
+          grammaticalNote: ex.grammaticalNote,
+          sourceOfExample: ex.sourceOfExample,
+        })),
+      })),
+
+      // Audio files
+      audioFiles: wordDetail.audioLinks.map((al) => ({
+        id: al.audio.id,
+        url: al.audio.url,
+        isPrimary: al.isPrimary,
+        languageCode: al.audio.languageCode,
+        source: al.audio.source,
+        note: al.audio.note,
+      })),
+
+      // WordDetail relationships
+      wordDetailRelationships: wordDetail.relatedFrom.map((rel) => ({
+        id: `${rel.fromWordDetailsId}-${rel.toWordDetailsId}-${rel.type}`,
+        toWordDetailsId: rel.toWordDetailsId,
+        toWordText: rel.toWordDetails.word.word,
+        toPartOfSpeech: rel.toWordDetails.partOfSpeech,
+        toVariant: rel.toWordDetails.variant,
+        type: rel.type,
+        description: rel.description,
+        orderIndex: rel.orderIndex,
+      })),
+
+      // Word relationships
+      wordRelationships: wordDetail.word.relatedFromWords.map((rel) => ({
+        id: `${rel.fromWordId}-${rel.toWordId}-${rel.type}`,
+        toWordId: rel.toWordId,
+        toWordText: rel.toWord.word,
+        type: rel.type,
+        description: rel.description,
+        orderIndex: rel.orderIndex,
+      })),
+    };
+  } catch (error) {
+    console.error('Error fetching word detail by ID:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper function to validate audio data
+ */
+function validateAudioData(audioData: {
+  url: string;
+  languageCode: LanguageCode;
+  source: SourceType;
+  note: string | null;
+}): boolean {
+  return !!(
+    audioData.url &&
+    typeof audioData.url === 'string' &&
+    audioData.url.trim().length > 0 &&
+    audioData.languageCode &&
+    audioData.source
+  );
+}
+
+/**
+ * Update a specific WordDetail by ID
+ */
+export async function updateWordDetailById(
+  wordDetailId: number,
+  updateData: Partial<WordDetailEditData>,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.$transaction(
+      async (tx) => {
+        // Update WordDetail fields
+        const wordDetailUpdates: Prisma.WordDetailsUpdateInput = {};
+
+        if (updateData.partOfSpeech !== undefined)
+          wordDetailUpdates.partOfSpeech = updateData.partOfSpeech;
+        if (updateData.variant !== undefined)
+          wordDetailUpdates.variant = updateData.variant;
+        if (updateData.gender !== undefined)
+          wordDetailUpdates.gender = updateData.gender;
+        if (updateData.etymology !== undefined)
+          wordDetailUpdates.etymology = updateData.etymology;
+        if (updateData.phonetic !== undefined)
+          wordDetailUpdates.phonetic = updateData.phonetic;
+        if (updateData.forms !== undefined)
+          wordDetailUpdates.forms = updateData.forms;
+        if (updateData.frequency !== undefined)
+          wordDetailUpdates.frequency = updateData.frequency;
+        if (updateData.isPlural !== undefined)
+          wordDetailUpdates.isPlural = updateData.isPlural;
+        if (updateData.source !== undefined)
+          wordDetailUpdates.source = updateData.source;
+
+        if (Object.keys(wordDetailUpdates).length > 0) {
+          await tx.wordDetails.update({
+            where: { id: wordDetailId },
+            data: wordDetailUpdates,
+          });
+        }
+
+        // Update Word fields (this will affect all WordDetails of this word)
+        const wordDetail = await tx.wordDetails.findUnique({
+          where: { id: wordDetailId },
+          select: { wordId: true },
+        });
+
+        if (
+          wordDetail &&
+          (updateData.wordText ||
+            updateData.phoneticGeneral !== undefined ||
+            updateData.frequencyGeneral !== undefined)
+        ) {
+          const wordUpdates: Partial<{
+            word: string;
+            phoneticGeneral: string | null;
+            frequencyGeneral: number | null;
+          }> = {};
+
+          if (updateData.wordText) wordUpdates.word = updateData.wordText;
+          if (updateData.phoneticGeneral !== undefined)
+            wordUpdates.phoneticGeneral = updateData.phoneticGeneral;
+          if (updateData.frequencyGeneral !== undefined)
+            wordUpdates.frequencyGeneral = updateData.frequencyGeneral;
+
+          if (Object.keys(wordUpdates).length > 0) {
+            await tx.word.update({
+              where: { id: wordDetail.wordId },
+              data: wordUpdates,
+            });
+          }
+        }
+
+        // Handle definitions updates
+        if (updateData.definitions) {
+          for (const defData of updateData.definitions) {
+            if (defData._toDelete) {
+              // Delete definition and its relationships
+              if (defData.id) {
+                await tx.wordDefinition.deleteMany({
+                  where: { definitionId: defData.id },
+                });
+                await tx.definition.delete({
+                  where: { id: defData.id },
+                });
+              }
+            } else if (defData.id) {
+              // Update existing definition
+              await tx.definition.update({
+                where: { id: defData.id },
+                data: {
+                  definition: defData.definition,
+                  subjectStatusLabels: defData.subjectStatusLabels,
+                  generalLabels: defData.generalLabels,
+                  grammaticalNote: defData.grammaticalNote,
+                  usageNote: defData.usageNote,
+                  isInShortDef: defData.isInShortDef,
+                  imageId: defData.imageId,
+                },
+              });
+
+              // Handle examples
+              if (defData.examples) {
+                for (const exampleData of defData.examples) {
+                  if (exampleData.id) {
+                    // Update existing example
+                    await tx.definitionExample.update({
+                      where: { id: exampleData.id },
+                      data: {
+                        example: exampleData.example,
+                        grammaticalNote: exampleData.grammaticalNote,
+                        sourceOfExample: exampleData.sourceOfExample,
+                      },
+                    });
+                  } else {
+                    // Create new example
+                    await tx.definitionExample.create({
+                      data: {
+                        definitionId: defData.id!,
+                        example: exampleData.example,
+                        languageCode: defData.languageCode,
+                        grammaticalNote: exampleData.grammaticalNote,
+                        sourceOfExample: exampleData.sourceOfExample,
+                      },
+                    });
+                  }
+                }
+              }
+            } else {
+              // Create new definition
+              const newDef = await tx.definition.create({
+                data: {
+                  definition: defData.definition,
+                  languageCode: defData.languageCode,
+                  source: defData.source,
+                  subjectStatusLabels: defData.subjectStatusLabels,
+                  generalLabels: defData.generalLabels,
+                  grammaticalNote: defData.grammaticalNote,
+                  usageNote: defData.usageNote,
+                  isInShortDef: defData.isInShortDef,
+                  imageId: defData.imageId,
+                },
+              });
+
+              // Link to WordDetail
+              await tx.wordDefinition.create({
+                data: {
+                  wordDetailsId: wordDetailId,
+                  definitionId: newDef.id,
+                },
+              });
+
+              // Create examples for new definition
+              if (defData.examples) {
+                for (const exampleData of defData.examples) {
+                  await tx.definitionExample.create({
+                    data: {
+                      definitionId: newDef.id,
+                      example: exampleData.example,
+                      languageCode: defData.languageCode,
+                      grammaticalNote: exampleData.grammaticalNote,
+                      sourceOfExample: exampleData.sourceOfExample,
+                    },
+                  });
+                }
+              }
+            }
+          }
+        }
+
+        // Handle audio files updates
+        if (updateData.audioFiles) {
+          for (const audioData of updateData.audioFiles) {
+            if (audioData._toDelete) {
+              // Delete audio and its relationships
+              if (audioData.id) {
+                await tx.wordDetailsAudio.deleteMany({
+                  where: { audioId: audioData.id },
+                });
+                await tx.audio.delete({
+                  where: { id: audioData.id },
+                });
+              }
+            } else if (audioData.id) {
+              // Update existing audio
+              await tx.audio.update({
+                where: { id: audioData.id },
+                data: {
+                  url: audioData.url.trim(),
+                  note: audioData.note,
+                },
+              });
+
+              // Update the link
+              await tx.wordDetailsAudio.updateMany({
+                where: {
+                  wordDetailsId: wordDetailId,
+                  audioId: audioData.id,
+                },
+                data: {
+                  isPrimary: audioData.isPrimary,
+                },
+              });
+            } else {
+              // Validate audio data before processing
+              if (!validateAudioData(audioData)) {
+                console.warn('Skipping invalid audio data:', audioData);
+                continue; // Skip invalid audio data
+              }
+
+              // Find or create audio file
+              let audioFile = await tx.audio.findFirst({
+                where: {
+                  url: audioData.url.trim(),
+                  languageCode: audioData.languageCode,
+                },
+              });
+
+              if (!audioFile) {
+                // Create new audio if it doesn't exist
+                audioFile = await tx.audio.create({
+                  data: {
+                    url: audioData.url.trim(),
+                    languageCode: audioData.languageCode,
+                    source: audioData.source,
+                    note: audioData.note,
+                  },
+                });
+              } else {
+                // Update existing audio file with new note and source if provided
+                audioFile = await tx.audio.update({
+                  where: { id: audioFile.id },
+                  data: {
+                    source: audioData.source,
+                    note: audioData.note,
+                  },
+                });
+              }
+
+              // Check if link already exists to avoid duplicate relationship
+              const existingLink = await tx.wordDetailsAudio.findUnique({
+                where: {
+                  wordDetailsId_audioId: {
+                    wordDetailsId: wordDetailId,
+                    audioId: audioFile.id,
+                  },
+                },
+              });
+
+              if (!existingLink) {
+                // Create link to WordDetail
+                await tx.wordDetailsAudio.create({
+                  data: {
+                    wordDetailsId: wordDetailId,
+                    audioId: audioFile.id,
+                    isPrimary: audioData.isPrimary,
+                  },
+                });
+              } else {
+                // Update existing link
+                await tx.wordDetailsAudio.update({
+                  where: {
+                    wordDetailsId_audioId: {
+                      wordDetailsId: wordDetailId,
+                      audioId: audioFile.id,
+                    },
+                  },
+                  data: {
+                    isPrimary: audioData.isPrimary,
+                  },
+                });
+              }
+            }
+          }
+        }
+
+        // Handle WordDetail relationships
+        if (updateData.wordDetailRelationships) {
+          for (const relData of updateData.wordDetailRelationships) {
+            if (relData._toDelete && relData.id) {
+              // Parse composite key and delete relationship
+              const [fromId, toId, type] = relData.id.split('-');
+              if (fromId && toId && type) {
+                await tx.wordDetailsRelationship.delete({
+                  where: {
+                    fromWordDetailsId_toWordDetailsId_type: {
+                      fromWordDetailsId: parseInt(fromId),
+                      toWordDetailsId: parseInt(toId),
+                      type: type as RelationshipType,
+                    },
+                  },
+                });
+              }
+            } else if (!relData.id) {
+              // Check if relationship already exists to avoid duplicates
+              const existingRelationship =
+                await tx.wordDetailsRelationship.findUnique({
+                  where: {
+                    fromWordDetailsId_toWordDetailsId_type: {
+                      fromWordDetailsId: wordDetailId,
+                      toWordDetailsId: relData.toWordDetailsId,
+                      type: relData.type,
+                    },
+                  },
+                });
+
+              if (!existingRelationship) {
+                // Create new relationship
+                await tx.wordDetailsRelationship.create({
+                  data: {
+                    fromWordDetailsId: wordDetailId,
+                    toWordDetailsId: relData.toWordDetailsId,
+                    type: relData.type,
+                    description: relData.description,
+                    orderIndex: relData.orderIndex,
+                  },
+                });
+              }
+            } else {
+              // Update existing relationship
+              const [fromId, toId, type] = relData.id!.split('-');
+              if (fromId && toId && type) {
+                await tx.wordDetailsRelationship.update({
+                  where: {
+                    fromWordDetailsId_toWordDetailsId_type: {
+                      fromWordDetailsId: parseInt(fromId),
+                      toWordDetailsId: parseInt(toId),
+                      type: type as RelationshipType,
+                    },
+                  },
+                  data: {
+                    description: relData.description,
+                    orderIndex: relData.orderIndex,
+                  },
+                });
+              }
+            }
+          }
+        }
+
+        // Handle Word relationships (affects all WordDetails)
+        if (updateData.wordRelationships) {
+          const currentWordDetail = await tx.wordDetails.findUnique({
+            where: { id: wordDetailId },
+            select: { wordId: true },
+          });
+
+          if (currentWordDetail) {
+            for (const relData of updateData.wordRelationships) {
+              if (relData._toDelete && relData.id) {
+                // Parse composite key and delete relationship
+                const [fromId, toId, type] = relData.id.split('-');
+                if (fromId && toId && type) {
+                  await tx.wordToWordRelationship.delete({
+                    where: {
+                      fromWordId_toWordId_type: {
+                        fromWordId: parseInt(fromId),
+                        toWordId: parseInt(toId),
+                        type: type as RelationshipType,
+                      },
+                    },
+                  });
+                }
+              } else if (!relData.id) {
+                // Check if relationship already exists to avoid duplicates
+                const existingWordRelationship =
+                  await tx.wordToWordRelationship.findUnique({
+                    where: {
+                      fromWordId_toWordId_type: {
+                        fromWordId: currentWordDetail.wordId,
+                        toWordId: relData.toWordId,
+                        type: relData.type,
+                      },
+                    },
+                  });
+
+                if (!existingWordRelationship) {
+                  // Create new relationship
+                  await tx.wordToWordRelationship.create({
+                    data: {
+                      fromWordId: currentWordDetail.wordId,
+                      toWordId: relData.toWordId,
+                      type: relData.type,
+                      description: relData.description,
+                      orderIndex: relData.orderIndex,
+                    },
+                  });
+                }
+              } else {
+                // Update existing relationship
+                const [fromId, toId, type] = relData.id.split('-');
+                if (fromId && toId && type) {
+                  await tx.wordToWordRelationship.update({
+                    where: {
+                      fromWordId_toWordId_type: {
+                        fromWordId: parseInt(fromId),
+                        toWordId: parseInt(toId),
+                        type: type as RelationshipType,
+                      },
+                    },
+                    data: {
+                      description: relData.description,
+                      orderIndex: relData.orderIndex,
+                    },
+                  });
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        timeout: 30000, // 30 second timeout
+      },
+    );
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating word detail:', error);
+
+    // Provide more specific error messages for common issues
+    let errorMessage = 'Unknown error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+
+      // Handle specific Prisma errors
+      if (error.message.includes('Unique constraint failed')) {
+        if (
+          error.message.includes('url') &&
+          error.message.includes('language_code')
+        ) {
+          errorMessage =
+            'An audio file with this URL and language already exists in the system.';
+        } else {
+          errorMessage =
+            'A record with these values already exists. Please check for duplicates.';
+        }
+      } else if (error.message.includes('Record to update not found')) {
+        errorMessage = 'The record you are trying to update no longer exists.';
+      } else if (error.message.includes('Foreign key constraint failed')) {
+        errorMessage =
+          'Invalid reference to another record. Please check your data.';
+      }
+    }
+
+    return {
+      success: false,
+      error: errorMessage,
+    };
+  }
+}
+
+/**
+ * Search for words to create relationships with
+ */
+export async function searchWordsForRelationships(
+  query: string,
+  languageCode: LanguageCode,
+  excludeWordId?: number,
+  limit: number = 10,
+): Promise<
+  Array<{
+    wordId: number;
+    wordText: string;
+    phoneticGeneral: string | null;
+    wordDetails: Array<{
+      id: number;
+      partOfSpeech: PartOfSpeech;
+      variant: string | null;
+    }>;
+  }>
+> {
+  try {
+    const words = await prisma.word.findMany({
+      where: {
+        word: {
+          contains: query,
+          mode: 'insensitive',
+        },
+        languageCode,
+        ...(excludeWordId && { id: { not: excludeWordId } }),
+      },
+      include: {
+        details: {
+          select: {
+            id: true,
+            partOfSpeech: true,
+            variant: true,
+          },
+        },
+      },
+      take: limit,
+      orderBy: {
+        word: 'asc',
+      },
+    });
+
+    return words.map((word) => ({
+      wordId: word.id,
+      wordText: word.word,
+      phoneticGeneral: word.phoneticGeneral,
+      wordDetails: word.details,
+    }));
+  } catch (error) {
+    console.error('Error searching words for relationships:', error);
+    return [];
+  }
+}
+
+/**
+ * Update only definitions for a specific WordDetail
+ */
+export async function updateWordDetailDefinitions(
+  wordDetailId: number,
+  definitions: WordDetailEditData['definitions'],
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Handle definitions updates
+      for (const defData of definitions) {
+        if (defData._toDelete) {
+          // Delete definition and its relationships
+          if (defData.id) {
+            await tx.wordDefinition.deleteMany({
+              where: { definitionId: defData.id },
+            });
+            await tx.definition.delete({
+              where: { id: defData.id },
+            });
+          }
+        } else if (defData.id) {
+          // Update existing definition
+          await tx.definition.update({
+            where: { id: defData.id },
+            data: {
+              definition: defData.definition,
+              subjectStatusLabels: defData.subjectStatusLabels,
+              generalLabels: defData.generalLabels,
+              grammaticalNote: defData.grammaticalNote,
+              usageNote: defData.usageNote,
+              isInShortDef: defData.isInShortDef,
+              imageId: defData.imageId,
+            },
+          });
+
+          // Handle examples
+          if (defData.examples) {
+            for (const exampleData of defData.examples) {
+              if (exampleData.id) {
+                // Update existing example
+                await tx.definitionExample.update({
+                  where: { id: exampleData.id },
+                  data: {
+                    example: exampleData.example,
+                    grammaticalNote: exampleData.grammaticalNote,
+                    sourceOfExample: exampleData.sourceOfExample,
+                  },
+                });
+              } else {
+                // Create new example
+                await tx.definitionExample.create({
+                  data: {
+                    definitionId: defData.id!,
+                    example: exampleData.example,
+                    languageCode: defData.languageCode,
+                    grammaticalNote: exampleData.grammaticalNote,
+                    sourceOfExample: exampleData.sourceOfExample,
+                  },
+                });
+              }
+            }
+          }
+        } else {
+          // Create new definition
+          const newDef = await tx.definition.create({
+            data: {
+              definition: defData.definition,
+              languageCode: defData.languageCode,
+              source: defData.source,
+              subjectStatusLabels: defData.subjectStatusLabels,
+              generalLabels: defData.generalLabels,
+              grammaticalNote: defData.grammaticalNote,
+              usageNote: defData.usageNote,
+              isInShortDef: defData.isInShortDef,
+              imageId: defData.imageId,
+            },
+          });
+
+          // Link to WordDetail
+          await tx.wordDefinition.create({
+            data: {
+              wordDetailsId: wordDetailId,
+              definitionId: newDef.id,
+            },
+          });
+
+          // Create examples for new definition
+          if (defData.examples) {
+            for (const exampleData of defData.examples) {
+              await tx.definitionExample.create({
+                data: {
+                  definitionId: newDef.id,
+                  example: exampleData.example,
+                  languageCode: defData.languageCode,
+                  grammaticalNote: exampleData.grammaticalNote,
+                  sourceOfExample: exampleData.sourceOfExample,
+                },
+              });
+            }
+          }
+        }
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating definitions:', error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : 'Failed to update definitions',
+    };
+  }
+}
+
+/**
+ * Update only audio files for a specific WordDetail
+ */
+export async function updateWordDetailAudioFiles(
+  wordDetailId: number,
+  audioFiles: WordDetailEditData['audioFiles'],
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Handle audio files updates
+      for (const audioData of audioFiles) {
+        if (audioData._toDelete) {
+          // Delete audio and its relationships
+          if (audioData.id) {
+            await tx.wordDetailsAudio.deleteMany({
+              where: { audioId: audioData.id },
+            });
+            await tx.audio.delete({
+              where: { id: audioData.id },
+            });
+          }
+        } else if (audioData.id) {
+          // Update existing audio
+          await tx.audio.update({
+            where: { id: audioData.id },
+            data: {
+              url: audioData.url.trim(),
+              note: audioData.note,
+            },
+          });
+
+          // Update the link
+          await tx.wordDetailsAudio.updateMany({
+            where: {
+              wordDetailsId: wordDetailId,
+              audioId: audioData.id,
+            },
+            data: {
+              isPrimary: audioData.isPrimary,
+            },
+          });
+        } else {
+          // Validate audio data before processing
+          if (!validateAudioData(audioData)) {
+            console.warn('Skipping invalid audio data:', audioData);
+            continue; // Skip invalid audio data
+          }
+
+          // Find or create audio file
+          let audioFile = await tx.audio.findFirst({
+            where: {
+              url: audioData.url.trim(),
+              languageCode: audioData.languageCode,
+            },
+          });
+
+          if (!audioFile) {
+            // Create new audio if it doesn't exist
+            audioFile = await tx.audio.create({
+              data: {
+                url: audioData.url.trim(),
+                languageCode: audioData.languageCode,
+                source: audioData.source,
+                note: audioData.note,
+              },
+            });
+          } else {
+            // Update existing audio file with new note and source if provided
+            audioFile = await tx.audio.update({
+              where: { id: audioFile.id },
+              data: {
+                source: audioData.source,
+                note: audioData.note,
+              },
+            });
+          }
+
+          // Check if link already exists to avoid duplicate relationship
+          const existingLink = await tx.wordDetailsAudio.findUnique({
+            where: {
+              wordDetailsId_audioId: {
+                wordDetailsId: wordDetailId,
+                audioId: audioFile.id,
+              },
+            },
+          });
+
+          if (!existingLink) {
+            // Create link to WordDetail
+            await tx.wordDetailsAudio.create({
+              data: {
+                wordDetailsId: wordDetailId,
+                audioId: audioFile.id,
+                isPrimary: audioData.isPrimary,
+              },
+            });
+          } else {
+            // Update existing link
+            await tx.wordDetailsAudio.update({
+              where: {
+                wordDetailsId_audioId: {
+                  wordDetailsId: wordDetailId,
+                  audioId: audioFile.id,
+                },
+              },
+              data: {
+                isPrimary: audioData.isPrimary,
+              },
+            });
+          }
+        }
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating audio files:', error);
+
+    // Provide more specific error messages for common issues
+    let errorMessage = 'Failed to update audio files';
+    if (error instanceof Error) {
+      if (error.message.includes('Unique constraint failed')) {
+        if (
+          error.message.includes('url') &&
+          error.message.includes('language_code')
+        ) {
+          errorMessage =
+            'An audio file with this URL and language already exists in the system.';
+        }
+      }
+    }
+
+    return {
+      success: false,
+      error: errorMessage,
+    };
+  }
+}
+
+/**
+ * Update only images (within definitions) for a specific WordDetail
+ */
+export async function updateWordDetailImages(
+  wordDetailId: number,
+  definitions: WordDetailEditData['definitions'],
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Handle only imageId updates for existing definitions
+      for (const defData of definitions) {
+        if (defData.id && !defData._toDelete) {
+          // Update only the imageId for existing definitions
+          await tx.definition.update({
+            where: { id: defData.id },
+            data: {
+              imageId: defData.imageId,
+            },
+          });
+        }
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating definition images:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to update images',
+    };
+  }
+}
+
+/**
+ * Update only relationships for a specific WordDetail
+ */
+export async function updateWordDetailRelationships(
+  wordDetailId: number,
+  wordDetailRelationships: WordDetailEditData['wordDetailRelationships'],
+  wordRelationships: WordDetailEditData['wordRelationships'],
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Handle WordDetail relationships
+      for (const relData of wordDetailRelationships) {
+        if (relData._toDelete && relData.id) {
+          // Parse composite key and delete relationship
+          const [fromId, toId, type] = relData.id.split('-');
+          if (fromId && toId && type) {
+            await tx.wordDetailsRelationship.delete({
+              where: {
+                fromWordDetailsId_toWordDetailsId_type: {
+                  fromWordDetailsId: parseInt(fromId),
+                  toWordDetailsId: parseInt(toId),
+                  type: type as RelationshipType,
+                },
+              },
+            });
+          }
+        } else if (!relData.id) {
+          // Check if relationship already exists to avoid duplicates
+          const existingRelationship =
+            await tx.wordDetailsRelationship.findUnique({
+              where: {
+                fromWordDetailsId_toWordDetailsId_type: {
+                  fromWordDetailsId: wordDetailId,
+                  toWordDetailsId: relData.toWordDetailsId,
+                  type: relData.type,
+                },
+              },
+            });
+
+          if (!existingRelationship) {
+            // Create new relationship
+            await tx.wordDetailsRelationship.create({
+              data: {
+                fromWordDetailsId: wordDetailId,
+                toWordDetailsId: relData.toWordDetailsId,
+                type: relData.type,
+                description: relData.description,
+                orderIndex: relData.orderIndex,
+              },
+            });
+          }
+        } else {
+          // Update existing relationship
+          const [fromId, toId, type] = relData.id!.split('-');
+          if (fromId && toId && type) {
+            await tx.wordDetailsRelationship.update({
+              where: {
+                fromWordDetailsId_toWordDetailsId_type: {
+                  fromWordDetailsId: parseInt(fromId),
+                  toWordDetailsId: parseInt(toId),
+                  type: type as RelationshipType,
+                },
+              },
+              data: {
+                description: relData.description,
+                orderIndex: relData.orderIndex,
+              },
+            });
+          }
+        }
+      }
+
+      // Handle Word relationships (affects all WordDetails)
+      const currentWordDetail = await tx.wordDetails.findUnique({
+        where: { id: wordDetailId },
+        select: { wordId: true },
+      });
+
+      if (currentWordDetail) {
+        for (const relData of wordRelationships) {
+          if (relData._toDelete && relData.id) {
+            // Parse composite key and delete relationship
+            const [fromId, toId, type] = relData.id.split('-');
+            if (fromId && toId && type) {
+              await tx.wordToWordRelationship.delete({
+                where: {
+                  fromWordId_toWordId_type: {
+                    fromWordId: parseInt(fromId),
+                    toWordId: parseInt(toId),
+                    type: type as RelationshipType,
+                  },
+                },
+              });
+            }
+          } else if (!relData.id) {
+            // Check if relationship already exists to avoid duplicates
+            const existingWordRelationship =
+              await tx.wordToWordRelationship.findUnique({
+                where: {
+                  fromWordId_toWordId_type: {
+                    fromWordId: currentWordDetail.wordId,
+                    toWordId: relData.toWordId,
+                    type: relData.type,
+                  },
+                },
+              });
+
+            if (!existingWordRelationship) {
+              // Create new relationship
+              await tx.wordToWordRelationship.create({
+                data: {
+                  fromWordId: currentWordDetail.wordId,
+                  toWordId: relData.toWordId,
+                  type: relData.type,
+                  description: relData.description,
+                  orderIndex: relData.orderIndex,
+                },
+              });
+            }
+          } else {
+            // Update existing relationship
+            const [fromId, toId, type] = relData.id.split('-');
+            if (fromId && toId && type) {
+              await tx.wordToWordRelationship.update({
+                where: {
+                  fromWordId_toWordId_type: {
+                    fromWordId: parseInt(fromId),
+                    toWordId: parseInt(toId),
+                    type: type as RelationshipType,
+                  },
+                },
+                data: {
+                  description: relData.description,
+                  orderIndex: relData.orderIndex,
+                },
+              });
+            }
+          }
+        }
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating relationships:', error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Failed to update relationships',
     };
   }
 }

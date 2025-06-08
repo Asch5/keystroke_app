@@ -76,11 +76,18 @@ export class PexelsService {
 
       // Check if there's an error in the response
       if ('error' in response) {
+        console.error(`Pexels API error: ${response.error}`);
         throw new Error(`Pexels API error: ${response.error}`);
       }
 
+      // Validate the response structure
+      if (!response || !Array.isArray(response.photos)) {
+        console.error('Invalid response structure from Pexels:', response);
+        return { photos: [] };
+      }
+
       console.log(
-        `Pexels search completed for: "${query}". Found photos: ${response.photos?.length || 0}`,
+        `Pexels search completed for: "${query}". Found photos: ${response.photos.length}`,
       );
 
       // Return the response directly - our interface is compatible

@@ -10,7 +10,15 @@ import {
 } from '@/components/ui/tooltip';
 import { TTSControls } from './TTSControls';
 import { ImageControls } from './ImageControls';
-import { Plus, List, Trash2, Settings, Download, Upload } from 'lucide-react';
+import {
+  Plus,
+  List,
+  Trash2,
+  Settings,
+  Download,
+  Upload,
+  ListPlus,
+} from 'lucide-react';
 import { LanguageCode } from '@prisma/client';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
 
@@ -21,6 +29,7 @@ interface ActionButtonsToolbarProps {
   onCreateWordList: () => void;
   onDeleteSelected: () => void;
   onAudioGenerated: () => void;
+  onAddWordsToList: () => void;
 }
 
 /**
@@ -34,6 +43,7 @@ export function ActionButtonsToolbar({
   onCreateWordList,
   onDeleteSelected,
   onAudioGenerated,
+  onAddWordsToList,
 }: ActionButtonsToolbarProps) {
   const hasSelectedWords = selectedWords.size > 0;
 
@@ -121,6 +131,24 @@ export function ActionButtonsToolbar({
             </TooltipTrigger>
             <TooltipContent>
               <p>Create a word list from selected words</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={onAddWordsToList}
+                disabled={!hasSelectedWords}
+                variant="outline"
+                size="sm"
+                className="min-w-[140px]"
+              >
+                <ListPlus className="h-4 w-4 mr-2" />
+                Add to List ({selectedWords.size})
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Add selected words to an existing list</p>
             </TooltipContent>
           </Tooltip>
 

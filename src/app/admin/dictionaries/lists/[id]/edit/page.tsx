@@ -6,6 +6,7 @@ import {
   getListDetails,
   fetchCategories,
   updateListAction,
+  createCategory,
   type ListWithDetails,
   type CategoryData,
 } from '@/core/domains/dictionary/actions';
@@ -59,9 +60,17 @@ export default function EditListPage() {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryDescription, setNewCategoryDescription] = useState('');
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
 
   // Form data
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    description: string;
+    categoryId: string;
+    difficultyLevel: DifficultyLevel;
+    isPublic: boolean;
+    coverImageUrl: string;
+  }>({
     name: '',
     description: '',
     categoryId: '',
@@ -124,6 +133,47 @@ export default function EditListPage() {
 
   const removeTag = (tagToRemove: string) => {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
+  };
+
+  /**
+   * Handle creating a new category
+   */
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) {
+      return;
+    }
+
+    setIsCreatingCategory(true);
+    try {
+      const result = await createCategory(
+        newCategoryName,
+        newCategoryDescription || undefined,
+      );
+
+      if (result.success && result.category) {
+        // Update categories list with the new category
+        setCategories((prev) => [...prev, result.category!]);
+
+        // Select the new category
+        setFormData((prev) => ({
+          ...prev,
+          categoryId: result.category!.id.toString(),
+        }));
+
+        // Reset and close the form
+        setNewCategoryName('');
+        setNewCategoryDescription('');
+        setShowNewCategoryForm(false);
+      } else {
+        console.error('Failed to create category:', result.error);
+        // Could add toast notification here for better UX
+      }
+    } catch (error) {
+      console.error('Error creating category:', error);
+      // Could add toast notification here for better UX
+    } finally {
+      setIsCreatingCategory(false);
+    }
   };
 
   const handleSubmit = (formDataSubmit: FormData) => {
@@ -316,20 +366,16 @@ export default function EditListPage() {
                       <Button
                         type="button"
                         size="sm"
-                        onClick={() => {
-                          // TODO: Implement category creation
-                          console.log('Create category:', {
-                            newCategoryName,
-                            newCategoryDescription,
-                          });
-                        }}
+                        onClick={handleCreateCategory}
+                        disabled={!newCategoryName.trim() || isCreatingCategory}
                       >
-                        Create
+                        {isCreatingCategory ? 'Creating...' : 'Create'}
                       </Button>
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
+                        disabled={isCreatingCategory}
                         onClick={() => {
                           setShowNewCategoryForm(false);
                           setNewCategoryName('');

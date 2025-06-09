@@ -5731,3 +5731,576 @@
 [2025-06-08T23:18:57.756Z] [info] getUserLists - Returning 2 processed user lists
 [2025-06-08T23:18:57.756Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
 [2025-06-08T23:18:57.757Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-08T23:28:19.569Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-08T23:28:20.965Z] [info] Typing practice session created: c04270bf-09cb-4112-8201-67d8be2057ca Context: {"sessionId":"c04270bf-09cb-4112-8201-67d8be2057ca","wordsCount":8}
+[2025-06-08T23:28:40.624Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:28:42.176Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:28:42.223Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:28:42.758Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:28:43.099Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:28:43.379Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:28:43.464Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:28:43.555Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:29:22.145Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:29:23.267Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:29:23.318Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:29:24.051Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:29:24.109Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:29:24.455Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:29:24.495Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:29:24.583Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:34:18.863Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:34:20.162Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:34:20.223Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:34:21.090Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:34:21.132Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:34:21.655Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:34:21.685Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:34:21.780Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:34:38.945Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:34:38.967Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-08T23:34:39.061Z] [info] getUserLists - Basic query found: 0 records
+[2025-06-08T23:34:39.171Z] [info] getUserLists - Found 0 raw user lists
+[2025-06-08T23:34:39.175Z] [info] getUserLists - Returning 0 processed user lists
+[2025-06-08T23:34:40.815Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:34:40.849Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-08T23:34:40.921Z] [info] getUserLists - Basic query found: 0 records
+[2025-06-08T23:34:40.980Z] [info] getUserLists - Found 0 raw user lists
+[2025-06-08T23:34:40.984Z] [info] getUserLists - Returning 0 processed user lists
+[2025-06-08T23:34:41.803Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:34:41.805Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-08T23:34:41.849Z] [info] getUserLists - Basic query found: 0 records
+[2025-06-08T23:34:41.893Z] [info] getUserLists - Found 0 raw user lists
+[2025-06-08T23:34:41.894Z] [info] getUserLists - Returning 0 processed user lists
+[2025-06-08T23:35:10.410Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:35:10.411Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-08T23:35:10.827Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-08T23:35:10.828Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-08T23:35:11.716Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-08T23:35:11.720Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-08T23:35:11.722Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-08T23:35:11.726Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-08T23:35:11.728Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-08T23:35:11.732Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-08T23:35:11.743Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-08T23:36:01.791Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:36:03.166Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:36:03.232Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:36:04.084Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:36:04.246Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:36:04.636Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:36:04.677Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-08T23:36:04.766Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-08T23:36:36.966Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:36:38.176Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:36:38.234Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:36:38.946Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:36:38.993Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:36:39.464Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:36:39.508Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:36:39.605Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:37:16.270Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-08T23:37:17.614Z] [info] Typing practice session created: 1d5a91b9-e4d1-4e82-a1d0-b2539b1dcbfb Context: {"sessionId":"1d5a91b9-e4d1-4e82-a1d0-b2539b1dcbfb","wordsCount":8}
+[2025-06-08T23:38:00.113Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:38:01.469Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:38:01.522Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:38:02.444Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:38:02.505Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:38:03.235Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-08T23:38:03.282Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-08T23:38:03.403Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T12:43:06.884Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T12:43:08.306Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T12:43:08.370Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T12:43:09.275Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T12:43:09.343Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T12:43:09.998Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T12:43:10.065Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T12:43:10.190Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T12:44:19.609Z] [info] Creating typing practice session for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T12:44:21.758Z] [info] Typing practice session created: affb9104-eec4-4c43-ba60-f1546416dd70 Context: {"sessionId":"affb9104-eec4-4c43-ba60-f1546416dd70","wordsCount":5}
+[2025-06-09T12:56:19.218Z] [info] Creating typing practice session for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T12:56:21.442Z] [info] Typing practice session created: 98f13d66-656d-447f-8522-74bbe493a9b7 Context: {"sessionId":"98f13d66-656d-447f-8522-74bbe493a9b7","wordsCount":5}
+[2025-06-09T12:59:06.279Z] [info] Creating typing practice session for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T12:59:06.855Z] [info] Typing practice session created: 242390df-5e66-44d3-9f8c-2ed0d5c6f414 Context: {"sessionId":"242390df-5e66-44d3-9f8c-2ed0d5c6f414","wordsCount":5}
+[2025-06-09T13:06:44.474Z] [info] Creating typing practice session for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T13:06:46.962Z] [info] Typing practice session created: 0b86f213-c59c-4d90-a6d4-2bc64c84ca12 Context: {"sessionId":"0b86f213-c59c-4d90-a6d4-2bc64c84ca12","wordsCount":5}
+[2025-06-09T13:16:40.633Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:16:40.723Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T13:16:41.817Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T13:16:41.848Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:16:43.022Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:16:43.024Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:16:43.025Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:16:43.034Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T13:16:43.043Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:16:43.045Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T13:16:43.047Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:16:43.188Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:16:43.190Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T13:16:43.247Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T13:16:43.249Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:16:43.747Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:16:43.748Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:16:43.748Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:16:43.749Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T13:16:43.750Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:16:43.750Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T13:16:43.751Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:20:58.917Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T13:21:00.138Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:21:00.160Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T13:21:00.940Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:21:22.205Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:21:22.227Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T13:21:25.970Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T13:21:25.971Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:21:26.896Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:21:26.898Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:21:26.900Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:21:26.901Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T13:21:26.902Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:21:26.904Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T13:21:26.905Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:21:40.325Z] [info] Creating typing practice session for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T13:21:41.767Z] [info] Typing practice session created: aba5d11f-29ab-449d-8993-962edfcaa174 Context: {"sessionId":"aba5d11f-29ab-449d-8993-962edfcaa174","wordsCount":5}
+[2025-06-09T13:22:51.736Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T13:22:52.299Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:22:52.329Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T13:22:52.433Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:22:55.590Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:22:55.593Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T13:22:55.679Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T13:22:55.680Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:22:56.171Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:22:56.173Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:22:56.174Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:22:56.177Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T13:22:56.179Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:22:56.181Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T13:22:56.182Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:23:19.054Z] [info] Creating typing practice session for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","difficultyLevel":3,"wordsCount":10,"userListId":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","listId":null}
+[2025-06-09T13:23:20.162Z] [info] Typing practice session created: e610ad62-4da1-4a8b-baa4-4f105dcf975d Context: {"sessionId":"e610ad62-4da1-4a8b-baa4-4f105dcf975d","wordsCount":5}
+[2025-06-09T13:23:26.559Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:23:26.564Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T13:23:28.038Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T13:23:28.040Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:23:28.611Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:23:28.612Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:23:28.613Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:23:28.613Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T13:23:28.614Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:23:28.615Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T13:23:28.616Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:24:04.668Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:24:05.354Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:24:05.366Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:24:05.511Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:24:11.465Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:24:11.475Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:24:11.567Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:24:11.568Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:24:11.569Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:24:12.294Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:24:12.296Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:24:12.298Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:24:12.299Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:24:12.301Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:24:12.302Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:24:12.303Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:24:12.304Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:24:12.305Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:24:48.842Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":"d7dc15b3-0981-4671-8db2-47bf10078551","listId":null}
+[2025-06-09T13:24:49.753Z] [info] Typing practice session created: b1f03494-7db8-4f05-82bf-1786e2619a1b Context: {"sessionId":"b1f03494-7db8-4f05-82bf-1786e2619a1b","wordsCount":8}
+[2025-06-09T13:26:52.683Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:26:52.686Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:26:53.253Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:26:53.254Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:26:53.256Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:26:54.228Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:26:54.229Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:26:54.230Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:26:54.231Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:26:54.233Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:26:54.234Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:26:54.235Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:26:54.236Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:26:54.237Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:28:14.216Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:28:14.251Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:28:14.811Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:28:14.813Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:28:14.814Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:28:15.871Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:28:15.872Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:28:15.873Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:28:15.874Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:28:15.875Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:28:15.876Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:28:15.877Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:28:15.878Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:28:15.879Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:28:16.010Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:28:16.011Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:28:16.070Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:28:16.071Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:28:16.072Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:28:16.582Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:28:16.583Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:28:16.585Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:28:16.586Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:28:16.591Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:28:16.593Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:28:16.593Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:28:16.594Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:28:16.595Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:29:01.452Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":"d7dc15b3-0981-4671-8db2-47bf10078551","listId":null}
+[2025-06-09T13:29:02.962Z] [info] Typing practice session created: e47d34ae-f868-4d0c-b08d-f5c017da348f Context: {"sessionId":"e47d34ae-f868-4d0c-b08d-f5c017da348f","wordsCount":8}
+[2025-06-09T13:37:27.240Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":"d7dc15b3-0981-4671-8db2-47bf10078551","listId":null}
+[2025-06-09T13:37:28.886Z] [info] Typing practice session created: 14634347-7d55-46fe-9852-d2da6a82331a Context: {"sessionId":"14634347-7d55-46fe-9852-d2da6a82331a","wordsCount":5}
+[2025-06-09T13:40:24.349Z] [info] Practice session completed: 14634347-7d55-46fe-9852-d2da6a82331a Context: {"sessionId":"14634347-7d55-46fe-9852-d2da6a82331a","accuracy":40,"wordsLearned":0,"timeSpent":175}
+[2025-06-09T13:40:32.656Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":"d7dc15b3-0981-4671-8db2-47bf10078551","listId":null}
+[2025-06-09T13:40:33.812Z] [info] Typing practice session created: 716fd18f-72dc-43a7-b39d-ee5cd29613ec Context: {"sessionId":"716fd18f-72dc-43a7-b39d-ee5cd29613ec","wordsCount":5}
+[2025-06-09T13:42:10.918Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:42:12.312Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:42:12.323Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:42:13.108Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:42:14.384Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:42:14.389Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:42:14.822Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:42:14.824Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:42:14.826Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:42:15.759Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:42:15.761Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:42:15.762Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:42:15.763Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:42:15.764Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:42:15.765Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:42:15.766Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:42:15.767Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:42:15.768Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:42:16.037Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:42:16.713Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:42:16.732Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:42:16.826Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:43:53.126Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T13:43:53.516Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:43:53.537Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T13:43:53.676Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:44:09.531Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:44:09.551Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T13:44:09.637Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T13:44:09.638Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:44:10.172Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:44:10.173Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:44:10.174Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:44:10.176Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T13:44:10.177Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:44:10.178Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T13:44:10.180Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:44:19.065Z] [info] Creating typing practice session for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T13:44:20.413Z] [info] Typing practice session created: 7133d759-661a-4479-a729-82d7bf64486b Context: {"sessionId":"7133d759-661a-4479-a729-82d7bf64486b","wordsCount":5}
+[2025-06-09T13:49:39.812Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:49:39.880Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T13:49:40.678Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T13:49:40.680Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:49:41.792Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:49:41.793Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:49:41.794Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:49:41.794Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T13:49:41.795Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:49:41.796Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T13:49:41.797Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:49:41.920Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T13:49:41.921Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T13:49:41.964Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T13:49:41.968Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:49:42.457Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:49:42.460Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:49:42.462Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:49:42.463Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T13:49:42.464Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:49:42.465Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T13:49:42.470Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:50:44.303Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:50:45.615Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:50:45.656Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:50:46.543Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:50:46.634Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:50:47.370Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:50:47.429Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:50:47.525Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:50:48.688Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:50:48.700Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:50:48.768Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:50:48.770Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:50:48.771Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:50:49.586Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:50:49.588Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:50:49.589Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:50:49.589Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:50:49.592Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:50:49.594Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:50:49.596Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:50:49.597Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:50:49.599Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:50:49.694Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:50:49.695Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:50:49.739Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:50:49.740Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:50:49.741Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:50:50.331Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:50:50.405Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:50:50.410Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:50:50.412Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:50:50.417Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:50:50.419Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:50:50.420Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:50:50.422Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:50:50.425Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:50:58.929Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:50:58.930Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:50:59.046Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:50:59.048Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:50:59.053Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:50:59.629Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:50:59.631Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:50:59.632Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:50:59.634Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:50:59.636Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:50:59.637Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:50:59.641Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:50:59.644Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:50:59.646Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:50:59.745Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:50:59.746Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:50:59.799Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:50:59.800Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:50:59.801Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:51:00.347Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:51:00.350Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:51:00.352Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:51:00.353Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:51:00.354Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:51:00.359Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:51:00.361Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:51:00.362Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:51:00.363Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:51:10.552Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","listId":null}
+[2025-06-09T13:51:12.120Z] [info] Typing practice session created: 26da536e-a42f-40b7-a119-d25d97162940 Context: {"sessionId":"26da536e-a42f-40b7-a119-d25d97162940","wordsCount":3}
+[2025-06-09T13:51:19.271Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:51:19.272Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:51:19.390Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:51:19.392Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:51:19.396Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:51:19.928Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:51:19.931Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:51:19.934Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:51:19.934Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:51:19.935Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:51:19.936Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:51:19.940Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:51:19.941Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:51:19.941Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:51:20.055Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:51:20.058Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:51:20.109Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:51:20.110Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:51:20.111Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:51:20.624Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:51:20.625Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:51:20.626Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:51:20.626Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:51:20.627Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:51:20.628Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:51:20.628Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:51:20.629Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:51:20.630Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:51:34.275Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":"d7dc15b3-0981-4671-8db2-47bf10078551","listId":null}
+[2025-06-09T13:51:35.571Z] [info] Typing practice session created: 0d4b03ee-e599-41dd-9dba-d3596f92877d Context: {"sessionId":"0d4b03ee-e599-41dd-9dba-d3596f92877d","wordsCount":5}
+[2025-06-09T13:54:48.191Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:54:49.698Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:54:49.766Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:54:50.588Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:54:50.685Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:54:51.449Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:54:51.648Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T13:54:51.775Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:55:10.747Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:55:10.768Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:55:11.296Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:55:11.300Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:55:11.302Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:55:12.245Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:55:12.247Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:55:12.249Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:55:12.251Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:55:12.254Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:55:12.256Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:55:12.265Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:55:12.269Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:55:12.270Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:55:12.372Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:55:12.374Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:55:12.424Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:55:12.426Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:55:12.428Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:55:12.918Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:55:12.919Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:55:12.920Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:55:12.920Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:55:12.922Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:55:12.924Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:55:12.925Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:55:12.926Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:55:12.927Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:55:22.013Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":"d7dc15b3-0981-4671-8db2-47bf10078551","listId":null}
+[2025-06-09T13:55:23.625Z] [info] Typing practice session created: 803db8f7-6cc8-4d97-8ea1-862e1c3441ed Context: {"sessionId":"803db8f7-6cc8-4d97-8ea1-862e1c3441ed","wordsCount":5}
+[2025-06-09T13:57:00.241Z] [info] Practice session completed: 803db8f7-6cc8-4d97-8ea1-862e1c3441ed Context: {"sessionId":"803db8f7-6cc8-4d97-8ea1-862e1c3441ed","accuracy":100,"wordsLearned":2,"timeSpent":97}
+[2025-06-09T13:57:09.273Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:57:09.296Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:57:09.410Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:57:09.412Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:57:09.413Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:57:09.923Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:57:09.926Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:57:09.929Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:57:09.931Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:57:09.933Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:57:09.934Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:57:09.937Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:57:09.938Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:57:09.940Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T13:57:10.037Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T13:57:10.039Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T13:57:10.102Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T13:57:10.104Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T13:57:10.105Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T13:57:10.593Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T13:57:10.596Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T13:57:10.598Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T13:57:10.601Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T13:57:10.602Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T13:57:10.604Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T13:57:10.606Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T13:57:10.607Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T13:57:10.612Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T15:48:00.004Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T15:48:02.190Z] [info] Typing practice session created: 8ef9d407-04fc-4b6b-939f-2b32876ca81f Context: {"sessionId":"8ef9d407-04fc-4b6b-939f-2b32876ca81f","wordsCount":6}
+[2025-06-09T15:50:27.576Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:50:27.577Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T15:50:27.711Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T15:50:27.712Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T15:50:27.713Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T15:50:28.449Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T15:50:28.451Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T15:50:28.452Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T15:50:28.453Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T15:50:28.454Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T15:50:28.454Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T15:50:28.455Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T15:50:28.456Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T15:50:28.456Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T15:50:28.539Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:50:28.541Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T15:50:28.597Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T15:50:28.600Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T15:50:28.601Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T15:50:29.107Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T15:50:29.108Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T15:50:29.110Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T15:50:29.111Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T15:50:29.113Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T15:50:29.117Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T15:50:29.119Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T15:50:29.120Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T15:50:29.122Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T15:50:55.848Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T15:50:57.331Z] [info] Typing practice session created: 57c38319-2cc9-4cd7-8e8b-f30b35800490 Context: {"sessionId":"57c38319-2cc9-4cd7-8e8b-f30b35800490","wordsCount":6}
+[2025-06-09T15:54:50.813Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T15:54:52.120Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:54:52.182Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T15:54:53.074Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:54:53.171Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T15:54:53.876Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:54:53.979Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T15:54:54.079Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:55:22.452Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T15:55:23.673Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T15:55:23.735Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T15:55:24.547Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T15:55:24.597Z] [info] Fetching comprehensive statistics for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T15:55:25.268Z] [info] Statistics fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T15:55:25.318Z] [info] Fetching session stats for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9 Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9"}
+[2025-06-09T15:55:25.421Z] [info] Session stats fetched successfully for user a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T15:56:14.825Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T15:56:14.859Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T15:56:14.958Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T15:56:14.959Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T15:56:15.992Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T15:56:15.994Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T15:56:15.995Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T15:56:15.997Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T15:56:16.000Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T15:56:16.011Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T15:56:16.013Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T15:56:16.975Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T15:56:16.989Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T15:56:17.038Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T15:56:17.040Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T15:56:17.558Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T15:56:17.560Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T15:56:17.563Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T15:56:17.564Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T15:56:17.566Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T15:56:17.568Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T15:56:17.571Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T15:56:18.295Z] [info] getUserLists - userId: a52610c2-7dde-4cab-bbaa-87ab9f32cdd9
+[2025-06-09T15:56:18.296Z] [info] getUserLists - whereConditions Context: {"userId":"a52610c2-7dde-4cab-bbaa-87ab9f32cdd9","deletedAt":null}
+[2025-06-09T15:56:18.348Z] [info] getUserLists - Basic query found: 1 records
+[2025-06-09T15:56:18.349Z] [info] Basic List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T15:56:18.865Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T15:56:18.867Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T15:56:18.868Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T15:56:18.876Z] [info] getUserLists - Found 1 raw user lists
+[2025-06-09T15:56:18.884Z] [info] List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T15:56:18.892Z] [info] getUserLists - Returning 1 processed user lists
+[2025-06-09T15:56:18.894Z] [info] Processed List 1 Context: {"id":"8c792ca7-4da7-4bad-b792-b0f79de14ec9","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T15:58:28.270Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T15:58:29.527Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:58:29.584Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T15:58:30.409Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:58:30.466Z] [info] Fetching comprehensive statistics for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T15:58:31.152Z] [info] Statistics fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:58:31.219Z] [info] Fetching session stats for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2"}
+[2025-06-09T15:58:31.317Z] [info] Session stats fetched successfully for user bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:59:27.879Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:59:27.921Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T15:59:28.035Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T15:59:28.036Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T15:59:28.037Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T15:59:28.699Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T15:59:28.700Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T15:59:28.701Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T15:59:28.703Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T15:59:28.704Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T15:59:28.705Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T15:59:28.707Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T15:59:28.708Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T15:59:28.710Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T15:59:28.807Z] [info] getUserLists - userId: bea15ce5-2298-44e0-92be-671205d53dd2
+[2025-06-09T15:59:28.808Z] [info] getUserLists - whereConditions Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","deletedAt":null}
+[2025-06-09T15:59:28.867Z] [info] getUserLists - Basic query found: 2 records
+[2025-06-09T15:59:28.869Z] [info] Basic List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e"}
+[2025-06-09T15:59:28.870Z] [info] Basic List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null}
+[2025-06-09T15:59:29.406Z] [info] getUserLists - Referenced List IDs Context: ["675ee9c3-058f-4350-8484-2078f1706f2e"]
+[2025-06-09T15:59:29.408Z] [info] getUserLists - Existing Lists found: 1
+[2025-06-09T15:59:29.409Z] [info] Existing List: 675ee9c3-058f-4350-8484-2078f1706f2e - List of nouns (created by admin)
+[2025-06-09T15:59:29.410Z] [info] getUserLists - Found 2 raw user lists
+[2025-06-09T15:59:29.412Z] [info] List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","customName":null,"listId":"675ee9c3-058f-4350-8484-2078f1706f2e","hasOriginalList":true,"originalListName":"List of nouns (created by admin)","userListWordsCount":5}
+[2025-06-09T15:59:29.414Z] [info] List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","customName":"Phrases of the most frequen nouns (created by User)","listId":null,"hasOriginalList":false,"userListWordsCount":3}
+[2025-06-09T15:59:29.415Z] [info] getUserLists - Returning 2 processed user lists
+[2025-06-09T15:59:29.416Z] [info] Processed List 1 Context: {"id":"d7dc15b3-0981-4671-8db2-47bf10078551","displayName":"List of nouns (created by admin)","wordCount":5,"hasOriginalList":true}
+[2025-06-09T15:59:29.418Z] [info] Processed List 2 Context: {"id":"ab1440bd-cc44-4e95-97ab-857b6a498fb1","displayName":"Phrases of the most frequen nouns (created by User)","wordCount":3,"hasOriginalList":false}
+[2025-06-09T15:59:35.117Z] [info] Creating typing practice session for user bea15ce5-2298-44e0-92be-671205d53dd2 Context: {"userId":"bea15ce5-2298-44e0-92be-671205d53dd2","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-06-09T15:59:36.789Z] [info] Typing practice session created: edc3db64-e536-404e-930c-c0001855521c Context: {"sessionId":"edc3db64-e536-404e-930c-c0001855521c","wordsCount":6}

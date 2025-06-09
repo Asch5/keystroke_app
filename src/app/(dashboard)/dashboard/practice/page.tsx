@@ -1,17 +1,17 @@
 import { Metadata } from 'next';
-import { TypingPracticeContent } from '@/components/features/practice/TypingPracticeContent';
+import { PracticeOverviewContent } from '@/components/features/practice/PracticeOverviewContent';
 
 export const metadata: Metadata = {
-  title: 'Typing Practice | Keystroke App',
+  title: 'Practice | Keystroke App',
   description:
-    'Practice typing words from your vocabulary to improve spelling and retention',
+    'Choose from different practice types to improve your vocabulary skills',
 };
 
-export default function TypingPracticePage() {
+export default function PracticePage() {
   return (
     <div className="space-y-6">
-      <div className="max-w-4xl mx-auto">
-        <TypingPracticeContent />
+      <div className="max-w-6xl mx-auto">
+        <PracticeOverviewContent />
       </div>
     </div>
   );

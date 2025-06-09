@@ -107,17 +107,6 @@ export async function createTypingPracticeSession(
 
     const targetWordsCount = wordsCount || difficultyConfig.wordsPerSession;
 
-    // Simplified query to get user dictionary words
-    const whereClause: {
-      userId: string;
-      learningStatus?: { in: LearningStatus[] };
-    } = {
-      userId,
-      ...(includeWordStatuses?.length && {
-        learningStatus: { in: includeWordStatuses },
-      }),
-    };
-
     // Get user settings to determine language configuration
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -132,6 +121,87 @@ export async function createTypingPracticeSession(
         success: false,
         error: 'User not found',
       };
+    }
+
+    // Build query to get user dictionary words
+    const whereClause: {
+      userId: string;
+      learningStatus?: { in: LearningStatus[] };
+      id?: { in: string[] };
+    } = {
+      userId,
+      ...(includeWordStatuses?.length && {
+        learningStatus: { in: includeWordStatuses },
+      }),
+    };
+
+    // If userListId is provided, filter by words in that specific user list
+    if (userListId) {
+      const userListWords = await prisma.userListWord.findMany({
+        where: {
+          userListId,
+        },
+        select: {
+          userDictionaryId: true,
+        },
+      });
+
+      const userDictionaryIds = userListWords.map(
+        (ulw) => ulw.userDictionaryId,
+      );
+
+      if (userDictionaryIds.length === 0) {
+        return {
+          success: false,
+          error: 'No words found in the selected list',
+        };
+      }
+
+      whereClause.id = { in: userDictionaryIds };
+    }
+    // If listId is provided, filter by words from that public list that are in user's dictionary
+    else if (listId) {
+      // First get definitions from the public list
+      const listWords = await prisma.listWord.findMany({
+        where: {
+          listId,
+        },
+        select: {
+          definitionId: true,
+        },
+      });
+
+      const definitionIds = listWords.map((lw) => lw.definitionId);
+
+      if (definitionIds.length === 0) {
+        return {
+          success: false,
+          error: 'No words found in the selected list',
+        };
+      }
+
+      // Then filter user dictionary by those definitions
+      const userWordsInList = await prisma.userDictionary.findMany({
+        where: {
+          userId,
+          definitionId: { in: definitionIds },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const userDictionaryIds = userWordsInList.map((uw) => uw.id);
+
+      if (userDictionaryIds.length === 0) {
+        return {
+          success: false,
+          error:
+            "You haven't added any words from this list to your dictionary yet",
+        };
+      }
+
+      whereClause.id = { in: userDictionaryIds };
     }
 
     // Get words from user dictionary with word details and translations

@@ -28,21 +28,9 @@ src/core/
 
 ## Critical Redux-Persist Considerations
 
-### **IMPORTANT: Redux Store Location**
+### **Redux Store Location**
 
-⚠️ **The active Redux store uses slices from `src/core/lib/redux/features/`**, not `src/core/state/features/`.
-
-**Problem**: When updating Redux actions, developers might modify the wrong auth slice location.
-
-**Solution Pattern**:
-
-```typescript
-// ❌ Wrong import - creates actions that don't work with the actual store
-import { updateUserProfile } from '@/core/state/features/authSlice';
-
-// ✅ Correct import - uses the actual store configuration
-import { updateUserProfile } from '@/core/lib/redux/features/authSlice';
-```
+✅ **The Redux store and slices are located in `src/core/state/`**.
 
 ### **Redux-Persist and Server Actions Integration**
 
@@ -106,10 +94,10 @@ import { getUserStats } from '@/core/domains/user';
 import { handlePrismaError } from '@/core/shared/database';
 import { serverLog } from '@/core/infrastructure/monitoring';
 
-// State management - CRITICAL: Use correct store location
-import { useAppDispatch, store } from '@/core/lib/redux/store'; // ✅ Correct
-import { updateUserProfile } from '@/core/lib/redux/features/authSlice'; // ✅ Correct
-import { selectUser } from '@/core/lib/redux/features/authSlice'; // ✅ Correct
+// State management
+import { useAppDispatch, store } from '@/core/state/store';
+import { updateUserProfile } from '@/core/state/features/authSlice';
+import { selectUser } from '@/core/state/features/authSlice';
 
 // Custom hooks for server action + Redux sync
 import { useUserProfileUpdate } from '@/core/shared/hooks/useUserProfileUpdate';
@@ -131,6 +119,15 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 - `deleteWordDetails(wordDetailIds)` - Delete word details with comprehensive cleanup
 - `deleteWords(wordIds)` - Delete entire words with comprehensive cleanup
 - `deleteSelectedWords(wordDetailIds)` - Server action for bulk word deletion
+
+### Word Search & Dictionary Management (`actions/word-search-actions.ts`)
+
+- `searchWords(searchTerm, languageCode, userNativeLanguage?)` - Search dictionary with translation prioritization
+- `searchWordsForUser(userId, searchTerm, languageCode)` - User-specific search with native language support
+- `addDefinitionToUserDictionary(userId, definitionId, baseLanguageCode, targetLanguageCode)` - Add specific definition to user dictionary
+- `removeDefinitionFromUserDictionary(userId, userDictionaryId)` - Remove definition from user dictionary (soft delete)
+- `checkDefinitionsInUserDictionary(userId, definitionIds)` - Check dictionary status for multiple definitions
+- Types: `WordSearchResult`, `WordDefinitionResult` with translation and dictionary status fields
 
 ### Word Details & Complex Operations (`actions/word-details-actions.ts`)
 
@@ -537,6 +534,37 @@ Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `Typi
 - `translationService.ts` - Translation service integration
 - `textToSpeechService.ts` - Google Cloud Text-to-Speech with cost optimization
 - `blobStorageService.ts` - Vercel Blob storage for audio files with organized folder structure
+- `audioDownloadService.ts` - External audio download and blob storage integration
+
+### Audio Download Service (`shared/services/external-apis/audioDownloadService.ts`)
+
+**NEW: External Audio Download & Local Storage**
+
+- `AudioDownloadService.downloadAndStoreAudio(externalUrl, metadata)` - Download single audio file from external URL and store in blob storage
+- `AudioDownloadService.downloadAndStoreBatchAudio(audioFiles, baseMetadata)` - Batch download multiple audio files with rate limiting
+- `AudioDownloadService.checkAudioUrl(url)` - Validate external URL without downloading
+- `audioDownloadService` - Singleton instance for application use
+
+Types: `ExternalAudioDownloadResult`, `ExternalAudioFile`
+
+**Key Features:**
+
+- **Cost Control**: Eliminates unexpected costs from external TTS services by downloading and storing audio locally
+- **Reliability**: Audio files stored in Vercel Blob storage for consistent availability
+- **Performance**: Faster audio loading from local storage vs external URLs
+- **Intelligent Processing**: Detects if URLs are already in blob storage to avoid redundant downloads
+- **File Validation**: Comprehensive validation for file size (10MB limit), content type, and download timeouts (30s)
+- **Error Handling**: Graceful error handling with detailed logging for failed downloads
+- **Metadata Integration**: Rich metadata for organized blob storage including language, quality, and word context
+- **Batch Processing**: Efficient batch downloading with appropriate delays between requests
+- **Storage Organization**: Structured folder organization in blob storage by language and content type
+
+**Architecture Integration:**
+
+- **Dictionary Processing**: Both Danish (Ordnet) and Merriam-Webster APIs now download external audio files before storing URLs in database
+- **Blob Storage**: Seamless integration with existing `blobStorageService.ts` for file management
+- **Database Schema**: Compatible with existing Audio model - URLs point to blob storage instead of external sites
+- **Backward Compatibility**: Existing audio playback functionality works transparently with blob storage URLs
 
 ### WordService
 
@@ -636,319 +664,4 @@ interface SessionState {
 
 Async Thunks: `startLearningSession(request)`, `endLearningSession({sessionId, updates})`, `addSessionItem({sessionId, item})`, `fetchSessionStats(userId)`, `fetchSessionHistory({userId, page, pageSize, filters})`
 
-Selectors: `selectCurrentSession(state)`, `selectSessionItems(state)`, `selectIsSessionActive(state)`, `selectSessionLoading(state)`, `selectSessionError(state)`, `selectSessionStats(state)`, `selectSessionAccuracy(state)`, `selectSessionProgress(state)`
-
-## Infrastructure
-
-### Auth (`infrastructure/auth/`)
-
-- JWT and session configuration
-- Edge runtime compatibility
-- `authorize(credentials)` - Custom credential validation
-
-### Monitoring (`infrastructure/monitoring/`)
-
-- `serverLog(message, level?, context?)` - Server-side file logging
-
-## Legacy Lib (`lib/`) - Backward Compatibility
-
-### Database Processing (`lib/db/`)
-
-#### Merriam-Webster API Processing (`processMerriamApi.ts`)
-
-Helper Functions: `mapPartOfSpeech(apiFl)`, `mapSourceType(apiSrc)`, `processEtymology(etymologyData)`, `extractExamples(dt, language)`, `cleanupDefinitionText(text)`, `cleanupExampleText(text)`
-
-#### Danish Dictionary Processing (`processOrdnetApi.ts`)
-
-Core Functions: `processTranslationsForWord(tx, mainWordId, mainWordText, wordData)`, `processAndSaveDanishWord(danishWordData, pTx?)`, `upsertWord(tx, source, wordText, languageCode, options?)`, `upsertWordDetails(tx, wordId, partOfSpeech, source, ...)`
-
-Utility Functions: `extractSubjectLabels(labels)`, `extractGeneralLabels(labels)`, `extractGrammaticalNote(labels)`, `extractUsageNote(labels)`, `mapStemPosToEnum(stemPos)`, `getRelationshipDescription(relationType)`
-
-**Recent Updates:**
-
-- **Enhanced PartOfSpeech Support**: Added support for new Danish part-of-speech types:
-  - `'udråbsord'` → `PartOfSpeech.exclamation`
-  - `'førsteled'` → `PartOfSpeech.first_part` (new enum value)
-- **Type System Integration**: Updated `PartOfSpeechForStems`, `PartOfSpeechDanish`, and `DetailCategoryDanish` types to include the new values
-- **Validation Updates**: Enhanced Danish dictionary validator to recognize the new part-of-speech categories
-- **Database Schema**: Added `first_part // førsteled` to the PartOfSpeech enum in Prisma schema with corresponding migration
-
-#### Validation System (`utils/validations/danishDictionaryValidator.ts`)
-
-Core Functions: `validateDanishDictionary(data, context)`, `extractEnumSuggestions(validationResult)`, `isValidationAcceptable(validationResult)`
-
-Types: `ValidationSummary`, `ValidationIssue`
-
-### Word Search Operations (`actions/word-search-actions.ts`)
-
-- `searchWords(searchQuery, languageCode, userId?, page?, pageSize?)` - Search words in database with pagination and user dictionary status
-- `addDefinitionToUserDictionary(userId, definitionId, baseLanguageCode, targetLanguageCode)` - Add specific definition to user's dictionary
-- `removeDefinitionFromUserDictionary(userId, userDictionaryId)` - Remove definition from user's dictionary (soft delete)
-
-Types: `WordSearchResult`, `WordDefinitionResult`
-
-**Key Features:**
-
-- **Comprehensive Search**: Searches words by text with case-insensitive matching
-- **User Context**: Shows which definitions are already in user's dictionary
-- **Pagination Support**: Built-in pagination for large result sets
-- **Definition-Level Management**: Users can add/remove individual definitions rather than entire words
-- **Soft Delete**: Removed words can be restored if re-added
-- **Multi-Language Support**: Search across different language dictionaries
-- **Rich Metadata**: Returns audio, image, example count, and learning status information
-
-### User List Management Operations (`actions/user-list-actions.ts`)
-
-- `getUserLists(userId, filters?)` - Get user's personal lists with filtering and sorting
-- `getAvailablePublicLists(userId, userLanguages, filters?)` - Get public lists user can add to collection (official lists from List table)
-- `getPublicUserLists(userId, userLanguages, filters?)` - Get community lists shared by other users (from UserList table with isPublic=true)
-- `addListToUserCollection(userId, listId, userLanguages)` - Add public list to user's collection
-- `addPublicUserListToCollection(userId, publicUserListId, userLanguages)` - Clone public user list to user's collection with full word copying
-- `removeListFromUserCollection(userId, userListId)` - Remove list from user's collection (soft delete)
-- `createCustomUserList(userId, data)` - Create custom user list
-- `updateUserList(userId, userListId, data)` - Update user list customizations
-- `addWordToUserList(userId, userListId, userDictionaryId)` - Add word from user dictionary to a list
-
-Types: `UserListWithDetails`, `PublicListSummary`, `PublicUserListSummary`, `UserListFilters`
-
-**Key Features:**
-
-- **Dual List System**: Supports both official lists (List table) and community lists (UserList table with isPublic=true)
-- **Public List Discovery**: Simplified filtering without language constraints for broader list discovery
-- **Community List Support**: Users can share their custom lists with isPublic flag and others can clone them
-- **Creator Attribution**: Community lists show who created them for proper attribution
-- **Full List Cloning**: Adding community lists copies all words via transaction-based operations
-- **Dual List Types**: Manages both inherited public lists and custom user lists
-- **Customization Support**: Users can customize names, descriptions, difficulty for inherited lists
-- **Collection Management**: Add/remove public lists from personal collection
-- **Word Management**: Add individual words from user dictionary to specific lists
-- **Order Management**: Maintains proper ordering of words within lists
-- **Duplicate Prevention**: Validates against adding same word twice to a list
-- **Rich Metadata**: Includes progress tracking, word counts, sample words
-- **Ownership Validation**: Ensures users can only modify their own lists and words
-
-**Recent Fixes:**
-
-- **Fixed Filtering Logic**: Resolved issue where language filtering was preventing public lists from appearing by default
-- **Consistent Search Behavior**: Both official and community lists now show all available lists by default, with search filtering applied when needed
-- **Simplified Query Logic**: Removed conflicting AND/OR conditions that were causing empty results
-
-### Practice Session Management (`actions/practice-actions.ts`)
-
-- `createTypingPracticeSession(request)` - Create new typing practice session with intelligent word selection and audio integration
-- `validateTypingInput(request)` - Validate user's typing input with accuracy calculation and learning progress updates
-- `completePracticeSession(sessionId)` - Complete practice session with summary and achievements
-- `getPracticeSessionProgress(sessionId)` - Get current session progress and statistics
-
-Types: `PracticeWord`, `CreatePracticeSessionRequest`, `ValidateTypingRequest`, `PracticeSessionProgress`
-
-**Key Features:**
-
-- **Intelligent Word Selection**: Prioritizes words needing review based on learning status, progress, and time since last review
-- **Audio Integration**: Includes database audio URLs for each practice word with automatic fallback to TTS
-- **Real-Time Validation**: Character-by-character accuracy checking with typo tolerance
-- **Learning Progress Tracking**: Updates user dictionary with new learning metrics after each word
-- **Adaptive Difficulty**: Configurable difficulty levels affecting session parameters
-- **Session Management**: Complete session lifecycle from creation to completion with statistics
-- **Achievement System**: Automatic achievement detection and notification
-- **Spaced Repetition**: Integrates with learning metrics for optimal review scheduling
-- **Performance Analytics**: Tracks response times, accuracy, and learning patterns
-- **Translation Support**: Shows definitions in user's base language while practicing target language words
-
-### Learning Metrics Configuration (`utils/learning-metrics.ts`)
-
-Comprehensive configuration system for learning thresholds and progress calculation:
-
-- **Learning Thresholds**: Configurable criteria for marking words as learned, difficult, or mastered
-- **Practice Session Config**: Default settings for session duration, word counts, and scoring
-- **Typing Practice Metrics**: Character-level accuracy requirements and typo tolerance
-- **Difficulty Adjustment**: Automatic difficulty scaling based on user performance
-- **LearningMetricsCalculator**: Utility class for accuracy, mastery score, and learning status calculations
-
-**Key Metrics:**
-
-- Minimum 3 correct attempts to mark word as "learned"
-- 80% accuracy threshold for learned status
-- 85% mastery score for full mastery
-- Spaced repetition intervals: [1, 3, 7, 14, 30, 60] days
-- 10% character tolerance for minor typos
-- Adaptive time limits based on difficulty level
-
-### Other Legacy Actions (`lib/actions/`)
-
-- `cleanupDatabase()` - Database cleanup operations
-- `processDanishVariantOnServer(variant, originalWord)` - Process Danish variants
-- `processImagesForTranslatedDefinitions(definitions, wordText)` - Generate images
-
-## Usage Guidelines
-
-1. Use domain-based imports for new code
-2. Legacy imports remain functional
-3. File size target: < 8KB per file
-4. Check existing functionality before creating new functions
-5. Follow domain organization for business logic
-
-## Migration Status
-
-All components completed with 100% backward compatibility maintained.
-
-# Core Folder Architecture
-
-## Overview
-
-The `core` folder contains the fundamental business logic, data access layers, and shared utilities for the keystroke application. It follows Domain-Driven Design principles and clean architecture patterns.
-
-## Structure
-
-### `/domains`
-
-Contains domain-specific business logic organized by functional areas:
-
-- **auth/**: Authentication and authorization logic
-- **dictionary/**: Word and definition management
-- **translation/**: Translation services and logic
-- **user/**: User management and profiles
-
-Each domain follows this structure:
-
-- `actions/`: Server actions and business operations
-- `services/`: Core business services
-- `types/`: Domain-specific TypeScript interfaces
-- `utils/`: Domain-specific utilities
-
-### `/infrastructure`
-
-Infrastructure concerns and external integrations:
-
-- **auth/**: Authentication providers and middleware
-- **monitoring/**: Logging and error tracking
-- **storage/**: File and data storage abstractions
-- **types/**: Infrastructure-related types
-
-### `/lib`
-
-Legacy library code and utilities:
-
-- Database connections, actions, and utilities
-- Redux store configuration
-- Service integrations
-- Validation utilities
-
-### `/shared`
-
-Shared services and utilities used across domains:
-
-- **constants/**: Application-wide constants
-- **database/**: Database schemas and middleware
-- **hooks/**: Reusable React hooks
-- **services/**: Cross-domain services (WordService, FrequencyManager, etc.)
-- **types/**: Shared TypeScript interfaces
-- **utils/**: Common utilities
-
-### `/state`
-
-State management (Redux):
-
-- **features/**: Feature-specific state slices
-- **middleware/**: Redux middleware
-- **slices/**: Redux toolkit slices
-
-### `/types`
-
-Global TypeScript type definitions
-
-## Key Services
-
-### WordService
-
-Central service for word and word details operations. Located in `/shared/services/WordService.ts`.
-
-**Conditional Update Strategy**:
-To prevent overwriting existing database values with null or empty strings, the service uses a conditional update pattern:
-
-```typescript
-// Only add properties to update object if they have meaningful values
-const updateData: WordDetailsUpdateData = {
-  isPlural: isPlural, // Always update required fields
-  source: source,
-};
-
-// Conditionally add optional fields
-if (phonetic !== null && phonetic !== undefined && phonetic.trim() !== '') {
-  updateData.phonetic = phonetic;
-}
-
-if (frequency !== null && frequency !== undefined) {
-  updateData.frequency = frequency;
-}
-```
-
-**Benefits**:
-
-- Preserves existing data when new data is empty/null
-- Prevents accidental data loss during updates
-- Maintains data integrity across API integrations
-- Type-safe with proper TypeScript interfaces
-
-**Usage Pattern**:
-This pattern should be applied to any update operations where preserving existing data is important, especially when:
-
-- Integrating with external APIs that may return incomplete data
-- Updating records where some fields are optional
-- Merging data from multiple sources
-
-### FrequencyManager
-
-Manages word frequency data across different sources and languages.
-
-### ImageService
-
-Handles image search and assignment for dictionary definitions.
-
-## Design Principles
-
-1. **Domain Separation**: Clear boundaries between different business domains
-2. **Dependency Direction**: Dependencies flow inward toward the core domain logic
-3. **Shared Abstractions**: Common functionality is abstracted into shared services
-4. **Type Safety**: Strong TypeScript typing throughout
-5. **Data Integrity**: Conditional update strategies prevent accidental data loss
-6. **Clean Interfaces**: Well-defined interfaces between layers
-
-## Database Interaction Patterns
-
-### Conditional Updates
-
-When updating database records, always consider whether null/empty values should overwrite existing data:
-
-```typescript
-// ❌ Avoid - may overwrite existing data with null
-const updateData = {
-  field1: value1 || null,
-  field2: value2 || null,
-};
-
-// ✅ Preferred - preserve existing data
-const updateData: UpdateInterface = { requiredField: value };
-if (value1 !== null && value1 !== undefined) {
-  updateData.field1 = value1;
-}
-```
-
-### Transaction Management
-
-Use Prisma transactions for complex operations involving multiple database writes to ensure data consistency.
-
-## Integration Points
-
-The core folder integrates with:
-
-- Next.js API routes (through actions)
-- React components (through hooks and services)
-- External APIs (through infrastructure services)
-- Database (through Prisma ORM)
-
-## Future Considerations
-
-- Consider moving legacy `/lib` code into appropriate domain folders
-- Evaluate extracting common patterns into reusable abstractions
-- Monitor for opportunities to further improve type safety and data integrity patterns
+Selectors: `selectCurrentSession(state)`, `selectSessionItems(state)`, `selectIsSessionActive(state)`, `

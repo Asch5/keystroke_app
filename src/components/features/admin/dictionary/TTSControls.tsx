@@ -95,7 +95,7 @@ export function TTSControls({
         if (defaultGender && genders.includes(defaultGender)) {
           setSSMLGender(defaultGender);
         } else if (genders.length > 0) {
-          setSSMLGender(genders[0]);
+          setSSMLGender(genders[0] as 'MALE' | 'FEMALE' | 'NEUTRAL');
         }
       } catch (error) {
         console.error('Failed to load voice genders:', error);

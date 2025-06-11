@@ -3,7 +3,7 @@
 import { useActionState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateUserProfile } from '@/core/domains/user/actions/user-settings-actions';
-import { updateUserProfile as updateReduxUserProfile } from '@/core/lib/redux/features/authSlice';
+import { updateUserProfile as updateReduxUserProfile } from '@/core/state/features/authSlice';
 import type { UserProfileState } from '@/core/domains/user/types/user-settings';
 import { useEffect } from 'react';
 

@@ -32,6 +32,8 @@ import {
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
 import { WordService } from '@/core/shared/services/WordService';
+import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
+import { type AudioMetadata } from '@/core/shared/services/external-apis/blobStorageService';
 //import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**Definitions:
@@ -190,10 +192,12 @@ export async function processTranslationsForWord(
 
 /**
  * Processes and links audio files for a word
+ * Downloads external audio files and stores them in blob storage before saving to database
  * @param tx Transaction client
  * @param wordDetailsId Word details ID to link audio to
  * @param audioFiles Array of audio file URLs
  * @param isPrimary Whether this is the primary audio for the word
+ * @param wordText Word text for metadata (optional)
  */
 async function processAudioForWord(
   tx: Prisma.TransactionClient,
@@ -202,45 +206,115 @@ async function processAudioForWord(
   isPrimaryArg: boolean = false,
   languageCode: LanguageCode = LanguageCode.en,
   source: SourceType = SourceType.merriam_learners,
+  wordText?: string,
 ): Promise<void> {
   if (!audioFiles || audioFiles.length === 0) {
     return;
   }
 
+  serverLog(
+    `Processing ${audioFiles.length} audio files for wordDetailsId: ${wordDetailsId}`,
+    'info',
+  );
+
+  // First, download all external audio files and get their blob storage URLs
+  const downloadPromises = audioFiles.map(async (audioFile) => {
+    // Prepare metadata for this audio file
+    const audioMetadata: AudioMetadata = {
+      languageCode: languageCode,
+      qualityLevel: 'standard', // External audio files are typically standard quality
+      voiceGender: 'FEMALE', // Default for Danish sources
+      characterCount: wordText?.length || audioFile.word?.length || 0,
+    };
+
+    // Download and store the audio
+    const downloadResult = await audioDownloadService.downloadAndStoreAudio(
+      audioFile.url,
+      audioMetadata,
+    );
+
+    return {
+      originalAudioFile: audioFile,
+      downloadResult,
+      localUrl:
+        downloadResult.success && downloadResult.localUrl
+          ? downloadResult.localUrl
+          : audioFile.url,
+    };
+  });
+
+  // Wait for all downloads to complete
+  const downloadResults = await Promise.all(downloadPromises);
+
+  // Log download results
+  const successful = downloadResults.filter(
+    (r) => r.downloadResult.success,
+  ).length;
+  const failed = downloadResults.filter(
+    (r) => !r.downloadResult.success,
+  ).length;
+  const skipped = downloadResults.filter(
+    (r) => r.downloadResult.skipped,
+  ).length;
+
+  serverLog(
+    `Audio download results: ${successful} successful, ${skipped} skipped, ${failed} failed`,
+    'info',
+  );
+
+  // If any downloads failed, log the errors
+  downloadResults.forEach((result, index) => {
+    if (!result.downloadResult.success && !result.downloadResult.skipped) {
+      serverLog(
+        `Failed to download audio ${index + 1}: ${result.downloadResult.error}`,
+        'warn',
+      );
+    }
+  });
+
   // Determine which audio file will be primary, if any
-  let primaryAudioCandidate: AudioFile | null = null;
-  if (isPrimaryArg && audioFiles.length > 0) {
-    primaryAudioCandidate = audioFiles[0] || null;
+  let primaryAudioCandidate: {
+    localUrl: string;
+    originalAudioFile: AudioFile;
+  } | null = null;
+  if (isPrimaryArg && downloadResults.length > 0) {
+    primaryAudioCandidate = downloadResults[0] || null;
   }
 
   // Determine which audio file will be non-primary, if any
-  // It must be different from the primary candidate and we only take one.
-  let nonPrimaryAudioCandidate: AudioFile | null = null;
-  for (let i = 0; i < audioFiles.length; i++) {
-    // If isPrimaryArg is true and i is 0, this is the primary candidate.
-    // So, a non-primary candidate must not be this one.
+  let nonPrimaryAudioCandidate: {
+    localUrl: string;
+    originalAudioFile: AudioFile;
+  } | null = null;
+  for (let i = 0; i < downloadResults.length; i++) {
     if (isPrimaryArg && i === 0) {
       continue;
     }
-    nonPrimaryAudioCandidate = audioFiles[i] || null;
-    break; // Take the first available non-primary
+    nonPrimaryAudioCandidate = downloadResults[i] || null;
+    break;
   }
 
   // 1. Handle Primary Audio
   if (primaryAudioCandidate) {
     const audio = await tx.audio.upsert({
       where: {
-        url_languageCode: { url: primaryAudioCandidate.url, languageCode },
+        url_languageCode: { url: primaryAudioCandidate.localUrl, languageCode },
       },
       create: {
-        url: primaryAudioCandidate.url,
+        url: primaryAudioCandidate.localUrl,
         languageCode: languageCode,
         source: source,
-        note: primaryAudioCandidate.note || primaryAudioCandidate.word || null,
+        note:
+          primaryAudioCandidate.originalAudioFile.note ||
+          primaryAudioCandidate.originalAudioFile.word ||
+          'Downloaded from external source',
       },
       update: {
         source: source,
-        note: primaryAudioCandidate.note || primaryAudioCandidate.word || null,
+        note:
+          primaryAudioCandidate.originalAudioFile.note ||
+          primaryAudioCandidate.originalAudioFile.word ||
+          'Downloaded from external source',
       },
     });
 
@@ -255,13 +329,16 @@ async function processAudioForWord(
     });
 
     // Upsert the designated primary audio.
-    // This ensures it's correctly linked and marked as primary.
-    // If it was previously non-primary, its status will be updated.
     await tx.wordDetailsAudio.upsert({
       where: { wordDetailsId_audioId: { wordDetailsId, audioId: audio.id } },
       update: { isPrimary: true },
       create: { wordDetailsId, audioId: audio.id, isPrimary: true },
     });
+
+    serverLog(
+      `Processed primary audio for wordDetailsId ${wordDetailsId}: ${primaryAudioCandidate.localUrl}`,
+      'info',
+    );
   }
 
   // 2. Handle Non-Primary Audio
@@ -269,29 +346,32 @@ async function processAudioForWord(
     // Ensure it's not the same audio file that was just processed as primary
     if (
       primaryAudioCandidate &&
-      primaryAudioCandidate.url === nonPrimaryAudioCandidate.url
+      primaryAudioCandidate.localUrl === nonPrimaryAudioCandidate.localUrl
     ) {
       // This audio was already processed as primary, so nothing to do here.
     } else {
       const audio = await tx.audio.upsert({
         where: {
-          url_languageCode: { url: nonPrimaryAudioCandidate.url, languageCode },
+          url_languageCode: {
+            url: nonPrimaryAudioCandidate.localUrl,
+            languageCode,
+          },
         },
         create: {
-          url: nonPrimaryAudioCandidate.url,
+          url: nonPrimaryAudioCandidate.localUrl,
           languageCode: languageCode,
           source: source,
           note:
-            nonPrimaryAudioCandidate.note ||
-            nonPrimaryAudioCandidate.word ||
-            null,
+            nonPrimaryAudioCandidate.originalAudioFile.note ||
+            nonPrimaryAudioCandidate.originalAudioFile.word ||
+            'Downloaded from external source',
         },
         update: {
           source: source,
           note:
-            nonPrimaryAudioCandidate.note ||
-            nonPrimaryAudioCandidate.word ||
-            null,
+            nonPrimaryAudioCandidate.originalAudioFile.note ||
+            nonPrimaryAudioCandidate.originalAudioFile.word ||
+            'Downloaded from external source',
         },
       });
 
@@ -300,12 +380,11 @@ async function processAudioForWord(
         where: {
           wordDetailsId: wordDetailsId,
           isPrimary: false,
-          NOT: { audioId: audio.id }, // Exclude the current audio itself
+          NOT: { audioId: audio.id },
         },
       });
 
       if (existingOtherNonPrimary) {
-        // If a different non-primary audio exists, remove its link to make way for the new one.
         await tx.wordDetailsAudio.delete({
           where: {
             wordDetailsId_audioId: {
@@ -316,13 +395,16 @@ async function processAudioForWord(
         });
       }
 
-      // Upsert the designated non-primary audio.
-      // If this audio was previously primary, this will update it to non-primary.
       await tx.wordDetailsAudio.upsert({
         where: { wordDetailsId_audioId: { wordDetailsId, audioId: audio.id } },
         update: { isPrimary: false },
         create: { wordDetailsId, audioId: audio.id, isPrimary: false },
       });
+
+      serverLog(
+        `Processed non-primary audio for wordDetailsId ${wordDetailsId}: ${nonPrimaryAudioCandidate.localUrl}`,
+        'info',
+      );
     }
   }
 }
@@ -400,6 +482,7 @@ async function upsertWord(
       true,
       languageCode,
       source,
+      wordText,
     );
   }
 

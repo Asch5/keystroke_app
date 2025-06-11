@@ -7,9 +7,11 @@ import { TypingPracticeHeader } from './TypingPracticeHeader';
 import { TypingWordInput } from './TypingWordInput';
 import { TypingSessionSummary } from './TypingSessionSummary';
 import { TypingGettingStarted } from './TypingGettingStarted';
+import { TypingPracticeSettings } from './TypingPracticeSettings';
 import {
   useTypingPracticeState,
   useTypingAudioPlayback,
+  useTypingPracticeSettings,
   type WordResult,
 } from './hooks';
 
@@ -38,7 +40,9 @@ export function TypingPracticeContent({
 }: TypingPracticeContentProps) {
   const { user } = useUser();
 
-  // Use custom hooks for state management and audio
+  // Use custom hooks for state management, audio, and settings
+  const { settings } = useTypingPracticeSettings();
+
   const {
     sessionState,
     isLoading,
@@ -56,6 +60,7 @@ export function TypingPracticeContent({
     difficultyLevel,
     wordsCount,
     includeWordStatuses,
+    autoSubmitAfterCorrect: settings.autoSubmitAfterCorrect,
   });
 
   const { isPlayingAudio, playWordAudio } = useTypingAudioPlayback();
@@ -144,6 +149,9 @@ export function TypingPracticeContent({
         onStartPractice={startPracticeSession}
       />
 
+      {/* Practice Settings */}
+      {!sessionState.isActive && <TypingPracticeSettings />}
+
       {/* Current Word Practice */}
       {sessionState.isActive && sessionState.currentWord && (
         <TypingWordInput
@@ -151,6 +159,7 @@ export function TypingPracticeContent({
           showResult={showResult}
           wordResults={wordResults}
           isPlayingAudio={isPlayingAudio}
+          settings={settings}
           onInputChange={handleInputChange}
           onWordSubmit={handleWordSubmitWithAudio}
           onSkipWord={handleSkipWithAudio}

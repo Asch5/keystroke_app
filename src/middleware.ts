@@ -16,7 +16,12 @@ const rolePermissions = {
 const publicPaths = ['/', '/login', '/signup'];
 
 // Define API paths that need to be accessible
-const apiPaths = ['/api/auth', '/api/user-dictionary', '/api/api-test'];
+const apiPaths = [
+  '/api/auth',
+  '/api/user-dictionary',
+  '/api/api-test',
+  '/api/images',
+];
 
 // Custom middleware to enhance the default NextAuth middleware
 function enhancedMiddleware(request: NextRequest) {

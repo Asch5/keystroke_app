@@ -36,6 +36,9 @@ export interface PracticeWord {
   attempts: number;
   correctAttempts: number;
   audioUrl?: string | undefined; // Audio file URL from database
+  imageId?: number | undefined; // Image ID for definition
+  imageUrl?: string | undefined; // Image URL for definition
+  imageDescription?: string | undefined; // Image alt text
 }
 
 export interface CreatePracticeSessionRequest {
@@ -204,7 +207,7 @@ export async function createTypingPracticeSession(
       whereClause.id = { in: userDictionaryIds };
     }
 
-    // Get words from user dictionary with word details and translations
+    // Get words from user dictionary with word details, translations, and images
     const userWords = await prisma.userDictionary.findMany({
       where: whereClause,
       include: {
@@ -230,6 +233,13 @@ export async function createTypingPracticeSession(
             translationLinks: {
               include: {
                 translation: true,
+              },
+            },
+            image: {
+              select: {
+                id: true,
+                url: true,
+                description: true,
               },
             },
           },
@@ -299,6 +309,9 @@ export async function createTypingPracticeSession(
         user.baseLanguageCode, // Show definition in user's base language
       );
 
+      // Get image data from definition
+      const imageData = word.definition.image;
+
       return {
         userDictionaryId: word.id,
         wordText:
@@ -312,6 +325,9 @@ export async function createTypingPracticeSession(
         attempts: word.reviewCount || 0,
         correctAttempts: word.correctStreak || 0,
         audioUrl, // Include audio URL from database
+        imageId: imageData?.id || undefined,
+        imageUrl: imageData?.url || undefined,
+        imageDescription: imageData?.description || undefined,
       };
     });
 

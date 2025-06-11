@@ -34,6 +34,7 @@ import {
   TrendingDown,
   Volume2,
   VolumeX,
+  FileText,
 } from 'lucide-react';
 import { LearningStatus, LanguageCode } from '@prisma/client';
 import { cn } from '@/core/shared/utils/common/cn';
@@ -56,6 +57,7 @@ interface WordTableProps {
   onRemoveWord: (wordId: string, wordText: string) => void;
   onAddToList: (wordText: string, userDictionaryId: string) => void;
   onPlayAudio: (word: string, audioUrl: string | null, wordId: string) => void;
+  onViewWordDetail: (wordText: string, languageCode: LanguageCode) => void;
 }
 
 /**
@@ -74,6 +76,7 @@ export function WordTable({
   onRemoveWord,
   onAddToList,
   onPlayAudio,
+  onViewWordDetail,
 }: WordTableProps) {
   // Get status color
   const getStatusColor = (status: LearningStatus) => {
@@ -298,6 +301,14 @@ export function WordTable({
                   >
                     <Book className="h-4 w-4 mr-2" />
                     Add to List
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      onViewWordDetail(word.word, word.targetLanguageCode)
+                    }
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Word Detail
                   </DropdownMenuItem>
 
                   {/* Dynamic Learning Status Actions */}

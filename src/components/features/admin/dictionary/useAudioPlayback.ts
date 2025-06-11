@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 
 /**
  * Custom hook for managing audio playback state and functionality
  * Ensures only one audio file plays at a time and handles errors gracefully
+ * Updated to use AudioService for consistent blob storage and proxy handling
  */
 export function useAudioPlayback() {
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
@@ -10,17 +12,13 @@ export function useAudioPlayback() {
   const playAudio = async (audioUrl: string) => {
     if (playingAudio === audioUrl) {
       setPlayingAudio(null);
+      AudioService.stopCurrentAudio();
       return;
     }
 
     try {
-      const audio = new Audio(audioUrl);
       setPlayingAudio(audioUrl);
-
-      audio.onended = () => setPlayingAudio(null);
-      audio.onerror = () => setPlayingAudio(null);
-
-      await audio.play();
+      await AudioService.playAudioFromDatabase(audioUrl);
     } catch (error) {
       console.error('Error playing audio:', error);
       setPlayingAudio(null);
@@ -29,6 +27,7 @@ export function useAudioPlayback() {
 
   const stopAudio = () => {
     setPlayingAudio(null);
+    AudioService.stopCurrentAudio();
   };
 
   const isPlaying = (audioUrl: string) => playingAudio === audioUrl;

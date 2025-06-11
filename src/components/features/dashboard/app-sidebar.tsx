@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { PowerIcon, BookOpen, Plus, List, Library } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { NavLink } from '@/core/types/nav';
-import { RootState } from '@/core/lib/redux/store';
+import { RootState } from '@/core/state/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Sidebar,

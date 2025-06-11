@@ -2,9 +2,9 @@
 
 import { authenticate, StateAuth } from '@/core/lib/actions/authActions';
 import { useActionState } from 'react';
-import { useAppDispatch } from '@/core/lib/redux/store';
+import { useAppDispatch } from '@/core/state/store';
 import { useEffect, useCallback, memo } from 'react';
-import { setUser } from '@/core/lib/redux/features/authSlice';
+import { setUser } from '@/core/state/features/authSlice';
 import { UserBasicData } from '@/core/types/user';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useSelector } from 'react-redux';
-import { selectUser } from '@/core/lib/redux/features/authSlice';
+import { selectUser } from '@/core/state/features/authSlice';
 import type { UserBasicData } from '@/core/types/user';
 
 /**

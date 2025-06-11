@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { RootState } from '@/core/lib/redux/store';
+import type { RootState } from '@/core/state/store';
 //import { prisma } from '@/lib/prisma';
 
 /**

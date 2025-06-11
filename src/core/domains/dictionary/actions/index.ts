@@ -113,6 +113,7 @@ export {
   searchWordsForUser,
   addDefinitionToUserDictionary,
   removeDefinitionFromUserDictionary,
+  checkDefinitionsInUserDictionary,
   type WordSearchResult,
   type WordDefinitionResult,
 } from './word-search-actions';

@@ -6,7 +6,7 @@ import { PowerIcon, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { NavLink } from '@/core/types/nav';
 import { useState } from 'react';
-import { RootState } from '@/core/lib/redux/store';
+import { RootState } from '@/core/state/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';

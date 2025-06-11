@@ -69,6 +69,7 @@ import { useAppDispatch } from '@/core/state';
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript 5.8+
 - **Database**: PostgreSQL (Neon) + Prisma 6.7+
+- **Validation**: Zod for schema validation and type safety
 - **Styling**: Tailwind CSS + shadcn/ui
 - **State**: Redux Toolkit + Redux Persist
 - **Auth**: NextAuth.js v5
@@ -129,11 +130,11 @@ import { useAppDispatch } from '@/core/state';
 
 ## Critical Issues Identified
 
-### Database Schema Enhancement Needed
+### Database Schema Enhancement - ✅ RESOLVED
 
-**Community List Tracking**: The current schema lacks proper tracking of copied community lists. When a user adds a community list to their collection via `addPublicUserListToCollection()`, it creates a new `UserList` record, but there's no way to track which original public UserList it was copied from.
+**Community List Tracking**: ~~The current schema lacks proper tracking of copied community lists.~~ **FIXED**: Added `sourceUserListId` field to `UserList` model to track the origin of community lists copied by users.
 
-**Recommended Schema Change**:
+**Implemented Schema Change**:
 
 ```prisma
 model UserList {
@@ -145,11 +146,11 @@ model UserList {
 }
 ```
 
-This would enable:
+This enables:
 
-1. Proper tracking of community list copies
-2. Accurate `isInUserCollection` detection
-3. Update propagation from original to copies
-4. Community list popularity metrics
+1. ✅ Proper tracking of community list copies
+2. ✅ Accurate `isInUserCollection` detection
+3. ✅ Update propagation from original to copies
+4. ✅ Community list popularity metrics
 
-**Current Workaround**: The system uses name matching as a temporary solution, which is unreliable and could cause false positives.
+**Note**: Database migration required with `pnpm run p-migrate` to apply schema changes.

@@ -26,6 +26,7 @@ import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
 import { WordService } from '@/core/shared/services/WordService';
 import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
 
 /**Definitions:
  * generalLabels "lbs" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs. (like capitalization indicators, usage notes, etc.)
@@ -3108,22 +3109,64 @@ async function processAudioForWord(
   tx: Prisma.TransactionClient,
   wordDetailsId: number,
   audioFiles: AudioFile[],
+  wordText: string,
   isPrimary: boolean = false,
   languageCode: LanguageCode = LanguageCode.en,
   source: SourceType = SourceType.merriam_learners,
 ): Promise<void> {
-  for (const [index, audioFile] of audioFiles.entries()) {
+  // Convert AudioFile[] to ExternalAudioFile[] format
+  const externalAudioFiles = audioFiles.map((file) => ({
+    url: file.url,
+    word: wordText,
+  }));
+
+  // Base metadata for all audio files
+  const baseMetadata = {
+    languageCode: languageCode.toString(),
+    qualityLevel: 'standard',
+    voiceGender: 'unknown',
+  };
+
+  // Download and store audio files in blob storage before database operations
+  const downloadResults = await audioDownloadService.downloadAndStoreBatchAudio(
+    externalAudioFiles,
+    baseMetadata,
+  );
+
+  // Categorize results
+  const successful = downloadResults.filter((r) => r.success && !r.skipped);
+  const failed = downloadResults.filter((r) => !r.success && !r.skipped);
+  const skipped = downloadResults.filter((r) => r.skipped);
+
+  serverLog(
+    `🎵 Audio download results for word "${wordText}": ${successful.length} successful, ${failed.length} failed, ${skipped.length} skipped`,
+    'info',
+  );
+
+  // Log detailed results for failures
+  if (failed.length > 0) {
+    serverLog(
+      `❌ Failed audio downloads for "${wordText}": ${failed.map((f) => `${f.originalUrl} (${f.error})`).join(', ')}`,
+      'warn',
+    );
+  }
+
+  // Process successful downloads and create database records
+  for (const [index, result] of successful.entries()) {
+    // Use the blob storage URL instead of the original external URL
+    const audioUrl = result.localUrl!;
+
     // Use upsert instead of create to handle duplicate audio URLs
     const audio = await tx.audio.upsert({
       where: {
         url_languageCode: {
-          url: audioFile.url,
+          url: audioUrl,
           languageCode: languageCode,
         },
       },
       update: {}, // No updates needed if it already exists
       create: {
-        url: audioFile.url,
+        url: audioUrl,
         source: source,
         languageCode: languageCode,
       },
@@ -3144,6 +3187,45 @@ async function processAudioForWord(
         wordDetailsId,
         audioId: audio.id,
         isPrimary: isPrimary && index === 0, // Only first audio file is primary if isPrimary is true
+      },
+    });
+  }
+
+  // Also process skipped files (already in blob storage)
+  for (const [index, result] of skipped.entries()) {
+    const audioUrl = result.localUrl!;
+
+    // Use upsert instead of create to handle duplicate audio URLs
+    const audio = await tx.audio.upsert({
+      where: {
+        url_languageCode: {
+          url: audioUrl,
+          languageCode: languageCode,
+        },
+      },
+      update: {}, // No updates needed if it already exists
+      create: {
+        url: audioUrl,
+        source: source,
+        languageCode: languageCode,
+      },
+    });
+
+    // Link audio to word details
+    await tx.wordDetailsAudio.upsert({
+      where: {
+        wordDetailsId_audioId: {
+          wordDetailsId,
+          audioId: audio.id,
+        },
+      },
+      update: {
+        isPrimary: isPrimary && successful.length + index === 0, // Update primary status if it exists
+      },
+      create: {
+        wordDetailsId,
+        audioId: audio.id,
+        isPrimary: isPrimary && successful.length + index === 0, // Only first audio file is primary if isPrimary is true
       },
     });
   }
@@ -3216,6 +3298,7 @@ async function upsertWord(
       tx,
       wordDetails.id,
       options.audioFiles,
+      wordText,
       true,
       languageCode,
       source,

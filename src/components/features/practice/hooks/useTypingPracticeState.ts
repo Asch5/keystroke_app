@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useUser } from '@/core/shared/hooks/useUser';
 import { toast } from 'sonner';
 import {
@@ -49,21 +49,8 @@ interface UseTypingPracticeStateProps {
   difficultyLevel?: number;
   wordsCount?: number;
   includeWordStatuses?: LearningStatus[];
+  autoSubmitAfterCorrect?: boolean;
 }
-
-const INITIAL_SESSION_STATE: SessionState = {
-  sessionId: null,
-  words: [],
-  currentWordIndex: 0,
-  currentWord: null,
-  userInput: '',
-  difficultyConfig: null,
-  isActive: false,
-  score: 0,
-  correctAnswers: 0,
-  incorrectAnswers: 0,
-  startTime: null,
-};
 
 export function useTypingPracticeState({
   userListId,
@@ -75,74 +62,79 @@ export function useTypingPracticeState({
     LearningStatus.inProgress,
     LearningStatus.difficult,
   ],
+  autoSubmitAfterCorrect = false,
 }: UseTypingPracticeStateProps) {
   const { user } = useUser();
-  const [sessionState, setSessionState] = useState<SessionState>(
-    INITIAL_SESSION_STATE,
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [wordResults, setWordResults] = useState<WordResult[]>([]);
   const [showResult, setShowResult] = useState(false);
-  const [currentWordStartTime, setCurrentWordStartTime] = useState<Date | null>(
-    null,
-  );
+  const [currentWordStartTime, setCurrentWordStartTime] = useState<
+    Date | undefined
+  >();
+  const [shouldCompleteSession, setShouldCompleteSession] = useState(false);
+
+  const [sessionState, setSessionState] = useState<SessionState>({
+    sessionId: null,
+    words: [],
+    currentWordIndex: 0,
+    currentWord: null,
+    userInput: '',
+    difficultyConfig: null,
+    isActive: false,
+    score: 0,
+    correctAnswers: 0,
+    incorrectAnswers: 0,
+    startTime: null,
+  });
+
+  // Ref to track if we've already completed the session
+  const sessionCompletedRef = useRef(false);
 
   /**
-   * Analyze mistakes between user input and correct word
+   * Complete the current practice session using useEffect to avoid render issues
    */
-  const analyzeMistakes = useCallback(
-    (userInput: string, correctWord: string) => {
-      const mistakes = [];
-      const maxLength = Math.max(userInput.length, correctWord.length);
-
-      for (let i = 0; i < maxLength; i++) {
-        const userChar = userInput[i] || '';
-        const correctChar = correctWord[i] || '';
-
-        if (userChar !== correctChar) {
-          mistakes.push({
-            position: i,
-            expected: correctChar,
-            actual: userChar,
-          });
-        }
+  useEffect(() => {
+    const handleSessionComplete = async () => {
+      if (
+        !shouldCompleteSession ||
+        !sessionState.sessionId ||
+        sessionCompletedRef.current
+      ) {
+        return;
       }
 
-      return mistakes;
-    },
-    [],
-  );
+      sessionCompletedRef.current = true;
 
-  /**
-   * Complete the current practice session
-   */
-  const handleSessionComplete = useCallback(async () => {
-    if (!sessionState.sessionId) return;
+      try {
+        const response = await completePracticeSession(sessionState.sessionId);
 
-    try {
-      const response = await completePracticeSession(sessionState.sessionId);
+        if (response.success && response.sessionSummary) {
+          const summary = response.sessionSummary;
 
-      if (response.success && response.sessionSummary) {
-        const summary = response.sessionSummary;
+          toast.success(
+            `Session completed! Accuracy: ${summary.accuracy}% | Score: ${summary.score}`,
+            { duration: 5000 },
+          );
 
-        toast.success(
-          `Session completed! Accuracy: ${summary.accuracy}% | Score: ${summary.score}`,
-          { duration: 5000 },
-        );
-
-        // Show achievements
-        if (summary.achievements.length > 0) {
-          summary.achievements.forEach((achievement) => {
-            toast.success(`🏆 ${achievement}`, { duration: 3000 });
-          });
+          // Show achievements
+          if (summary.achievements.length > 0) {
+            summary.achievements.forEach((achievement) => {
+              toast.success(`🏆 ${achievement}`, { duration: 3000 });
+            });
+          }
         }
+      } catch (error) {
+        console.error('Error completing session:', error);
+      } finally {
+        setShouldCompleteSession(false);
+        setSessionState((prev) => ({ ...prev, isActive: false }));
       }
-    } catch (error) {
-      console.error('Error completing session:', error);
+    };
+
+    if (shouldCompleteSession) {
+      handleSessionComplete();
     }
-
-    setSessionState((prev) => ({ ...prev, isActive: false }));
-  }, [sessionState.sessionId]);
+  }, [shouldCompleteSession, sessionState.sessionId]);
 
   /**
    * Start a new practice session
@@ -152,6 +144,10 @@ export function useTypingPracticeState({
       toast.error('Please log in to start practice');
       return;
     }
+
+    // Reset completion tracking
+    sessionCompletedRef.current = false;
+    setShouldCompleteSession(false);
 
     setIsLoading(true);
     try {
@@ -207,6 +203,31 @@ export function useTypingPracticeState({
     wordsCount,
     includeWordStatuses,
   ]);
+
+  /**
+   * Analyze mistakes between user input and correct word
+   */
+  const analyzeMistakes = useCallback(
+    (userInput: string, correctWord: string) => {
+      const mistakes = [];
+
+      for (let i = 0; i < Math.max(userInput.length, correctWord.length); i++) {
+        const userChar = userInput[i] || '';
+        const correctChar = correctWord[i] || '';
+
+        if (userChar !== correctChar) {
+          mistakes.push({
+            position: i,
+            expected: correctChar,
+            actual: userChar,
+          });
+        }
+      }
+
+      return mistakes;
+    },
+    [],
+  );
 
   /**
    * Submit current word for validation
@@ -290,12 +311,21 @@ export function useTypingPracticeState({
 
       setSessionState((prev) => ({ ...prev, userInput: value }));
 
-      // Auto-submit when user types the complete word
-      if (value.length === sessionState.currentWord.wordText.length) {
+      // Auto-submit when user types the correct word (if setting is enabled)
+      if (
+        autoSubmitAfterCorrect &&
+        value.length === sessionState.currentWord.wordText.length &&
+        value.toLowerCase() === sessionState.currentWord.wordText.toLowerCase()
+      ) {
         setTimeout(() => handleWordSubmit(value), 0);
       }
     },
-    [sessionState.isActive, sessionState.currentWord, handleWordSubmit],
+    [
+      sessionState.isActive,
+      sessionState.currentWord,
+      handleWordSubmit,
+      autoSubmitAfterCorrect,
+    ],
   );
 
   /**
@@ -307,8 +337,8 @@ export function useTypingPracticeState({
       const nextIndex = prev.currentWordIndex + 1;
 
       if (nextIndex >= prev.words.length) {
-        // Session completed
-        handleSessionComplete();
+        // Session completed - trigger completion via useEffect
+        setShouldCompleteSession(true);
         return { ...prev, isActive: false };
       }
 
@@ -320,7 +350,7 @@ export function useTypingPracticeState({
       };
     });
     setCurrentWordStartTime(new Date());
-  }, [handleSessionComplete]);
+  }, []);
 
   /**
    * Skip current word
@@ -345,6 +375,7 @@ export function useTypingPracticeState({
       };
 
       setWordResults((prev) => [...prev, result]);
+      setShowResult(true);
       setSessionState((prev) => ({
         ...prev,
         incorrectAnswers: prev.incorrectAnswers + 1,

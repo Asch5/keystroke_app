@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useAppDispatch } from '@/core/lib/redux/store';
-import { setUser, clearUser } from '@/core/lib/redux/features/authSlice';
+import { useAppDispatch } from '@/core/state/store';
+import { setUser, clearUser } from '@/core/state/features/authSlice';
 import { UserBasicData } from '@/core/types/user';
 import { useSession } from 'next-auth/react';
 import { getUserByEmail } from '@/core/lib/db/user';

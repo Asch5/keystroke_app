@@ -10,6 +10,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { LanguageCode } from '@prisma/client';
 import { AddToListDialog } from './AddToListDialog';
 import { DictionaryFilters } from './DictionaryFilters';
 import { WordTable } from './WordTable';
@@ -31,6 +33,8 @@ interface MyDictionaryContentProps {
  * Now uses custom hooks and smaller components for better modularity.
  */
 export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
+  const router = useRouter();
+
   // Custom hooks for state management
   const dictionaryState = useDictionaryState(userId);
   const { isPlayingAudio, playingWordId, playWordAudio } = useAudioPlayback();
@@ -38,6 +42,18 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
     userId,
     dictionaryState.fetchWords,
   );
+
+  // Handle word detail view - navigate to separate page
+  const handleViewWordDetail = (
+    wordText: string,
+    languageCode: LanguageCode,
+  ) => {
+    const params = new URLSearchParams();
+    params.set('lang', languageCode);
+    router.push(
+      `/dashboard/dictionary/word-details/${encodeURIComponent(wordText)}?${params.toString()}`,
+    );
+  };
 
   // Early return for loading state
   if (dictionaryState.loading && dictionaryState.words.length === 0) {
@@ -100,6 +116,7 @@ export function MyDictionaryContent({ userId }: MyDictionaryContentProps) {
               onRemoveWord={dictionaryActions.handleRemoveWord}
               onAddToList={dictionaryActions.handleAddToList}
               onPlayAudio={playWordAudio}
+              onViewWordDetail={handleViewWordDetail}
             />
           </CardContent>
         </Card>

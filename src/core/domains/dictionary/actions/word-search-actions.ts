@@ -349,3 +349,56 @@ export async function searchWordsForUser(
     throw new Error('Failed to search words with user preferences');
   }
 }
+
+/**
+ * Check if definitions are already in user's dictionary
+ */
+export async function checkDefinitionsInUserDictionary(
+  userId: string,
+  definitionIds: number[],
+): Promise<Record<number, { exists: boolean; userDictionaryId?: string }>> {
+  try {
+    const userDictEntries = await prisma.userDictionary.findMany({
+      where: {
+        userId,
+        definitionId: { in: definitionIds },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        definitionId: true,
+      },
+    });
+
+    const result: Record<
+      number,
+      { exists: boolean; userDictionaryId?: string }
+    > = {};
+
+    // Initialize all definitions as not existing
+    definitionIds.forEach((id) => {
+      result[id] = { exists: false };
+    });
+
+    // Mark existing ones
+    userDictEntries.forEach((entry) => {
+      result[entry.definitionId] = {
+        exists: true,
+        userDictionaryId: entry.id,
+      };
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Error checking definitions in user dictionary:', error);
+    // Return all as non-existing if there's an error
+    const result: Record<
+      number,
+      { exists: boolean; userDictionaryId?: string }
+    > = {};
+    definitionIds.forEach((id) => {
+      result[id] = { exists: false };
+    });
+    return result;
+  }
+}

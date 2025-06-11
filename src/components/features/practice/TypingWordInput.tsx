@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,13 +11,15 @@ import {
 } from '@/components/ui/input-otp';
 import { Volume2, SkipForward, Trophy, VolumeX } from 'lucide-react';
 import { cn } from '@/core/shared/utils/common/cn';
-import type { SessionState, WordResult } from './hooks/useTypingPracticeState';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import type { SessionState, WordResult, TypingPracticeSettings } from './hooks';
 
 interface TypingWordInputProps {
   sessionState: SessionState;
   showResult: boolean;
   wordResults: WordResult[];
   isPlayingAudio: boolean;
+  settings: TypingPracticeSettings;
   onInputChange: (value: string) => void;
   onWordSubmit: () => void;
   onSkipWord: () => Promise<WordResult | undefined>;
@@ -37,12 +40,83 @@ export function TypingWordInput({
   showResult,
   wordResults,
   isPlayingAudio,
+  settings,
   onInputChange,
   onWordSubmit,
   onSkipWord,
   onNextWord,
   onPlayAudio,
 }: TypingWordInputProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-focus on the input when component mounts or when a new word appears
+  useEffect(() => {
+    if (
+      sessionState.isActive &&
+      !showResult &&
+      inputRef.current &&
+      sessionState.currentWord
+    ) {
+      inputRef.current.focus();
+    }
+  }, [
+    sessionState.currentWord?.userDictionaryId,
+    sessionState.isActive,
+    showResult,
+  ]);
+
+  // Handle Enter key for submission, skip, and next word
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && sessionState.isActive) {
+        // Prevent default behavior and stop propagation
+        event.preventDefault();
+        event.stopPropagation();
+
+        console.log('🎯 Enter key pressed:', {
+          showResult,
+          userInput: sessionState.userInput,
+          userInputLength: sessionState.userInput?.length || 0,
+        });
+
+        if (showResult) {
+          // When showing results, Enter triggers "Next Word"
+          console.log('📝 Triggering Next Word');
+          onNextWord();
+        } else {
+          // When typing, Enter behavior depends on input
+          if (sessionState.userInput && sessionState.userInput.length > 0) {
+            // If user has typed something, submit the word
+            console.log('✅ Triggering Submit');
+            onWordSubmit();
+          } else {
+            // If user hasn't typed anything, skip the word
+            console.log('⏭️ Triggering Skip');
+            onSkipWord()
+              .then(() => {
+                console.log('✨ Skip completed');
+              })
+              .catch((error) => {
+                console.error('❌ Skip error:', error);
+              });
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown, true); // Use capture phase
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, [
+    sessionState.isActive,
+    sessionState.userInput,
+    showResult,
+    onWordSubmit,
+    onNextWord,
+    onSkipWord,
+  ]);
+
   if (!sessionState.currentWord) return null;
 
   const word = sessionState.currentWord.wordText;
@@ -58,6 +132,7 @@ export function TypingWordInput({
 
       <div className="flex justify-center">
         <InputOTP
+          ref={inputRef}
           maxLength={wordLength}
           value={sessionState.userInput}
           onChange={onInputChange}
@@ -179,13 +254,44 @@ export function TypingWordInput({
     <Card className="max-w-4xl mx-auto">
       <CardContent className="p-8 space-y-8">
         {/* Word Definition */}
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-4">
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             Type the word:
           </h2>
-          <p className="text-2xl font-semibold text-foreground">
-            {sessionState.currentWord.definition}
-          </p>
+
+          <div className="space-y-4">
+            <p className="text-2xl font-semibold text-foreground">
+              {sessionState.currentWord.definition}
+            </p>
+
+            {/* Definition Image */}
+            {settings.showDefinitionImages &&
+              sessionState.currentWord.imageId && (
+                <div className="flex justify-center">
+                  <div className="w-64 max-w-xs">
+                    <AspectRatio
+                      ratio={16 / 9}
+                      className="bg-muted rounded-lg overflow-hidden border"
+                    >
+                      <img
+                        src={`/api/images/${sessionState.currentWord.imageId}`}
+                        alt={
+                          sessionState.currentWord.imageDescription ||
+                          sessionState.currentWord.definition
+                        }
+                        className="w-full h-full object-cover"
+                      />
+                    </AspectRatio>
+                    {sessionState.currentWord.imageDescription && (
+                      <p className="text-xs text-muted-foreground mt-2 text-center">
+                        {sessionState.currentWord.imageDescription}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+          </div>
+
           <div className="flex items-center justify-center gap-4">
             {sessionState.currentWord.phonetic && (
               <p className="text-sm text-muted-foreground font-mono">
@@ -203,6 +309,22 @@ export function TypingWordInput({
         {/* Typing Input */}
         {renderWordInput()}
 
+        {/* Keyboard hint */}
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground">
+            Press{' '}
+            <kbd className="px-1.5 py-0.5 text-xs font-semibold bg-muted border rounded">
+              Enter
+            </kbd>{' '}
+            to{' '}
+            {showResult
+              ? 'continue'
+              : sessionState.userInput && sessionState.userInput.length > 0
+                ? 'submit'
+                : 'skip'}
+          </p>
+        </div>
+
         {/* Result Feedback */}
         {renderResultFeedback()}
 
@@ -217,6 +339,11 @@ export function TypingWordInput({
               >
                 <SkipForward className="h-4 w-4" />
                 Skip
+                {!sessionState.userInput && (
+                  <span className="text-xs text-muted-foreground ml-1">
+                    (Enter)
+                  </span>
+                )}
               </Button>
 
               {sessionState.userInput && (
@@ -226,6 +353,9 @@ export function TypingWordInput({
                 >
                   <Trophy className="h-4 w-4" />
                   Submit
+                  <span className="text-xs text-muted-foreground ml-1">
+                    (Enter)
+                  </span>
                 </Button>
               )}
             </>
@@ -238,6 +368,9 @@ export function TypingWordInput({
             >
               <SkipForward className="h-4 w-4" />
               Next Word
+              <span className="text-xs text-muted-foreground ml-1">
+                (Enter)
+              </span>
             </Button>
           )}
 

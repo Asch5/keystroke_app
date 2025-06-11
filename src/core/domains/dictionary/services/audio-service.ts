@@ -1,6 +1,6 @@
 /**
  * Audio Service for playing database audio files
- * Simplified approach based on the working admin implementation
+ * Improved error handling with Promise-based approach
  */
 
 export class AudioService {
@@ -12,76 +12,131 @@ export class AudioService {
    * @returns Promise that resolves when audio starts playing or rejects on error
    */
   static async playAudioFromDatabase(audioUrl: string): Promise<void> {
-    try {
-      // Validate URL
-      if (!audioUrl || typeof audioUrl !== 'string') {
-        throw new Error('Invalid audio URL provided');
-      }
-
-      console.log('🎵 Attempting to play audio from:', audioUrl);
-
-      // Check if we need to use proxy for external URLs
-      let finalAudioUrl = audioUrl;
-      try {
-        const url = new URL(audioUrl);
-        const isExternalUrl = !url.hostname.includes(window.location.hostname);
-
-        if (isExternalUrl) {
-          // Use proxy for external URLs like static.ordnet.dk
-          finalAudioUrl = `/api/audio/proxy?url=${encodeURIComponent(audioUrl)}`;
-          console.log('🔄 Using proxy for external URL');
-        }
-      } catch {
-        // If URL parsing fails, use original URL
-        console.warn('⚠️ Could not parse URL, using as-is');
-      }
-
-      // Stop any currently playing audio
-      this.stopCurrentAudio();
-
-      // Create new audio element - simple approach like admin page
-      const audio = new Audio(finalAudioUrl);
-
-      // Set up basic event handlers like admin page
-      audio.onended = () => {
-        this.currentAudio = null;
-        console.log('🏁 Audio playback completed');
-      };
-
-      audio.onerror = () => {
-        this.currentAudio = null;
-        console.error('❌ Audio playback error occurred');
-        // Don't throw here - just cleanup like admin page
-      };
-
-      // Try to play the audio
-      await audio.play();
-
-      // If successful, store reference
-      this.currentAudio = audio;
-      console.log('🔊 Audio playback started successfully');
-    } catch (error) {
-      console.error('❌ Audio service error:', error);
-
-      // Provide user-friendly error messages
-      if (error instanceof Error) {
-        if (error.name === 'NotAllowedError') {
-          throw new Error(
-            'Audio playback was prevented by browser policy. Please interact with the page first.',
-          );
-        } else if (error.name === 'NotSupportedError') {
-          throw new Error('Audio format not supported by your browser');
-        } else if (error.name === 'AbortError') {
-          throw new Error('Audio loading was aborted');
-        } else if (error.message.includes('fetch')) {
-          throw new Error(
-            'Network error while loading audio - check your internet connection',
-          );
-        }
-      }
-
-      throw new Error('Failed to play audio file');
+    // Validate URL
+    if (!audioUrl || typeof audioUrl !== 'string') {
+      throw new Error('Invalid audio URL provided');
     }
+
+    console.log('🎵 Attempting to play audio from:', audioUrl);
+
+    // Check if we need to use proxy for external URLs
+    let finalAudioUrl = audioUrl;
+    try {
+      const url = new URL(audioUrl);
+      const isVercelBlob = url.hostname.includes('blob.vercel-storage.com');
+      const isLocalhost =
+        url.hostname.includes('localhost') ||
+        url.hostname.includes('127.0.0.1');
+      const isSameOrigin = url.hostname === window.location.hostname;
+
+      // Only use proxy for truly external URLs (not Vercel Blob Storage)
+      const needsProxy = !isVercelBlob && !isLocalhost && !isSameOrigin;
+
+      if (needsProxy) {
+        // Use proxy for external URLs like static.ordnet.dk
+        finalAudioUrl = `/api/audio/proxy?url=${encodeURIComponent(audioUrl)}`;
+        console.log('🔄 Using proxy for external URL');
+      } else if (isVercelBlob) {
+        console.log('☁️ Playing directly from Vercel Blob Storage');
+      } else {
+        console.log('🏠 Playing from same origin or localhost');
+      }
+    } catch {
+      // If URL parsing fails, use original URL
+      console.warn('⚠️ Could not parse URL, using as-is');
+    }
+
+    // Stop any currently playing audio
+    this.stopCurrentAudio();
+
+    return new Promise((resolve, reject) => {
+      try {
+        // Create new audio element
+        const audio = new Audio(finalAudioUrl);
+
+        // Set up event handlers with proper Promise resolution
+        audio.onloadstart = () => {
+          console.log('📥 Audio loading started');
+        };
+
+        audio.oncanplay = () => {
+          console.log('🎵 Audio ready to play');
+        };
+
+        audio.onplay = () => {
+          this.currentAudio = audio;
+          console.log('🔊 Audio playback started successfully');
+          resolve();
+        };
+
+        audio.onended = () => {
+          this.currentAudio = null;
+          console.log('🏁 Audio playback completed');
+        };
+
+        audio.onerror = () => {
+          this.currentAudio = null;
+          const error = audio.error;
+
+          let errorMessage = 'Audio playback failed';
+          if (error) {
+            switch (error.code) {
+              case MediaError.MEDIA_ERR_ABORTED:
+                errorMessage = 'Audio loading was aborted';
+                break;
+              case MediaError.MEDIA_ERR_NETWORK:
+                errorMessage = 'Network error while loading audio';
+                break;
+              case MediaError.MEDIA_ERR_DECODE:
+                errorMessage = 'Audio format not supported or corrupted';
+                break;
+              case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                errorMessage = 'Audio source not supported';
+                break;
+              default:
+                errorMessage = 'Unknown audio error occurred';
+            }
+          }
+
+          reject(new Error(errorMessage));
+        };
+
+        audio.onabort = () => {
+          this.currentAudio = null;
+          reject(new Error('Audio loading was aborted'));
+        };
+
+        // Try to play the audio
+        audio.play().catch((playError) => {
+          this.currentAudio = null;
+
+          // Provide user-friendly error messages based on play() promise rejection
+          if (playError.name === 'NotAllowedError') {
+            reject(
+              new Error(
+                'Audio playback was prevented by browser policy. Please interact with the page first.',
+              ),
+            );
+          } else if (playError.name === 'NotSupportedError') {
+            reject(new Error('Audio format not supported by your browser'));
+          } else if (playError.name === 'AbortError') {
+            reject(new Error('Audio loading was aborted'));
+          } else {
+            reject(
+              new Error(
+                `Failed to play audio: ${playError.message || 'Unknown error'}`,
+              ),
+            );
+          }
+        });
+      } catch (error) {
+        reject(
+          new Error(
+            `Audio service error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          ),
+        );
+      }
+    });
   }
 
   /**
@@ -137,7 +192,6 @@ export class AudioService {
       };
 
       utterance.onerror = (event) => {
-        console.error('❌ Text-to-speech error:', event);
         reject(new Error(`Speech synthesis failed: ${event.error}`));
       };
 

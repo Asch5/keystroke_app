@@ -73,6 +73,7 @@ const sourceTypeDisplayNames: Record<SourceType, string> = {
   danish_dictionary: 'Danish Dictionary',
   user: 'User',
   admin: 'Admin',
+  frequency_import: 'Frequency Import',
 };
 
 const genderDisplayNames: Record<Gender, string> = {

@@ -135,13 +135,12 @@ export function useDictionaryState(userId: string) {
     ); // 300ms delay for search, immediate for other filters
 
     return () => clearTimeout(timeoutId);
-  }, [fetchWords]);
+  }, [fetchWords, searchQuery]);
 
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [
-    searchQuery,
     selectedStatus,
     selectedPartOfSpeech,
     selectedDifficulty,

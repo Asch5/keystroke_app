@@ -184,6 +184,7 @@ export default function TestImageDebugPage() {
               </h3>
               <div className="border rounded-lg overflow-hidden max-w-xs">
                 <AspectRatio ratio={16 / 9} className="bg-muted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`/api/images/${imageId}`}
                     alt={`Test image ${imageId}`}

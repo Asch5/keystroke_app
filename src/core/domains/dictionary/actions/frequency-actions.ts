@@ -141,7 +141,6 @@ export async function importFrequencyJson(
                   word: item.word,
                   languageCode: languageCode,
                   frequencyGeneral: item.orderIndexGeneralWord,
-                  source: 'frequency_import',
                 },
               });
 

@@ -73,6 +73,29 @@ export function ImageWithFallback({
     }
   };
 
+  // Check if this is an authenticated endpoint and needs special handling
+  const isAuthenticatedEndpoint = src.startsWith('/api/images/');
+  const shouldBeUnoptimized = unoptimized || isAuthenticatedEndpoint;
+
+  // For authenticated endpoints, render immediately to avoid loading state issues
+  if (isAuthenticatedEndpoint) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        fill={fill}
+        {...(width !== undefined && { width })}
+        {...(height !== undefined && { height })}
+        className={className}
+        sizes={sizes}
+        priority={priority}
+        unoptimized={shouldBeUnoptimized}
+        onLoad={handleLoad}
+        onError={handleError}
+      />
+    );
+  }
+
   // Loading state
   if (isLoading && !hasError) {
     return (
@@ -133,7 +156,7 @@ export function ImageWithFallback({
         className={className}
         sizes={sizes}
         priority={priority}
-        unoptimized={unoptimized}
+        unoptimized={shouldBeUnoptimized}
         onLoad={handleLoad}
         onError={handleError}
       />

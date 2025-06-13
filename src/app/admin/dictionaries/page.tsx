@@ -4,6 +4,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
 import { AddWordsToListDialog } from '@/components/features/admin/dictionary/AddWordsToListDialog';
+import { DeepSeekWordExtractionDialog } from '@/components/features/admin/dictionary/DeepSeekWordExtractionDialog';
 import {
   AdminDictionaryPageHeader,
   AdminDictionaryFilters,
@@ -21,13 +22,13 @@ export default function DictionariesPage() {
     selectedLanguage,
     wordDetails,
     filteredWordDetails,
-    isLoading,
     filters,
     filtersOpen,
     selectedWords,
     isDeleteDialogOpen,
     isDeleting,
     isAddWordsToListDialogOpen,
+    isDeepSeekDialogOpen,
 
     // Actions
     setSelectedLanguage,
@@ -46,10 +47,14 @@ export default function DictionariesPage() {
     handleWordsAddedToList,
     setIsDeleteDialogOpen,
     setIsAddWordsToListDialogOpen,
+    openDeepSeekDialog,
+    handleDeepSeekSuccess,
+    getSelectedWordDetailIds,
+    setIsDeepSeekDialogOpen,
   } = useAdminDictionaryState();
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto py-8">
       <Card>
         <AdminDictionaryPageHeader
           selectedLanguage={selectedLanguage}
@@ -60,9 +65,10 @@ export default function DictionariesPage() {
           onDeleteSelected={openDeleteDialog}
           onAudioGenerated={handleAudioGenerated}
           onAddWordsToList={openAddWordsToListDialog}
+          onDeepSeekExtract={openDeepSeekDialog}
         />
 
-        <CardContent className="space-y-4">
+        <CardContent>
           <AdminDictionaryFilters
             filters={filters}
             onFilterChange={handleFilterChange}
@@ -73,26 +79,19 @@ export default function DictionariesPage() {
             filteredWordDetails={filteredWordDetails}
           />
 
-          {/* Table */}
-          {isLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-            </div>
-          ) : (
-            <AdminDictionaryTable
-              data={filteredWordDetails}
-              selectedWords={selectedWords}
-              onWordSelectionToggle={toggleWordSelection}
-              onSelectAllWords={selectAllWords}
-              onClearSelection={clearSelection}
-              onDeleteAudio={handleDeleteAudio}
-              selectedLanguage={selectedLanguage}
-            />
-          )}
+          <AdminDictionaryTable
+            data={filteredWordDetails}
+            selectedWords={selectedWords}
+            onWordSelectionToggle={toggleWordSelection}
+            onSelectAllWords={selectAllWords}
+            onClearSelection={clearSelection}
+            onDeleteAudio={handleDeleteAudio}
+            selectedLanguage={selectedLanguage}
+          />
         </CardContent>
       </Card>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Bulk Delete Confirmation Dialog */}
       <BulkDeleteConfirmDialog
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
@@ -114,6 +113,14 @@ export default function DictionariesPage() {
         }
         selectedLanguage={selectedLanguage}
         onWordsAdded={handleWordsAddedToList}
+      />
+
+      {/* DeepSeek Word Extraction Dialog */}
+      <DeepSeekWordExtractionDialog
+        open={isDeepSeekDialogOpen}
+        onOpenChange={setIsDeepSeekDialogOpen}
+        selectedWordDetailIds={getSelectedWordDetailIds()}
+        onSuccess={handleDeepSeekSuccess}
       />
     </div>
   );

@@ -73,8 +73,21 @@ import { useAppDispatch } from '@/core/state';
 - **Styling**: Tailwind CSS + shadcn/ui
 - **State**: Redux Toolkit + Redux Persist
 - **Auth**: NextAuth.js v5
-- **External APIs**: Google Cloud TTS, Pexels, Merriam-Webster
+- **External APIs**: Google Cloud TTS, Pexels, Merriam-Webster, DeepSeek AI
 - **Package Manager**: pnpm
+
+## Configuration Standards
+
+**Next.js Configuration**: The project uses **`next.config.mjs`** as the single source of configuration. This file contains:
+
+- Image optimization settings and remote patterns
+- Authentication-aware image handling for `/api/images/` endpoints
+- CORS headers for proper image delivery
+- TypeScript build settings
+- Logging configuration for debugging
+- Cache control headers for performance
+
+**Important**: Always use `next.config.mjs` (ES modules format) for all configuration changes. Do not create duplicate `next.config.js` files.
 
 ## File Naming
 
@@ -127,6 +140,8 @@ import { useAppDispatch } from '@/core/state';
 - **ENHANCED**: Admin Navigation Icons - Updated admin navigation with more appropriate and descriptive icons: ShieldCheck for Admin access, List for Lists Management, MagnifyingGlass for Check Word, Plus for Add New Word, ChartBar for Frequency analysis, and PencilSquare for Edit Word functionality.
 - **NEW**: Admin List Word Management - Implemented comprehensive word management functionality for admin public lists. Admins can now view, search, sort, and remove words from public vocabulary lists through a dedicated management interface at `/admin/dictionaries/lists/[id]/words`. Features include bulk selection, real-time search, sortable columns (word, order, part of speech), audio playback, pagination, and confirmation dialogs for word removal. This complements the existing user list management and provides full administrative control over public vocabulary collections.
 - **MODERNIZED**: Admin WordDetail Edit System - Completely modernized the admin edit-word functionality to edit specific WordDetails instead of entire Words. The system now navigates using WordDetail IDs, allowing precise editing of individual word variants/parts of speech without affecting other WordDetails of the same word. Features include: 1) WordDetail-specific editing with clear separation between Word fields (shared across all WordDetails) and WordDetail fields (specific to the variant), 2) Comprehensive form with all WordDetail properties (part of speech, variant, gender, etymology, phonetic, forms, frequency, source), 3) Inline editing of related definitions and audio files, 4) Warning system about Word field impacts, 5) Modern shadcn/ui interface with proper validation and error handling. The new `fetchWordDetailById` and `updateWordDetailById` actions provide targeted CRUD operations for WordDetail management.
+- **NEW**: DeepSeek API Integration - Implemented cost-effective AI-powered word extraction system for admin dictionary management. Features include: 1) DeepSeek API service with batch processing and rate limiting (5 requests/second max), 2) Cost optimization achieving ~$0.0001 per definition (~$0.001 per 1K tokens), 3) Server actions for single and batch word extraction with database integration, 4) DeepSeekWordExtractionDialog component with language selection, progress tracking, and comprehensive result display, 5) DefinitionToOneWord table integration for mapping definitions to exact words, 6) Token usage tracking and cost estimation, 7) Error handling with detailed logging and user feedback. The system allows admins to select definitions, choose target language, and automatically extract matching words using AI while maintaining database relationships through the new DefinitionToOneWord mapping table.
+- **NEW**: Next.js Image Authentication Solution - Comprehensive solution for authenticated image endpoints that eliminates the need for img tag workarounds. Features include: 1) AuthenticatedImage component that automatically detects `/api/images/` endpoints and uses unoptimized mode only for those while maintaining Next.js optimization for all other sources, 2) Enhanced ImageWithFallback component with auto-detection of authenticated endpoints, 3) Consolidated next.config.mjs with proper image configuration, CORS headers, and cache settings, 4) Improved middleware.ts with CORS headers for image API requests, 5) Maintains all Next.js Image benefits (lazy loading, priority, sizes) while fixing authentication issues. This solution preserves performance and functionality while providing proper error handling and future-proofing for any authenticated image endpoints.
 
 ## Critical Issues Identified
 

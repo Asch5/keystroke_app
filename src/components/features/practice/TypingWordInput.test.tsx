@@ -8,7 +8,9 @@ import type { SessionState, WordResult, TypingPracticeSettings } from './hooks';
 // Mock the ImageWithFallback component
 vi.mock('@/components/shared/ImageWithFallback', () => ({
   ImageWithFallback: ({ src, alt }: { src: string; alt: string }) => (
-    <img src={src} alt={alt} data-testid="fallback-image" />
+    <div data-testid="fallback-image" data-src={src} data-alt={alt}>
+      Mock Image: {alt}
+    </div>
   ),
 }));
 

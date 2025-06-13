@@ -4,9 +4,10 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Image configuration
+
+  // Comprehensive image configuration for authentication and optimization
   images: {
-    domains: ['images.pexels.com'],
+    // Configure image domains and patterns (consolidated from both configs)
     remotePatterns: [
       {
         protocol: 'https',
@@ -20,16 +21,57 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'static.ordnet.dk',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
+    // Image optimization settings
+    unoptimized: false,
+    loader: 'default',
+    minimumCacheTTL: 86400, // 24 hours
   },
+
   // Enable verbose logging for debugging
   logging: {
     fetches: {
       fullUrl: true,
     },
   },
+
   // Add trailing slash for consistent routing
   trailingSlash: false,
+
+  // Add headers to handle image requests properly
+  async headers() {
+    return [
+      {
+        source: '/api/images/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

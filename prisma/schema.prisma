@@ -182,6 +182,7 @@ enum SourceType {
   danish_dictionary
   user
   admin
+  frequency_import
 }
 
 enum Gender {
@@ -293,6 +294,7 @@ model Word {
   relatedFromWords    WordToWordRelationship[]       @relation("FromWord")
   relatedToWords      WordToWordRelationship[]       @relation("ToWord")
   linkedByDefinitions DefinitionToWordRelationship[] @relation("WordLinkedByDefinitions")
+  oneWordDefinitions  DefinitionToOneWord[]
 
   @@unique([word, languageCode])
   @@index([word], map: "idx_word_search")
@@ -355,6 +357,7 @@ model Definition {
   relatedFromDefs  DefinitionRelationship[]       @relation("FromDefinition")
   relatedToDefs    DefinitionRelationship[]       @relation("ToDefinition")
   wordLinks        DefinitionToWordRelationship[] @relation("DefinitionToWordLinks")
+  oneWordLinks     DefinitionToOneWord[]
   mistakes         LearningMistake[] // Added relation to consolidated mistake model
 
   // Simplified uniqueness constraint focusing on core attributes
@@ -1041,4 +1044,15 @@ model ExampleTranslation {
 
   @@id([exampleId, translationId])
   @@map("example_translations")
+}
+
+model DefinitionToOneWord {
+  definitionId Int @map("definition_id")
+  wordId       Int @map("word_id")
+
+  definition Definition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  word       Word       @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@id([definitionId, wordId])
+  @@map("definition_to_one_word")
 }

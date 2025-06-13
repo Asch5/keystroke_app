@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { LanguageCode } from '@prisma/client';
-import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
+import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
 import {
   Accordion,
   AccordionContent,
@@ -299,27 +299,25 @@ export function WordDetailsDefinitions({
                           <DialogTrigger asChild>
                             <div className="cursor-pointer hover:opacity-90 transition-opacity rounded-lg overflow-hidden border max-w-xs">
                               <AspectRatio ratio={16 / 9} className="bg-muted">
-                                <ImageWithFallback
+                                <AuthenticatedImage
                                   src={`/api/images/${def.image.id}`}
                                   alt={def.image.description || def.text}
                                   fill
                                   className="object-cover"
                                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                  unoptimized
                                 />
                               </AspectRatio>
                             </div>
                           </DialogTrigger>
                           <DialogContent className="max-w-3xl w-full p-0 bg-black">
                             <AspectRatio ratio={16 / 9}>
-                              <ImageWithFallback
+                              <AuthenticatedImage
                                 src={`/api/images/${def.image.id}`}
                                 alt={def.image.description || def.text}
                                 fill
                                 className="object-contain"
                                 sizes="100vw"
                                 priority
-                                unoptimized
                               />
                             </AspectRatio>
                           </DialogContent>

@@ -18,7 +18,8 @@ src/core/
 ├── infrastructure/       # Technical Infrastructure
 │   ├── auth/             # Auth configuration
 │   ├── monitoring/       # Logging & monitoring
-│   └── storage/          # Storage management
+│   ├── storage/          # Storage management
+│   └── middleware/       # Request processing & image handling
 ├── state/                # State Management
 │   ├── slices/           # Redux slices
 │   ├── features/         # Feature state
@@ -313,6 +314,26 @@ Types: `UserListWithDetails`, `PublicListSummary`, `PublicUserListSummary`, `Use
 
 Types: `ListWithDetails`, `ListFilters`, `ListsResponse`
 
+### DeepSeek AI Word Extraction (`actions/deepseek-actions.ts`)
+
+- `extractWordFromDefinition(input)` - Extract single word from definition using DeepSeek API
+- `extractWordsFromDefinitionsBatch(prevState, formData)` - Batch word extraction with database integration
+- `getDefinitionWordConnections(definitionIds)` - Query existing definition-to-word connections
+- `findOrCreateWord(wordText, languageCode)` - Find existing word or create new one for DeepSeek results
+- `connectDefinitionToWord(definitionId, wordId)` - Create DefinitionToOneWord relationship
+
+**Key Features:**
+
+- **Cost Optimization**: Achieves ~$0.0001 per definition (~$0.001 per 1K tokens)
+- **Batch Processing**: Up to 50 definitions per batch with rate limiting (5 requests/second max)
+- **Database Integration**: Automatic word creation and DefinitionToOneWord relationship management
+- **Error Handling**: Comprehensive error handling with detailed serverLog integration
+- **Token Tracking**: Real-time token usage monitoring and cost estimation
+- **Language Support**: Multi-language word extraction with source/target language configuration
+- **Duplicate Prevention**: Checks for existing definition-word connections before creating new ones
+
+Types: `ExtractWordResult`, `ExtractWordsBatchResult`
+
 ### Word Search with Translation Support (`actions/word-search-actions.ts`)
 
 - `searchWords(searchQuery, languageCode, userId?, page?, pageSize?)` - Basic word search with translations included
@@ -522,6 +543,27 @@ Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `Typi
 
 - `processTranslationsForWord(mainWordId, mainWordText, wordData)`
 - `processEnglishTranslationsForDanishWord(danishWordData, variantData, tx)`
+
+## Infrastructure Services (`infrastructure/services/`)
+
+### DeepSeek API Service (`deepseek-service.ts`)
+
+- `DeepSeekService.extractWord(request)` - Extract single word from definition using AI
+- `DeepSeekService.extractWordsBatch(request)` - Batch word extraction with rate limiting
+- `DeepSeekService.validateConnection()` - Test API connectivity and authentication
+- `deepSeekService` - Singleton instance for application use
+
+**Key Features:**
+
+- **Cost Optimization**: Optimized prompts and token limits achieve ~$0.0001 per definition
+- **Rate Limiting**: Built-in delays to respect API limits (5 requests/second max)
+- **Batch Processing**: Efficient batch processing for up to 50 definitions
+- **Token Tracking**: Real-time token usage monitoring and cost calculation
+- **Error Handling**: Comprehensive error handling with detailed logging
+- **Language Support**: Multi-language support with source/target language configuration
+- **Quality Control**: Deterministic output with temperature=0 and stop tokens
+
+Types: `DeepSeekWordRequest`, `DeepSeekWordResponse`, `DeepSeekBatchRequest`, `DeepSeekBatchResponse`
 
 ## Shared Services (`shared/services/`)
 

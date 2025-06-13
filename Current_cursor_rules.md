@@ -12,7 +12,7 @@ src/components/DESCRIPTION_OF_COMPONENT_FOLDER.md
 
 prisma\schema.prisma
 
-The latest database backup file to understand the live data structure. To do this, find the folder with the most recent date in tests/transformedBackups/ and read the transformed_backup.json file within it.
+The latest database backup file to understand the live data structure. To do this, find the folder with the most recent date in tests/danishDicitonary/backupProcess/backups/ and read the backup.json file within it and the metadata.json file.
 
 ## 1. Code Quality and Best Practices
 
@@ -102,9 +102,10 @@ The latest database backup file to understand the live data structure. To do thi
 **Implementation:**
 
 - Package Manager: Use pnpm for all package management.
-- Database Operations: Execute all Prisma-related tasks using the scripts defined in package.json (e.g., pnpm run p-studio, pnpm run p-migrate, pnpm run p-generate). Do not call prisma directly.
+- Database Operations: Execute all Prisma-related tasks using the scripts defined in package.json (e.g., pnpm p-studio, pnpm p-migrate, pnpm p-generate). Do not call prisma directly.
+- **Next.js Configuration**: Always use `next.config.mjs` (ES modules format) as the single source of configuration. Never create duplicate `next.config.js` files. The consolidated configuration handles image optimization, authentication, CORS headers, and other settings.
 - Testing Structure: Follow strict test organization patterns:
-  - **/tests folder**: Only for server-side tests (API routes, server actions, database operations, integration tests with external services)
+  - **/tests folder**: Only for server-side tests (API routes, server actions, database operations, integration tests with external services) this folder has its own package.json with scripts for running tests.
   - **Component folder**: Component tests using Vitest/Jest + React Testing Library should be co-located with components (e.g., `Button.test.tsx` next to `Button.tsx`)
   - **Hook folder**: Custom hook tests should be co-located with hooks (e.g., `useAuth.test.ts` next to `useAuth.ts`)
   - **Utils folder**: Utility function tests should be co-located with utilities (e.g., `formatDate.test.ts` next to `formatDate.ts`)
@@ -112,7 +113,7 @@ The latest database backup file to understand the live data structure. To do thi
 - **Hot Reload Optimization**: Configure Fast Refresh properly and avoid patterns that break it (avoid anonymous exports, ensure components have display names).
 - **Development Tooling**: Maintain consistent ESLint, Prettier, and TypeScript configurations across the team.
 - **Test Running**: Use different test commands for different test types:
-  - `pnpm test:server` for /tests folder server-side tests
+  - `pnpm test:server` for /tests folder server-side tests (has its own package.json with scripts for running tests)
   - `pnpm test:components` for component and unit tests
   - `pnpm test:all` for comprehensive test suite
 
@@ -140,15 +141,32 @@ type ProductId = string & { readonly brand: unique symbol };
 
 ## 9. Debugging and Monitoring
 
-**Rule:** Use the provided tools for logging and debugging to maintain visibility into server-side operations.
+**Rule:** Use the provided tools for logging and debugging to maintain visibility into server-side operations and enable autonomous debugging capabilities.
 
 **Implementation:**
 
-- Server Logging: For all server-side logging, you must import and use the serverLog function from src/core/infrastructure/monitoring/serverLogger.ts.
-- Log File Location: You can read the output of server-side logs in the logs/server.log file.
-- **Structured Logging**: Use structured logging with consistent log levels (error, warn, info, debug).
-- **Error Tracking**: Integrate with error tracking services (Sentry) for production error monitoring.
-- **Performance Monitoring**: Track Core Web Vitals and custom performance metrics.
+- **Server Logging**: For all server-side logging, you must import and use the `serverLog` function from `src/core/infrastructure/monitoring/serverLogger.ts`.
+- **Client-Side Logging**: For client-side debugging, use the `clientLog` utility from `src/core/infrastructure/monitoring/clientLogger.ts`. This utility provides:
+  - **Environment-Aware Behavior**: Automatically detects browser vs server environments and handles logging appropriately
+  - **Dual Storage**: Logs to console (both environments), file system (server-side), and localStorage (browser-side)
+  - **Log Levels**: Standardized levels (`debug`, `info`, `warn`, `error`) with optional context
+  - **Development-Only**: By default, logs are only shown in development mode. Use the `force` parameter to log in production if absolutely necessary.
+  - **Async/Sync Options**: Use async functions (`debugLog`, `infoLog`, etc.) for proper error handling or sync versions (`debugLogSync`, `infoLogSync`, etc.) for fire-and-forget logging
+  - **Avoid Raw `console.log`**: Replace all direct `console.log` calls with the appropriate utility for consistency and better control.
+- **Autonomous Debugging**: Use the `DebugReader` class from `src/core/infrastructure/monitoring/debugReader.ts` for AI-powered debugging:
+  - **Log Analysis**: `DebugReader.analyzeCurrentState()` provides comprehensive analysis of current system state
+  - **Issue Detection**: Automatic detection of authentication, database, API, performance, and UX issues
+  - **Health Monitoring**: `DebugReader.getSystemHealthReport()` provides real-time system health assessment
+  - **Pattern Recognition**: Identifies common error patterns and provides actionable recommendations
+  - **Search Capabilities**: `DebugReader.searchForIssue(query)` for targeted issue investigation
+  - **Global Access**: In development, `window.KeystrokeDebug` provides browser console access to debugging utilities
+- **Log Storage Locations**:
+  - Server logs: `logs/server.log`
+  - Client logs (server-side): `logs/client.log` (JSON format)
+  - Client logs (browser-side): `localStorage` under `keystroke_client_logs`
+- **Structured Logging**: Use structured logging with consistent log levels, timestamps, environment detection, and context preservation.
+- **Error Tracking**: Integrate with error tracking services (Sentry) for production error monitoring. Automatic capture of uncaught errors and unhandled promise rejections.
+- **Performance Monitoring**: Track Core Web Vitals and custom performance metrics with autonomous pattern detection.
 
 ## 10. Communication and Proactiveness
 
@@ -257,7 +275,7 @@ const WINDOW_MS = 60 * 1000;
 
 **Implementation:**
 
-- Image Optimization: Always use Next.js Image component with proper sizing and formats.
+- Image Optimization: Always use Next.js Image component with proper sizing and formats (!!!Except we work with PEXELS url, then we use the image component with the proper sizing and formats).
 - Lazy Loading: Use next/dynamic for components not in initial viewport.
 - Font Optimization: Use next/font for self-hosted fonts.
 - **Bundle Analysis**: Regularly analyze bundle sizes using webpack-bundle-analyzer.
@@ -404,7 +422,7 @@ Before considering any feature complete, verify:
 - [ ] **Security**: All inputs validated, authorization checked
 - [ ] **Error Handling**: Graceful error handling with user feedback
 - [ ] **Testing**: Unit and integration tests written and passing (component tests co-located, server tests in /tests folder)
-- [ ] **Documentation**: Code documented, README updated if necessary
+- [ ] **Documentation**: Code documented, DESCRIPTION_OF_ROOT_FOLDER.md, DESCRIPTION_OF_CORE_FOLDER.md, DESCRIPTION_OF_COMPONENT_FOLDER.md updated if necessary
 - [ ] **Type Safety**: No TypeScript errors, comprehensive typing
 - [ ] **Bundle Impact**: Bundle size impact analyzed and acceptable
 - [ ] **Browser Compatibility**: Tested in supported browsers

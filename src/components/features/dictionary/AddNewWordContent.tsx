@@ -149,40 +149,50 @@ export function AddNewWordContent({
         setIsSearching(false);
       }
     },
-    [selectedLanguage, userId],
+    [selectedLanguage, userId, baseLanguageCode],
   );
 
   /**
    * Handle adding a definition to user's dictionary only
    */
-  const handleAddDefinition = async (definitionId: number) => {
-    startTransition(async () => {
-      try {
-        const result = await addDefinitionToUserDictionary(
-          userId,
-          definitionId,
-          baseLanguageCode,
-          targetLanguageCode,
-        );
+  const handleAddDefinition = useCallback(
+    async (definitionId: number) => {
+      startTransition(async () => {
+        try {
+          const result = await addDefinitionToUserDictionary(
+            userId,
+            definitionId,
+            baseLanguageCode,
+            targetLanguageCode,
+          );
 
-        if (result.success) {
-          const message = result.isRestored
-            ? 'Word restored to your dictionary!'
-            : 'Word added to your dictionary!';
+          if (result.success) {
+            const message = result.isRestored
+              ? 'Word restored to your dictionary!'
+              : 'Word added to your dictionary!';
 
-          toast.success(message);
+            toast.success(message);
 
-          // Refresh search results to update the button states
-          await handleSearch(searchQuery, currentPage);
-        } else {
-          toast.error(result.error || 'Failed to add word to dictionary');
+            // Refresh search results to update the button states
+            await handleSearch(searchQuery, currentPage);
+          } else {
+            toast.error(result.error || 'Failed to add word to dictionary');
+          }
+        } catch (error) {
+          console.error('Error adding definition:', error);
+          toast.error('Failed to add word to dictionary');
         }
-      } catch (error) {
-        console.error('Error adding definition:', error);
-        toast.error('Failed to add word to dictionary');
-      }
-    });
-  };
+      });
+    },
+    [
+      userId,
+      baseLanguageCode,
+      targetLanguageCode,
+      handleSearch,
+      searchQuery,
+      currentPage,
+    ],
+  );
 
   /**
    * Handle adding a definition to user's dictionary AND opening list dialog

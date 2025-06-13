@@ -6,10 +6,10 @@ import { clientLog } from '@/core/lib/utils/logUtils';
 export async function POST(request: Request) {
   try {
     const { text, sourceLang, destLang, options } = await request.json();
-    clientLog(`text: ${text}`);
-    clientLog(`sourceLang: ${sourceLang}`);
-    clientLog(`destLang: ${destLang}`);
-    clientLog(`options: ${JSON.stringify(options)}`);
+    clientLog(`text: ${text}`, 'info');
+    clientLog(`sourceLang: ${sourceLang}`, 'info');
+    clientLog(`destLang: ${destLang}`, 'info');
+    clientLog(`options: ${JSON.stringify(options)}`, 'info');
 
     if (!text) {
       return NextResponse.json(
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       options as TranslateOptions,
     );
 
-    clientLog(`JSON.stringify(result): ${JSON.stringify(result)}`);
+    clientLog(`JSON.stringify(result): ${JSON.stringify(result)}`, 'info');
 
     return NextResponse.json(result);
   } catch (error) {

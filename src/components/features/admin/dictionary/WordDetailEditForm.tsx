@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -65,11 +65,7 @@ export default function WordDetailEditForm({
   const [isSavingRelationships, setIsSavingRelationships] = useState(false);
   const [isSavingImages, setIsSavingImages] = useState(false);
 
-  useEffect(() => {
-    loadWordDetail();
-  }, [wordDetailId]);
-
-  const loadWordDetail = async () => {
+  const loadWordDetail = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await fetchWordDetailById(wordDetailId);
@@ -80,7 +76,11 @@ export default function WordDetailEditForm({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [wordDetailId]);
+
+  useEffect(() => {
+    loadWordDetail();
+  }, [loadWordDetail]);
 
   /**
    * Save only definitions section

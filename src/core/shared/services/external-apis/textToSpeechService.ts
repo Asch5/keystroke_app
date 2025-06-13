@@ -128,9 +128,9 @@ class TextToSpeechService {
       charactersByVoiceType: {},
       estimatedCost: 0,
       remainingFreeQuota: {
-        standard: this.qualityLevels.standard.freeLimit,
-        high: this.qualityLevels.high.freeLimit,
-        premium: this.qualityLevels.premium.freeLimit,
+        standard: this.qualityLevels.standard?.freeLimit || 0,
+        high: this.qualityLevels.high?.freeLimit || 0,
+        premium: this.qualityLevels.premium?.freeLimit || 0,
       },
       lastReset: new Date(),
     };
@@ -293,9 +293,9 @@ class TextToSpeechService {
       charactersByVoiceType: {},
       estimatedCost: 0,
       remainingFreeQuota: {
-        standard: this.qualityLevels.standard.freeLimit,
-        high: this.qualityLevels.high.freeLimit,
-        premium: this.qualityLevels.premium.freeLimit,
+        standard: this.qualityLevels.standard?.freeLimit || 0,
+        high: this.qualityLevels.high?.freeLimit || 0,
+        premium: this.qualityLevels.premium?.freeLimit || 0,
       },
       lastReset: new Date(),
     };
@@ -316,7 +316,7 @@ class TextToSpeechService {
     characterCount: number,
   ): boolean {
     const remaining = this.usageStats.remainingFreeQuota[qualityLevel];
-    return remaining >= characterCount;
+    return remaining !== undefined && remaining >= characterCount;
   }
 
   /**
@@ -341,7 +341,7 @@ class TextToSpeechService {
    */
   getDefaultGender(languageCode: string): 'MALE' | 'FEMALE' | 'NEUTRAL' | null {
     const availableGenders = this.getAvailableGenders(languageCode);
-    return availableGenders.length > 0 ? availableGenders[0] : null;
+    return availableGenders.length > 0 ? availableGenders[0] || null : null;
   }
 
   /**
@@ -357,6 +357,10 @@ class TextToSpeechService {
     }
 
     const qualityConfig = this.qualityLevels[request.qualityLevel];
+
+    if (!qualityConfig) {
+      throw new Error(`Invalid quality level: ${request.qualityLevel}`);
+    }
 
     // Filter voices by quality level
     const suitableVoices = availableVoices.filter((voice) => {
@@ -390,7 +394,13 @@ class TextToSpeechService {
     }
 
     // Return first available voice as fallback
-    return voicesToUse[0];
+    const fallbackVoice = voicesToUse[0];
+    if (!fallbackVoice) {
+      throw new Error(
+        `No suitable voice found for language: ${request.languageCode}`,
+      );
+    }
+    return fallbackVoice;
   }
 
   /**
@@ -404,8 +414,9 @@ class TextToSpeechService {
     const cost =
       Math.max(
         0,
-        characterCount - this.usageStats.remainingFreeQuota[qualityLevel],
-      ) * qualityConfig.costPerCharacter;
+        characterCount -
+          (this.usageStats.remainingFreeQuota[qualityLevel] || 0),
+      ) * (qualityConfig?.costPerCharacter || 0);
 
     this.usageStats.totalCharacters += characterCount;
     this.usageStats.charactersByVoiceType[qualityLevel] =
@@ -414,7 +425,7 @@ class TextToSpeechService {
     this.usageStats.estimatedCost += cost;
     this.usageStats.remainingFreeQuota[qualityLevel] = Math.max(
       0,
-      this.usageStats.remainingFreeQuota[qualityLevel] - characterCount,
+      (this.usageStats.remainingFreeQuota[qualityLevel] || 0) - characterCount,
     );
 
     return cost;
@@ -463,7 +474,9 @@ class TextToSpeechService {
     // Remove oldest entries if cache is full
     if (this.audioCache.size >= this.MAX_CACHE_SIZE) {
       const oldestKey = this.audioCache.keys().next().value;
-      this.audioCache.delete(oldestKey);
+      if (oldestKey) {
+        this.audioCache.delete(oldestKey);
+      }
     }
 
     this.audioCache.set(key, {
@@ -519,15 +532,6 @@ class TextToSpeechService {
 
 // Export singleton instance
 export const textToSpeechService = new TextToSpeechService();
-
-// Export types
-export type {
-  TTSRequest,
-  TTSResponse,
-  TTSUsageStats,
-  TTSQualityLevel,
-  TTSVoiceConfig,
-};
 
 // Export utility functions for UI components
 export const getAvailableGendersForLanguage = (languageCode: string) =>

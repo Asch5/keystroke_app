@@ -103,6 +103,38 @@ GOOGLE_TRANSLATE_API_KEY="your-google-api-key"
 | Vercel Blob     | ✅ Active   | All environments |
 | OpenAI          | 🔧 Optional | Add when needed  |
 
+## DeepSeek API (Optional - for AI Word Extraction)
+
+The DeepSeek API is used for AI-powered word extraction from definitions in the admin dictionary management.
+
+### Setup Steps:
+
+1. **Get API Key:**
+
+   - Visit [platform.deepseek.com](https://platform.deepseek.com)
+   - Create an account and get your API key
+   - Add credits to your account (minimum $1-5 recommended)
+
+2. **Add to Environment:**
+
+   ```bash
+   DEEPSEEK_API_KEY=your_deepseek_api_key_here
+   ```
+
+3. **Cost Information:**
+   - ~$0.0001 per definition processed
+   - Very cost-effective for dictionary management
+   - 10,000 extractions ≈ $1.00
+
+### Usage:
+
+- Available in `/admin/dictionaries` page
+- Select words → Click "Extract Words" button
+- Choose definitions to process with AI
+- Extracts single words from complex definitions
+
+**Note:** If not configured, the word extraction feature will be disabled but all other functionality remains available.
+
 ---
 
 **Your app is now production-ready with properly organized environment variables!** 🎉

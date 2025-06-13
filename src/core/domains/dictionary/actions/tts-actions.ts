@@ -112,7 +112,7 @@ export async function generateWordTTS(
       text: word.word,
       languageCode,
       qualityLevel: options?.qualityLevel || 'high',
-      ssmlGender: options?.ssmlGender,
+      ...(options?.ssmlGender && { ssmlGender: options.ssmlGender }),
       cacheKey: `word_${wordId}_${languageCode}_${word.word}`,
     };
 
@@ -191,18 +191,21 @@ export async function generateWordTTS(
       });
 
       // Link to the first word details
-      if (word.details.length > 0) {
-        await prisma.wordDetailsAudio.create({
-          data: {
-            wordDetailsId: word.details[0].id,
-            audioId: newAudio.id,
-            isPrimary: true,
-          },
-        });
-        serverLog(
-          `Audio linked to word details for word "${word.word}"`,
-          'info',
-        );
+      if (word.details && word.details.length > 0) {
+        const firstWordDetail = word.details[0];
+        if (firstWordDetail) {
+          await prisma.wordDetailsAudio.create({
+            data: {
+              wordDetailsId: firstWordDetail.id,
+              audioId: newAudio.id,
+              isPrimary: true,
+            },
+          });
+          serverLog(
+            `Audio linked to word details for word "${word.word}"`,
+            'info',
+          );
+        }
       } else {
         serverLog(
           `Warning: No word details found for word "${word.word}" to link audio`,
@@ -304,7 +307,7 @@ export async function generateDefinitionTTS(
       text: definition.definition,
       languageCode,
       qualityLevel: options?.qualityLevel || 'standard', // Use standard for definitions to save costs
-      ssmlGender: options?.ssmlGender,
+      ...(options?.ssmlGender && { ssmlGender: options.ssmlGender }),
       cacheKey: `definition_${definitionId}_${languageCode}_${definition.definition.substring(0, 50)}`,
     };
 
@@ -457,7 +460,7 @@ export async function generateExampleTTS(
       text: example.example,
       languageCode,
       qualityLevel: options?.qualityLevel || 'standard', // Use standard for examples to save costs
-      ssmlGender: options?.ssmlGender,
+      ...(options?.ssmlGender && { ssmlGender: options.ssmlGender }),
       cacheKey: `example_${exampleId}_${languageCode}_${example.example.substring(0, 50)}`,
     };
 
@@ -663,7 +666,7 @@ export async function generateBatchWordTTS(
         const result = batchResults[j];
         const wordId = batch[j];
 
-        if (result.status === 'fulfilled') {
+        if (result && result.status === 'fulfilled') {
           serverLog(
             `Word ${wordId} result: ${result.value.success ? 'SUCCESS' : 'FAILED'} - ${result.value.message}`,
             result.value.success ? 'info' : 'error',
@@ -679,10 +682,18 @@ export async function generateBatchWordTTS(
               'error',
             );
           }
-        } else {
+        } else if (result && result.status === 'rejected') {
           failed++;
           const errorMsg = `Error: ${result.reason}`;
           serverLog(`Word ${wordId} promise rejected: ${errorMsg}`, 'error');
+          results.push({
+            success: false,
+            message: errorMsg,
+          });
+        } else {
+          failed++;
+          const errorMsg = `Error: Unknown result status`;
+          serverLog(`Word ${wordId} unknown error: ${errorMsg}`, 'error');
           results.push({
             success: false,
             message: errorMsg,

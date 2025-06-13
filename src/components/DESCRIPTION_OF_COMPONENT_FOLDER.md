@@ -90,6 +90,17 @@ The WordDetails component was successfully refactored from 1043 lines to 60 line
 
 - `WordDetailEditForm.tsx` - Enhanced form for editing word details with comprehensive definition and example management
 - `RelationshipManager.tsx` - Two-level relationship management for linguistic connections
+- `DeepSeekWordExtractionDialog.tsx` - AI-powered word extraction dialog with comprehensive UI and progress tracking
+
+**DeepSeek Integration:**
+
+- **Cost-Effective AI**: Word extraction from definitions using DeepSeek API (~$0.0001 per definition)
+- **Batch Processing**: Up to 50 definitions with progress tracking and result display
+- **Language Selection**: Target language selection with source language auto-detection
+- **Real-Time Feedback**: Live processing status, token usage, and cost estimation
+- **Result Management**: Detailed results display with success/failure status and database connection confirmation
+- **Error Handling**: Comprehensive error handling with user-friendly messages
+- **Integration Ready**: Designed for integration with admin ActionButtonsToolbar in Media Generation group
 
 #### User Management (`/features/admin/users`)
 
@@ -182,6 +193,25 @@ React context providers:
 - State management providers
 
 ## Shared (`/shared`)
+
+### Image Components (`/shared`)
+
+**AuthenticatedImage** (`AuthenticatedImage.tsx`) - Advanced image component that solves Next.js Image authentication issues:
+
+- **Automatic Detection**: Detects `/api/images/` endpoints and handles authentication properly
+- **Smart Optimization**: Uses unoptimized mode only for authenticated endpoints, maintains Next.js optimization for all other sources
+- **Error Handling**: Comprehensive loading states, error fallbacks, and debugging support
+- **Type Safety**: Full TypeScript support with proper prop handling
+- **Performance**: Preserves all Next.js Image benefits (lazy loading, priority, sizes, responsive)
+- **Future-Proof**: Automatically handles any authenticated image endpoint without manual configuration
+
+**ImageWithFallback** (`ImageWithFallback.tsx`) - Enhanced image component with graceful fallback handling:
+
+- **Enhanced Authentication Support**: Auto-detects authenticated endpoints since the latest update
+- **Error Recovery**: Displays fallback UI when images fail to load
+- **Development Debugging**: Detailed error logging in development mode
+- **Loading States**: Animated placeholders while images load
+- **Backward Compatibility**: Maintains existing API for all current usage
 
 ### Data Display (`/shared/data-display`)
 

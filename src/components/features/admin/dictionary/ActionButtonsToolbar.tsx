@@ -18,6 +18,7 @@ import {
   Download,
   Upload,
   ListPlus,
+  Zap,
 } from 'lucide-react';
 import { LanguageCode } from '@prisma/client';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
@@ -30,6 +31,7 @@ interface ActionButtonsToolbarProps {
   onDeleteSelected: () => void;
   onAudioGenerated: () => void;
   onAddWordsToList: () => void;
+  onDeepSeekExtract: () => void;
 }
 
 /**
@@ -44,6 +46,7 @@ export function ActionButtonsToolbar({
   onDeleteSelected,
   onAudioGenerated,
   onAddWordsToList,
+  onDeepSeekExtract,
 }: ActionButtonsToolbarProps) {
   const hasSelectedWords = selectedWords.size > 0;
 
@@ -110,6 +113,24 @@ export function ActionButtonsToolbar({
             wordDetails={filteredWordDetails}
             onImagesGenerated={onAudioGenerated}
           />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={onDeepSeekExtract}
+                disabled={!hasSelectedWords}
+                variant="outline"
+                size="sm"
+                className="min-w-[140px]"
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                Extract Words ({selectedWords.size})
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Extract words from definitions using AI</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         <Separator orientation="vertical" className="h-8" />

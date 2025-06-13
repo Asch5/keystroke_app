@@ -12,6 +12,8 @@ import {
 import { Volume2, SkipForward, Trophy, VolumeX } from 'lucide-react';
 import { cn } from '@/core/shared/utils/common/cn';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
+
 import type { SessionState, WordResult, TypingPracticeSettings } from './hooks';
 
 interface TypingWordInputProps {
@@ -59,11 +61,7 @@ export function TypingWordInput({
     ) {
       inputRef.current.focus();
     }
-  }, [
-    sessionState.currentWord?.userDictionaryId,
-    sessionState.isActive,
-    showResult,
-  ]);
+  }, [sessionState.currentWord, sessionState.isActive, showResult]);
 
   // Handle Enter key for submission, skip, and next word
   useEffect(() => {
@@ -273,13 +271,14 @@ export function TypingWordInput({
                       ratio={16 / 9}
                       className="bg-muted rounded-lg overflow-hidden border"
                     >
-                      <img
+                      <AuthenticatedImage
                         src={`/api/images/${sessionState.currentWord.imageId}`}
                         alt={
                           sessionState.currentWord.imageDescription ||
                           sessionState.currentWord.definition
                         }
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
                     </AspectRatio>
                     {sessionState.currentWord.imageDescription && (

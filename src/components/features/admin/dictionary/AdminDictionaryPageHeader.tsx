@@ -23,6 +23,7 @@ interface AdminDictionaryPageHeaderProps {
   onDeleteSelected: () => void;
   onAudioGenerated: () => void;
   onAddWordsToList: () => void;
+  onDeepSeekExtract: () => void;
 }
 
 /**
@@ -38,6 +39,7 @@ export function AdminDictionaryPageHeader({
   onDeleteSelected,
   onAudioGenerated,
   onAddWordsToList,
+  onDeepSeekExtract,
 }: AdminDictionaryPageHeaderProps) {
   return (
     <CardHeader className="flex flex-row items-center justify-between">
@@ -70,6 +72,7 @@ export function AdminDictionaryPageHeader({
             onDeleteSelected={onDeleteSelected}
             onAudioGenerated={onAudioGenerated}
             onAddWordsToList={onAddWordsToList}
+            onDeepSeekExtract={onDeepSeekExtract}
           />
         </div>
       </div>

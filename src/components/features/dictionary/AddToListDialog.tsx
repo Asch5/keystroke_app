@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { LanguageCode, DifficultyLevel } from '@prisma/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -87,13 +87,7 @@ export function AddToListDialog({
   });
 
   // Load user lists when dialog opens
-  useEffect(() => {
-    if (isOpen) {
-      loadUserLists();
-    }
-  }, [isOpen, userId]);
-
-  const loadUserLists = async () => {
+  const loadUserLists = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getUserLists(userId);
@@ -104,7 +98,13 @@ export function AddToListDialog({
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadUserLists();
+    }
+  }, [isOpen, loadUserLists]);
 
   const handleAddToExistingList = async () => {
     if (!selectedListId) {

@@ -1,45 +1,8 @@
-[2025-06-10T21:24:51.863Z] [info] Creating typing practice session for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4 Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
-[2025-06-10T21:24:53.734Z] [info] 🖼️ Practice word image data: aldrig i mine livskabte dage Context: {"wordId":"e0398dcb-e6e5-467d-b81e-26676339861b","wordText":"aldrig i mine livskabte dage","hasImage":false}
-[2025-06-10T21:24:53.736Z] [info] Typing practice session created: 91d14e86-d67f-481a-85e3-7932cf0b8e6d Context: {"sessionId":"91d14e86-d67f-481a-85e3-7932cf0b8e6d","wordsCount":3}
-[2025-06-10T21:24:53.733Z] [info] 🖼️ Practice word image data: år Context: {"wordId":"018aad9a-bb18-4b48-bd3c-113b4b7d3e47","wordText":"år","hasImage":true,"imageId":4,"imageUrl":"https://images.pexels.com/photos/15511704/pexels-photo-15511704.jpeg","imageDescription":"A solitary tree stands against a backdrop of a starry sky with mesmerizing star trails."}
-[2025-06-10T21:24:53.734Z] [info] 🖼️ Practice word image data: dag Context: {"wordId":"5191e9aa-6808-4d70-99a2-4e1f5045d581","wordText":"dag","hasImage":true,"imageId":8,"imageUrl":"https://images.pexels.com/photos/280277/pexels-photo-280277.jpeg","imageDescription":"Detailed view of a black and white analog clock face with hands pointing near twelve."}
-[2025-06-10T21:26:52.169Z] [info] 🖼️ Image API: Requesting image ID 8 Context: {"imageId":"8","parsedId":8}
-[2025-06-10T21:26:52.696Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/280277/pexels-photo-280277.jpeg Context: {"imageId":8,"imageUrl":"https://images.pexels.com/photos/280277/pexels-photo-280277.jpeg"}
-[2025-06-10T21:26:52.962Z] [info] ✅ Image API: Successfully served image 8 in 794ms Context: {"imageId":8,"contentType":"image/jpeg","size":365713,"duration":794}
-[2025-06-10T21:28:13.063Z] [info] Practice session completed: 91d14e86-d67f-481a-85e3-7932cf0b8e6d Context: {"sessionId":"91d14e86-d67f-481a-85e3-7932cf0b8e6d","accuracy":100,"wordsLearned":0,"timeSpent":199}
-[2025-06-10T21:28:15.851Z] [info] Creating typing practice session for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4 Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
-[2025-06-10T21:28:17.303Z] [info] 🖼️ Practice word image data: dag Context: {"wordId":"5191e9aa-6808-4d70-99a2-4e1f5045d581","wordText":"dag","hasImage":true,"imageId":8,"imageUrl":"https://images.pexels.com/photos/280277/pexels-photo-280277.jpeg","imageDescription":"Detailed view of a black and white analog clock face with hands pointing near twelve."}
-[2025-06-10T21:28:17.303Z] [info] 🖼️ Practice word image data: år Context: {"wordId":"018aad9a-bb18-4b48-bd3c-113b4b7d3e47","wordText":"år","hasImage":true,"imageId":4,"imageUrl":"https://images.pexels.com/photos/15511704/pexels-photo-15511704.jpeg","imageDescription":"A solitary tree stands against a backdrop of a starry sky with mesmerizing star trails."}
-[2025-06-10T21:28:17.303Z] [info] 🖼️ Practice word image data: aldrig i mine livskabte dage Context: {"wordId":"e0398dcb-e6e5-467d-b81e-26676339861b","wordText":"aldrig i mine livskabte dage","hasImage":false}
-[2025-06-10T21:28:17.304Z] [info] Typing practice session created: e4f59609-7b56-4fad-b594-cbf1ae185429 Context: {"sessionId":"e4f59609-7b56-4fad-b594-cbf1ae185429","wordsCount":3}
-[2025-06-10T21:29:18.526Z] [info] Fetching comprehensive statistics for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4 Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4"}
-[2025-06-10T21:29:20.349Z] [info] Statistics fetched successfully for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4
-[2025-06-10T21:29:20.432Z] [info] Fetching session stats for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4 Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4"}
-[2025-06-10T21:29:21.396Z] [info] Session stats fetched successfully for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4
-[2025-06-10T21:29:21.503Z] [info] Fetching comprehensive statistics for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4 Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4"}
-[2025-06-10T21:29:22.374Z] [info] Statistics fetched successfully for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4
-[2025-06-10T21:29:22.762Z] [info] Fetching session stats for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4 Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4"}
-[2025-06-10T21:29:22.891Z] [info] Session stats fetched successfully for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4
-[2025-06-10T21:29:34.043Z] [info] getUserLists - userId: 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4
-[2025-06-10T21:29:34.064Z] [info] getUserLists - whereConditions Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4","deletedAt":null}
-[2025-06-10T21:29:34.586Z] [info] getUserLists - Basic query found: 0 records
-[2025-06-10T21:29:34.696Z] [info] getUserLists - Found 0 raw user lists
-[2025-06-10T21:29:34.697Z] [info] getUserLists - Returning 0 processed user lists
-[2025-06-10T21:29:34.853Z] [info] getUserLists - userId: 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4
-[2025-06-10T21:29:34.855Z] [info] getUserLists - whereConditions Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4","deletedAt":null}
-[2025-06-10T21:29:34.904Z] [info] getUserLists - Basic query found: 0 records
-[2025-06-10T21:29:34.963Z] [info] getUserLists - Found 0 raw user lists
-[2025-06-10T21:29:34.968Z] [info] getUserLists - Returning 0 processed user lists
-[2025-06-10T21:29:47.062Z] [info] Creating typing practice session for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4 Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
-[2025-06-10T21:29:48.862Z] [info] 🖼️ Practice word image data: dag Context: {"wordId":"5191e9aa-6808-4d70-99a2-4e1f5045d581","wordText":"dag","hasImage":true,"imageId":8,"imageUrl":"https://images.pexels.com/photos/280277/pexels-photo-280277.jpeg","imageDescription":"Detailed view of a black and white analog clock face with hands pointing near twelve."}
-[2025-06-10T21:29:48.862Z] [info] 🖼️ Practice word image data: år Context: {"wordId":"018aad9a-bb18-4b48-bd3c-113b4b7d3e47","wordText":"år","hasImage":true,"imageId":4,"imageUrl":"https://images.pexels.com/photos/15511704/pexels-photo-15511704.jpeg","imageDescription":"A solitary tree stands against a backdrop of a starry sky with mesmerizing star trails."}
-[2025-06-10T21:29:48.866Z] [info] Typing practice session created: 960eef91-3001-4c28-94ec-5ca1ea6b5755 Context: {"sessionId":"960eef91-3001-4c28-94ec-5ca1ea6b5755","wordsCount":3}
-[2025-06-10T21:29:48.863Z] [info] 🖼️ Practice word image data: aldrig i mine livskabte dage Context: {"wordId":"e0398dcb-e6e5-467d-b81e-26676339861b","wordText":"aldrig i mine livskabte dage","hasImage":false}
-[2025-06-10T21:33:13.046Z] [info] Creating typing practice session for user 77bb6ed4-2546-4031-bbc7-fd0c0b3487f4 Context: {"userId":"77bb6ed4-2546-4031-bbc7-fd0c0b3487f4","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
-[2025-06-10T21:33:14.900Z] [info] 🖼️ Practice word image data: år Context: {"wordId":"018aad9a-bb18-4b48-bd3c-113b4b7d3e47","wordText":"år","hasImage":true,"imageId":4,"imageUrl":"https://images.pexels.com/photos/15511704/pexels-photo-15511704.jpeg","imageDescription":"A solitary tree stands against a backdrop of a starry sky with mesmerizing star trails."}
-[2025-06-10T21:33:14.900Z] [info] 🖼️ Practice word image data: dag Context: {"wordId":"5191e9aa-6808-4d70-99a2-4e1f5045d581","wordText":"dag","hasImage":true,"imageId":8,"imageUrl":"https://images.pexels.com/photos/280277/pexels-photo-280277.jpeg","imageDescription":"Detailed view of a black and white analog clock face with hands pointing near twelve."}
-[2025-06-10T21:33:14.900Z] [info] 🖼️ Practice word image data: aldrig i mine livskabte dage Context: {"wordId":"e0398dcb-e6e5-467d-b81e-26676339861b","wordText":"aldrig i mine livskabte dage","hasImage":false}
-[2025-06-10T21:33:14.901Z] [info] Typing practice session created: 9ebb7a7f-84c7-47c4-b13e-b9e6d24f6752 Context: {"sessionId":"9ebb7a7f-84c7-47c4-b13e-b9e6d24f6752","wordsCount":3}
-[2025-06-10T21:34:31.936Z] [info] 🖼️ Image API: Requesting image ID 8 Context: {"imageId":"8","parsedId":8}
-[2025-06-10T21:34:32.125Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/280277/pexels-photo-280277.jpeg Context: {"imageId":8,"imageUrl":"https://images.pexels.com/photos/280277/pexels-photo-280277.jpeg"}
-[2025-06-10T21:34:32.384Z] [info] ✅ Image API: Successfully served image 8 in 448ms Context: {"imageId":8,"contentType":"image/jpeg","size":365713,"duration":448}
+[2025-06-13T11:50:04.749Z] [info] Fetching comprehensive statistics for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
+[2025-06-13T11:50:06.087Z] [info] Statistics fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
+[2025-06-13T11:50:06.114Z] [info] Fetching session stats for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
+[2025-06-13T11:50:06.934Z] [info] Session stats fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
+[2025-06-13T11:50:45.273Z] [info] Fetching comprehensive statistics for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
+[2025-06-13T11:50:45.911Z] [info] Statistics fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
+[2025-06-13T11:50:45.935Z] [info] Fetching session stats for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
+[2025-06-13T11:50:46.024Z] [info] Session stats fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab

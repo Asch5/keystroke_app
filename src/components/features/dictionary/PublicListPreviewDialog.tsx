@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { LanguageCode } from '@prisma/client';
 import {
   Dialog,
@@ -89,14 +89,7 @@ export function PublicListPreviewDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
 
-  // Load list preview when dialog opens
-  useEffect(() => {
-    if (isOpen && list.id) {
-      loadListPreview();
-    }
-  }, [isOpen, list.id]);
-
-  const loadListPreview = async () => {
+  const loadListPreview = useCallback(async () => {
     setIsLoading(true);
     try {
       // Re-enable preview functionality
@@ -116,7 +109,14 @@ export function PublicListPreviewDialog({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isUserList, list.id, userLanguages]);
+
+  // Load list preview when dialog opens
+  useEffect(() => {
+    if (isOpen && list.id) {
+      loadListPreview();
+    }
+  }, [isOpen, list.id, loadListPreview]);
 
   const handlePlayAudio = async (audioUrl: string, wordId: string) => {
     if (!audioUrl) return;

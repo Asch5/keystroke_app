@@ -72,13 +72,7 @@ export interface SessionState {
   loading: boolean;
   error: string | null;
   // Statistics cache
-  sessionStats: {
-    totalSessions: number;
-    totalWordsStudied: number;
-    averageScore: number;
-    streakDays: number;
-    lastSessionDate: Date | null;
-  } | null;
+  sessionStats: SessionStatsResponse | null;
 }
 
 /**

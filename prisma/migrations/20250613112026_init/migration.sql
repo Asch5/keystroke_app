@@ -32,7 +32,7 @@ CREATE TYPE "PartOfSpeech" AS ENUM ('noun', 'verb', 'phrasal_verb', 'adjective',
 CREATE TYPE "RelationshipType" AS ENUM ('synonym', 'antonym', 'related', 'stem', 'composition', 'phrasal_verb', 'phrase', 'alternative_spelling', 'abbreviation', 'derived_form', 'dialect_variant', 'translation', 'plural_en', 'past_tense_en', 'past_participle_en', 'present_participle_en', 'third_person_en', 'variant_form_phrasal_verb_en', 'definite_form_da', 'plural_da', 'plural_definite_da', 'present_tense_da', 'past_tense_da', 'past_participle_da', 'imperative_da', 'adjective_neuter_da', 'adjective_plural_da', 'comparative_da', 'superlative_da', 'adverb_comparative_da', 'adverb_superlative_da', 'pronoun_accusative_da', 'pronoun_genitive_da', 'genitive_form_da', 'common_gender_da', 'neuter_gender_da', 'neuter_form_da', 'adverbial_form_da', 'other_form_da', 'neuter_pronoun_da', 'plural_pronoun_da', 'contextual_usage_da');
 
 -- CreateEnum
-CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'helsinki_nlp', 'danish_dictionary', 'user', 'admin');
+CREATE TYPE "SourceType" AS ENUM ('ai-generated', 'merriam_learners', 'merriam_intermediate', 'helsinki_nlp', 'danish_dictionary', 'user', 'admin', 'frequency_import');
 
 -- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('masculine', 'feminine', 'common', 'neuter', 'common_neuter');
@@ -268,6 +268,7 @@ CREATE TABLE "user_lists" (
     "id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
     "list_id" UUID,
+    "source_user_list_id" UUID,
     "base_language_code" "LanguageCode" NOT NULL,
     "target_language_code" "LanguageCode" NOT NULL,
     "is_public" BOOLEAN NOT NULL DEFAULT false,
@@ -574,6 +575,14 @@ CREATE TABLE "example_translations" (
 );
 
 -- CreateTable
+CREATE TABLE "definition_to_one_word" (
+    "definition_id" INTEGER NOT NULL,
+    "word_id" INTEGER NOT NULL,
+
+    CONSTRAINT "definition_to_one_word_pkey" PRIMARY KEY ("definition_id","word_id")
+);
+
+-- CreateTable
 CREATE TABLE "_UserToList" (
     "A" UUID NOT NULL,
     "B" UUID NOT NULL,
@@ -827,6 +836,9 @@ ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_list_id_fkey" FOREIGN KEY ("
 ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "user_lists" ADD CONSTRAINT "user_lists_source_user_list_id_fkey" FOREIGN KEY ("source_user_list_id") REFERENCES "user_lists"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "user_word_audio" ADD CONSTRAINT "user_word_audio_user_dictionary_id_fkey" FOREIGN KEY ("user_dictionary_id") REFERENCES "user_dictionary"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -951,6 +963,12 @@ ALTER TABLE "example_translations" ADD CONSTRAINT "example_translations_example_
 
 -- AddForeignKey
 ALTER TABLE "example_translations" ADD CONSTRAINT "example_translations_translation_id_fkey" FOREIGN KEY ("translation_id") REFERENCES "translations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_to_one_word" ADD CONSTRAINT "definition_to_one_word_definition_id_fkey" FOREIGN KEY ("definition_id") REFERENCES "definitions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "definition_to_one_word" ADD CONSTRAINT "definition_to_one_word_word_id_fkey" FOREIGN KEY ("word_id") REFERENCES "words"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserToList" ADD CONSTRAINT "_UserToList_A_fkey" FOREIGN KEY ("A") REFERENCES "lists"("id") ON DELETE CASCADE ON UPDATE CASCADE;

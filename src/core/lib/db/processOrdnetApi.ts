@@ -71,6 +71,9 @@ function determineSynonymPartOfSpeech(
     .filter((word) => word.length > 0).length;
 
   if (wordCount === 1) {
+    if (relatedPartOfSpeech === PartOfSpeech.phrase) {
+      return PartOfSpeech.undefined;
+    }
     return relatedPartOfSpeech;
   } else {
     return PartOfSpeech.phrase;

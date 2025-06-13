@@ -56,6 +56,15 @@ export default auth((req) => {
 
   // Allow API paths without redirection
   if (apiPaths.some((path) => nextUrl.pathname.startsWith(path))) {
+    // Special handling for image API to ensure cookies are properly passed
+    if (nextUrl.pathname.startsWith('/api/images/')) {
+      const response = NextResponse.next();
+      // Add CORS headers for image requests
+      response.headers.set('Access-Control-Allow-Origin', '*');
+      response.headers.set('Access-Control-Allow-Methods', 'GET');
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+      return response;
+    }
     return NextResponse.next();
   }
 

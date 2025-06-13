@@ -159,7 +159,7 @@ class BlobStorageService {
 
     return {
       isVercelBlob: true,
-      filename,
+      ...(filename && { filename }),
       type,
     };
   }
@@ -167,6 +167,3 @@ class BlobStorageService {
 
 // Export singleton instance
 export const blobStorageService = new BlobStorageService();
-
-// Export types
-export type { AudioUploadResult, AudioMetadata };

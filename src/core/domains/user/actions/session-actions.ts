@@ -39,8 +39,8 @@ export async function createLearningSession(
     const session = await prisma.userLearningSession.create({
       data: {
         userId,
-        userListId: data.userListId,
-        listId: data.listId,
+        userListId: data.userListId || null,
+        listId: data.listId || null,
         sessionType: data.sessionType,
         startTime: new Date(),
         wordsStudied: 0,
@@ -99,15 +99,19 @@ export async function createLearningSession(
       },
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to create learning session: ${errorMessage}`, 'error', {
-      userId,
-      error: errorMessage,
-    });
+    const errorResponse = handlePrismaError(error);
+    serverLog(
+      `Failed to create learning session: ${errorResponse.message}`,
+      'error',
+      {
+        userId,
+        error: errorResponse.message,
+      },
+    );
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }
@@ -199,15 +203,19 @@ export async function updateLearningSession(
       },
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to update learning session: ${errorMessage}`, 'error', {
-      sessionId,
-      error: errorMessage,
-    });
+    const errorResponse = handlePrismaError(error);
+    serverLog(
+      `Failed to update learning session: ${errorResponse.message}`,
+      'error',
+      {
+        sessionId,
+        error: errorResponse.message,
+      },
+    );
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }
@@ -231,7 +239,7 @@ export async function addSessionItem(
         sessionId,
         userDictionaryId: data.userDictionaryId,
         isCorrect: data.isCorrect,
-        responseTime: data.responseTime,
+        responseTime: data.responseTime || null,
         attemptsCount: data.attemptsCount || 1,
       },
     });
@@ -289,15 +297,15 @@ export async function addSessionItem(
       },
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to add session item: ${errorMessage}`, 'error', {
+    const errorResponse = handlePrismaError(error);
+    serverLog(`Failed to add session item: ${errorResponse.message}`, 'error', {
       sessionId,
-      error: errorMessage,
+      error: errorResponse.message,
     });
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }
@@ -349,7 +357,10 @@ export async function getSessionStats(
     today.setHours(0, 0, 0, 0);
 
     for (let i = 0; i < recentSessions.length; i++) {
-      const sessionDate = new Date(recentSessions[i].createdAt);
+      const session = recentSessions[i];
+      if (!session) break;
+
+      const sessionDate = new Date(session.createdAt);
       sessionDate.setHours(0, 0, 0, 0);
 
       const daysDiff = Math.floor(
@@ -396,15 +407,19 @@ export async function getSessionStats(
       stats,
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to fetch session stats: ${errorMessage}`, 'error', {
-      userId,
-      error: errorMessage,
-    });
+    const errorResponse = handlePrismaError(error);
+    serverLog(
+      `Failed to fetch session stats: ${errorResponse.message}`,
+      'error',
+      {
+        userId,
+        error: errorResponse.message,
+      },
+    );
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }
@@ -513,15 +528,19 @@ export async function getSessionHistory(
       data: response,
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to fetch session history: ${errorMessage}`, 'error', {
-      userId,
-      error: errorMessage,
-    });
+    const errorResponse = handlePrismaError(error);
+    serverLog(
+      `Failed to fetch session history: ${errorResponse.message}`,
+      'error',
+      {
+        userId,
+        error: errorResponse.message,
+      },
+    );
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }
@@ -587,15 +606,19 @@ export async function getCurrentSession(userId: string): Promise<{
         : null,
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to get current session: ${errorMessage}`, 'error', {
-      userId,
-      error: errorMessage,
-    });
+    const errorResponse = handlePrismaError(error);
+    serverLog(
+      `Failed to get current session: ${errorResponse.message}`,
+      'error',
+      {
+        userId,
+        error: errorResponse.message,
+      },
+    );
 
     return {
       success: false,
-      error: errorMessage,
+      error: errorResponse.message,
     };
   }
 }

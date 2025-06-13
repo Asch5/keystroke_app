@@ -122,7 +122,7 @@ export function ListDetailContent({
   });
 
   // Load user settings
-  const loadUserSettings = async () => {
+  const loadUserSettings = useCallback(async () => {
     try {
       const userSettings = await getUserSettings();
       if (
@@ -142,10 +142,10 @@ export function ListDetailContent({
       console.error('Error loading user settings:', error);
       setUserLanguages(initialUserLanguages);
     }
-  };
+  }, [initialUserLanguages]);
 
   // Load list info and words
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -164,12 +164,12 @@ export function ListDetailContent({
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, listId]);
 
   useEffect(() => {
     loadUserSettings();
     loadData();
-  }, [userId, listId]);
+  }, [loadUserSettings, loadData]);
 
   // Filter words based on search
   useEffect(() => {

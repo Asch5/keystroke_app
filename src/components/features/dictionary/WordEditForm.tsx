@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
 import {
   PartOfSpeech,
   RelationshipType,
@@ -833,13 +833,12 @@ export default function WordEditForm({
                                 {wordDetails?.definitions[defIndex]?.image
                                   ?.id ? (
                                   <div className="relative aspect-square w-full overflow-hidden rounded-lg h-64">
-                                    <Image
+                                    <AuthenticatedImage
                                       src={`/api/images/${wordDetails.definitions[defIndex].image.id}`}
                                       alt="Word illustration"
                                       fill
                                       className="object-cover"
                                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                      unoptimized
                                     />
                                   </div>
                                 ) : (

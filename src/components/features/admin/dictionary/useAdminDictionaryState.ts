@@ -46,6 +46,7 @@ export function useAdminDictionaryState() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isAddWordsToListDialogOpen, setIsAddWordsToListDialogOpen] =
     useState(false);
+  const [isDeepSeekDialogOpen, setIsDeepSeekDialogOpen] = useState(false);
 
   // Apply filters logic
   const applyFilters = useCallback(() => {
@@ -281,6 +282,28 @@ export function useAdminDictionaryState() {
     setIsAddWordsToListDialogOpen(false);
   };
 
+  const openDeepSeekDialog = () => {
+    if (selectedWords.size === 0) {
+      toast.error(
+        'Please select at least one word to extract words from definitions.',
+      );
+      return;
+    }
+    setIsDeepSeekDialogOpen(true);
+  };
+
+  const handleDeepSeekSuccess = () => {
+    // Refresh the word list after successful word extraction
+    handleAudioGenerated(); // This already refreshes the word list
+    setIsDeepSeekDialogOpen(false);
+    clearSelection();
+  };
+
+  // Get selected WordDetail IDs for DeepSeek
+  const getSelectedWordDetailIds = () => {
+    return Array.from(selectedWords).map((id) => parseInt(id));
+  };
+
   return {
     // State
     selectedLanguage,
@@ -293,6 +316,7 @@ export function useAdminDictionaryState() {
     isDeleteDialogOpen,
     isDeleting,
     isAddWordsToListDialogOpen,
+    isDeepSeekDialogOpen,
 
     // Actions
     setSelectedLanguage,
@@ -311,5 +335,9 @@ export function useAdminDictionaryState() {
     handleWordsAddedToList,
     setIsDeleteDialogOpen,
     setIsAddWordsToListDialogOpen,
+    openDeepSeekDialog,
+    handleDeepSeekSuccess,
+    getSelectedWordDetailIds,
+    setIsDeepSeekDialogOpen,
   };
 }

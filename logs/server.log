@@ -6,3 +6,25 @@
 [2025-06-13T11:50:45.911Z] [info] Statistics fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
 [2025-06-13T11:50:45.935Z] [info] Fetching session stats for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
 [2025-06-13T11:50:46.024Z] [info] Session stats fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
+[2025-06-13T17:25:25.192Z] [info] Fetching comprehensive statistics for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
+[2025-06-13T17:25:27.649Z] [info] Statistics fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
+[2025-06-13T17:25:27.852Z] [info] Fetching session stats for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
+[2025-06-13T17:25:28.816Z] [info] Session stats fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
+[2025-06-13T17:25:28.917Z] [info] Fetching comprehensive statistics for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
+[2025-06-13T17:25:29.648Z] [info] Statistics fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
+[2025-06-13T17:25:29.721Z] [info] Fetching session stats for user bb72c60b-517b-4086-8549-74039c1f1cab Context: {"userId":"bb72c60b-517b-4086-8549-74039c1f1cab"}
+[2025-06-13T17:25:29.832Z] [info] Session stats fetched successfully for user bb72c60b-517b-4086-8549-74039c1f1cab
+[2025-06-13T17:26:58.958Z] [info] Fetching frequency data for "hello" (en)
+[2025-06-13T17:27:01.699Z] [info] Cached frequency data for "hello": general=null
+[2025-06-13T17:27:04.228Z] [info] Retrieved frequency data in upsertWord for "hello": null
+[2025-06-13T17:27:04.228Z] [info] Cached PoS frequency for "hello" (noun): null
+[2025-06-13T17:27:04.466Z] [info] Retrieved POS frequency data in upsertWordDetails for word ID 32, POS noun: null
+[2025-06-13T17:27:04.725Z] [info] Starting audio download from external URL: https://media.merriam-webster.com/audio/prons/en/us/mp3/h/hello001.mp3
+[2025-06-13T17:27:04.907Z] [info] Downloaded audio file: 3743 bytes, uploading to blob storage
+[2025-06-13T17:27:05.644Z] [info] Successfully downloaded and stored audio: https://media.merriam-webster.com/audio/prons/en/us/mp3/h/hello001.mp3 -> https://giuay14rqxnuxuxr.public.blob.vercel-storage.com/audio/misc/en/audio-1749835624908-19d8c689.mp3
+[2025-06-13T17:27:05.644Z] [info] Batch audio download completed: 1 successful, 0 skipped, 0 failed
+[2025-06-13T17:27:05.644Z] [info] 🎵 Audio download results for word "hello": 1 successful, 0 failed, 0 skipped
+[2025-06-13T17:27:06.111Z] [info] Retrieved POS frequency data in upsertWordDetails for word ID 32, POS noun: null
+[2025-06-13T17:27:06.160Z] [info] Reusing existing empty WordDetails record 34 for wordId 32, partOfSpeech noun
+[2025-06-13T17:27:07.223Z] [info] Fetching frequency data for "hellos" (en)
+[2025-06-13T17:27:09.971Z] [info] Cached frequency data for "hellos": general=null

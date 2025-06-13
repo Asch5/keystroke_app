@@ -119,7 +119,10 @@ class TextToSpeechService {
   constructor() {
     this.apiKey = process.env.GOOGLE_TTS_API_KEY || '';
     if (!this.apiKey) {
-      throw new Error('GOOGLE_TTS_API_KEY environment variable is required');
+      console.warn(
+        '⚠️  GOOGLE_TTS_API_KEY not found in environment variables. TTS functionality will be disabled.',
+      );
+      // Don't throw error - just disable TTS functionality
     }
 
     // Initialize usage stats
@@ -144,6 +147,13 @@ class TextToSpeechService {
    */
   async generateSpeech(request: TTSRequest): Promise<TTSResponse> {
     try {
+      // Check if API key is available
+      if (!this.apiKey) {
+        throw new Error(
+          'TTS service is disabled. GOOGLE_TTS_API_KEY environment variable is not configured.',
+        );
+      }
+
       // Validate request
       this.validateRequest(request);
 
@@ -530,12 +540,42 @@ class TextToSpeechService {
   }
 }
 
-// Export singleton instance
-export const textToSpeechService = new TextToSpeechService();
+// Lazy-loaded singleton instance
+let _textToSpeechService: TextToSpeechService | null = null;
+
+export const getTextToSpeechService = (): TextToSpeechService => {
+  if (!_textToSpeechService) {
+    _textToSpeechService = new TextToSpeechService();
+  }
+  return _textToSpeechService;
+};
+
+// Export singleton instance (lazy-loaded)
+export const textToSpeechService = {
+  generateSpeech: (request: TTSRequest) =>
+    getTextToSpeechService().generateSpeech(request),
+  generateWordSpeech: (
+    text: string,
+    languageCode: string,
+    options?: Partial<TTSRequest>,
+  ) => getTextToSpeechService().generateWordSpeech(text, languageCode, options),
+  generateExampleSpeech: (
+    text: string,
+    languageCode: string,
+    options?: Partial<TTSRequest>,
+  ) =>
+    getTextToSpeechService().generateExampleSpeech(text, languageCode, options),
+  getUsageStats: () => getTextToSpeechService().getUsageStats(),
+  getQualityLevels: () => getTextToSpeechService().getQualityLevels(),
+  getAvailableGenders: (languageCode: string) =>
+    getTextToSpeechService().getAvailableGenders(languageCode),
+  getDefaultGender: (languageCode: string) =>
+    getTextToSpeechService().getDefaultGender(languageCode),
+};
 
 // Export utility functions for UI components
 export const getAvailableGendersForLanguage = (languageCode: string) =>
-  textToSpeechService.getAvailableGenders(languageCode);
+  getTextToSpeechService().getAvailableGenders(languageCode);
 
 export const getDefaultGenderForLanguage = (languageCode: string) =>
-  textToSpeechService.getDefaultGender(languageCode);
+  getTextToSpeechService().getDefaultGender(languageCode);

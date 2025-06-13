@@ -27,6 +27,7 @@ import { WordService } from '@/core/shared/services/WordService';
 import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
+import { env } from '@/env.mjs';
 
 /**Definitions:
  * generalLabels "lbs" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs. (like capitalization indicators, usage notes, etc.)
@@ -283,18 +284,39 @@ export async function getWordFromMerriamWebster(
   try {
     const API_KEY =
       dictionaryType === 'intermediate'
-        ? process.env.DICTIONARY_INTERMEDIATE_API_KEY
-        : process.env.DICTIONARY_LEARNERS_API_KEY;
+        ? env.DICTIONARY_INTERMEDIATE_API_KEY
+        : env.DICTIONARY_LEARNERS_API_KEY;
+
+    // Log API key availability for debugging
+    if (!API_KEY) {
+      console.error(`API key missing for dictionary type: ${dictionaryType}`);
+    }
 
     if (!API_KEY) {
-      throw new Error('API key is not configured');
+      console.error(
+        `API key not configured for dictionary type: ${dictionaryType}`,
+      );
+      return {
+        message: null,
+        errors: {
+          word: [`API key not configured for ${dictionaryType} dictionary`],
+        },
+      };
     }
 
     const dictionaryPath =
       dictionaryType === 'intermediate' ? 'sd3' : 'learners';
-    const response = await fetch(
-      `https://www.dictionaryapi.com/api/v3/references/${dictionaryPath}/json/${encodeURIComponent(word)}?key=${API_KEY}`,
-    );
+
+    const apiUrl = `https://www.dictionaryapi.com/api/v3/references/${dictionaryPath}/json/${encodeURIComponent(word)}?key=${API_KEY}`;
+
+    const response = await fetch(apiUrl);
+
+    // Log errors only
+    if (!response.ok) {
+      console.error(
+        `API Response Status: ${response.status} ${response.statusText}`,
+      );
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -303,7 +325,7 @@ export async function getWordFromMerriamWebster(
         message: null,
         errors: {
           word: [
-            `API request failed: ${response.statusText || 'Unknown error'}`,
+            `API request failed (${response.status}): ${response.statusText || 'Unknown error'}. Error: ${errorText}`,
           ],
         },
       };
@@ -337,10 +359,21 @@ export async function getWordFromMerriamWebster(
     };
   } catch (error) {
     console.error('Error fetching word from Merriam-Webster:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : 'No stack trace',
+      dictionaryType,
+      word,
+    });
+
     return {
       message: null,
       errors: {
-        word: ['Failed to fetch word definition. Please try again.'],
+        word: [
+          `Failed to fetch word definition: ${
+            error instanceof Error ? error.message : 'Unknown error'
+          }. Please try again.`,
+        ],
       },
     };
   }

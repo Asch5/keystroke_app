@@ -566,6 +566,7 @@ export const textToSpeechService = {
   ) =>
     getTextToSpeechService().generateExampleSpeech(text, languageCode, options),
   getUsageStats: () => getTextToSpeechService().getUsageStats(),
+  resetUsageStats: () => getTextToSpeechService().resetUsageStats(),
   getQualityLevels: () => getTextToSpeechService().getQualityLevels(),
   getAvailableGenders: (languageCode: string) =>
     getTextToSpeechService().getAvailableGenders(languageCode),

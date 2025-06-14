@@ -18,7 +18,6 @@ export interface CreateListData {
   name: string;
   description?: string;
   categoryId: number;
-  baseLanguageCode: LanguageCode;
   targetLanguageCode: LanguageCode;
   difficultyLevel: DifficultyLevel;
   isPublic: boolean;
@@ -111,7 +110,6 @@ export async function createListWithWords(listData: CreateListData): Promise<{
           name: listData.name,
           description: listData.description || null,
           categoryId: listData.categoryId,
-          baseLanguageCode: listData.baseLanguageCode,
           targetLanguageCode: listData.targetLanguageCode,
           difficultyLevel: listData.difficultyLevel,
           isPublic: listData.isPublic,
@@ -219,7 +217,6 @@ export async function createListAction(
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
     const categoryId = parseInt(formData.get('categoryId') as string);
-    const baseLanguageCode = formData.get('baseLanguageCode') as LanguageCode;
     const targetLanguageCode = formData.get(
       'targetLanguageCode',
     ) as LanguageCode;
@@ -253,7 +250,6 @@ export async function createListAction(
       name: name.trim(),
       description: description?.trim(),
       categoryId,
-      baseLanguageCode,
       targetLanguageCode,
       difficultyLevel,
       isPublic,
@@ -301,13 +297,12 @@ export async function addWordsToList(
     });
 
     await prisma.$transaction(async (tx) => {
-      // First, get the list details to check its languages
+      // First, get the list details to check its language
       const list = await tx.list.findUnique({
         where: { id: listId },
         select: {
           id: true,
           name: true,
-          baseLanguageCode: true,
           targetLanguageCode: true,
         },
       });
@@ -338,23 +333,18 @@ export async function addWordsToList(
         },
       });
 
-      // Check language compatibility
+      // Check language compatibility - words must match the list's target language
       const incompatibleWords = wordsToValidate.filter((definition) => {
         const word = definition.wordDetails[0]?.wordDetails?.word;
         if (!word) return true; // Skip if word data is missing
 
-        // Check if the word's language matches either of the list's languages
-        const wordMatchesListLanguages =
-          word.languageCode === list.baseLanguageCode ||
-          word.languageCode === list.targetLanguageCode;
-
-        return !wordMatchesListLanguages;
+        // Check if the word's language matches the list's target language
+        return word.languageCode !== list.targetLanguageCode;
       });
 
       if (incompatibleWords.length > 0) {
-        const listLanguages = `${list.baseLanguageCode}-${list.targetLanguageCode}`;
         throw new Error(
-          `Cannot add words to list "${list.name}". ${incompatibleWords.length} word(s) have incompatible languages. List supports: ${listLanguages}`,
+          `Cannot add words to list "${list.name}". ${incompatibleWords.length} word(s) have incompatible languages. List requires words in: ${list.targetLanguageCode}`,
         );
       }
 

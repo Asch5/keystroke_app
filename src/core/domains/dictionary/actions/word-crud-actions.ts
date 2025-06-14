@@ -264,7 +264,6 @@ export async function addWordToUserDictionary(
       create: {
         userId,
         definitionId: parseInt(mainDictionaryId),
-        baseLanguageCode: baseLanguageId as LanguageCode,
         targetLanguageCode: targetLanguageId as LanguageCode,
         learningStatus: 'notStarted',
         progress: 0,

@@ -182,10 +182,23 @@ export function AddWordsToListDialog({
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 No lists available
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-500 mb-4">
                 No compatible public lists found for {selectedLanguage}. Lists
                 must share at least one language with your selected words.
               </p>
+              <p className="text-sm text-gray-500 mb-4">
+                Create a new public list that includes {selectedLanguage} as
+                either the base or target language.
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  window.open('/admin/dictionaries/lists', '_blank');
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Go to Lists Management
+              </Button>
             </div>
           ) : (
             <div className="space-y-4">

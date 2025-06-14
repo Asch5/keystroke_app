@@ -198,7 +198,6 @@ function CreateListContent() {
 
   const handleSubmit = (formDataSubmit: FormData) => {
     // Add our component state to form data
-    formDataSubmit.set('baseLanguageCode', language);
     formDataSubmit.set('targetLanguageCode', language);
     formDataSubmit.set('tags', tags.join(','));
     formDataSubmit.set(

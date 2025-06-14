@@ -10,6 +10,7 @@ import {
   PartOfSpeech,
   Gender,
 } from '@prisma/client';
+import { getUserLanguageConfig } from '../utils/language-helpers';
 
 /**
  * Interface for user dictionary item with comprehensive learning data
@@ -131,6 +132,9 @@ export const getUserDictionary = cache(
         page = 1,
         pageSize = 20,
       } = filters;
+
+      // Get user's language configuration
+      const userLanguageConfig = await getUserLanguageConfig(userId);
 
       // Build basic where conditions
       const whereConditions = {
@@ -372,9 +376,9 @@ export const getUserDictionary = cache(
           isFavorite: entry.isFavorite,
           isModified: entry.isModified,
 
-          // Languages
-          baseLanguageCode: entry.baseLanguageCode,
-          targetLanguageCode: entry.targetLanguageCode,
+          // Languages (both come from User now)
+          baseLanguageCode: userLanguageConfig.baseLanguageCode,
+          targetLanguageCode: userLanguageConfig.targetLanguageCode,
 
           // Lists this word belongs to
           lists,

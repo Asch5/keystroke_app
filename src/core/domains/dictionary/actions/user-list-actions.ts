@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/core/shared/database/client';
-import { LanguageCode, DifficultyLevel } from '@prisma/client';
+import { LanguageCode, DifficultyLevel, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
@@ -14,7 +14,6 @@ export interface UserListWithDetails {
   customDifficulty: DifficultyLevel | null;
   progress: number;
   isModified: boolean;
-  baseLanguageCode: LanguageCode;
   targetLanguageCode: LanguageCode;
   createdAt: Date;
   updatedAt: Date;
@@ -49,7 +48,6 @@ export interface PublicListSummary {
   name: string;
   description: string | null;
   categoryName: string;
-  baseLanguageCode: LanguageCode;
   targetLanguageCode: LanguageCode;
   difficultyLevel: DifficultyLevel;
   tags: string[];
@@ -65,7 +63,6 @@ export interface PublicUserListSummary {
   id: string;
   name: string;
   description: string | null;
-  baseLanguageCode: LanguageCode;
   targetLanguageCode: LanguageCode;
   difficultyLevel: DifficultyLevel;
   coverImageUrl: string | null;
@@ -103,29 +100,14 @@ export async function getUserLists(
     const {
       search = '',
       difficulty,
-      language,
+      // language, // TODO: Re-implement with User JOIN
       isCustom,
       sortBy = 'createdAt',
       sortOrder = 'desc',
     } = filters;
 
     // Build where conditions
-    const whereConditions: {
-      userId: string;
-      deletedAt: null;
-      listId?: { not: null } | null;
-      OR?: Array<
-        | { customDifficulty: DifficultyLevel }
-        | {
-            AND: Array<
-              | { customDifficulty: null }
-              | { list: { difficultyLevel: DifficultyLevel } }
-            >;
-          }
-        | { baseLanguageCode: LanguageCode }
-        | { targetLanguageCode: LanguageCode }
-      >;
-    } = {
+    const whereConditions: Prisma.UserListWhereInput = {
       userId,
       deletedAt: null,
     };
@@ -150,12 +132,13 @@ export async function getUserLists(
       ];
     }
 
-    if (language) {
-      whereConditions.OR = [
-        { baseLanguageCode: language },
-        { targetLanguageCode: language },
-      ];
-    }
+    // TODO: Re-implement language filtering with new schema
+    // if (language) {
+    //   whereConditions.OR = [
+    //     { targetLanguageCode: language },
+    //     { user: { baseLanguageCode: language } },
+    //   ];
+    // }
 
     // Debug logging
     await serverLog(`getUserLists - userId: ${userId}`, 'info');
@@ -163,7 +146,24 @@ export async function getUserLists(
 
     // First, let's check how many UserList records exist for this user (without includes)
     const basicUserLists = await prisma.userList.findMany({
-      where: whereConditions,
+      where: {
+        userId,
+        deletedAt: null,
+        ...(isCustom !== undefined && {
+          listId: isCustom ? null : { not: null },
+        }),
+        ...(difficulty && {
+          OR: [
+            { customDifficulty: difficulty },
+            {
+              AND: [
+                { customDifficulty: null },
+                { list: { difficultyLevel: difficulty } },
+              ],
+            },
+          ],
+        }),
+      },
       select: { id: true, customNameOfList: true, listId: true },
     });
     await serverLog(
@@ -356,7 +356,6 @@ export async function getUserLists(
           customDifficulty: userList.customDifficulty,
           progress: userList.progress,
           isModified: userList.isModified,
-          baseLanguageCode: userList.baseLanguageCode,
           targetLanguageCode: userList.targetLanguageCode,
           createdAt: userList.createdAt,
           updatedAt: userList.updatedAt,
@@ -502,7 +501,6 @@ export async function getAvailablePublicLists(
         name: list.name,
         description: list.description,
         categoryName: list.category.name,
-        baseLanguageCode: list.baseLanguageCode,
         targetLanguageCode: list.targetLanguageCode,
         difficultyLevel: list.difficultyLevel,
         tags: list.tags,
@@ -672,7 +670,6 @@ export async function getPublicUserLists(
           id: list.id,
           name: displayName,
           description: displayDescription,
-          baseLanguageCode: list.baseLanguageCode,
           targetLanguageCode: list.targetLanguageCode,
           difficultyLevel: displayDifficulty,
           coverImageUrl: displayCoverImageUrl,
@@ -985,12 +982,11 @@ export async function addListToUserCollection(
         throw new Error('LIST_ALREADY_EXISTS');
       }
 
-      // Create user list
+      // Create user list (baseLanguageCode comes from User model)
       const userList = await tx.userList.create({
         data: {
           userId,
           listId,
-          baseLanguageCode: userLanguages.base,
           targetLanguageCode: userLanguages.target,
           progress: 0,
         },
@@ -1010,13 +1006,12 @@ export async function addListToUserCollection(
           },
         });
 
-        // If not in user dictionary, add it
+        // If not in user dictionary, add it (baseLanguageCode comes from User model)
         if (!userDictionary) {
           userDictionary = await tx.userDictionary.create({
             data: {
               userId,
               definitionId: listWord.definitionId,
-              baseLanguageCode: userLanguages.base,
               targetLanguageCode: userLanguages.target,
               learningStatus: 'notStarted',
               progress: 0,
@@ -1144,7 +1139,6 @@ export async function addPublicUserListToCollection(
         data: {
           userId,
           listId: sourceList.listId, // Keep the original list reference if it exists
-          baseLanguageCode: userLanguages.base,
           targetLanguageCode: userLanguages.target,
           customNameOfList: sourceList.customNameOfList,
           customDescriptionOfList: sourceList.customDescriptionOfList,
@@ -1175,7 +1169,6 @@ export async function addPublicUserListToCollection(
             data: {
               userId,
               definitionId: sourceListWord.userDictionary.definitionId,
-              baseLanguageCode: userLanguages.base,
               targetLanguageCode: userLanguages.target,
               learningStatus: 'notStarted',
               masteryScore: 0,
@@ -1259,7 +1252,6 @@ export async function createCustomUserList(
   data: {
     name: string;
     description?: string;
-    baseLanguageCode: LanguageCode;
     targetLanguageCode: LanguageCode;
     difficulty?: DifficultyLevel;
     coverImageUrl?: string;
@@ -1274,7 +1266,6 @@ export async function createCustomUserList(
         customDescriptionOfList: data.description || null,
         customDifficulty: data.difficulty || null,
         customCoverImageUrl: data.coverImageUrl || null,
-        baseLanguageCode: data.baseLanguageCode,
         targetLanguageCode: data.targetLanguageCode,
         progress: 0,
         isModified: true,
@@ -1883,7 +1874,6 @@ export async function populateInheritedListWithWords(
             data: {
               userId,
               definitionId: listWord.definitionId,
-              baseLanguageCode: userList.baseLanguageCode,
               targetLanguageCode: userList.targetLanguageCode,
               learningStatus: 'notStarted',
               progress: 0,

@@ -27,7 +27,7 @@ This section provides a detailed breakdown of the models within each domain.
 
 _Purpose: To manage user identity, authentication, and global preferences._
 
-- **`User`**: The central model for a user account. It stores credentials, language preferences (`baseLanguageCode`, `targetLanguageCode`), and role.
+- **`User`**: The central model for a user account. It stores credentials, language preferences (`baseLanguageCode` for translations, `targetLanguageCode` for vocabulary learning), and role. With the dynamic language system, `baseLanguageCode` serves as the single source of truth for translation preferences across the entire application.
 - **`UserSettings`**: A one-to-one extension of `User` for storing fine-grained, configurable settings like daily goals, notification toggles, and theme preferences.
 
 ### B. Dictionary Content (The "Master" Dictionary)
@@ -50,7 +50,18 @@ _Purpose: To track everything about a specific user's learning journey._
 - **`UserLearningSession`**: A record of a single study period (e.g., a 15-minute review session). It captures the start/end times, score, and number of correct/incorrect answers.
 - **`LearningMistake`**: Logs every time a user makes a mistake with a specific word or definition. This data is crucial for identifying "difficult words" and tailoring future review sessions.
 
-### D. Relationships & Connections
+### D. Dynamic Language System
+
+_Purpose: To provide user-centric language flexibility with User.baseLanguageCode as single source of truth._
+
+With the dynamic language system implementation, the application has evolved from static language pairs to a flexible, user-centric approach:
+
+- **Single Source of Truth**: `User.baseLanguageCode` is the only source for translation preferences. Content models (List, Word, Definition) only store `targetLanguageCode` (the vocabulary language being learned).
+- **Dynamic Translation**: Users can change their base language setting once, and all content throughout the platform adapts instantly with appropriate translations.
+- **Flexible Learning**: Users can learn Danish vocabulary with English explanations, then switch to Spanish explanations for the same content simply by updating their profile.
+- **No Language Duplication**: Forms and APIs no longer require `baseLanguageCode` parameters - this comes automatically from the user's profile through JOINs and language helper utilities.
+
+### E. Relationships & Connections
 
 _Purpose: To create the rich, interconnected web of linguistic data._
 
@@ -79,10 +90,12 @@ It is crucial to understand this flow, as it dictates how content is structured 
 
 This is a core concept for organizing vocabulary:
 
-- **`List`**: A public, read-only collection of `Definition`s created by admins (e.g., "Top 100 Business English Words"). This is a **template**.
+- **`List`**: A public, read-only collection of `Definition`s created by admins (e.g., "Top 100 Business English Words"). This is a **template** that only stores `targetLanguageCode` (the vocabulary language). With the dynamic language system, base language translations are determined by each user's profile.
 - **`UserList`**: A user's personal list. It can be:
   1.  A **"copy"** of a public `List`. The `listId` field on `UserList` links it back to the original `List` template.
   2.  A **brand new list** created from scratch by the user. In this case, `listId` is `null`.
+
+Both list types benefit from the dynamic language system - users see content translated to their preferred base language automatically without duplicating list data.
 
 ## 5. Common Query Patterns & Best Practices
 

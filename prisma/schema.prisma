@@ -446,7 +446,6 @@ model UserDictionary {
   id                 String       @id @default(uuid()) @db.Uuid
   userId             String       @map("user_id") @db.Uuid
   definitionId       Int          @map("definition_id")
-  baseLanguageCode   LanguageCode @map("base_language_code")
   targetLanguageCode LanguageCode @map("target_language_code")
 
   // Enhanced custom user modifications
@@ -541,7 +540,6 @@ model List {
   name               String                @db.VarChar(255)
   description        String?
   categoryId         Int                   @map("category_id")
-  baseLanguageCode   LanguageCode          @map("base_language_code")
   targetLanguageCode LanguageCode          @map("target_language_code")
   isPublic           Boolean               @default(false) @map("is_public")
   createdAt          DateTime              @default(now()) @map("created_at")
@@ -562,9 +560,9 @@ model List {
   studyGroups        StudyGroup[] // Add relation to StudyGroup
 
   @@unique([name, categoryId])
-  @@index([baseLanguageCode, targetLanguageCode], map: "idx_lists_language")
+  @@index([targetLanguageCode], map: "idx_lists_language")
   @@index([difficultyLevel], map: "idx_list_difficulty")
-  @@index([isPublic, baseLanguageCode, targetLanguageCode], map: "idx_public_lists")
+  @@index([isPublic, targetLanguageCode], map: "idx_public_lists")
   @@map("lists")
 }
 
@@ -573,7 +571,6 @@ model UserList {
   userId                  String                @map("user_id") @db.Uuid
   listId                  String?               @map("list_id") @db.Uuid
   sourceUserListId        String?               @map("source_user_list_id") @db.Uuid
-  baseLanguageCode        LanguageCode          @map("base_language_code")
   targetLanguageCode      LanguageCode          @map("target_language_code")
   isPublic                Boolean               @default(false) @map("is_public")
   isModified              Boolean               @default(false) @map("is_modified")

@@ -54,3 +54,6 @@ documentation/schema_merriam.json
 tests/
 scripts/
 logs/
+
+.cursorrules
+.cursor/

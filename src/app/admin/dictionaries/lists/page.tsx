@@ -62,6 +62,7 @@ import {
 } from 'lucide-react';
 import { LanguageCode, DifficultyLevel } from '@prisma/client';
 import { toast } from 'sonner';
+import { AdminCreateListDialog } from '@/components/features/admin/dictionary/AdminCreateListDialog';
 
 // Language and difficulty display names
 const languageDisplayNames: Record<LanguageCode, string> = {
@@ -105,6 +106,7 @@ export default function ListsManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedLists, setSelectedLists] = useState<Set<string>>(new Set());
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   // Pagination state
   const [totalCount, setTotalCount] = useState(0);
@@ -309,7 +311,7 @@ export default function ListsManagementPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => router.push('/admin/dictionaries/create-list')}
+                onClick={() => setIsCreateDialogOpen(true)}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Create List
@@ -586,7 +588,16 @@ export default function ListsManagementPage() {
                       <div className="text-muted-foreground">
                         <List className="h-12 w-12 mx-auto mb-4 opacity-50" />
                         <p>No lists found</p>
-                        <p className="text-sm">Try adjusting your filters</p>
+                        <p className="text-sm mb-4">
+                          Try adjusting your filters or create a new list
+                        </p>
+                        <Button
+                          variant="outline"
+                          onClick={() => setIsCreateDialogOpen(true)}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Create Your First List
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -823,6 +834,13 @@ export default function ListsManagementPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Create List Dialog */}
+      <AdminCreateListDialog
+        isOpen={isCreateDialogOpen}
+        onClose={() => setIsCreateDialogOpen(false)}
+        onListCreated={loadData}
+      />
     </div>
   );
 }

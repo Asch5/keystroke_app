@@ -12,7 +12,7 @@ src/components/DESCRIPTION_OF_COMPONENT_FOLDER.md
 
 prisma\schema.prisma
 
-The latest database backup file to understand the live data structure. To do this, find the folder with the most recent date in tests/danishDicitonary/backupProcess/backups/ and read the backup.json file within it and the metadata.json file.
+The latest database backup file to understand the live data structure. To do this, find the folder with the most recent date in tests/danishDicitonary/backupProcess/backups/ and read the backup.json file within it and the metadata.json file. IMPORTANT: to be sure that backup.json is the latest, you can run the command "pnpm backup:db" from /tests folder an get the latest backup.json file.
 
 ## 1. Code Quality and Best Practices
 

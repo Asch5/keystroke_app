@@ -13,7 +13,6 @@ export interface ListWithDetails {
   categoryId: number;
   categoryName: string;
   categoryDescription: string | null;
-  baseLanguageCode: LanguageCode;
   targetLanguageCode: LanguageCode;
   isPublic: boolean;
   createdAt: Date;
@@ -99,12 +98,9 @@ export async function fetchAllLists(
     }
 
     if (language) {
-      // More specific language filtering - only include lists that match the target language
-      // This ensures we get lists where the selected language is either the base or target language
-      whereConditions.OR = [
-        { baseLanguageCode: language },
-        { targetLanguageCode: language },
-      ];
+      // Filter by target language only (as part of dynamic language system)
+      // User's base language comes from User model, lists only have target language
+      whereConditions.targetLanguageCode = language;
     }
 
     if (isPublic !== undefined) {
@@ -191,7 +187,6 @@ export async function fetchAllLists(
         categoryId: list.categoryId,
         categoryName: list.category.name,
         categoryDescription: list.category.description,
-        baseLanguageCode: list.baseLanguageCode,
         targetLanguageCode: list.targetLanguageCode,
         isPublic: list.isPublic,
         createdAt: list.createdAt,
@@ -295,7 +290,6 @@ export async function getListDetails(
       categoryId: list.categoryId,
       categoryName: list.category.name,
       categoryDescription: list.category.description,
-      baseLanguageCode: list.baseLanguageCode,
       targetLanguageCode: list.targetLanguageCode,
       isPublic: list.isPublic,
       createdAt: list.createdAt,

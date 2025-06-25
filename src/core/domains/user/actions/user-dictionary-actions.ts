@@ -149,7 +149,24 @@ export const getUserDictionary = cache(
         ...(needsReview && { nextReviewDue: { lte: new Date() } }),
         ...(searchQuery && {
           OR: [
-            // Search in the actual word text (most important)
+            // Primary search: exact word text match (highest priority)
+            {
+              definition: {
+                wordDetails: {
+                  some: {
+                    wordDetails: {
+                      word: {
+                        word: {
+                          startsWith: searchQuery,
+                          mode: 'insensitive' as const,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            // Secondary search: partial word text match
             {
               definition: {
                 wordDetails: {
@@ -166,16 +183,32 @@ export const getUserDictionary = cache(
                 },
               },
             },
-            // Search in definition text
+            // Search in word variant/forms
             {
               definition: {
-                definition: {
-                  contains: searchQuery,
-                  mode: 'insensitive' as const,
+                wordDetails: {
+                  some: {
+                    wordDetails: {
+                      OR: [
+                        {
+                          variant: {
+                            contains: searchQuery,
+                            mode: 'insensitive' as const,
+                          },
+                        },
+                        {
+                          forms: {
+                            contains: searchQuery,
+                            mode: 'insensitive' as const,
+                          },
+                        },
+                      ],
+                    },
+                  },
                 },
               },
             },
-            // Search in custom fields
+            // Search in custom user fields (user-specific content only)
             {
               customDefinitionBase: {
                 contains: searchQuery,
@@ -192,21 +225,6 @@ export const getUserDictionary = cache(
               customNotes: {
                 contains: searchQuery,
                 mode: 'insensitive' as const,
-              },
-            },
-            // Search in translations
-            {
-              definition: {
-                translationLinks: {
-                  some: {
-                    translation: {
-                      content: {
-                        contains: searchQuery,
-                        mode: 'insensitive' as const,
-                      },
-                    },
-                  },
-                },
               },
             },
           ],

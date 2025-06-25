@@ -258,9 +258,23 @@ export function TypingWordInput({
           </h2>
 
           <div className="space-y-4">
-            <p className="text-2xl font-semibold text-foreground">
-              {sessionState.currentWord.definition}
-            </p>
+            {/* One-word translation (prominent) */}
+            {sessionState.currentWord.oneWordTranslation ? (
+              <div className="space-y-2">
+                <p className="text-3xl font-bold text-foreground">
+                  {sessionState.currentWord.oneWordTranslation}
+                </p>
+                {/* Full definition (smaller, below) */}
+                <p className="text-base text-muted-foreground max-w-2xl mx-auto">
+                  {sessionState.currentWord.definition}
+                </p>
+              </div>
+            ) : (
+              /* Fallback to full definition if no one-word translation */
+              <p className="text-2xl font-semibold text-foreground">
+                {sessionState.currentWord.definition}
+              </p>
+            )}
 
             {/* Definition Image */}
             {settings.showDefinitionImages &&

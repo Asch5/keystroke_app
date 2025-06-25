@@ -7,12 +7,28 @@ import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { ArrowUpDown, Edit, Search, Play, Pause, Trash2 } from 'lucide-react';
+import {
+  ArrowUpDown,
+  Edit,
+  Search,
+  Play,
+  Pause,
+  Trash2,
+  MoreHorizontal,
+  Plus,
+} from 'lucide-react';
 import { LanguageCode, PartOfSpeech, SourceType } from '@prisma/client';
 import Image from 'next/image';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
@@ -30,6 +46,7 @@ interface AdminDictionaryTableProps {
   onClearSelection: () => void;
   onDeleteAudio: (wordId: number) => void;
   selectedLanguage: LanguageCode;
+  onAddManualForms?: (wordDetail: DictionaryWordDetails) => void;
 }
 
 /**
@@ -44,6 +61,7 @@ export function AdminDictionaryTable({
   onClearSelection,
   onDeleteAudio,
   selectedLanguage,
+  onAddManualForms,
 }: AdminDictionaryTableProps) {
   const { playAudio, isPlaying } = useAudioPlayback();
 
@@ -319,6 +337,7 @@ export function AdminDictionaryTable({
       header: 'Actions',
       cell: ({ row }) => {
         const wordDetail = row.original;
+        const isDanish = selectedLanguage === LanguageCode.da;
 
         return (
           <div className="flex space-x-2">
@@ -336,6 +355,30 @@ export function AdminDictionaryTable({
                 Check
               </Button>
             </Link>
+
+            {/* Dropdown menu for additional actions */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {isDanish && onAddManualForms && (
+                  <>
+                    <DropdownMenuItem
+                      onClick={() => onAddManualForms(wordDetail)}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Manual Forms
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem disabled>View Relationships</DropdownMenuItem>
+                <DropdownMenuItem disabled>Export Word</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         );
       },

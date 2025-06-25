@@ -166,6 +166,24 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 - **Language Support**: Supports both Danish (da-DK) and English (en-US) pronunciation
 - **Error Handling**: Graceful error handling with fallback mechanisms
 
+### Manual Forms Management (`actions/manual-forms-actions.ts`)
+
+- `addManualWordForms({baseWordDetailId, baseWordText, forms})` - Add manually created Danish word forms that were missed by automatic processing
+- `generateFormDefinition(baseWordText, relatedWordText, relationshipType)` - Generate default definition for manual forms
+- `determinePartOfSpeechForForm(relationshipType, basePartOfSpeech)` - Determine appropriate part of speech for form
+
+**Manual Forms Features:**
+
+- **Danish Form Processing**: Handles forms missed by `transformDanishForms.ts` automatic processing
+- **Standardized Definitions**: Integrates with `getDanishFormDefinition` for linguistically accurate definitions
+- **Relationship Types**: Supports all Danish grammatical relationships (comparative_da, superlative_da, definite_form_da, etc.)
+- **Database Integration**: Creates complete Word, WordDetails, Definition, and relationship records
+- **Smart Upserts**: Handles existing words gracefully with proper error handling
+- **Transaction Safety**: Uses database transactions for data consistency
+- **Admin Interface**: Provides ManualFormsDialog component for easy form addition via admin/dictionaries interface
+
+Types: `ManualFormData`, `AddManualFormsRequest`, `AddManualFormsResponse`
+
 ### Frequency Utilities (`actions/frequency-actions.ts`)
 
 - `mapWordFrequency(wordPosition)`
@@ -349,6 +367,25 @@ Types: `ExtractWordResult`, `ExtractWordsBatchResult`
 - **Language-Aware Display**: Prioritizes user's native language for better learning experience
 
 Types: `WordSearchResult`, `WordDefinitionResult` (enhanced with translation fields)
+
+### Danish Form Definition Utilities (`utils/danishDictionary/getDanishFormDefinition.ts`)
+
+- `getDanishFormDefinition(baseWordText, relatedWordText, relationshipType)` - Generate standardized definitions for Danish word forms based on grammatical relationships
+
+**Danish Form Definition Features:**
+
+- **Comprehensive Coverage**: Supports all Danish grammatical relationships (definite_form_da, plural_da, comparative_da, superlative_da, etc.)
+- **Linguistic Accuracy**: Provides both Danish and English terminology for each form type
+- **Standardized Output**: Consistent definition format across all form types
+- **Integration Ready**: Used by both automatic form processing and manual form addition
+- **Error Handling**: Graceful handling of unknown relationship types with logging
+
+**Example Definitions:**
+
+- `comparative_da`: "Comparative form (komparativ) of {baseWord}"
+- `superlative_da`: "Superlative form (superlativ) of {baseWord}"
+- `definite_form_da`: "Definite form (bestemt form) of {baseWord}"
+- `plural_da`: "Plural form (flertal) of {baseWord}"
 
 ### Translation Utilities (`utils/translation-utils.ts`)
 

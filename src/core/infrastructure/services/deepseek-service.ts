@@ -242,6 +242,7 @@ export class DeepSeekService {
 
   /**
    * Build optimized prompt for word extraction
+   * Flexible prompts based on source and target language combinations
    * Based on DeepSeek best practices for cost-effective usage
    */
   private buildPrompt(
@@ -249,23 +250,146 @@ export class DeepSeekService {
     targetLanguage: string,
     sourceLanguage?: string,
   ): string {
-    // Clean definition to reduce tokens
-    const cleanDefinition = definition
+    // Language-specific cleaning patterns
+    const cleanDefinition = this.cleanDefinitionByLanguage(
+      definition,
+      sourceLanguage,
+    );
+
+    // Get language display names for better prompt clarity
+    const sourceDisplay = this.getLanguageDisplayName(sourceLanguage);
+    const targetDisplay = this.getLanguageDisplayName(targetLanguage);
+
+    // Create language-pair specific prompts
+    if (sourceLanguage && sourceLanguage !== targetLanguage) {
+      return this.buildTranslationPrompt(
+        cleanDefinition,
+        sourceDisplay,
+        targetDisplay,
+        sourceLanguage,
+        targetLanguage,
+      );
+    }
+
+    // Fallback for same-language extraction
+    return `Extract the ${targetDisplay} word described by this definition. Return ONLY the word, no quotes or explanations.
+Definition: ${cleanDefinition}
+Word:`;
+  }
+
+  /**
+   * Clean definition text based on source language patterns
+   */
+  private cleanDefinitionByLanguage(
+    definition: string,
+    sourceLanguage?: string,
+  ): string {
+    let cleaned = definition
       .replace(/\s+/g, ' ') // Remove extra spaces
       .replace(/\(.*?\)/g, '') // Remove parenthetical content
-      .replace(/dvs\.|f\.x\.|etc\./g, '') // Remove Danish abbreviations
       .trim()
       .substring(0, 200); // Limit definition length
 
-    const langContext =
-      sourceLanguage && sourceLanguage !== targetLanguage
-        ? `${sourceLanguage.toUpperCase()} definition → ${targetLanguage.toUpperCase()} word`
-        : `Extract the ${targetLanguage.toUpperCase()} word`;
+    // Language-specific abbreviation patterns
+    switch (sourceLanguage) {
+      case 'da': // Danish
+        cleaned = cleaned.replace(/dvs\.|f\.x\.|etc\.|el\.|fx\.|osv\./g, '');
+        break;
+      case 'de': // German
+        cleaned = cleaned.replace(/z\.B\.|bzw\.|usw\.|d\.h\.|etc\./g, '');
+        break;
+      case 'fr': // French
+        cleaned = cleaned.replace(/c'est-à-dire|par ex\.|etc\.|p\.ex\./g, '');
+        break;
+      case 'es': // Spanish
+        cleaned = cleaned.replace(/p\.ej\.|etc\.|es decir|por ejemplo/g, '');
+        break;
+      case 'it': // Italian
+        cleaned = cleaned.replace(/ad es\.|ecc\.|cioè|per esempio/g, '');
+        break;
+      default:
+        // Remove common English/general abbreviations
+        cleaned = cleaned.replace(/e\.g\.|i\.e\.|etc\.|ex\./g, '');
+    }
 
-    // Optimized prompt for minimal tokens and clean output
-    return `${langContext}. Return ONLY the word, no quotes or explanations.
-Definition: ${cleanDefinition}
-Word:`;
+    return cleaned.trim();
+  }
+
+  /**
+   * Get user-friendly language display names
+   */
+  private getLanguageDisplayName(languageCode?: string): string {
+    const languages: Record<string, string> = {
+      en: 'English',
+      da: 'Danish',
+      de: 'German',
+      fr: 'French',
+      es: 'Spanish',
+      it: 'Italian',
+      pt: 'Portuguese',
+      nl: 'Dutch',
+      sv: 'Swedish',
+      no: 'Norwegian',
+      ru: 'Russian',
+      zh: 'Chinese',
+      ja: 'Japanese',
+      ko: 'Korean',
+      ar: 'Arabic',
+    };
+
+    return (
+      languages[languageCode || 'en'] ||
+      languageCode?.toUpperCase() ||
+      'UNKNOWN'
+    );
+  }
+
+  /**
+   * Build translation-focused prompts with language-specific optimizations
+   */
+  private buildTranslationPrompt(
+    cleanDefinition: string,
+    sourceDisplay: string,
+    targetDisplay: string,
+    sourceLanguage: string,
+    targetLanguage: string,
+  ): string {
+    // Special handling for common language pairs
+    const langPair = `${sourceLanguage}-${targetLanguage}`;
+
+    switch (langPair) {
+      case 'da-en': // Danish to English
+        return `You are translating Danish dictionary definitions to find their English equivalent words.
+
+TASK: Find the single English word that best matches this Danish definition.
+DEFINITION (Danish): ${cleanDefinition}
+
+Return ONLY the English word (no quotes, explanations, or additional text):`;
+
+      case 'en-da': // English to Danish
+        return `You are translating English dictionary definitions to find their Danish equivalent words.
+
+TASK: Find the single Danish word that best matches this English definition.
+DEFINITION (English): ${cleanDefinition}
+
+Return ONLY the Danish word (no quotes, explanations, or additional text):`;
+
+      case 'de-en': // German to English
+        return `You are translating German dictionary definitions to find their English equivalent words.
+
+TASK: Find the single English word that best matches this German definition.
+DEFINITION (German): ${cleanDefinition}
+
+Return ONLY the English word (no quotes, explanations, or additional text):`;
+
+      default: // Generic template for other language pairs
+        return `You are translating ${sourceDisplay} dictionary definitions to find their ${targetDisplay} equivalent words.
+
+TASK: Find the single ${targetDisplay} word that best matches this ${sourceDisplay} definition.
+DEFINITION (${sourceDisplay}): ${cleanDefinition}
+
+Return ONLY the ${targetDisplay} word (no quotes, explanations, or additional text):`;
+    }
   }
 
   /**

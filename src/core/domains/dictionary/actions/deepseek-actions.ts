@@ -559,3 +559,266 @@ export async function getDefinitionsForWordDetails(
     throw new Error('Failed to fetch definitions for WordDetails');
   }
 }
+
+/**
+ * Remove words created in the last DeepSeek extraction attempt
+ * Useful when wrong language combination was chosen during extraction
+ */
+export async function removeLastExtractionAttempt(): Promise<{
+  success: boolean;
+  data?: {
+    removedWords: Array<{
+      id: number;
+      word: string;
+      languageCode: string;
+      createdAt: Date;
+    }>;
+    removedCount: number;
+  };
+  error?: string;
+}> {
+  try {
+    await serverLog(
+      'Starting removal of last extraction attempt words',
+      'info',
+    );
+
+    // Find words created in the last 10 minutes with "DeepSeek" in sourceEntityId
+    const cutoffTime = new Date(Date.now() - 10 * 60 * 1000); // 10 minutes ago
+
+    const recentWords = await prisma.word.findMany({
+      where: {
+        createdAt: {
+          gte: cutoffTime,
+        },
+        sourceEntityId: {
+          contains: 'DeepSeek',
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        oneWordDefinitions: {
+          include: {
+            definition: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (recentWords.length === 0) {
+      await serverLog('No recent DeepSeek words found to remove', 'info');
+      return {
+        success: true,
+        data: {
+          removedWords: [],
+          removedCount: 0,
+        },
+      };
+    }
+
+    await serverLog('Found recent DeepSeek words for removal', 'info', {
+      count: recentWords.length,
+      words: recentWords.map((w) => w.word),
+    });
+
+    // Delete the words (this will cascade delete the relationships)
+    let removedCount = 0;
+    const removedWords: Array<{
+      id: number;
+      word: string;
+      languageCode: string;
+      createdAt: Date;
+    }> = [];
+
+    for (const word of recentWords) {
+      try {
+        await prisma.word.delete({
+          where: { id: word.id },
+        });
+
+        removedWords.push({
+          id: word.id,
+          word: word.word,
+          languageCode: word.languageCode,
+          createdAt: word.createdAt,
+        });
+        removedCount++;
+
+        await serverLog('Removed recent DeepSeek word', 'info', {
+          wordId: word.id,
+          wordText: word.word,
+          connectionsDeleted: word.oneWordDefinitions.length,
+        });
+      } catch (deleteError) {
+        await serverLog('Failed to remove recent word', 'error', {
+          wordId: word.id,
+          wordText: word.word,
+          error:
+            deleteError instanceof Error
+              ? deleteError.message
+              : 'Unknown error',
+        });
+      }
+    }
+
+    await serverLog('Completed removal of last extraction attempt', 'info', {
+      totalFound: recentWords.length,
+      totalRemoved: removedCount,
+    });
+
+    return {
+      success: true,
+      data: {
+        removedWords,
+        removedCount,
+      },
+    };
+  } catch (error) {
+    await serverLog('Error removing last extraction attempt', 'error', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Failed to remove last extraction attempt',
+    };
+  }
+}
+
+/**
+ * Cleanup function to identify and fix incorrectly created Danish words marked as English
+ * This fixes the bug where DeepSeek extracted Danish words instead of English equivalents
+ */
+export async function cleanupIncorrectDeepSeekWords(): Promise<{
+  success: boolean;
+  data?: {
+    foundIncorrectWords: Array<{
+      id: number;
+      text: string;
+      languageCode: string;
+      shouldBe: string;
+    }>;
+    cleanedUp: number;
+  };
+  error?: string;
+}> {
+  try {
+    await serverLog('Starting cleanup of incorrect DeepSeek words', 'info');
+
+    // List of Danish words that were incorrectly created as English words
+    const danishWordsCreatedAsEnglish = [
+      'voksen',
+      'toppl',
+      'værd',
+      'stor',
+      'generøs',
+      'kræv',
+      'meget',
+      'rummelig',
+      'topp',
+      'kraftigt',
+      'mangfold',
+      'imponer',
+    ];
+
+    // Find these words in the database
+    const incorrectWords = await prisma.word.findMany({
+      where: {
+        word: { in: danishWordsCreatedAsEnglish },
+        languageCode: 'en', // These are marked as English but are actually Danish
+      },
+      include: {
+        oneWordDefinitions: {
+          include: {
+            definition: {
+              select: {
+                id: true,
+                definition: true,
+                languageCode: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    await serverLog('Found incorrect words for cleanup', 'info', {
+      count: incorrectWords.length,
+      words: incorrectWords.map((w) => w.word),
+    });
+
+    let cleanedUpCount = 0;
+
+    for (const word of incorrectWords) {
+      try {
+        // Delete the incorrect word and its connections
+        // This will cascade delete DefinitionToOneWord connections
+        await prisma.word.delete({
+          where: { id: word.id },
+        });
+
+        cleanedUpCount++;
+
+        await serverLog(
+          'Deleted incorrect Danish word marked as English',
+          'info',
+          {
+            wordId: word.id,
+            wordText: word.word,
+            connectionsDeleted: word.oneWordDefinitions.length,
+          },
+        );
+      } catch (deleteError) {
+        await serverLog('Failed to delete incorrect word', 'error', {
+          wordId: word.id,
+          wordText: word.word,
+          error:
+            deleteError instanceof Error
+              ? deleteError.message
+              : 'Unknown error',
+        });
+      }
+    }
+
+    const foundWords = incorrectWords.map((word) => ({
+      id: word.id,
+      text: word.word,
+      languageCode: word.languageCode,
+      shouldBe: 'da', // These should have been Danish words
+    }));
+
+    await serverLog('Cleanup of incorrect DeepSeek words completed', 'info', {
+      totalFound: incorrectWords.length,
+      successfullyDeleted: cleanedUpCount,
+    });
+
+    return {
+      success: true,
+      data: {
+        foundIncorrectWords: foundWords,
+        cleanedUp: cleanedUpCount,
+      },
+    };
+  } catch (error) {
+    await serverLog('Cleanup of incorrect DeepSeek words failed', 'error', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Unknown error occurred during cleanup',
+    };
+  }
+}

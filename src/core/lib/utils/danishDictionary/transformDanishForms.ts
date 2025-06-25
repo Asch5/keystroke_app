@@ -367,9 +367,15 @@ function processAdjectiveForms(
   }
 
   // Process comparative form (e.g., "større", "-ere")
-  if (forms.length >= 3 && forms[2] && forms[2].includes('ere')) {
-    const comparativeForm = applyEnding(baseWord, forms[2]);
-    addRelationship(baseWord, comparativeForm, 'comparative_da' as const);
+  if (forms.length >= 3 && forms[2]) {
+    if (forms[2].includes('ere')) {
+      // Regular comparative with -ere suffix
+      const comparativeForm = applyEnding(baseWord, forms[2]);
+      addRelationship(baseWord, comparativeForm, 'comparative_da' as const);
+    } else if (!forms[2].startsWith('-')) {
+      // Irregular comparative form (complete word like "større")
+      addRelationship(baseWord, forms[2], 'comparative_da' as const);
+    }
   } else if (baseWord === 'god' && forms.length >= 3 && forms[2] === 'bedre') {
     // Special case for 'god' -> 'bedre' (irregular)
     addRelationship(baseWord, 'bedre', 'comparative_da' as const);
@@ -387,6 +393,10 @@ function processAdjectiveForms(
       // Handle normal -est forms
       superlativeForm = applyEnding(baseWord, forms[3]);
       addRelationship(baseWord, superlativeForm, 'superlative_da' as const);
+      superlativeAdded = true;
+    } else if (forms[3] && !forms[3].startsWith('-')) {
+      // Irregular superlative form (complete word like "størst")
+      addRelationship(baseWord, forms[3], 'superlative_da' as const);
       superlativeAdded = true;
     } else if (
       forms[3] &&
@@ -413,9 +423,16 @@ function processAdjectiveForms(
     addRelationship(baseWord, `mest ${baseWord}`, 'superlative_da' as const);
   } else {
     // For adjectives with fewer forms, do our best with what we have
-    forms.forEach((form) => {
+    forms.forEach((form, index) => {
       if (form && form !== '-') {
-        const relatedWord = applyEnding(baseWord, form);
+        let relatedWord = '';
+
+        // Check if it's a complete word (irregular form) or a suffix
+        if (form.startsWith('-')) {
+          relatedWord = applyEnding(baseWord, form);
+        } else {
+          relatedWord = form;
+        }
 
         // Determine relationship type based on form pattern and index
         if (form === '-t' || form.endsWith('-t')) {
@@ -427,13 +444,19 @@ function processAdjectiveForms(
           form.endsWith('-ke')
         ) {
           addRelationship(baseWord, relatedWord, 'plural_definite_da' as const);
-        } else if (form.includes('ere')) {
+        } else if (
+          form.includes('ere') ||
+          (index === 2 && !form.startsWith('-'))
+        ) {
+          // Comparative: either contains 'ere' or is in position 2 and not a suffix
           addRelationship(baseWord, relatedWord, 'comparative_da' as const);
         } else if (
           form.includes('est') ||
           form === '(-est)' ||
-          form.includes('(-est)')
+          form.includes('(-est)') ||
+          (index === 3 && !form.startsWith('-'))
         ) {
+          // Superlative: either contains 'est' or is in position 3 and not a suffix
           const actualWord =
             form === '(-est)' || form.includes('(-est)')
               ? applyEnding(baseWord, '-est')
@@ -1201,5 +1224,61 @@ function processPronounForms(
         // Add other contextual pronoun rules if necessary
       });
     }
+  }
+}
+
+// Test function to verify the fix for irregular adjectives like "stor"
+export function testStorAdjectiveTransformation(): void {
+  const storEntry: DanishWordEntry = {
+    word: 'stor',
+    word_variants: ['stor'],
+    variant: '',
+    variant_pos: 'adj.',
+    phonetic: 'ˈsdoˀɐ̯',
+    partOfSpeech: ['adjektiv'],
+    forms: ['-t', '-e', 'større', 'størst'],
+    contextual_forms: {},
+    audio: [],
+  };
+
+  const result = transformDanishForms(storEntry);
+
+  console.log('Testing "stor" adjective transformation:');
+  console.log('Base word:', result.word);
+  console.log('Related words and relationships:');
+
+  result.relatedWords.forEach((relatedWord) => {
+    console.log(`- ${relatedWord.word}:`);
+    relatedWord.relationships.forEach((rel) => {
+      console.log(
+        `  * ${rel.relationshipType}: ${rel.baseWord} -> ${rel.relatedWord}`,
+      );
+    });
+  });
+
+  // Check if "større" and "størst" are properly handled
+  const comparativeFound = result.relatedWords.some((rw) =>
+    rw.relationships.some(
+      (rel) =>
+        rel.relationshipType === 'comparative_da' &&
+        rel.relatedWord === 'større',
+    ),
+  );
+
+  const superlativeFound = result.relatedWords.some((rw) =>
+    rw.relationships.some(
+      (rel) =>
+        rel.relationshipType === 'superlative_da' &&
+        rel.relatedWord === 'størst',
+    ),
+  );
+
+  console.log('Comparative "større" found:', comparativeFound);
+  console.log('Superlative "størst" found:', superlativeFound);
+
+  if (comparativeFound && superlativeFound) {
+    console.log('✅ Test PASSED: Both irregular forms are properly handled');
+  } else {
+    console.log('❌ Test FAILED: Irregular forms are not properly handled');
   }
 }

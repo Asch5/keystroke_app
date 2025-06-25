@@ -8,7 +8,9 @@ export const mockPracticeWords = [
   {
     userDictionaryId: '1',
     wordText: 'hund',
-    definition: 'dog',
+    definition:
+      'a domesticated carnivorous mammal that typically has a long snout, an acute sense of smell, non-retractable claws, and a barking, howling, or whining voice',
+    oneWordTranslation: 'dog',
     audioUrl: 'http://example.com/audio1.mp3',
     phonetic: 'hun',
     partOfSpeech: 'noun' as const,
@@ -23,7 +25,9 @@ export const mockPracticeWords = [
   {
     userDictionaryId: '2',
     wordText: 'kat',
-    definition: 'cat',
+    definition:
+      'a small domesticated carnivorous mammal with soft fur, a short snout, and retractable claws',
+    oneWordTranslation: 'cat',
     audioUrl: 'http://example.com/audio2.mp3',
     phonetic: 'kat',
     partOfSpeech: 'noun' as const,
@@ -35,7 +39,9 @@ export const mockPracticeWords = [
   {
     userDictionaryId: '3',
     wordText: 'fugl',
-    definition: 'bird',
+    definition:
+      'a warm-blooded egg-laying vertebrate distinguished by the possession of feathers, wings, and a beak and typically able to fly',
+    oneWordTranslation: 'bird',
     audioUrl: 'http://example.com/audio3.mp3',
     phonetic: 'fuʊl',
     partOfSpeech: 'noun' as const,

@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
 import { AddWordsToListDialog } from '@/components/features/admin/dictionary/AddWordsToListDialog';
 import { DeepSeekWordExtractionDialog } from '@/components/features/admin/dictionary/DeepSeekWordExtractionDialog';
+import { ManualFormsDialog } from '@/components/features/admin/dictionary/ManualFormsDialog';
 import {
   AdminDictionaryPageHeader,
   AdminDictionaryFilters,
@@ -29,6 +30,8 @@ export default function DictionariesPage() {
     isDeleting,
     isAddWordsToListDialogOpen,
     isDeepSeekDialogOpen,
+    isManualFormsDialogOpen,
+    selectedWordForForms,
 
     // Actions
     setSelectedLanguage,
@@ -51,6 +54,9 @@ export default function DictionariesPage() {
     handleDeepSeekSuccess,
     getSelectedWordDetailIds,
     setIsDeepSeekDialogOpen,
+    openManualFormsDialog,
+    handleManualFormsSuccess,
+    setIsManualFormsDialogOpen,
   } = useAdminDictionaryState();
 
   return (
@@ -87,6 +93,7 @@ export default function DictionariesPage() {
             onClearSelection={clearSelection}
             onDeleteAudio={handleDeleteAudio}
             selectedLanguage={selectedLanguage}
+            onAddManualForms={openManualFormsDialog}
           />
         </CardContent>
       </Card>
@@ -121,6 +128,14 @@ export default function DictionariesPage() {
         onOpenChange={setIsDeepSeekDialogOpen}
         selectedWordDetailIds={getSelectedWordDetailIds()}
         onSuccess={handleDeepSeekSuccess}
+      />
+
+      {/* Manual Forms Dialog */}
+      <ManualFormsDialog
+        isOpen={isManualFormsDialogOpen}
+        onOpenChange={setIsManualFormsDialogOpen}
+        wordDetail={selectedWordForForms}
+        onSuccess={handleManualFormsSuccess}
       />
     </div>
   );

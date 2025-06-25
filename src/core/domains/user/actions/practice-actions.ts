@@ -29,6 +29,7 @@ export interface PracticeWord {
   userDictionaryId: string;
   wordText: string;
   definition: string;
+  oneWordTranslation?: string | undefined; // One-word translation for prominent display
   phonetic?: string | undefined;
   partOfSpeech?: string | undefined;
   difficulty: number;
@@ -207,7 +208,7 @@ export async function createTypingPracticeSession(
       whereClause.id = { in: userDictionaryIds };
     }
 
-    // Get words from user dictionary with word details, translations, and images
+    // Get words from user dictionary with word details, translations, one-word definitions, and images
     const userWords = await prisma.userDictionary.findMany({
       where: whereClause,
       include: {
@@ -233,6 +234,17 @@ export async function createTypingPracticeSession(
             translationLinks: {
               include: {
                 translation: true,
+              },
+            },
+            oneWordLinks: {
+              include: {
+                word: {
+                  select: {
+                    id: true,
+                    word: true,
+                    languageCode: true,
+                  },
+                },
               },
             },
             image: {
@@ -309,6 +321,15 @@ export async function createTypingPracticeSession(
         user.baseLanguageCode, // Show definition in user's base language
       );
 
+      // Get one-word translation (prioritize user's base language)
+      const oneWordLinks = word.definition.oneWordLinks || [];
+      const oneWordTranslation =
+        oneWordLinks.find(
+          (link) => link.word.languageCode === user.baseLanguageCode,
+        )?.word.word ||
+        oneWordLinks[0]?.word.word ||
+        undefined;
+
       // Get image data from definition
       const imageData = word.definition.image;
 
@@ -316,7 +337,8 @@ export async function createTypingPracticeSession(
         userDictionaryId: word.id,
         wordText:
           actualWord?.word || extractWordText(word.definition.definition), // Target language word to type
-        definition: definitionDisplay.content, // Definition in base language to show
+        definition: definitionDisplay.content, // Full definition in base language to show
+        oneWordTranslation, // One-word translation for prominent display
         phonetic: word.customPhonetic || wordDetails?.phonetic || undefined,
         partOfSpeech: wordDetails?.partOfSpeech || undefined,
         difficulty:

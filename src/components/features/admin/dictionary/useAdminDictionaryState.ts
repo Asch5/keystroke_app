@@ -47,6 +47,9 @@ export function useAdminDictionaryState() {
   const [isAddWordsToListDialogOpen, setIsAddWordsToListDialogOpen] =
     useState(false);
   const [isDeepSeekDialogOpen, setIsDeepSeekDialogOpen] = useState(false);
+  const [isManualFormsDialogOpen, setIsManualFormsDialogOpen] = useState(false);
+  const [selectedWordForForms, setSelectedWordForForms] =
+    useState<DictionaryWordDetails | null>(null);
 
   // Apply filters logic
   const applyFilters = useCallback(() => {
@@ -304,6 +307,21 @@ export function useAdminDictionaryState() {
     return Array.from(selectedWords).map((id) => parseInt(id));
   };
 
+  // Manual forms handlers
+  const openManualFormsDialog = (wordDetail: DictionaryWordDetails) => {
+    setSelectedWordForForms(wordDetail);
+    setIsManualFormsDialogOpen(true);
+  };
+
+  const handleManualFormsSuccess = () => {
+    // Close dialog and refresh data
+    setIsManualFormsDialogOpen(false);
+    setSelectedWordForForms(null);
+
+    // Refresh the word list to show newly added forms
+    handleAudioGenerated(); // This already refreshes the word list
+  };
+
   return {
     // State
     selectedLanguage,
@@ -317,6 +335,8 @@ export function useAdminDictionaryState() {
     isDeleting,
     isAddWordsToListDialogOpen,
     isDeepSeekDialogOpen,
+    isManualFormsDialogOpen,
+    selectedWordForForms,
 
     // Actions
     setSelectedLanguage,
@@ -339,5 +359,8 @@ export function useAdminDictionaryState() {
     handleDeepSeekSuccess,
     getSelectedWordDetailIds,
     setIsDeepSeekDialogOpen,
+    openManualFormsDialog,
+    handleManualFormsSuccess,
+    setIsManualFormsDialogOpen,
   };
 }

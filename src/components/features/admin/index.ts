@@ -8,6 +8,7 @@ export { default as WordDetails } from './dictionary/WordDetails';
 export { TTSControls } from './dictionary/TTSControls';
 export { ImageControls } from './dictionary/ImageControls';
 export { ActionButtonsToolbar } from './dictionary/ActionButtonsToolbar';
+export { ManualFormsDialog } from './dictionary/ManualFormsDialog';
 
 // Admin Dictionary Page Components
 export { AdminDictionaryPageHeader } from './dictionary/AdminDictionaryPageHeader';

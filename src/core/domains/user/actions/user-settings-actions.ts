@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { put } from '@vercel/blob';
+// Note: Dynamic import used to avoid bundling issues
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '@/core/lib/prisma';
 import { getUserByEmail } from '@/core/lib/db/user';
@@ -192,29 +192,100 @@ export async function updateUserProfile(
 
       // Validate file type
       if (!photo.type.startsWith('image/')) {
-        return { message: 'Please upload an image file.' };
+        return {
+          message: 'Please upload an image file.',
+          errors: {
+            profilePicture: ['File must be an image (JPG, PNG, or WebP).'],
+          },
+        };
       }
 
-      // Validate file size (max 2MB)
-      if (photo.size > 2 * 1024 * 1024) {
-        return { message: 'Photo size should be less than 2MB.' };
+      // More lenient file size check (since we're processing on client-side)
+      if (photo.size > 5 * 1024 * 1024) {
+        return {
+          message: 'Photo size is too large.',
+          errors: { profilePicture: ['Photo size should be less than 5MB.'] },
+        };
+      }
+
+      // Validate file has content
+      if (photo.size === 0) {
+        return {
+          message: 'Invalid image file.',
+          errors: {
+            profilePicture: ['Image file appears to be empty or corrupted.'],
+          },
+        };
       }
 
       try {
-        // Generate a unique filename
-        const fileExtension = photo.name.split('.').pop();
+        // Generate a unique filename with proper extension
+        const fileExtension = photo.name.split('.').pop() || 'jpg';
         const fileName = `profile/${user.id}-${uuidv4()}.${fileExtension}`;
 
-        // Upload to Vercel Blob
+        // Log upload attempt for debugging
+        console.log('Attempting to upload profile picture:', {
+          fileName,
+          fileSize: photo.size,
+          fileType: photo.type,
+          userId: user.id,
+        });
+
+        // Upload to Vercel Blob using dynamic import to avoid bundling issues
+        const { put } = await import('@vercel/blob');
         const blob = await put(fileName, photo, {
           access: 'public',
           contentType: photo.type,
         });
 
         updateData.profilePictureUrl = blob.url;
+
+        console.log('Profile picture uploaded successfully:', {
+          fileName,
+          blobUrl: blob.url,
+          userId: user.id,
+        });
       } catch (uploadError) {
         console.error('Error uploading photo:', uploadError);
-        return { message: 'Failed to upload photo. Please try again.' };
+
+        // Provide more specific error messages
+        const errorMessage =
+          uploadError instanceof Error
+            ? uploadError.message
+            : 'Unknown upload error';
+
+        if (
+          errorMessage.includes('network') ||
+          errorMessage.includes('timeout')
+        ) {
+          return {
+            message:
+              'Network error during upload. Please check your connection and try again.',
+            errors: { profilePicture: ['Network error. Please try again.'] },
+          };
+        }
+
+        if (
+          errorMessage.includes('size') ||
+          errorMessage.includes('too large')
+        ) {
+          return {
+            message: 'Image file is too large. Please use a smaller image.',
+            errors: { profilePicture: ['Image file is too large.'] },
+          };
+        }
+
+        if (errorMessage.includes('format') || errorMessage.includes('type')) {
+          return {
+            message: 'Unsupported image format. Please use JPG, PNG, or WebP.',
+            errors: { profilePicture: ['Unsupported image format.'] },
+          };
+        }
+
+        return {
+          message: 'Failed to upload photo. Please try again.',
+          errors: { profilePicture: [`Upload failed: ${errorMessage}`] },
+        };
       }
     }
 

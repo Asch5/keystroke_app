@@ -574,6 +574,123 @@ Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `Typi
 - `SessionState`, `SessionStatsResponse`
 - `CreateSessionRequest`, `UpdateSessionRequest`
 
+### Enhanced Learning Progress Tracking (`utils/difficulty-assessment.ts`)
+
+**NEW**: Comprehensive multi-factor difficulty assessment system for intelligent learning optimization:
+
+- `DifficultyAssessment.calculateDifficultyScore(userId, userDictionaryId)` - Calculate comprehensive difficulty score using both user performance and linguistic metrics
+- `DifficultyAssessment.calculateBatchDifficultyScores(userId, userDictionaryIds[])` - Batch difficulty calculation for efficient processing
+- `DifficultyAssessment.getIntelligentWordSelection(userId, targetWords, options)` - Smart word selection for practice sessions
+- `LearningProgressTracker.updateLearningProgress(userId, learningUnitId, practiceType, result)` - Universal progress tracking across practice types
+- `LearningProgressTracker.trackSkip(userId, learningUnitId, practiceType)` - Track skip behavior for difficulty assessment
+
+**Key Features:**
+
+- **Multi-Factor Assessment**: Combines user performance metrics (mistake rate, correct streak, SRS level, response time, skip rate) with linguistic metrics (word rarity, phonetic irregularity, polysemy, word length)
+- **Dynamic Difficulty**: User-centric difficulty scores that adapt based on individual learning patterns
+- **Universal Learning Units**: Extensible architecture supporting any type of learning content (words, phrases, grammar, pronunciation)
+- **Intelligent Word Selection**: Strategic word distribution (hard/medium/easy) for optimal learning sessions
+- **Comprehensive Analytics**: Detailed difficulty progression tracking and learning pattern analysis
+
+### Practice Session Management (`utils/practice-session-manager.ts`)
+
+**NEW**: Advanced practice session orchestration with adaptive difficulty and multi-modal support:
+
+- `PracticeSessionManager.createSession(options)` - Create intelligent practice sessions with difficulty-based word selection
+- `PracticeSessionManager.processAttempt(sessionId, attempt)` - Process attempts with adaptive feedback and difficulty adjustment
+- `PracticeSessionManager.completeSession(session)` - Generate comprehensive session summaries with learning analytics
+- `PracticeSessionManager.pauseSession()` / `resumeSession()` / `abandonSession()` - Full session lifecycle management
+
+**Supported Practice Types:**
+
+- **Typing Practice**: Character-by-character accuracy with typo tolerance
+- **Flashcards**: Multiple acceptable answers with semantic matching
+- **Pronunciation**: Speech recognition confidence scoring
+- **Quiz**: Multiple choice and text input with flexible evaluation
+- **Games**: Extensible framework for gamified learning
+
+**Adaptive Features:**
+
+- **Real-time Difficulty Adjustment**: Automatically adjusts word difficulty based on performance patterns
+- **Mistake Pattern Analysis**: Tracks and categorizes different types of learning mistakes
+- **Response Time Analytics**: Monitors cognitive load through timing analysis
+- **Session Recommendations**: AI-powered suggestions for optimal next learning activities
+
+### Enhanced Practice Actions (`actions/enhanced-practice-actions.ts`)
+
+**NEW**: Server actions leveraging the difficulty assessment system for intelligent learning experiences:
+
+- `createIntelligentPracticeSession(request)` - Create practice sessions with AI-powered word selection and difficulty optimization
+- `processIntelligentAttempt(request)` - Process learning attempts with comprehensive feedback and adaptive adjustment
+- `completeIntelligentSession(sessionId)` - Complete sessions with detailed analytics and learning progression insights
+- `getWordDifficultyAssessment(userId, userDictionaryId)` - Get individual word difficulty assessments
+- `getBatchDifficultyAssessments(userId, userDictionaryIds[])` - Batch difficulty analysis for vocabulary management
+
+**Advanced Features:**
+
+- **Practice Type Specialization**: Customized evaluation logic for each practice mode
+- **Confidence-Based Learning**: Uses assessment confidence levels to determine review scheduling
+- **Adaptive Feedback Generation**: Context-aware encouragement and explanations
+- **Learning Achievement Tracking**: Automatic detection and celebration of learning milestones
+
+### Configuration and Metrics
+
+**Difficulty Assessment Configuration** (`DIFFICULTY_ASSESSMENT_CONFIG`):
+
+- **Performance Weights**: Mistake rate (25%), correct streak (20%), SRS level (15%), learning status (15%), response time (10%), skip rate (10%), recency/frequency (5%)
+- **Linguistic Weights**: Word rarity (30%), phonetic irregularity (20%), polysemy (15%), word length (15%), semantic abstraction (10%), relational complexity (10%)
+- **Dynamic Weight Adjustment**: New users start with 100% linguistic weighting, transitioning to 70% performance / 30% linguistic as data accumulates
+
+**Practice Configurations** (`PRACTICE_CONFIGS`):
+
+- **Typing**: 10 words, 10min, adaptive difficulty, skipping enabled
+- **Flashcards**: 15 words, 15min, adaptive difficulty, no skipping
+- **Pronunciation**: 8 words, 8min, fixed difficulty, skipping enabled
+- **Quiz**: 20 words, 20min, fixed difficulty, no skipping
+
+## Database Schema Enhancements
+
+### UserDictionary Model Updates
+
+**NEW FIELD**: `skipCount INT DEFAULT 0` - Tracks behavioral skip patterns for difficulty assessment
+
+**Enhanced Analytics Fields**:
+
+- `skipCount`: Number of times user has skipped this word during practice
+- `srsLevel`: Enhanced spaced repetition system with 6 levels (0-5)
+- `masteryScore`: Composite mastery calculation (0-100) incorporating multiple factors
+- `nextSrsReview`: Intelligent review scheduling based on performance patterns
+
+### Learning Unit Architecture
+
+**Universal Learning Interface**: All practice types now work with standardized `LearningUnit` objects:
+
+```typescript
+interface LearningUnit {
+  id: string;
+  type: 'word' | 'phrase' | 'grammar' | 'pronunciation';
+  content: {
+    primary: string; // Main content to learn
+    secondary?: string; // Additional context
+    metadata: Record<string, any>; // Type-specific data
+  };
+  difficulty: DifficultyScore;
+  userProgress: {
+    attempts: number;
+    successes: number;
+    lastAttempt: Date | null;
+    nextReview: Date | null;
+  };
+}
+```
+
+This architecture enables:
+
+- **Cross-Practice Compatibility**: Same word can be practiced in typing, flashcards, pronunciation, etc.
+- **Unified Progress Tracking**: Consistent metrics across all learning modalities
+- **Extensible Content Types**: Easy addition of new learning content beyond words
+- **Intelligent Scheduling**: Unified review system optimizing across all practice types
+
 ## Translation Domain (`domains/translation/`)
 
 ### Translation Processing

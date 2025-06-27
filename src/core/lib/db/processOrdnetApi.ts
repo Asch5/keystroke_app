@@ -37,6 +37,29 @@ import { type AudioMetadata } from '@/core/shared/services/external-apis/blobSto
 import { getDanishFormDefinition as getDanishFormDefinitionUtil } from '@/core/lib/utils/danishDictionary/getDanishFormDefinition';
 //import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
+/**
+ * Helper function to determine if a definition ID represents a main definition
+ * Main definitions have simple numeric IDs like "1", "2", "3"
+ * Sub-definitions have IDs like "1.a", "1.b", "2.a", etc.
+ * @param definitionId The definition ID to check
+ * @returns true if this is a main definition, false if it's a sub-definition
+ */
+function isMainDefinition(definitionId: string): boolean {
+  // A main definition ID should be a simple number (possibly with leading/trailing whitespace)
+  const trimmedId = definitionId.trim();
+
+  // Check if it's a pure integer (digits only)
+  const isInteger = /^\d+$/.test(trimmedId);
+
+  // Log the determination for debugging
+  serverLog(
+    `Definition ID "${definitionId}" (trimmed: "${trimmedId}") is ${isInteger ? 'MAIN' : 'SUB'} definition`,
+    'info',
+  );
+
+  return isInteger;
+}
+
 /**Definitions:
  * generalLabels "lbs" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs. (like capitalization indicators, usage notes, etc.)
  *
@@ -691,6 +714,9 @@ export async function processAndSaveDanishWord(
         });
       }
 
+      // Determine if this is a main definition based on the ID
+      const isMainDef = isMainDefinition(def.id);
+
       processedData.definitions.push({
         id: null, // id will be populated after saving
         source: source.toString(),
@@ -700,7 +726,7 @@ export async function processAndSaveDanishWord(
         generalLabels: extractGeneralLabels(def.labels),
         grammaticalNote: extractGrammaticalNote(def.labels),
         usageNote: extractUsageNote(def.labels),
-        isInShortDef: false,
+        isInShortDef: isMainDef, // Mark main definitions as important
         examples: combinedExamples, // Use the combined and ordered list
       });
     }
@@ -1199,6 +1225,9 @@ export async function processAndSaveDanishWord(
         });
 
         // Add as a subWord too, with all the metadata
+        // Determine if this is a main expression definition based on the ID
+        const isMainExpressionDef = isMainDefinition(defItem.id);
+
         subWordsArray.push({
           word: expression.expression,
           languageCode: language,
@@ -1222,7 +1251,7 @@ export async function processAndSaveDanishWord(
               usageNote: defItem.labels
                 ? extractUsageNote(defItem.labels)
                 : null,
-              isInShortDef: false,
+              isInShortDef: isMainExpressionDef, // Mark main expression definitions as important
             },
           ],
           relationship: [

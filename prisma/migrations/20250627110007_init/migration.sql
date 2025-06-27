@@ -206,6 +206,7 @@ CREATE TABLE "user_dictionary" (
     "progress" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "amount_of_mistakes" INTEGER NOT NULL DEFAULT 0,
     "correct_streak" INTEGER NOT NULL DEFAULT 0,
+    "skip_count" INTEGER NOT NULL DEFAULT 0,
     "srs_level" INTEGER NOT NULL DEFAULT 0,
     "srs_interval" INTEGER NOT NULL DEFAULT 0,
     "last_srs_success" BOOLEAN,

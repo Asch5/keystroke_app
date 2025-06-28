@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';

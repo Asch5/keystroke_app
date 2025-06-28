@@ -23,7 +23,17 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Zap, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import {
+  Zap,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Loader2,
+  X,
+  Plus,
+  Languages,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { extractWordsFromDefinitionsBatch } from '@/core/domains/dictionary/actions/deepseek-actions';
 import { getDefinitionsForWordDetails } from '@/core/domains/dictionary/actions/deepseek-actions';
@@ -49,6 +59,10 @@ interface ProcessingState {
   progress: number;
   currentStep: string;
   results: ExtractWordsBatchResult | null;
+  currentBatch: number;
+  totalBatches: number;
+  processedCount: number;
+  totalCount: number;
 }
 
 const LANGUAGE_OPTIONS = [
@@ -70,8 +84,10 @@ export function DeepSeekWordExtractionDialog({
   selectedWordDetailIds,
   onSuccess,
 }: DeepSeekWordExtractionDialogProps) {
-  const [targetLanguage, setTargetLanguage] = useState<string>('en');
+  const [targetLanguages, setTargetLanguages] = useState<string[]>(['en']);
   const [sourceLanguage, setSourceLanguage] = useState<string>('da');
+  const [onlyShortDefinitions, setOnlyShortDefinitions] =
+    useState<boolean>(false);
   const [wordDetailsWithDefinitions, setWordDetailsWithDefinitions] = useState<
     WordDetailWithDefinitions[]
   >([]);
@@ -81,21 +97,28 @@ export function DeepSeekWordExtractionDialog({
     progress: 0,
     currentStep: '',
     results: null,
+    currentBatch: 0,
+    totalBatches: 0,
+    processedCount: 0,
+    totalCount: 0,
   });
   const [isCleaningUp, setIsCleaningUp] = useState(false);
 
-  // Load definitions when dialog opens or selected words change
+  // Load definitions when dialog opens, selected words change, or filter changes
   useEffect(() => {
     if (open && selectedWordDetailIds.length > 0) {
       loadDefinitions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, selectedWordDetailIds]);
+  }, [open, selectedWordDetailIds, onlyShortDefinitions]);
 
   const loadDefinitions = useCallback(async () => {
     setIsLoadingDefinitions(true);
     try {
-      const data = await getDefinitionsForWordDetails(selectedWordDetailIds);
+      const data = await getDefinitionsForWordDetails(
+        selectedWordDetailIds,
+        onlyShortDefinitions,
+      );
       setWordDetailsWithDefinitions(data);
     } catch (error) {
       console.error('Error loading definitions:', error);
@@ -103,7 +126,7 @@ export function DeepSeekWordExtractionDialog({
     } finally {
       setIsLoadingDefinitions(false);
     }
-  }, [selectedWordDetailIds]);
+  }, [selectedWordDetailIds, onlyShortDefinitions]);
 
   // Toggle definition selection
   const toggleDefinitionSelection = (
@@ -153,13 +176,14 @@ export function DeepSeekWordExtractionDialog({
     );
   };
 
-  // Calculate cost estimate
+  // Calculate cost estimate for multiple languages
   const calculateCostEstimate = () => {
     const selectedDefinitions = getSelectedDefinitions();
     const avgTokensPerDefinition = 25; // Conservative estimate
     const outputTokens = 2; // Single word output
-    const totalTokens =
+    const totalTokensPerLanguage =
       selectedDefinitions.length * (avgTokensPerDefinition + outputTokens);
+    const totalTokens = totalTokensPerLanguage * targetLanguages.length;
     const costPer1KTokens = 0.001; // DeepSeek pricing
     return (totalTokens / 1000) * costPer1KTokens;
   };
@@ -220,57 +244,126 @@ export function DeepSeekWordExtractionDialog({
       return;
     }
 
+    if (targetLanguages.length === 0) {
+      toast.error('Please select at least one target language');
+      return;
+    }
+
     setProcessingState({
       isProcessing: true,
       progress: 0,
-      currentStep: 'Preparing extraction...',
+      currentStep: 'Preparing batch processing...',
       results: null,
+      currentBatch: 0,
+      totalBatches: 0,
+      processedCount: 0,
+      totalCount: selectedDefinitions.length,
     });
 
+    const definitionIds = selectedDefinitions.map((def) => def.id);
+
+    // Implement chunking for large batches (max 50 definitions per batch)
+    const CHUNK_SIZE = 50;
+    const chunks = [];
+    for (let i = 0; i < definitionIds.length; i += CHUNK_SIZE) {
+      chunks.push(definitionIds.slice(i, i + CHUNK_SIZE));
+    }
+
+    setProcessingState((prev) => ({
+      ...prev,
+      totalBatches: chunks.length,
+      currentStep: `Processing ${chunks.length} batch(es)...`,
+    }));
+
+    let totalResults: Array<{
+      definitionId: number;
+      targetLanguage: string;
+      word: string | null;
+      confidence: number;
+      connected: boolean;
+      error?: string;
+    }> = [];
+    let totalTokensUsed = 0;
+    let totalCost = 0;
+
     try {
-      const formData = new FormData();
-      formData.append(
-        'definitionIds',
-        JSON.stringify(selectedDefinitions.map((d) => d.id)),
-      );
-      formData.append('targetLanguage', targetLanguage);
-      formData.append('sourceLanguage', sourceLanguage);
+      // Process each chunk sequentially
+      for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
+        const chunk = chunks[chunkIndex];
 
-      setProcessingState((prev) => ({
-        ...prev,
-        currentStep: 'Extracting words using AI...',
-        progress: 25,
-      }));
+        if (!chunk) {
+          throw new Error(`Chunk ${chunkIndex + 1} is undefined`);
+        }
 
-      const result = await extractWordsFromDefinitionsBatch(
-        { success: false },
-        formData,
-      );
+        setProcessingState((prev) => ({
+          ...prev,
+          currentBatch: chunkIndex + 1,
+          currentStep: `Processing batch ${chunkIndex + 1} of ${chunks.length}...`,
+          progress: Math.round((chunkIndex / chunks.length) * 100),
+        }));
 
-      setProcessingState((prev) => ({
-        ...prev,
-        progress: 100,
-        currentStep: 'Extraction completed',
-        results: result,
-        isProcessing: false,
-      }));
-
-      if (result.success) {
-        toast.success(
-          `Successfully extracted ${result.data?.successCount || 0} words`,
+        const chunkFormData = new FormData();
+        chunkFormData.append('definitionIds', JSON.stringify(chunk));
+        chunkFormData.append(
+          'targetLanguages',
+          JSON.stringify(targetLanguages),
         );
-        onSuccess();
-      } else {
-        toast.error(result.error || 'Extraction failed');
+        chunkFormData.append('sourceLanguage', sourceLanguage);
+        chunkFormData.append(
+          'onlyShortDefinitions',
+          JSON.stringify(onlyShortDefinitions),
+        );
+
+        const result = await extractWordsFromDefinitionsBatch(
+          { success: false },
+          chunkFormData,
+        );
+
+        if (result.success && result.data) {
+          totalResults = [...totalResults, ...result.data.results];
+          totalTokensUsed += result.data.totalTokensUsed;
+          totalCost += result.data.totalCost;
+
+          setProcessingState((prev) => ({
+            ...prev,
+            processedCount: prev.processedCount + chunk.length,
+          }));
+
+          // Small delay between chunks to avoid overwhelming the API
+          if (chunkIndex < chunks.length - 1) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        } else {
+          throw new Error(
+            result.error || `Failed to process chunk ${chunkIndex + 1}`,
+          );
+        }
       }
+
+      // All chunks processed successfully
+      setProcessingState((prev) => ({
+        ...prev,
+        isProcessing: false,
+        progress: 100,
+        currentStep: 'Processing completed',
+      }));
+
+      toast.success(
+        `Successfully processed ${totalResults.length} definitions across ${chunks.length} batch(es). Tokens used: ${totalTokensUsed}, Cost: $${totalCost.toFixed(4)}`,
+      );
+      onSuccess();
     } catch (error) {
-      console.error('Error during extraction:', error);
+      console.error('Error during batch extraction:', error);
       setProcessingState((prev) => ({
         ...prev,
         isProcessing: false,
         currentStep: 'Error occurred',
       }));
-      toast.error('An error occurred during extraction');
+      toast.error(
+        error instanceof Error
+          ? `Processing failed: ${error.message}`
+          : 'An unexpected error occurred during processing',
+      );
     }
   };
 
@@ -282,6 +375,10 @@ export function DeepSeekWordExtractionDialog({
         progress: 0,
         currentStep: '',
         results: null,
+        currentBatch: 0,
+        totalBatches: 0,
+        processedCount: 0,
+        totalCount: 0,
       });
     }
     onOpenChange(newOpen);
@@ -292,7 +389,7 @@ export function DeepSeekWordExtractionDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5 text-blue-600" />
@@ -319,31 +416,71 @@ export function DeepSeekWordExtractionDialog({
                 <CardTitle className="text-sm">Configuration</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  {/* Target Languages Multi-Select */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Target Language *
-                    </label>
+                    <Label className="text-sm font-medium">
+                      Target Languages * ({targetLanguages.length} selected)
+                    </Label>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {targetLanguages.map((lang) => {
+                        const langOption = LANGUAGE_OPTIONS.find(
+                          (opt) => opt.value === lang,
+                        );
+                        return (
+                          <Badge
+                            key={lang}
+                            variant="secondary"
+                            className="flex items-center gap-1"
+                          >
+                            <Languages className="h-3 w-3" />
+                            {langOption?.label}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setTargetLanguages((prev) =>
+                                  prev.filter((l) => l !== lang),
+                                )
+                              }
+                              className="ml-1 hover:text-red-500"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        );
+                      })}
+                    </div>
                     <Select
-                      value={targetLanguage}
-                      onValueChange={setTargetLanguage}
+                      value=""
+                      onValueChange={(value) => {
+                        if (value && !targetLanguages.includes(value)) {
+                          setTargetLanguages((prev) => [...prev, value]);
+                        }
+                      }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select target language" />
+                        <SelectValue placeholder="Add target language" />
                       </SelectTrigger>
                       <SelectContent>
-                        {LANGUAGE_OPTIONS.map((lang) => (
+                        {LANGUAGE_OPTIONS.filter(
+                          (lang) => !targetLanguages.includes(lang.value),
+                        ).map((lang) => (
                           <SelectItem key={lang.value} value={lang.value}>
-                            {lang.label}
+                            <div className="flex items-center gap-2">
+                              <Plus className="h-4 w-4" />
+                              {lang.label}
+                            </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* Source Language */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">
+                    <Label className="text-sm font-medium">
                       Source Language (Auto-detected)
-                    </label>
+                    </Label>
                     <Select
                       value={sourceLanguage}
                       onValueChange={setSourceLanguage}
@@ -360,6 +497,30 @@ export function DeepSeekWordExtractionDialog({
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* Short Definitions Filter */}
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="onlyShortDefinitions"
+                      checked={onlyShortDefinitions}
+                      onCheckedChange={(checked) =>
+                        setOnlyShortDefinitions(!!checked)
+                      }
+                    />
+                    <Label
+                      htmlFor="onlyShortDefinitions"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Only short definitions (isInShortDef)
+                    </Label>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    When enabled, only processes definitions marked as
+                    &ldquo;most important&rdquo; in the database.{' '}
+                    <span className="text-blue-600 font-medium">
+                      Definitions will reload automatically when toggled.
+                    </span>
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -413,8 +574,23 @@ export function DeepSeekWordExtractionDialog({
             {/* Definitions Selection */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">
-                  Selected Definitions ({selectedDefinitions.length})
+                <CardTitle className="text-sm flex items-center justify-between">
+                  <span>
+                    Selected Definitions ({selectedDefinitions.length})
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {isLoadingDefinitions && (
+                      <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                    )}
+                    {onlyShortDefinitions && (
+                      <Badge
+                        variant="secondary"
+                        className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                      >
+                        Short Definitions Only
+                      </Badge>
+                    )}
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -424,7 +600,7 @@ export function DeepSeekWordExtractionDialog({
                     <span className="ml-2">Loading definitions...</span>
                   </div>
                 ) : (
-                  <ScrollArea className="h-64">
+                  <ScrollArea className="h-80">
                     <div className="space-y-4">
                       {wordDetailsWithDefinitions.map((wordDetail) => {
                         const selectedCount = wordDetail.definitions.filter(
@@ -507,6 +683,14 @@ export function DeepSeekWordExtractionDialog({
                                           {index + 1}.
                                         </span>
                                         {definition.definition}
+                                        {definition.isInShortDef && (
+                                          <Badge
+                                            variant="outline"
+                                            className="ml-2 text-xs bg-blue-50 text-blue-700 border-blue-200"
+                                          >
+                                            Short Def
+                                          </Badge>
+                                        )}
                                       </p>
                                     </div>
                                   </div>
@@ -532,8 +716,9 @@ export function DeepSeekWordExtractionDialog({
                     USD
                   </span>
                   <span className="text-sm text-muted-foreground">
-                    Based on average 25 input tokens + 2 output tokens per
-                    definition
+                    For {selectedDefinitions.length} definitions ×{' '}
+                    {targetLanguages.length} languages (avg 25 input + 2 output
+                    tokens per definition)
                   </span>
                 </div>
               </AlertDescription>
@@ -732,6 +917,7 @@ export function DeepSeekWordExtractionDialog({
             disabled={
               processingState.isProcessing ||
               selectedDefinitions.length === 0 ||
+              targetLanguages.length === 0 ||
               isLoadingDefinitions
             }
             className="min-w-32"

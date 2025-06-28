@@ -41,10 +41,23 @@ import { getDanishFormDefinition as getDanishFormDefinitionUtil } from '@/core/l
  * Helper function to determine if a definition ID represents a main definition
  * Main definitions have simple numeric IDs like "1", "2", "3"
  * Sub-definitions have IDs like "1.a", "1.b", "2.a", etc.
- * @param definitionId The definition ID to check
+ * @param definitionId The definition ID to check (can be undefined/null for single definitions)
+ * @param isFirstDefinition Whether this is the first definition in the array
  * @returns true if this is a main definition, false if it's a sub-definition
  */
-function isMainDefinition(definitionId: string): boolean {
+function isMainDefinition(
+  definitionId: string | undefined | null,
+  isFirstDefinition: boolean = false,
+): boolean {
+  // If there's no ID (single definition), treat the first one as main
+  if (!definitionId) {
+    serverLog(
+      `Definition has no ID, treating as ${isFirstDefinition ? 'MAIN' : 'SUB'} definition (first: ${isFirstDefinition})`,
+      'info',
+    );
+    return isFirstDefinition;
+  }
+
   // A main definition ID should be a simple number (possibly with leading/trailing whitespace)
   const trimmedId = definitionId.trim();
 
@@ -684,7 +697,7 @@ export async function processAndSaveDanishWord(
   };
 
   if (danishWordData.definition && danishWordData.definition.length > 0) {
-    for (const def of danishWordData.definition) {
+    for (const [defIndex, def] of danishWordData.definition.entries()) {
       const combinedExamples: DefinitionExampleOfProcessWordData[] = [];
 
       if (def.labels?.Eksempler && Array.isArray(def.labels.Eksempler)) {
@@ -714,8 +727,9 @@ export async function processAndSaveDanishWord(
         });
       }
 
-      // Determine if this is a main definition based on the ID
-      const isMainDef = isMainDefinition(def.id);
+      // Determine if this is a main definition based on the ID and position
+      const isFirstDefinition = defIndex === 0;
+      const isMainDef = isMainDefinition(def.id, isFirstDefinition);
 
       processedData.definitions.push({
         id: null, // id will be populated after saving
@@ -1180,7 +1194,7 @@ export async function processAndSaveDanishWord(
   ) {
     for (const expression of danishWordData.fixed_expressions) {
       // Process each definition object within the expression.definition array
-      for (const defItem of expression.definition) {
+      for (const [defIndex, defItem] of expression.definition.entries()) {
         // Combine examples from labels.Eksempler and regular examples, just like for definitions
         const combinedExpressionExamples: DefinitionExampleOfProcessWordData[] =
           [];
@@ -1225,8 +1239,12 @@ export async function processAndSaveDanishWord(
         });
 
         // Add as a subWord too, with all the metadata
-        // Determine if this is a main expression definition based on the ID
-        const isMainExpressionDef = isMainDefinition(defItem.id);
+        // Determine if this is a main expression definition based on the ID and position
+        const isFirstExpressionDefinition = defIndex === 0;
+        const isMainExpressionDef = isMainDefinition(
+          defItem.id,
+          isFirstExpressionDefinition,
+        );
 
         subWordsArray.push({
           word: expression.expression,

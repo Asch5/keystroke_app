@@ -35,6 +35,7 @@ import {
   Volume2,
   VolumeX,
   FileText,
+  Brain,
 } from 'lucide-react';
 import { LearningStatus, LanguageCode } from '@prisma/client';
 import { cn } from '@/core/shared/utils/common/cn';
@@ -43,6 +44,8 @@ import {
   shouldShowTranslations,
 } from '@/core/domains/user/utils/dictionary-display-utils';
 import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
+import { WordDifficultyDialog } from './WordDifficultyDialog';
+import { useState } from 'react';
 
 interface WordTableProps {
   words: UserDictionaryItem[];
@@ -78,6 +81,28 @@ export function WordTable({
   onPlayAudio,
   onViewWordDetail,
 }: WordTableProps) {
+  // State for difficulty analysis dialog
+  const [difficultyDialog, setDifficultyDialog] = useState<{
+    isOpen: boolean;
+    word: UserDictionaryItem | null;
+  }>({
+    isOpen: false,
+    word: null,
+  });
+
+  const handleOpenDifficultyDialog = (word: UserDictionaryItem) => {
+    setDifficultyDialog({
+      isOpen: true,
+      word,
+    });
+  };
+
+  const handleCloseDifficultyDialog = () => {
+    setDifficultyDialog({
+      isOpen: false,
+      word: null,
+    });
+  };
   // Get status color
   const getStatusColor = (status: LearningStatus) => {
     switch (status) {
@@ -113,258 +138,281 @@ export function WordTable({
   };
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Word</TableHead>
-          <TableHead>Definition</TableHead>
-          <TableHead>Lists</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Progress</TableHead>
-          <TableHead>Mastery</TableHead>
-          <TableHead>Last Reviewed</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {words.map((word) => (
-          <TableRow key={word.id}>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{word.word}</span>
-                    {word.isFavorite && (
-                      <Star className="h-3 w-3 text-yellow-500 fill-current" />
-                    )}
-                    {word.isModified && (
-                      <Edit className="h-3 w-3 text-blue-500" />
-                    )}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {word.partOfSpeech} {word.variant && `• ${word.variant}`}
-                  </div>
-                </div>
-                {/* Audio Button */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    'h-6 w-6 p-0 hover:bg-muted',
-                    !word.audioUrl && 'opacity-50 cursor-not-allowed',
-                  )}
-                  title={
-                    word.audioUrl ? 'Play pronunciation' : 'No audio available'
-                  }
-                  disabled={isPlayingAudio && playingWordId !== word.id}
-                  onClick={() => onPlayAudio(word.word, word.audioUrl, word.id)}
-                >
-                  {word.audioUrl ? (
-                    <Volume2
-                      className={cn(
-                        'h-3 w-3 text-blue-600',
-                        isPlayingAudio &&
-                          playingWordId === word.id &&
-                          'animate-pulse',
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Word</TableHead>
+            <TableHead>Definition</TableHead>
+            <TableHead>Lists</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Progress</TableHead>
+            <TableHead>Mastery</TableHead>
+            <TableHead>Last Reviewed</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {words.map((word) => (
+            <TableRow key={word.id}>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{word.word}</span>
+                      {word.isFavorite && (
+                        <Star className="h-3 w-3 text-yellow-500 fill-current" />
                       )}
-                    />
-                  ) : (
-                    <VolumeX className="h-3 w-3 text-muted-foreground" />
-                  )}
-                </Button>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="max-w-xs">
-                <p className="text-sm truncate">
-                  {userLanguages &&
-                  shouldShowTranslations(
-                    userLanguages.base,
-                    userLanguages.target,
-                  )
-                    ? getDisplayDefinition(
-                        {
-                          definition: word.definition,
-                          targetLanguageCode: userLanguages.target,
-                          translations: word.translations,
-                        },
-                        userLanguages.base,
-                      ).content
-                    : word.definition}
-                </p>
-                {word.customNotes && (
-                  <p className="text-xs text-muted-foreground mt-1 truncate">
-                    Note: {word.customNotes}
-                  </p>
-                )}
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="max-w-xs">
-                {word.lists && word.lists.length > 0 ? (
-                  <div className="flex flex-wrap gap-1">
-                    {word.lists.slice(0, 2).map((listName, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {listName}
-                      </Badge>
-                    ))}
-                    {word.lists.length > 2 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{word.lists.length - 2} more
-                      </Badge>
-                    )}
+                      {word.isModified && (
+                        <Edit className="h-3 w-3 text-blue-500" />
+                      )}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {word.partOfSpeech} {word.variant && `• ${word.variant}`}
+                    </div>
                   </div>
-                ) : (
-                  <span className="text-xs text-muted-foreground">
-                    No lists
-                  </span>
-                )}
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge className={getStatusColor(word.learningStatus)}>
-                {getStatusLabel(word.learningStatus)}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <div className="space-y-1">
-                <Progress value={word.progress} className="h-2 w-16" />
-                <span className="text-xs text-muted-foreground">
-                  {word.progress}%
-                </span>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="text-center">
-                <div className="text-sm font-medium">
-                  {word.masteryScore.toFixed(1)}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {word.reviewCount} reviews
-                </div>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="text-sm">
-                {word.lastReviewedAt
-                  ? new Date(word.lastReviewedAt).toLocaleDateString()
-                  : 'Never'}
-              </div>
-            </TableCell>
-            <TableCell className="text-right">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onToggleFavorite(word.id)}>
-                    {word.isFavorite ? (
-                      <>
-                        <StarOff className="h-4 w-4 mr-2" />
-                        Remove from Favorites
-                      </>
-                    ) : (
-                      <>
-                        <Star className="h-4 w-4 mr-2" />
-                        Add to Favorites
-                      </>
+                  {/* Audio Button */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn(
+                      'h-6 w-6 p-0 hover:bg-muted',
+                      !word.audioUrl && 'opacity-50 cursor-not-allowed',
                     )}
-                  </DropdownMenuItem>
-                  {word.audioUrl ? (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        onPlayAudio(word.word, word.audioUrl, word.id)
-                      }
-                    >
-                      <Play className="h-4 w-4 mr-2" />
-                      Play Audio
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem disabled>
-                      <VolumeX className="h-4 w-4 mr-2" />
-                      No Audio Available
-                    </DropdownMenuItem>
-                  )}
-                  {word.imageUrl && (
-                    <DropdownMenuItem>
-                      <ImageIcon className="h-4 w-4 mr-2" />
-                      View Image
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => onAddToList(word.word, word.id)}
-                  >
-                    <Book className="h-4 w-4 mr-2" />
-                    Add to List
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
+                    title={
+                      word.audioUrl
+                        ? 'Play pronunciation'
+                        : 'No audio available'
+                    }
+                    disabled={isPlayingAudio && playingWordId !== word.id}
                     onClick={() =>
-                      onViewWordDetail(word.word, word.targetLanguageCode)
+                      onPlayAudio(word.word, word.audioUrl, word.id)
                     }
                   >
-                    <FileText className="h-4 w-4 mr-2" />
-                    Word Detail
-                  </DropdownMenuItem>
-
-                  {/* Dynamic Learning Status Actions */}
-                  {word.learningStatus === LearningStatus.learned ? (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        onStatusUpdate(word.id, LearningStatus.inProgress)
-                      }
-                    >
-                      <TrendingDown className="h-4 w-4 mr-2" />
-                      Unmark as Learned
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        onStatusUpdate(word.id, LearningStatus.learned)
-                      }
-                    >
-                      <TrendingUp className="h-4 w-4 mr-2" />
-                      Mark as Learned
-                    </DropdownMenuItem>
+                    {word.audioUrl ? (
+                      <Volume2
+                        className={cn(
+                          'h-3 w-3 text-blue-600',
+                          isPlayingAudio &&
+                            playingWordId === word.id &&
+                            'animate-pulse',
+                        )}
+                      />
+                    ) : (
+                      <VolumeX className="h-3 w-3 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="max-w-xs">
+                  <p className="text-sm truncate">
+                    {userLanguages &&
+                    shouldShowTranslations(
+                      userLanguages.base,
+                      userLanguages.target,
+                    )
+                      ? getDisplayDefinition(
+                          {
+                            definition: word.definition,
+                            targetLanguageCode: userLanguages.target,
+                            translations: word.translations,
+                          },
+                          userLanguages.base,
+                        ).content
+                      : word.definition}
+                  </p>
+                  {word.customNotes && (
+                    <p className="text-xs text-muted-foreground mt-1 truncate">
+                      Note: {word.customNotes}
+                    </p>
                   )}
-
-                  {word.learningStatus === LearningStatus.needsReview ? (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        onStatusUpdate(word.id, LearningStatus.inProgress)
-                      }
-                    >
-                      <X className="h-4 w-4 mr-2" />
-                      Unmark for Review
-                    </DropdownMenuItem>
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="max-w-xs">
+                  {word.lists && word.lists.length > 0 ? (
+                    <div className="flex flex-wrap gap-1">
+                      {word.lists.slice(0, 2).map((listName, index) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="text-xs"
+                        >
+                          {listName}
+                        </Badge>
+                      ))}
+                      {word.lists.length > 2 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{word.lists.length - 2} more
+                        </Badge>
+                      )}
+                    </div>
                   ) : (
+                    <span className="text-xs text-muted-foreground">
+                      No lists
+                    </span>
+                  )}
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge className={getStatusColor(word.learningStatus)}>
+                  {getStatusLabel(word.learningStatus)}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <div className="space-y-1">
+                  <Progress value={word.progress} className="h-2 w-16" />
+                  <span className="text-xs text-muted-foreground">
+                    {word.progress}%
+                  </span>
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="text-center">
+                  <div className="text-sm font-medium">
+                    {word.masteryScore.toFixed(1)}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {word.reviewCount} reviews
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="text-sm">
+                  {word.lastReviewedAt
+                    ? new Date(word.lastReviewedAt).toLocaleDateString()
+                    : 'Never'}
+                </div>
+              </TableCell>
+              <TableCell className="text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => onToggleFavorite(word.id)}>
+                      {word.isFavorite ? (
+                        <>
+                          <StarOff className="h-4 w-4 mr-2" />
+                          Remove from Favorites
+                        </>
+                      ) : (
+                        <>
+                          <Star className="h-4 w-4 mr-2" />
+                          Add to Favorites
+                        </>
+                      )}
+                    </DropdownMenuItem>
+                    {word.audioUrl ? (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          onPlayAudio(word.word, word.audioUrl, word.id)
+                        }
+                      >
+                        <Play className="h-4 w-4 mr-2" />
+                        Play Audio
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem disabled>
+                        <VolumeX className="h-4 w-4 mr-2" />
+                        No Audio Available
+                      </DropdownMenuItem>
+                    )}
+                    {word.imageUrl && (
+                      <DropdownMenuItem>
+                        <ImageIcon className="h-4 w-4 mr-2" />
+                        View Image
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => onAddToList(word.word, word.id)}
+                    >
+                      <Book className="h-4 w-4 mr-2" />
+                      Add to List
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() =>
-                        onStatusUpdate(word.id, LearningStatus.needsReview)
+                        onViewWordDetail(word.word, word.targetLanguageCode)
                       }
                     >
-                      <Clock className="h-4 w-4 mr-2" />
-                      Mark for Review
+                      <FileText className="h-4 w-4 mr-2" />
+                      Word Detail
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => onRemoveWord(word.id, word.word)}
-                    className="text-red-600"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Remove from Dictionary
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+                    <DropdownMenuItem
+                      onClick={() => handleOpenDifficultyDialog(word)}
+                    >
+                      <Brain className="h-4 w-4 mr-2" />
+                      View Difficulty Analysis
+                    </DropdownMenuItem>
+
+                    {/* Dynamic Learning Status Actions */}
+                    {word.learningStatus === LearningStatus.learned ? (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          onStatusUpdate(word.id, LearningStatus.inProgress)
+                        }
+                      >
+                        <TrendingDown className="h-4 w-4 mr-2" />
+                        Unmark as Learned
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          onStatusUpdate(word.id, LearningStatus.learned)
+                        }
+                      >
+                        <TrendingUp className="h-4 w-4 mr-2" />
+                        Mark as Learned
+                      </DropdownMenuItem>
+                    )}
+
+                    {word.learningStatus === LearningStatus.needsReview ? (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          onStatusUpdate(word.id, LearningStatus.inProgress)
+                        }
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Unmark for Review
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          onStatusUpdate(word.id, LearningStatus.needsReview)
+                        }
+                      >
+                        <Clock className="h-4 w-4 mr-2" />
+                        Mark for Review
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => onRemoveWord(word.id, word.word)}
+                      className="text-red-600"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Remove from Dictionary
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      {/* Difficulty Analysis Dialog */}
+      <WordDifficultyDialog
+        isOpen={difficultyDialog.isOpen}
+        onClose={handleCloseDifficultyDialog}
+        word={difficultyDialog.word}
+      />
+    </>
   );
 }

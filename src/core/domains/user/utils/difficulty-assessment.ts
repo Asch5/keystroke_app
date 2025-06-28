@@ -1,12 +1,12 @@
 /**
- * Difficulty Assessment System
+ * Difficulty Assessment System - Definition-Centric
  *
- * Implements a multi-factor model for assessing word difficulty based on:
+ * Implements a multi-factor model for assessing DEFINITION difficulty based on:
  * 1. User-Centric Performance Metrics (Dynamic & Personalized)
- * 2. Inherent Linguistic Metrics (Static & Global)
+ * 2. Definition-Specific Linguistic Metrics (Static & Global)
  *
- * This system provides the foundation for intelligent word selection across
- * all practice types and learning modes.
+ * KEY PRINCIPLE: The unit of learning is a DEFINITION, not a Word.
+ * Each Definition can have different difficulty scores even for the same Word.
  */
 
 import { PrismaClient, LearningStatus } from '@prisma/client';
@@ -15,34 +15,34 @@ import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 const prisma = new PrismaClient();
 
 /**
- * Configuration for difficulty assessment weights and thresholds
+ * Configuration for definition-based difficulty assessment
  */
 export const DIFFICULTY_ASSESSMENT_CONFIG = {
   // Weight distribution between performance and linguistic factors
   WEIGHTS: {
-    PERFORMANCE: 0.7, // User's actual experience with the word
-    LINGUISTIC: 0.3, // Inherent word properties
+    PERFORMANCE: 0.7, // User's actual experience with this specific definition
+    LINGUISTIC: 0.3, // Inherent definition properties
   },
 
   // Performance metric weights (sum should equal 1.0)
   PERFORMANCE_WEIGHTS: {
-    MISTAKE_RATE: 0.25, // Primary indicator of difficulty
-    CORRECT_STREAK: 0.2, // Stability in memory
-    SRS_LEVEL: 0.15, // Spaced repetition progress
-    LEARNING_STATUS: 0.15, // Explicit difficulty flags
-    RESPONSE_TIME: 0.1, // Cognitive load indicator
-    SKIP_RATE: 0.1, // Behavioral confidence signal
-    RECENCY_FREQUENCY: 0.05, // Forgetting curve consideration
+    MISTAKE_RATE: 0.25, // Primary indicator of difficulty for this definition
+    CORRECT_STREAK: 0.2, // Stability in memory for this definition
+    SRS_LEVEL: 0.15, // Spaced repetition progress for this definition
+    LEARNING_STATUS: 0.15, // Explicit difficulty flags for this definition
+    RESPONSE_TIME: 0.1, // Cognitive load indicator for this definition
+    SKIP_RATE: 0.1, // Behavioral confidence signal for this definition
+    RECENCY_FREQUENCY: 0.05, // Forgetting curve consideration for this definition
   },
 
-  // Linguistic metric weights (sum should equal 1.0)
+  // Definition-specific linguistic metric weights (sum should equal 1.0)
   LINGUISTIC_WEIGHTS: {
-    WORD_RARITY: 0.3, // Frequency in language
-    PHONETIC_IRREGULARITY: 0.2, // Spelling-pronunciation mismatch
-    POLYSEMY: 0.15, // Multiple meanings
-    WORD_LENGTH: 0.15, // Character count complexity
-    SEMANTIC_ABSTRACTION: 0.1, // Concrete vs abstract concepts
-    RELATIONAL_COMPLEXITY: 0.1, // Number of linguistic relationships
+    DEFINITION_COMPLEXITY: 0.25, // Length and complexity of definition text
+    SEMANTIC_ABSTRACTION: 0.2, // Concrete vs abstract concept in definition
+    WORD_FREQUENCY: 0.15, // Frequency of the word this definition belongs to
+    PHONETIC_IRREGULARITY: 0.15, // Spelling-pronunciation mismatch
+    DEFINITION_AMBIGUITY: 0.15, // How distinct this definition is from others
+    RELATIONAL_COMPLEXITY: 0.1, // Number of relationships this definition has
   },
 
   // Thresholds for difficulty classification
@@ -64,7 +64,7 @@ export const DIFFICULTY_ASSESSMENT_CONFIG = {
 
   // SRS level mappings
   SRS_DIFFICULTY_MAPPING: {
-    0: 1.0, // New word - maximum difficulty
+    0: 1.0, // New definition - maximum difficulty
     1: 0.8, // Learning - high difficulty
     2: 0.6, // Reviewing - medium difficulty
     3: 0.4, // Familiar - low difficulty
@@ -74,9 +74,9 @@ export const DIFFICULTY_ASSESSMENT_CONFIG = {
 } as const;
 
 /**
- * Interfaces for difficulty assessment
+ * Interfaces for definition-based difficulty assessment
  */
-export interface UserPerformanceMetrics {
+export interface DefinitionPerformanceMetrics {
   mistakeRate: number;
   correctStreak: number;
   srsLevel: number;
@@ -87,12 +87,12 @@ export interface UserPerformanceMetrics {
   reviewFrequency: number;
 }
 
-export interface LinguisticMetrics {
-  wordRarity: number;
-  phoneticIrregularity: number;
-  polysemy: number;
-  wordLength: number;
+export interface DefinitionLinguisticMetrics {
+  definitionComplexity: number;
   semanticAbstraction: number;
+  wordFrequency: number;
+  phoneticIrregularity: number;
+  definitionAmbiguity: number;
   relationalComplexity: number;
 }
 
@@ -103,22 +103,29 @@ export interface DifficultyScore {
   classification: 'very_easy' | 'easy' | 'medium' | 'hard' | 'very_hard';
   confidence: number;
   factors: {
-    performance: UserPerformanceMetrics;
-    linguistic: LinguisticMetrics;
+    performance: DefinitionPerformanceMetrics;
+    linguistic: DefinitionLinguisticMetrics;
   };
 }
 
 /**
- * Learning Unit Interface
- * Represents any learning item that can be practiced across different modes
+ * Learning Unit Interface - Definition-Centric
+ * Each learning unit represents a specific definition that a user is learning
  */
 export interface LearningUnit {
-  id: string;
-  type: 'word' | 'phrase' | 'grammar' | 'pronunciation';
+  id: string; // userDictionaryId
+  type: 'definition'; // Always definition-based
   content: {
-    primary: string; // The main content (word text, phrase, etc.)
-    secondary?: string; // Additional context (definition, example, etc.)
-    metadata: Record<string, unknown>;
+    primary: string; // The definition text
+    word: string; // The word this definition belongs to
+    context?: string; // Additional context (part of speech, usage notes)
+    metadata: {
+      definitionId: number;
+      wordId: number | null;
+      partOfSpeech: string | null;
+      phonetic: string | null;
+      wordText: string;
+    };
   };
   difficulty: DifficultyScore;
   userProgress: {
@@ -276,7 +283,7 @@ export class DifficultyAssessment {
    */
   private static async calculatePerformanceMetrics(
     userDictionaryEntry: UserDictionaryWithIncludes,
-  ): Promise<UserPerformanceMetrics> {
+  ): Promise<DefinitionPerformanceMetrics> {
     const {
       reviewCount,
       amountOfMistakes,
@@ -332,24 +339,24 @@ export class DifficultyAssessment {
    */
   private static async calculateLinguisticMetrics(
     definition: UserDictionaryWithIncludes['definition'],
-  ): Promise<LinguisticMetrics> {
+  ): Promise<DefinitionLinguisticMetrics> {
     const wordDetails = definition.wordDetails[0]?.wordDetails;
     const word = wordDetails?.word;
 
     if (!wordDetails || !word) {
       // Return default metrics if no word details available
       return {
-        wordRarity: 0.5,
-        phoneticIrregularity: 0.5,
-        polysemy: 0.3,
-        wordLength: 0.5,
+        definitionComplexity: 0.5,
         semanticAbstraction: 0.5,
+        wordFrequency: 0.3,
+        phoneticIrregularity: 0.5,
+        definitionAmbiguity: 0.3,
         relationalComplexity: 0.3,
       };
     }
 
-    // Word rarity (based on frequency) - use word's frequencyGeneral since WordDetails only has frequency
-    const wordRarity = this.calculateWordRarity(
+    // Word frequency
+    const wordFrequency = this.calculateWordFrequency(
       wordDetails.frequency,
       word.frequencyGeneral,
     );
@@ -360,26 +367,24 @@ export class DifficultyAssessment {
       wordDetails.phonetic,
     );
 
-    // Polysemy (number of meanings) - using wordDefinitions from schema
-    const polysemy = this.calculatePolysemy(
-      wordDetails.definitions?.length || 1,
-    );
-
-    // Word length complexity
-    const wordLength = this.calculateWordLengthComplexity(word.word);
+    // Definition complexity
+    const definitionComplexity = this.calculateDefinitionComplexity(definition);
 
     // Semantic abstraction (concrete vs abstract)
     const semanticAbstraction = this.calculateSemanticAbstraction(definition);
+
+    // Definition ambiguity
+    const definitionAmbiguity = this.calculateDefinitionAmbiguity(definition);
 
     // Relational complexity - using empty array as fallback since relationships were removed
     const relationalComplexity = this.calculateRelationalComplexity(0);
 
     return {
-      wordRarity,
-      phoneticIrregularity,
-      polysemy,
-      wordLength,
+      definitionComplexity,
       semanticAbstraction,
+      wordFrequency,
+      phoneticIrregularity,
+      definitionAmbiguity,
       relationalComplexity,
     };
   }
@@ -388,7 +393,7 @@ export class DifficultyAssessment {
    * Calculate normalized performance score (0-1)
    */
   private static calculateNormalizedPerformanceScore(
-    metrics: UserPerformanceMetrics,
+    metrics: DefinitionPerformanceMetrics,
   ): number {
     const weights = DIFFICULTY_ASSESSMENT_CONFIG.PERFORMANCE_WEIGHTS;
 
@@ -425,17 +430,17 @@ export class DifficultyAssessment {
    * Calculate normalized linguistic score (0-1)
    */
   private static calculateNormalizedLinguisticScore(
-    metrics: LinguisticMetrics,
+    metrics: DefinitionLinguisticMetrics,
   ): number {
     const weights = DIFFICULTY_ASSESSMENT_CONFIG.LINGUISTIC_WEIGHTS;
 
     // All linguistic metrics are already normalized to 0-1 during calculation
     return (
-      weights.WORD_RARITY * metrics.wordRarity +
-      weights.PHONETIC_IRREGULARITY * metrics.phoneticIrregularity +
-      weights.POLYSEMY * metrics.polysemy +
-      weights.WORD_LENGTH * metrics.wordLength +
+      weights.DEFINITION_COMPLEXITY * metrics.definitionComplexity +
       weights.SEMANTIC_ABSTRACTION * metrics.semanticAbstraction +
+      weights.WORD_FREQUENCY * metrics.wordFrequency +
+      weights.PHONETIC_IRREGULARITY * metrics.phoneticIrregularity +
+      weights.DEFINITION_AMBIGUITY * metrics.definitionAmbiguity +
       weights.RELATIONAL_COMPLEXITY * metrics.relationalComplexity
     );
   }
@@ -461,7 +466,7 @@ export class DifficultyAssessment {
     return Math.min(reviewsPerDay, 1.0);
   }
 
-  private static calculateWordRarity(
+  private static calculateWordFrequency(
     frequency: number | null,
     frequencyGeneral: number | null,
   ): number {
@@ -486,16 +491,13 @@ export class DifficultyAssessment {
     return 1 - similarity; // Less similar = more irregular = higher difficulty
   }
 
-  private static calculatePolysemy(definitionCount: number): number {
-    // More definitions = higher complexity
-    return Math.min(definitionCount / 10, 1.0); // Cap at 10 definitions
-  }
-
-  private static calculateWordLengthComplexity(word: string): number {
-    const length = word.length;
-    if (length <= 4) return 0.1;
-    if (length <= 7) return 0.3;
-    if (length <= 10) return 0.6;
+  private static calculateDefinitionComplexity(
+    definition: UserDictionaryWithIncludes['definition'],
+  ): number {
+    const textLength = definition.definition.length;
+    if (textLength <= 10) return 0.1;
+    if (textLength <= 20) return 0.3;
+    if (textLength <= 30) return 0.6;
     return 1.0;
   }
 
@@ -504,6 +506,28 @@ export class DifficultyAssessment {
   ): number {
     // If there's an associated image, it's likely more concrete
     return definition.imageId ? 0.2 : 0.8; // Abstract concepts are harder
+  }
+
+  private static calculateDefinitionAmbiguity(
+    definition: UserDictionaryWithIncludes['definition'],
+  ): number {
+    // Calculate ambiguity based on definition text characteristics
+    const defText = definition.definition.toLowerCase();
+
+    // Higher ambiguity for definitions with vague words
+    const vagueWords = [
+      'thing',
+      'something',
+      'someone',
+      'various',
+      'different',
+      'general',
+    ];
+    const vagueWordCount = vagueWords.filter((word) =>
+      defText.includes(word),
+    ).length;
+
+    return Math.min(vagueWordCount / 3, 1.0); // Normalize to 0-1
   }
 
   private static calculateRelationalComplexity(
@@ -799,20 +823,27 @@ export class DifficultyAssessment {
     const wordDetails = entry.definition.wordDetails[0]?.wordDetails;
     const word = wordDetails?.word;
 
+    const content: LearningUnit['content'] = {
+      primary: entry.definition.definition,
+      word: word?.word || 'unknown',
+      metadata: {
+        definitionId: entry.definitionId,
+        wordId: word?.id || null,
+        partOfSpeech: wordDetails?.partOfSpeech || null,
+        phonetic: wordDetails?.phonetic || null,
+        wordText: word?.word || 'unknown',
+      },
+    };
+
+    // Only add context if it exists
+    if (wordDetails?.partOfSpeech) {
+      content.context = wordDetails.partOfSpeech;
+    }
+
     return {
       id: entry.id,
-      type: 'word',
-      content: {
-        primary: word?.word || 'unknown',
-        secondary: entry.definition.definition,
-        metadata: {
-          partOfSpeech: wordDetails?.partOfSpeech || null,
-          phonetic: wordDetails?.phonetic || null,
-          etymology: wordDetails?.etymology || null,
-          definitionId: entry.definitionId,
-          wordId: word?.id || null,
-        },
-      },
+      type: 'definition',
+      content,
       difficulty,
       userProgress: {
         attempts: entry.reviewCount || 0,

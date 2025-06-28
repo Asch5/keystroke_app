@@ -232,9 +232,14 @@ export const getUserDictionary = cache(
       };
 
       // Build order by
-      const orderBy = {
-        [sortBy]: sortOrder,
-      };
+      let orderBy;
+      if (sortBy === 'word') {
+        // For word sorting, we need to sort by the actual word text from the related Definition
+        // Since we can't easily sort by nested relations in Prisma, we'll sort after fetching
+        orderBy = { createdAt: sortOrder }; // Default sort for now, will sort by word after fetching
+      } else {
+        orderBy = { [sortBy]: sortOrder };
+      }
 
       // Calculate offset
       const offset = (page - 1) * pageSize;
@@ -334,7 +339,7 @@ export const getUserDictionary = cache(
       }
 
       // Transform to UserDictionaryItem with complete data
-      const items: UserDictionaryItem[] = userDictionaryEntries.map((entry) => {
+      let items: UserDictionaryItem[] = userDictionaryEntries.map((entry) => {
         const wordData = wordDataMap.get(entry.definitionId);
 
         // Extract lists this word belongs to
@@ -410,6 +415,14 @@ export const getUserDictionary = cache(
             })) || [],
         };
       });
+
+      // Apply word sorting if needed (since we can't sort by nested relations in Prisma directly)
+      if (sortBy === 'word') {
+        items = items.sort((a, b) => {
+          const comparison = a.word.localeCompare(b.word);
+          return sortOrder === 'asc' ? comparison : -comparison;
+        });
+      }
 
       // Calculate pagination data
       const totalPages = Math.ceil(totalCount / pageSize);

@@ -16,8 +16,9 @@ const extractWordSchema = z.object({
 
 const extractWordsBatchSchema = z.object({
   definitionIds: z.array(z.number().positive()).min(1).max(50), // Limit batch size
-  targetLanguage: z.string().min(2).max(5),
+  targetLanguages: z.array(z.string().min(2).max(5)).min(1).max(10), // Support multiple target languages
   sourceLanguage: z.string().min(2).max(5).optional(),
+  onlyShortDefinitions: z.boolean().default(false), // Filter for isInShortDef
 });
 
 // Response types
@@ -37,6 +38,7 @@ export interface ExtractWordsBatchResult {
   data?: {
     results: Array<{
       definitionId: number;
+      targetLanguage: string;
       word: string | null;
       confidence: number;
       connected: boolean;
@@ -46,6 +48,7 @@ export interface ExtractWordsBatchResult {
     totalCost: number;
     successCount: number;
     failureCount: number;
+    targetLanguages: string[]; // Track which languages were processed
   };
   error?: string;
 }
@@ -62,6 +65,7 @@ export interface DefinitionForExtraction {
   partOfSpeech: PartOfSpeech;
   variant: string | null;
   selected: boolean; // For checkbox state
+  isInShortDef: boolean; // Add isInShortDef support
 }
 
 /**
@@ -191,9 +195,16 @@ export async function extractWordsFromDefinitionsBatch(
 ): Promise<ExtractWordsBatchResult> {
   // Parse form data outside try block to access in catch
   const definitionIds = JSON.parse(formData.get('definitionIds') as string);
-  const targetLanguage = formData.get('targetLanguage') as string;
+  const targetLanguagesRaw = formData.get('targetLanguages') as string;
+  const targetLanguages = JSON.parse(targetLanguagesRaw);
   const sourceLanguage =
     (formData.get('sourceLanguage') as string) || undefined;
+  const onlyShortDefinitionsRaw = formData.get(
+    'onlyShortDefinitions',
+  ) as string;
+  const onlyShortDefinitions = onlyShortDefinitionsRaw
+    ? JSON.parse(onlyShortDefinitionsRaw)
+    : false;
 
   try {
     // TODO: Add admin authentication validation once auth is properly configured
@@ -201,13 +212,14 @@ export async function extractWordsFromDefinitionsBatch(
     // Validate input
     const validatedInput = extractWordsBatchSchema.parse({
       definitionIds,
-      targetLanguage,
+      targetLanguages,
       sourceLanguage,
+      onlyShortDefinitions,
     });
 
     await serverLog('Starting batch word extraction', 'info', {
       definitionCount: validatedInput.definitionIds.length,
-      targetLanguage: validatedInput.targetLanguage,
+      targetLanguages: validatedInput.targetLanguages,
       sourceLanguage: validatedInput.sourceLanguage,
     });
 
@@ -233,7 +245,7 @@ export async function extractWordsFromDefinitionsBatch(
         id: def.id,
         definition: def.definition,
       })),
-      targetLanguage: validatedInput.targetLanguage,
+      targetLanguages: validatedInput.targetLanguages,
     };
     if (validatedInput.sourceLanguage) {
       batchRequest.sourceLanguage = validatedInput.sourceLanguage;
@@ -246,12 +258,12 @@ export async function extractWordsFromDefinitionsBatch(
     let failureCount = 0;
 
     for (const result of batchResult.results) {
-      if (result.word && !result.error) {
+      if (result.word && !result.error && result.targetLanguage) {
         try {
-          // Find or create the word
+          // Find or create the word in the target language
           const word = await findOrCreateWord(
             result.word,
-            validatedInput.targetLanguage as LanguageCode,
+            result.targetLanguage as LanguageCode,
           );
 
           // Connect definition to word via DefinitionToOneWord table
@@ -259,6 +271,7 @@ export async function extractWordsFromDefinitionsBatch(
 
           processedResults.push({
             definitionId: result.definitionId,
+            targetLanguage: result.targetLanguage!,
             word: result.word,
             confidence: result.confidence,
             connected: true,
@@ -268,11 +281,13 @@ export async function extractWordsFromDefinitionsBatch(
           await serverLog('Failed to connect definition to word', 'error', {
             definitionId: result.definitionId,
             word: result.word,
+            targetLanguage: result.targetLanguage!,
             error: error instanceof Error ? error.message : 'Unknown error',
           });
 
           processedResults.push({
             definitionId: result.definitionId,
+            targetLanguage: result.targetLanguage!,
             word: result.word,
             confidence: result.confidence,
             connected: false,
@@ -283,6 +298,10 @@ export async function extractWordsFromDefinitionsBatch(
       } else {
         processedResults.push({
           definitionId: result.definitionId,
+          targetLanguage:
+            result.targetLanguage ??
+            validatedInput.targetLanguages[0] ??
+            'unknown',
           word: null,
           confidence: 0,
           connected: false,
@@ -308,6 +327,7 @@ export async function extractWordsFromDefinitionsBatch(
         totalCost: batchResult.cost,
         successCount,
         failureCount,
+        targetLanguages: validatedInput.targetLanguages,
       },
     };
   } catch (error) {
@@ -483,6 +503,7 @@ export async function getDefinitionWordConnections(definitionIds: number[]) {
  */
 export async function getDefinitionsForWordDetails(
   wordDetailIds: number[],
+  onlyShortDefinitions: boolean = false,
 ): Promise<WordDetailWithDefinitions[]> {
   try {
     await serverLog('Fetching definitions for WordDetails', 'info', {
@@ -509,9 +530,17 @@ export async function getDefinitionsForWordDetails(
                 id: true,
                 definition: true,
                 languageCode: true,
+                isInShortDef: true,
               },
             },
           },
+          ...(onlyShortDefinitions && {
+            where: {
+              definition: {
+                isInShortDef: true,
+              },
+            },
+          }),
         },
       },
       orderBy: [
@@ -535,6 +564,7 @@ export async function getDefinitionsForWordDetails(
         partOfSpeech: wd.partOfSpeech,
         variant: wd.variant,
         selected: true, // Default to selected
+        isInShortDef: def.definition.isInShortDef,
       })),
     }));
 

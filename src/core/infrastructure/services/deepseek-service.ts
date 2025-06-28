@@ -26,13 +26,14 @@ export interface DeepSeekBatchRequest {
     id: number;
     definition: string;
   }>;
-  targetLanguage: string;
+  targetLanguages: string[]; // Support multiple target languages
   sourceLanguage?: string;
 }
 
 export interface DeepSeekBatchResponse {
   results: Array<{
     definitionId: number;
+    targetLanguage: string; // Include which target language this result is for
     word: string | null;
     confidence: number;
     error?: string;
@@ -167,7 +168,7 @@ export class DeepSeekService {
    */
   async extractWordsBatch({
     definitions,
-    targetLanguage,
+    targetLanguages,
     sourceLanguage,
   }: DeepSeekBatchRequest): Promise<DeepSeekBatchResponse> {
     const results = [];
@@ -177,45 +178,55 @@ export class DeepSeekService {
 
     serverLog('Starting DeepSeek batch processing', 'info', {
       definitionCount: definitions.length,
-      targetLanguage,
+      targetLanguages: targetLanguages.join(', '),
       sourceLanguage,
     });
 
+    // Process each definition-language combination
     for (const definition of definitions) {
-      try {
-        // Add delay to respect rate limits (5 requests/second max)
-        await this.delay(250);
+      for (const targetLanguage of targetLanguages) {
+        try {
+          // Add delay to respect rate limits (5 requests/second max)
+          await this.delay(250);
 
-        const extractRequest: DeepSeekWordRequest = {
-          definition: definition.definition,
-          targetLanguage,
-        };
-        if (sourceLanguage) {
-          extractRequest.sourceLanguage = sourceLanguage;
+          const extractRequest: DeepSeekWordRequest = {
+            definition: definition.definition,
+            targetLanguage,
+          };
+          if (sourceLanguage) {
+            extractRequest.sourceLanguage = sourceLanguage;
+          }
+          const result = await this.extractWord(extractRequest);
+
+          results.push({
+            definitionId: definition.id,
+            targetLanguage,
+            word: result.word,
+            confidence: result.confidence,
+          });
+
+          totalInputTokens += result.tokensUsed.input;
+          totalOutputTokens += result.tokensUsed.output;
+          totalTokens += result.tokensUsed.total;
+        } catch (error) {
+          serverLog(
+            'Failed to process definition-language combination in batch',
+            'error',
+            {
+              definitionId: definition.id,
+              targetLanguage,
+              error: error instanceof Error ? error.message : 'Unknown error',
+            },
+          );
+
+          results.push({
+            definitionId: definition.id,
+            targetLanguage,
+            word: null,
+            confidence: 0,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
         }
-        const result = await this.extractWord(extractRequest);
-
-        results.push({
-          definitionId: definition.id,
-          word: result.word,
-          confidence: result.confidence,
-        });
-
-        totalInputTokens += result.tokensUsed.input;
-        totalOutputTokens += result.tokensUsed.output;
-        totalTokens += result.tokensUsed.total;
-      } catch (error) {
-        serverLog('Failed to process definition in batch', 'error', {
-          definitionId: definition.id,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        });
-
-        results.push({
-          definitionId: definition.id,
-          word: null,
-          confidence: 0,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        });
       }
     }
 

@@ -4,6 +4,7 @@ import { revalidateTag } from 'next/cache';
 import { LearningStatus } from '@prisma/client';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { prisma } from '@/core/shared/database/client';
 import {
   PracticeSessionManager,
   PracticeSessionConfig,
@@ -486,6 +487,446 @@ export async function getWordDifficultyAssessment(
           ? errorMessage
           : 'Failed to get difficulty assessment',
     };
+  }
+}
+
+/**
+ * Get comprehensive word difficulty analysis for the dictionary UI
+ */
+export async function getWordDifficultyAnalysis(
+  userId: string,
+  userDictionaryId: string,
+): Promise<
+  | {
+      userDictionaryId: string;
+      word: string;
+      difficultyScore: number;
+      classification: 'very_easy' | 'easy' | 'medium' | 'hard' | 'very_hard';
+      confidence: number;
+      performanceMetrics: {
+        mistakeRate: number;
+        correctStreak: number;
+        srsLevel: number;
+        learningStatus: LearningStatus;
+        responseTime: number;
+        skipRate: number;
+        recencyFrequency: number;
+        weightedScore: number;
+      };
+      linguisticMetrics: {
+        wordRarity: number;
+        phoneticIrregularity: number;
+        polysemy: number;
+        wordLength: number;
+        semanticAbstraction: number;
+        relationalComplexity: number;
+        weightedScore: number;
+      };
+      recommendations: string[];
+      nextRecommendedPracticeType: string;
+      estimatedTimeToMastery: string;
+    }
+  | string
+> {
+  try {
+    const result = await DifficultyAssessment.calculateDifficultyScore(
+      userId,
+      userDictionaryId,
+    );
+
+    if (!result) {
+      throw new Error('Could not calculate difficulty score');
+    }
+
+    // Get basic word information
+    const userDictionaryEntry = await prisma.userDictionary.findUnique({
+      where: { id: userDictionaryId },
+      include: {
+        definition: {
+          include: {
+            wordDetails: {
+              include: {
+                wordDetails: {
+                  include: {
+                    word: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        sessionItems: {
+          take: 10,
+          orderBy: { createdAt: 'desc' },
+        },
+        mistakes: {
+          take: 20,
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+
+    if (!userDictionaryEntry) {
+      throw new Error('User dictionary entry not found');
+    }
+
+    const wordData = userDictionaryEntry.definition.wordDetails[0]?.wordDetails;
+    if (!wordData) {
+      throw new Error('Word data not found');
+    }
+
+    // Calculate performance metrics
+    const totalReviews = userDictionaryEntry.reviewCount;
+    const mistakeRate =
+      totalReviews > 0
+        ? userDictionaryEntry.amountOfMistakes / totalReviews
+        : 0;
+    const skipRate =
+      totalReviews > 0 ? userDictionaryEntry.skipCount / totalReviews : 0;
+
+    // Calculate average response time from recent session items
+    const recentResponseTimes = userDictionaryEntry.sessionItems
+      .filter((item) => item.responseTime !== null)
+      .map((item) => item.responseTime!)
+      .map(Number);
+    const averageResponseTime =
+      recentResponseTimes.length > 0
+        ? recentResponseTimes.reduce(
+            (sum: number, time: number) => sum + time,
+            0,
+          ) /
+          recentResponseTimes.length /
+          1000 // Convert to seconds
+        : 2.5; // Default reasonable response time
+
+    // Calculate recency/frequency score
+    const daysSinceLastReview = userDictionaryEntry.lastReviewedAt
+      ? Math.floor(
+          (Date.now() - userDictionaryEntry.lastReviewedAt.getTime()) /
+            (1000 * 60 * 60 * 24),
+        )
+      : 365; // Default to a year if never reviewed
+    const recencyFrequency = Math.max(0, 1 - daysSinceLastReview / 30); // Scale based on 30-day window
+
+    // Calculate linguistic metrics
+    const wordLength = wordData.word.word.length;
+    const wordRarity = result.factors.linguistic.wordRarity;
+    const phoneticIrregularity = result.factors.linguistic.phoneticIrregularity;
+
+    // Estimate polysemy (multiple meanings) - simplified calculation
+    const polysemy = Math.min(
+      1,
+      userDictionaryEntry.definition.wordDetails.length / 5,
+    );
+
+    // Semantic abstraction - estimate based on word characteristics
+    const semanticAbstraction = calculateSemanticAbstraction(
+      wordData.word.word,
+      userDictionaryEntry.definition.definition,
+    );
+
+    // Relational complexity - based on word relationships
+    const relationalComplexity = Math.min(1, wordLength / 15); // Simplified
+
+    // Build performance metrics
+    const performanceMetrics = {
+      mistakeRate,
+      correctStreak: userDictionaryEntry.correctStreak,
+      srsLevel: userDictionaryEntry.srsLevel,
+      learningStatus: userDictionaryEntry.learningStatus,
+      responseTime: averageResponseTime,
+      skipRate,
+      recencyFrequency,
+      weightedScore: result.performance,
+    };
+
+    // Build linguistic metrics
+    const linguisticMetrics = {
+      wordRarity,
+      phoneticIrregularity,
+      polysemy,
+      wordLength: Math.min(1, wordLength / 20), // Normalize to 0-1
+      semanticAbstraction,
+      relationalComplexity,
+      weightedScore: result.linguistic,
+    };
+
+    // Generate recommendations
+    const recommendations = generateRecommendations(
+      userDictionaryEntry.learningStatus,
+      result.classification,
+      mistakeRate,
+      userDictionaryEntry.correctStreak,
+      skipRate,
+      userDictionaryEntry.srsLevel,
+    );
+
+    // Determine next practice type
+    const nextPracticeType = determineNextPracticeType(
+      userDictionaryEntry.learningStatus,
+      result.classification,
+      mistakeRate,
+      userDictionaryEntry.correctStreak,
+    );
+
+    // Estimate time to mastery
+    const timeToMastery = estimateTimeToMastery(
+      userDictionaryEntry.learningStatus,
+      result.composite,
+      userDictionaryEntry.correctStreak,
+      userDictionaryEntry.reviewCount,
+    );
+
+    return {
+      userDictionaryId,
+      word: wordData.word.word,
+      difficultyScore: result.composite,
+      classification: result.classification as
+        | 'very_easy'
+        | 'easy'
+        | 'medium'
+        | 'hard'
+        | 'very_hard',
+      confidence: result.confidence,
+      performanceMetrics,
+      linguisticMetrics,
+      recommendations,
+      nextRecommendedPracticeType: nextPracticeType,
+      estimatedTimeToMastery: timeToMastery,
+    };
+  } catch (error) {
+    serverLog(`Error getting word difficulty analysis: ${error}`, 'error', {
+      userId,
+      userDictionaryId,
+      error: error instanceof Error ? error.message : String(error),
+    });
+
+    return `Failed to analyze word difficulty: ${error instanceof Error ? error.message : String(error)}`;
+  }
+}
+
+// Helper functions for difficulty analysis
+function calculateSemanticAbstraction(
+  word: string,
+  definition: string,
+): number {
+  // Simplified semantic abstraction calculation
+  // Abstract words tend to have longer definitions and certain patterns
+  const abstractKeywords = [
+    'concept',
+    'idea',
+    'feeling',
+    'emotion',
+    'abstract',
+    'theoretical',
+    'metaphorical',
+  ];
+  const concreteKeywords = [
+    'object',
+    'thing',
+    'tool',
+    'device',
+    'physical',
+    'tangible',
+    'material',
+  ];
+
+  const definitionLower = definition.toLowerCase();
+  const abstractScore = abstractKeywords.reduce(
+    (score, keyword) => score + (definitionLower.includes(keyword) ? 0.2 : 0),
+    0,
+  );
+  const concreteScore = concreteKeywords.reduce(
+    (score, keyword) => score + (definitionLower.includes(keyword) ? 0.2 : 0),
+    0,
+  );
+
+  // Base abstraction on definition length and keyword presence
+  const lengthScore = Math.min(1, definition.length / 200);
+  return Math.max(0, Math.min(1, lengthScore + abstractScore - concreteScore));
+}
+
+function generateRecommendations(
+  learningStatus: LearningStatus,
+  classification: string,
+  mistakeRate: number,
+  correctStreak: number,
+  skipRate: number,
+  srsLevel: number,
+): string[] {
+  const recommendations: string[] = [];
+
+  // Status-based recommendations
+  switch (learningStatus) {
+    case LearningStatus.notStarted:
+      recommendations.push(
+        'Start with basic recognition exercises to familiarize yourself with this word',
+      );
+      recommendations.push(
+        'Use flashcard mode to build initial word association',
+      );
+      break;
+    case LearningStatus.inProgress:
+      if (mistakeRate > 0.3) {
+        recommendations.push(
+          'Focus on understanding the definition before attempting typing practice',
+        );
+        recommendations.push(
+          'Use the word in context through example sentences',
+        );
+      }
+      if (correctStreak < 3) {
+        recommendations.push(
+          'Practice this word more frequently until you achieve a stable correct streak',
+        );
+      }
+      break;
+    case LearningStatus.needsReview:
+      recommendations.push(
+        'This word needs immediate attention - review the definition and practice regularly',
+      );
+      recommendations.push(
+        'Consider creating custom notes or mnemonics to help remember this word',
+      );
+      break;
+    case LearningStatus.difficult:
+      recommendations.push(
+        'Break down the word into smaller parts or syllables for easier memorization',
+      );
+      recommendations.push(
+        'Practice this word daily until it becomes more familiar',
+      );
+      recommendations.push(
+        'Create personal associations or memory hooks for this challenging word',
+      );
+      break;
+    case LearningStatus.learned:
+      recommendations.push(
+        'Maintain your knowledge with periodic reviews to prevent forgetting',
+      );
+      recommendations.push(
+        'Try using this word in writing exercises to reinforce mastery',
+      );
+      break;
+  }
+
+  // Difficulty-based recommendations
+  if (classification === 'very_hard' || classification === 'hard') {
+    recommendations.push(
+      'Consider studying this word alongside simpler words to balance difficulty',
+    );
+    recommendations.push(
+      'Use multiple practice modes (typing, flashcards, pronunciation) for comprehensive learning',
+    );
+  }
+
+  // Behavior-based recommendations
+  if (skipRate > 0.2) {
+    recommendations.push(
+      'You often skip this word - try shorter, more frequent practice sessions',
+    );
+    recommendations.push(
+      'Consider reviewing the definition again to build confidence',
+    );
+  }
+
+  if (srsLevel < 3) {
+    recommendations.push(
+      'Continue regular practice to advance through the spaced repetition levels',
+    );
+  }
+
+  return recommendations;
+}
+
+function determineNextPracticeType(
+  learningStatus: LearningStatus,
+  classification: string,
+  mistakeRate: number,
+  correctStreak: number,
+): string {
+  // Early learning stages - start with recognition
+  if (learningStatus === LearningStatus.notStarted) {
+    return 'Flashcards';
+  }
+
+  // High mistake rate - focus on understanding
+  if (mistakeRate > 0.4) {
+    return 'Definition Review';
+  }
+
+  // Difficult words - use multiple modes
+  if (classification === 'very_hard' || classification === 'hard') {
+    if (correctStreak < 2) {
+      return 'Flashcards';
+    } else {
+      return 'Typing Practice';
+    }
+  }
+
+  // Standard progression
+  if (correctStreak < 3) {
+    return 'Typing Practice';
+  } else if (correctStreak < 6) {
+    return 'Mixed Practice';
+  } else {
+    return 'Spaced Review';
+  }
+}
+
+function estimateTimeToMastery(
+  learningStatus: LearningStatus,
+  difficultyScore: number,
+  correctStreak: number,
+  reviewCount: number,
+): string {
+  // Base time calculation
+  let baseDays = 7; // Minimum days for mastery
+
+  // Adjust for current status
+  switch (learningStatus) {
+    case LearningStatus.notStarted:
+      baseDays = 14;
+      break;
+    case LearningStatus.inProgress:
+      baseDays = 10;
+      break;
+    case LearningStatus.needsReview:
+      baseDays = 12;
+      break;
+    case LearningStatus.difficult:
+      baseDays = 21;
+      break;
+    case LearningStatus.learned:
+      baseDays = 3; // Just maintenance
+      break;
+  }
+
+  // Adjust for difficulty
+  const difficultyMultiplier = 1 + difficultyScore * 0.5;
+  baseDays = Math.ceil(baseDays * difficultyMultiplier);
+
+  // Adjust for progress
+  if (correctStreak > 5) {
+    baseDays = Math.ceil(baseDays * 0.7);
+  } else if (correctStreak > 10) {
+    baseDays = Math.ceil(baseDays * 0.5);
+  }
+
+  // Adjust for experience
+  if (reviewCount > 20) {
+    baseDays = Math.ceil(baseDays * 0.8);
+  }
+
+  // Format output
+  if (baseDays <= 7) {
+    return `${baseDays} days`;
+  } else if (baseDays <= 21) {
+    const weeks = Math.ceil(baseDays / 7);
+    return `${weeks} week${weeks > 1 ? 's' : ''}`;
+  } else {
+    const months = Math.ceil(baseDays / 30);
+    return `${months} month${months > 1 ? 's' : ''}`;
   }
 }
 

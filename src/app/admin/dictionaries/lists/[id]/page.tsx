@@ -220,12 +220,11 @@ export default function ListDetailsPage() {
                 </h4>
                 <div className="flex items-center space-x-2">
                   <Badge variant="outline">
-                    {languageDisplayNames[list.baseLanguageCode]}
-                  </Badge>
-                  <span className="text-muted-foreground">→</span>
-                  <Badge variant="outline">
                     {languageDisplayNames[list.targetLanguageCode]}
                   </Badge>
+                  <span className="text-xs text-muted-foreground ml-2">
+                    Vocabulary Language
+                  </span>
                 </div>
               </div>
 

@@ -465,7 +465,6 @@ export function WordListsContent({
     try {
       const result = await createCustomUserList(userId, {
         ...data,
-        baseLanguageCode: userLanguages.base,
         targetLanguageCode: userLanguages.target,
       });
 
@@ -974,7 +973,6 @@ export function WordListsContent({
             name: previewingUserList.name,
             description: previewingUserList.description,
             categoryName: 'Community',
-            baseLanguageCode: previewingUserList.baseLanguageCode,
             targetLanguageCode: previewingUserList.targetLanguageCode,
             difficultyLevel: previewingUserList.difficultyLevel,
             tags: [],

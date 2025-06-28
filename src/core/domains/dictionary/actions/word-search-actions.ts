@@ -207,7 +207,6 @@ export async function searchWords(
 export async function addDefinitionToUserDictionary(
   userId: string,
   definitionId: number,
-  baseLanguageCode: LanguageCode,
   targetLanguageCode: LanguageCode,
 ) {
   try {
@@ -251,7 +250,6 @@ export async function addDefinitionToUserDictionary(
       data: {
         userId,
         definitionId,
-        baseLanguageCode,
         targetLanguageCode,
         learningStatus: LearningStatus.notStarted,
         progress: 0,

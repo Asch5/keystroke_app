@@ -112,7 +112,6 @@ export function WordDetailsDefinitions({
       const result = await addDefinitionToUserDictionary(
         userId,
         definition.id,
-        userLanguages.base,
         userLanguages.target,
       );
 

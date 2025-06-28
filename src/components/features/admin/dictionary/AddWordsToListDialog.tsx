@@ -92,11 +92,7 @@ export function AddWordsToListDialog({
       // Filter lists to ensure language compatibility
       // Only show lists that match the selected language exactly
       const compatibleLists = result.lists.filter((list) => {
-        return (
-          list.isPublic &&
-          (list.baseLanguageCode === selectedLanguage ||
-            list.targetLanguageCode === selectedLanguage)
-        );
+        return list.isPublic && list.targetLanguageCode === selectedLanguage;
       });
 
       setAvailableLists(compatibleLists);
@@ -238,7 +234,6 @@ export function AddWordsToListDialog({
                                 {difficultyDisplayNames[list.difficultyLevel]}
                               </Badge>
                               <Badge variant="outline" className="text-xs">
-                                {list.baseLanguageCode} →{' '}
                                 {list.targetLanguageCode}
                               </Badge>
                               <span className="text-xs text-muted-foreground">

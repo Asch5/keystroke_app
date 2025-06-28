@@ -656,8 +656,9 @@ export default function ListsManagementPage() {
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          {languageDisplayNames[list.baseLanguageCode]} →{' '}
-                          {languageDisplayNames[list.targetLanguageCode]}
+                          <Badge variant="outline">
+                            {languageDisplayNames[list.targetLanguageCode]}
+                          </Badge>
                         </div>
                       </TableCell>
                       <TableCell>

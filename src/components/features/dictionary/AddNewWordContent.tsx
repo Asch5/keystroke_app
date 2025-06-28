@@ -162,7 +162,6 @@ export function AddNewWordContent({
           const result = await addDefinitionToUserDictionary(
             userId,
             definitionId,
-            baseLanguageCode,
             targetLanguageCode,
           );
 
@@ -184,14 +183,7 @@ export function AddNewWordContent({
         }
       });
     },
-    [
-      userId,
-      baseLanguageCode,
-      targetLanguageCode,
-      handleSearch,
-      searchQuery,
-      currentPage,
-    ],
+    [userId, targetLanguageCode, handleSearch, searchQuery, currentPage],
   );
 
   /**
@@ -203,7 +195,6 @@ export function AddNewWordContent({
         const result = await addDefinitionToUserDictionary(
           userId,
           definitionId,
-          baseLanguageCode,
           targetLanguageCode,
         );
 

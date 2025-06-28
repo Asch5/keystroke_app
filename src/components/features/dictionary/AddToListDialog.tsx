@@ -173,7 +173,6 @@ export function AddToListDialog({
 
       const result = await createCustomUserList(userId, {
         ...submissionData,
-        baseLanguageCode: userLanguages.base,
         targetLanguageCode: userLanguages.target,
       });
 

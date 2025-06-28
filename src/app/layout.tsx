@@ -6,6 +6,7 @@ import { AuthProvider } from '@/components/providers';
 import { ReduxProvider } from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
 import { SpeedInsights } from '@/components/shared/SpeedInsights';
+import { PerformanceMonitoringProvider } from '@/components/providers/PerformanceMonitoringProvider';
 
 export const metadata: Metadata = {
   title: {
@@ -44,20 +45,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background font-sans`}
       >
-        <AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <ReduxProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster />
-              <SpeedInsights />
-            </ThemeProvider>
+            <AuthProvider>
+              <PerformanceMonitoringProvider>
+                {children}
+                <Toaster />
+                <SpeedInsights />
+              </PerformanceMonitoringProvider>
+            </AuthProvider>
           </ReduxProvider>
-        </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

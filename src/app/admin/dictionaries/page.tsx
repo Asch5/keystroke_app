@@ -1,142 +1,57 @@
-'use client';
-
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
-import { AddWordsToListDialog } from '@/components/features/admin/dictionary/AddWordsToListDialog';
-import { DeepSeekWordExtractionDialog } from '@/components/features/admin/dictionary/DeepSeekWordExtractionDialog';
-import { ManualFormsDialog } from '@/components/features/admin/dictionary/ManualFormsDialog';
-import {
-  AdminDictionaryPageHeader,
-  AdminDictionaryFilters,
-  AdminDictionaryTable,
-  useAdminDictionaryState,
-} from '@/components/features/admin';
+
+import { checkRole } from '@/core/lib/auth/checkRole';
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
+
+// Dynamic import for better code splitting
+const AdminDictionaryPageContent = dynamic(
+  () =>
+    import(
+      '@/components/features/admin/dictionary/AdminDictionaryPageContent'
+    ).then((mod) => ({ default: mod.AdminDictionaryPageContent })),
+  {
+    loading: () => (
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-64" />
+        <div className="grid gap-4 md:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+        <Skeleton className="h-96 w-full" />
+      </div>
+    ),
+  },
+);
 
 /**
  * Admin dictionaries page - main dictionary management interface
  * Refactored to use modular components following Cursor Rules for maintainability
+ * Enhanced with performance optimizations and dynamic imports
  */
-export default function DictionariesPage() {
-  const {
-    // State
-    selectedLanguage,
-    wordDetails,
-    filteredWordDetails,
-    filters,
-    filtersOpen,
-    selectedWords,
-    isDeleteDialogOpen,
-    isDeleting,
-    isAddWordsToListDialogOpen,
-    isDeepSeekDialogOpen,
-    isManualFormsDialogOpen,
-    selectedWordForForms,
-
-    // Actions
-    setSelectedLanguage,
-    handleFilterChange,
-    clearAllFilters,
-    setFiltersOpen,
-    toggleWordSelection,
-    selectAllWords,
-    clearSelection,
-    handleCreateWordList,
-    handleDeleteSelectedWords,
-    handleDeleteAudio,
-    handleAudioGenerated,
-    openDeleteDialog,
-    openAddWordsToListDialog,
-    handleWordsAddedToList,
-    setIsDeleteDialogOpen,
-    setIsAddWordsToListDialogOpen,
-    openDeepSeekDialog,
-    handleDeepSeekSuccess,
-    getSelectedWordDetailIds,
-    setIsDeepSeekDialogOpen,
-    openManualFormsDialog,
-    handleManualFormsSuccess,
-    setIsManualFormsDialogOpen,
-  } = useAdminDictionaryState();
+export default async function AdminDictionariesPage() {
+  // checkRole handles authorization and redirects internally if unauthorized
+  await checkRole(['admin']);
 
   return (
-    <div className="container mx-auto py-8">
-      <Card>
-        <AdminDictionaryPageHeader
-          selectedLanguage={selectedLanguage}
-          onLanguageChange={setSelectedLanguage}
-          selectedWords={selectedWords}
-          filteredWordDetails={filteredWordDetails}
-          onCreateWordList={handleCreateWordList}
-          onDeleteSelected={openDeleteDialog}
-          onAudioGenerated={handleAudioGenerated}
-          onAddWordsToList={openAddWordsToListDialog}
-          onDeepSeekExtract={openDeepSeekDialog}
-        />
-
-        <CardContent>
-          <AdminDictionaryFilters
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onClearAllFilters={clearAllFilters}
-            filtersOpen={filtersOpen}
-            onFiltersToggle={() => setFiltersOpen(!filtersOpen)}
-            wordDetails={wordDetails}
-            filteredWordDetails={filteredWordDetails}
-          />
-
-          <AdminDictionaryTable
-            data={filteredWordDetails}
-            selectedWords={selectedWords}
-            onWordSelectionToggle={toggleWordSelection}
-            onSelectAllWords={selectAllWords}
-            onClearSelection={clearSelection}
-            onDeleteAudio={handleDeleteAudio}
-            selectedLanguage={selectedLanguage}
-            onAddManualForms={openManualFormsDialog}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Bulk Delete Confirmation Dialog */}
-      <BulkDeleteConfirmDialog
-        isOpen={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        onConfirm={handleDeleteSelectedWords}
-        selectedCount={selectedWords.size}
-        isLoading={isDeleting}
-      />
-
-      {/* Add Words to List Dialog */}
-      <AddWordsToListDialog
-        isOpen={isAddWordsToListDialogOpen}
-        onClose={() => setIsAddWordsToListDialogOpen(false)}
-        selectedWords={selectedWords}
-        selectedDefinitionIds={
-          filteredWordDetails
-            .filter((word) => selectedWords.has(word.id.toString()))
-            .map((word) => word.definitionId)
-            .filter((id) => id !== undefined) as number[]
+    <div className="p-6">
+      <Suspense
+        fallback={
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-64" />
+            <div className="grid gap-4 md:grid-cols-3">
+              {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="h-32" />
+              ))}
+            </div>
+            <Skeleton className="h-96 w-full" />
+          </div>
         }
-        selectedLanguage={selectedLanguage}
-        onWordsAdded={handleWordsAddedToList}
-      />
-
-      {/* DeepSeek Word Extraction Dialog */}
-      <DeepSeekWordExtractionDialog
-        open={isDeepSeekDialogOpen}
-        onOpenChange={setIsDeepSeekDialogOpen}
-        selectedWordDetailIds={getSelectedWordDetailIds()}
-        onSuccess={handleDeepSeekSuccess}
-      />
-
-      {/* Manual Forms Dialog */}
-      <ManualFormsDialog
-        isOpen={isManualFormsDialogOpen}
-        onOpenChange={setIsManualFormsDialogOpen}
-        wordDetail={selectedWordForForms}
-        onSuccess={handleManualFormsSuccess}
-      />
+      >
+        <AdminDictionaryPageContent />
+      </Suspense>
     </div>
   );
 }

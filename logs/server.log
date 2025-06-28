@@ -29875,3 +29875,33 @@ Unique constraint failed on the fields: (`word_id`,`part_of_speech`,`variant`) C
 [2025-06-27T16:39:21.024Z] [info] 🖼️ Image API: Requesting image ID 419 Context: {"imageId":"419","parsedId":419}
 [2025-06-27T16:39:21.397Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/17737869/pexels-photo-17737869.jpeg Context: {"imageId":419,"imageUrl":"https://images.pexels.com/photos/17737869/pexels-photo-17737869.jpeg"}
 [2025-06-27T16:39:22.720Z] [info] ✅ Image API: Successfully served image 419 in 1697ms Context: {"imageId":419,"contentType":"image/jpeg","size":1007500,"duration":1697}
+[2025-06-28T11:23:52.749Z] [info] Initializing server services...
+[2025-06-28T11:23:52.736Z] [info] Initializing server services...
+[2025-06-28T11:23:52.770Z] [info] Initializing server services...
+[2025-06-28T11:23:52.945Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:23:52.945Z] [info] Server services initialized successfully
+[2025-06-28T11:23:53.072Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:23:53.072Z] [info] Server services initialized successfully
+[2025-06-28T11:23:53.203Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:23:53.203Z] [info] Server services initialized successfully
+[2025-06-28T11:24:01.817Z] [info] Initializing server services...
+[2025-06-28T11:24:02.148Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:24:02.149Z] [info] Server services initialized successfully
+[2025-06-28T11:24:02.058Z] [info] Initializing server services...
+[2025-06-28T11:24:02.889Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:24:02.890Z] [info] Server services initialized successfully
+[2025-06-28T11:26:06.159Z] [info] Initializing server services...
+[2025-06-28T11:26:06.189Z] [info] Initializing server services...
+[2025-06-28T11:26:06.273Z] [info] Initializing server services...
+[2025-06-28T11:26:06.475Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:26:06.475Z] [info] Server services initialized successfully
+[2025-06-28T11:26:06.483Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:26:06.483Z] [info] Server services initialized successfully
+[2025-06-28T11:26:06.543Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:26:06.545Z] [info] Server services initialized successfully
+[2025-06-28T11:26:14.046Z] [info] Initializing server services...
+[2025-06-28T11:26:14.292Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:26:14.292Z] [info] Server services initialized successfully
+[2025-06-28T11:26:14.083Z] [info] Initializing server services...
+[2025-06-28T11:26:14.934Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-06-28T11:26:14.934Z] [info] Server services initialized successfully

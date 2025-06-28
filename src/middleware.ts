@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 import { edgeAuthConfig } from '@/core/lib/auth/edge-config';
 import type { NextRequest } from 'next/server';
-import { debugLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 const { auth } = NextAuth(edgeAuthConfig);
 
@@ -28,16 +27,12 @@ const apiPaths = [
 function enhancedMiddleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Log all API routes for debugging
-  if (pathname.startsWith('/api/')) {
-    debugLog('Middleware API request debug', {
+  // Log all API routes for debugging (console only in Edge Runtime)
+  if (pathname.startsWith('/api/') && process.env.NODE_ENV === 'development') {
+    console.log('🔍 Middleware API request:', {
       method: request.method,
       pathname,
-      headers: Object.fromEntries(request.headers),
-      cookies: request.cookies
-        .getAll()
-        .map((c) => `${c.name}=${c.value}`)
-        .join('; '),
+      timestamp: new Date().toISOString(),
     });
   }
 

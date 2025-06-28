@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
@@ -41,8 +41,11 @@ interface StatisticsContentProps {
 
 /**
  * Main statistics content component displaying comprehensive user analytics
+ * Memoized to prevent unnecessary re-renders when parent updates but props remain same
  */
-export function StatisticsContent({ userId }: StatisticsContentProps) {
+const StatisticsContent = memo(function StatisticsContent({
+  userId,
+}: StatisticsContentProps) {
   const [statistics, setStatistics] = useState<UserStatistics | null>(null);
   const [analytics, setAnalytics] = useState<{
     dailyProgress: { date: string; wordsStudied: number; accuracy: number }[];
@@ -58,35 +61,36 @@ export function StatisticsContent({ userId }: StatisticsContentProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
+  // Memoized fetch function to prevent recreation on every render
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
 
-        const [statsResult, analyticsResult] = await Promise.all([
-          getUserStatistics(userId),
-          getLearningAnalytics(userId, 30),
-        ]);
+      const [statsResult, analyticsResult] = await Promise.all([
+        getUserStatistics(userId),
+        getLearningAnalytics(userId, 30),
+      ]);
 
-        if (statsResult.success && statsResult.statistics) {
-          setStatistics(statsResult.statistics);
-        } else {
-          setError(statsResult.error || 'Failed to fetch statistics');
-        }
-
-        if (analyticsResult.success && analyticsResult.analytics) {
-          setAnalytics(analyticsResult.analytics);
-        }
-      } catch (err) {
-        setError('An unexpected error occurred');
-        console.error('Statistics fetch error:', err);
-      } finally {
-        setLoading(false);
+      if (statsResult.success && statsResult.statistics) {
+        setStatistics(statsResult.statistics);
+      } else {
+        setError(statsResult.error || 'Failed to fetch statistics');
       }
-    }
 
-    fetchData();
+      if (analyticsResult.success && analyticsResult.analytics) {
+        setAnalytics(analyticsResult.analytics);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+      console.error('Statistics fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [userId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   if (loading) {
     return <div className="text-center py-8">Loading statistics...</div>;
@@ -852,4 +856,7 @@ export function StatisticsContent({ userId }: StatisticsContentProps) {
       </Tabs>
     </div>
   );
-}
+});
+
+// Export the memoized component
+export { StatisticsContent };

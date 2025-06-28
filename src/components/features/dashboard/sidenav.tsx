@@ -5,7 +5,7 @@ import { NavLinks } from '@/components/features/dashboard';
 import { PowerIcon, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { NavLink } from '@/core/types/nav';
-import { useState } from 'react';
+import { useState, memo, useCallback, useMemo } from 'react';
 import { RootState } from '@/core/state/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -18,19 +18,28 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-function SideNavContent({
-  links,
-  collapsed,
-}: {
+interface SideNavContentProps {
   links: NavLink[];
   collapsed: boolean;
-}) {
+}
+
+const SideNavContent = memo(function SideNavContent({
+  links,
+  collapsed,
+}: SideNavContentProps) {
   const user = useSelector((state: RootState) => state.auth.user);
 
-  // Add cache-busting for profile picture
-  const profilePictureUrl = user?.profilePictureUrl
-    ? `${user.profilePictureUrl}?t=${Date.now()}`
-    : undefined;
+  // Memoize profile picture URL with cache-busting
+  const profilePictureUrl = useMemo(() => {
+    return user?.profilePictureUrl
+      ? `${user.profilePictureUrl}?t=${Date.now()}`
+      : undefined;
+  }, [user?.profilePictureUrl]);
+
+  // Memoized sign out handler
+  const handleSignOut = useCallback(() => {
+    signOut({ callbackUrl: '/' });
+  }, []);
 
   return (
     <div className="flex h-full flex-col space-y-4 py-4">
@@ -64,11 +73,7 @@ function SideNavContent({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => signOut({ callbackUrl: '/' })}
-                >
+                <Button variant="ghost" size="icon" onClick={handleSignOut}>
                   <PowerIcon className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -79,7 +84,7 @@ function SideNavContent({
           <Button
             variant="ghost"
             className="w-full justify-start"
-            onClick={() => signOut({ callbackUrl: '/' })}
+            onClick={handleSignOut}
           >
             <PowerIcon className="mr-2 h-4 w-4" />
             Sign Out
@@ -88,16 +93,25 @@ function SideNavContent({
       </div>
     </div>
   );
-}
+});
 
-export default function SideNav({ links }: { links: NavLink[] }) {
+const SideNav = memo(function SideNav({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+
+  // Memoized handlers
+  const handleToggleCollapse = useCallback(() => {
+    setCollapsed(!collapsed);
+  }, [collapsed]);
+
+  const handleSheetOpenChange = useCallback((isOpen: boolean) => {
+    setOpen(isOpen);
+  }, []);
 
   return (
     <>
       {/* Mobile Navigation */}
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Sheet open={open} onOpenChange={handleSheetOpenChange}>
         <SheetTrigger asChild className="md:hidden">
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="h-5 w-5" />
@@ -117,7 +131,7 @@ export default function SideNav({ links }: { links: NavLink[] }) {
           variant="ghost"
           size="icon"
           className="self-end mt-2 mr-2"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={handleToggleCollapse}
         >
           {collapsed ? (
             <ChevronRight className="h-4 w-4" />
@@ -128,4 +142,6 @@ export default function SideNav({ links }: { links: NavLink[] }) {
       </div>
     </>
   );
-}
+});
+
+export default SideNav;

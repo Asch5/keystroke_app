@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import { LanguageCode, DifficultyLevel } from '@prisma/client';
 import { Button } from '@/components/ui/button';
@@ -79,7 +79,11 @@ const difficultyColors: Record<DifficultyLevel, string> = {
   proficient: 'bg-red-100 text-red-800',
 };
 
-export function WordListsContent({
+/**
+ * WordListsContent component for managing user's vocabulary lists
+ * Memoized to prevent unnecessary re-renders when parent updates but props remain same
+ */
+const WordListsContent = memo(function WordListsContent({
   userId,
   userLanguages,
 }: WordListsContentProps) {
@@ -996,7 +1000,10 @@ export function WordListsContent({
       )}
     </div>
   );
-}
+});
+
+// Export the memoized component
+export { WordListsContent };
 
 /**
  * User List Card Component

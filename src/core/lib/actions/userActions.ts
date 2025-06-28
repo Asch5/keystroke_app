@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
 import { put } from '@vercel/blob';
 import { Prisma, LanguageCode } from '@prisma/client';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 const profileSchema = z.object({
   name: z
@@ -103,7 +104,9 @@ export async function updateUserProfile(
   // Get the current user from the session
   const session = await auth();
 
-  console.log('formData', formData);
+  await serverLog('User profile update request received', 'info', {
+    formDataKeys: Array.from(formData.keys()),
+  });
 
   if (!session || !session.user || !session.user.email) {
     redirect('/login');
@@ -187,7 +190,10 @@ export async function updateUserProfile(
 
         updateData.profilePictureUrl = blob.url;
       } catch (uploadError) {
-        console.error('Error uploading photo:', uploadError);
+        await serverLog('Error uploading photo', 'error', {
+          error: uploadError,
+          userId: user.id,
+        });
         return { message: 'Failed to upload photo. Please try again.' };
       }
     }
@@ -206,7 +212,10 @@ export async function updateUserProfile(
       return { message: 'No changes to update.' };
     }
   } catch (error) {
-    console.error('Error updating profile:', error);
+    await serverLog('Error updating profile', 'error', {
+      error,
+      userId: session.user.email,
+    });
     if (error instanceof Error) {
       return { message: error.message };
     }

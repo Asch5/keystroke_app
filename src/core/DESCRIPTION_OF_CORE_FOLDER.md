@@ -19,6 +19,7 @@ src/core/
 │   ├── auth/             # Auth configuration
 │   ├── monitoring/       # Logging & monitoring
 │   ├── storage/          # Storage management
+│   ├── services/         # AI services (DeepSeek)
 │   └── middleware/       # Request processing & image handling
 ├── state/                # State Management
 │   ├── slices/           # Redux slices
@@ -26,6 +27,40 @@ src/core/
 │   └── store.ts          # Store configuration
 └── lib/ (legacy)         # Legacy - Maintained for compatibility
 ```
+
+## 📊 **CRITICAL: Comprehensive Monitoring & Autonomous Debugging System**
+
+### **Enhanced Logging Architecture** (`infrastructure/monitoring/`)
+
+**Core Components:**
+
+- **serverLogger.ts** (41 lines) - Structured server-side logging with environment detection
+- **clientLogger.ts** (366 lines) - Environment-aware client logging with dual storage (console + localStorage + file system)
+- **debugReader.ts** (500 lines) - AI-powered log analysis and autonomous debugging
+- **performanceMonitor.ts** (380 lines) - Performance tracking with autonomous pattern detection
+- **autonomousDebugDemo.ts** (249 lines) - Demonstration of autonomous debugging capabilities
+
+### **Autonomous Debugging Features** (AI-Powered)
+
+**DebugReader Class** (`debugReader.ts`):
+
+- `analyzeCurrentState()` - Comprehensive system state analysis
+- `getSystemHealthReport()` - Real-time health assessment
+- `searchForIssue(query)` - Targeted issue investigation
+- `detectPatterns()` - Automatic pattern recognition for auth, database, API, performance, and UX issues
+- **Browser Access**: `window.KeystrokeDebug` in development mode
+
+**Log Storage Locations:**
+
+- Server logs: `logs/server.log`
+- Client logs (server-side): `logs/client.log` (JSON format)
+- Client logs (browser-side): `localStorage` under `keystroke_client_logs`
+
+### **Performance Monitoring Integration**
+
+- **Vercel Speed Insights**: Real-time Core Web Vitals tracking
+- **Custom Performance Monitor**: Navigation timing, resource loading, layout shift detection
+- **Development Console**: `window.KeystrokePerformance` for manual debugging
 
 ## Critical Redux-Persist Considerations
 
@@ -93,7 +128,18 @@ import { getUserStats } from '@/core/domains/user';
 
 // Shared infrastructure
 import { handlePrismaError } from '@/core/shared/database';
-import { serverLog } from '@/core/infrastructure/monitoring';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import {
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
+
+// AI Services (Cost-Optimized)
+import { deepSeekService } from '@/core/infrastructure/services/deepseek-service';
+
+// Audio (Database-Only, No External TTS)
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
 
 // State management
 import { useAppDispatch, store } from '@/core/state/store';
@@ -166,7 +212,31 @@ import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 - **Language Support**: Supports both Danish (da-DK) and English (en-US) pronunciation
 - **Error Handling**: Graceful error handling with fallback mechanisms
 
+### 🤖 **DeepSeek AI Integration** (`actions/deepseek-actions.ts`)
+
+**NEW: Cost-Effective AI Word Extraction System**
+
+- `extractWordFromDefinition(input)` - Extract single word from definition using DeepSeek API
+- `extractWordsFromDefinitionsBatch(prevState, formData)` - Batch word extraction with database integration
+- `getDefinitionWordConnections(definitionIds)` - Query existing definition-to-word connections
+- `findOrCreateWord(wordText, languageCode)` - Find existing word or create new one for DeepSeek results
+- `connectDefinitionToWord(definitionId, wordId)` - Create DefinitionToOneWord relationship
+
+**Key Features:**
+
+- **Cost Optimization**: Achieves ~$0.0001 per definition (~$0.001 per 1K tokens)
+- **Batch Processing**: Up to 50 definitions per batch with rate limiting (5 requests/second max)
+- **Database Integration**: Automatic word creation and DefinitionToOneWord relationship management
+- **Error Handling**: Comprehensive error handling with detailed serverLog integration
+- **Token Tracking**: Real-time token usage monitoring and cost estimation
+- **Language Support**: Multi-language word extraction with source/target language configuration
+- **Duplicate Prevention**: Checks for existing definition-word connections before creating new ones
+
+Types: `ExtractWordResult`, `ExtractWordsBatchResult`
+
 ### Manual Forms Management (`actions/manual-forms-actions.ts`)
+
+**NEW: Danish Word Forms System for Missed Automatic Processing**
 
 - `addManualWordForms({baseWordDetailId, baseWordText, forms})` - Add manually created Danish word forms that were missed by automatic processing
 - `generateFormDefinition(baseWordText, relatedWordText, relationshipType)` - Generate default definition for manual forms
@@ -331,42 +401,6 @@ Types: `UserListWithDetails`, `PublicListSummary`, `PublicUserListSummary`, `Use
 - `updateListAction(listId, prevState, formData)` - Server action for list updates with redirect
 
 Types: `ListWithDetails`, `ListFilters`, `ListsResponse`
-
-### DeepSeek AI Word Extraction (`actions/deepseek-actions.ts`)
-
-- `extractWordFromDefinition(input)` - Extract single word from definition using DeepSeek API
-- `extractWordsFromDefinitionsBatch(prevState, formData)` - Batch word extraction with database integration
-- `getDefinitionWordConnections(definitionIds)` - Query existing definition-to-word connections
-- `findOrCreateWord(wordText, languageCode)` - Find existing word or create new one for DeepSeek results
-- `connectDefinitionToWord(definitionId, wordId)` - Create DefinitionToOneWord relationship
-
-**Key Features:**
-
-- **Cost Optimization**: Achieves ~$0.0001 per definition (~$0.001 per 1K tokens)
-- **Batch Processing**: Up to 50 definitions per batch with rate limiting (5 requests/second max)
-- **Database Integration**: Automatic word creation and DefinitionToOneWord relationship management
-- **Error Handling**: Comprehensive error handling with detailed serverLog integration
-- **Token Tracking**: Real-time token usage monitoring and cost estimation
-- **Language Support**: Multi-language word extraction with source/target language configuration
-- **Duplicate Prevention**: Checks for existing definition-word connections before creating new ones
-
-Types: `ExtractWordResult`, `ExtractWordsBatchResult`
-
-### Word Search with Translation Support (`actions/word-search-actions.ts`)
-
-- `searchWords(searchQuery, languageCode, userId?, page?, pageSize?)` - Basic word search with translations included
-- `searchWordsForUser(searchQuery, languageCode, userId, userNativeLanguage, page?, pageSize?)` - User-specific search that applies translation logic based on user's native language
-- `addDefinitionToUserDictionary(userId, definitionId, baseLanguageCode, targetLanguageCode)` - Add definition to user's dictionary
-- `removeDefinitionFromUserDictionary(userId, userDictionaryId)` - Remove definition from user's dictionary
-
-**Translation Features:**
-
-- **Native Language Support**: Automatically shows translations in user's native language when available
-- **Fallback Logic**: Falls back to original definitions when translations aren't available
-- **Enhanced Search Results**: Includes translation data in search results for user-specific display
-- **Language-Aware Display**: Prioritizes user's native language for better learning experience
-
-Types: `WordSearchResult`, `WordDefinitionResult` (enhanced with translation fields)
 
 ### Danish Form Definition Utilities (`utils/danishDictionary/getDanishFormDefinition.ts`)
 
@@ -574,9 +608,9 @@ Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `Typi
 - `SessionState`, `SessionStatsResponse`
 - `CreateSessionRequest`, `UpdateSessionRequest`
 
-### Enhanced Learning Progress Tracking (`utils/difficulty-assessment.ts`)
+### 🚀 **Enhanced Learning Progress Tracking** (`utils/difficulty-assessment.ts`)
 
-**NEW**: Comprehensive multi-factor difficulty assessment system for intelligent learning optimization:
+**NEW: Comprehensive Multi-Factor Difficulty Assessment System**
 
 - `DifficultyAssessment.calculateDifficultyScore(userId, userDictionaryId)` - Calculate comprehensive difficulty score using both user performance and linguistic metrics
 - `DifficultyAssessment.calculateBatchDifficultyScores(userId, userDictionaryIds[])` - Batch difficulty calculation for efficient processing
@@ -594,7 +628,7 @@ Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `Typi
 
 ### Practice Session Management (`utils/practice-session-manager.ts`)
 
-**NEW**: Advanced practice session orchestration with adaptive difficulty and multi-modal support:
+**NEW: Advanced Practice Session Orchestration with Adaptive Difficulty**
 
 - `PracticeSessionManager.createSession(options)` - Create intelligent practice sessions with difficulty-based word selection
 - `PracticeSessionManager.processAttempt(sessionId, attempt)` - Process attempts with adaptive feedback and difficulty adjustment
@@ -618,7 +652,7 @@ Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `Typi
 
 ### Enhanced Practice Actions (`actions/enhanced-practice-actions.ts`)
 
-**NEW**: Server actions leveraging the difficulty assessment system for intelligent learning experiences:
+**NEW: Server Actions with AI-Powered Word Selection and Difficulty Optimization**
 
 - `createIntelligentPracticeSession(request)` - Create practice sessions with AI-powered word selection and difficulty optimization
 - `processIntelligentAttempt(request)` - Process learning attempts with comprehensive feedback and adaptive adjustment
@@ -700,7 +734,9 @@ This architecture enables:
 
 ## Infrastructure Services (`infrastructure/services/`)
 
-### DeepSeek API Service (`deepseek-service.ts`)
+### 🤖 **DeepSeek API Service** (`deepseek-service.ts`)
+
+**NEW: Cost-Effective AI Integration**
 
 - `DeepSeekService.extractWord(request)` - Extract single word from definition using AI
 - `DeepSeekService.extractWordsBatch(request)` - Batch word extraction with rate limiting
@@ -730,11 +766,10 @@ Types: `DeepSeekWordRequest`, `DeepSeekWordResponse`, `DeepSeekBatchRequest`, `D
 - `translationService.ts` - Translation service integration
 - `textToSpeechService.ts` - Google Cloud Text-to-Speech with cost optimization
 - `blobStorageService.ts` - Vercel Blob storage for audio files with organized folder structure
-- `audioDownloadService.ts` - External audio download and blob storage integration
 
-### Audio Download Service (`shared/services/external-apis/audioDownloadService.ts`)
+### 🎵 **Audio Download Service** (`shared/services/external-apis/audioDownloadService.ts`)
 
-**NEW: External Audio Download & Local Storage**
+**NEW: External Audio Download & Local Storage System**
 
 - `AudioDownloadService.downloadAndStoreAudio(externalUrl, metadata)` - Download single audio file from external URL and store in blob storage
 - `AudioDownloadService.downloadAndStoreBatchAudio(audioFiles, baseMetadata)` - Batch download multiple audio files with rate limiting
@@ -860,4 +895,4 @@ interface SessionState {
 
 Async Thunks: `startLearningSession(request)`, `endLearningSession({sessionId, updates})`, `addSessionItem({sessionId, item})`, `fetchSessionStats(userId)`, `fetchSessionHistory({userId, page, pageSize, filters})`
 
-Selectors: `selectCurrentSession(state)`, `selectSessionItems(state)`, `selectIsSessionActive(state)`, `
+Selectors: `selectCurrentSession(state)`, `selectSessionItems(state)`, `selectIsSessionActive(state)`

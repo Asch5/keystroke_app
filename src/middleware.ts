@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 import { edgeAuthConfig } from '@/core/lib/auth/edge-config';
 import type { NextRequest } from 'next/server';
+import { debugLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 const { auth } = NextAuth(edgeAuthConfig);
 
@@ -29,18 +30,15 @@ function enhancedMiddleware(request: NextRequest) {
 
   // Log all API routes for debugging
   if (pathname.startsWith('/api/')) {
-    console.log('=== MIDDLEWARE DEBUG ===');
-
-    console.log('API request.method:', request.method);
-    console.log('API request.nextUrl:', pathname);
-    console.log('Headers:', Object.fromEntries(request.headers));
-    console.log(
-      'Cookies:',
-      request.cookies
+    debugLog('Middleware API request debug', {
+      method: request.method,
+      pathname,
+      headers: Object.fromEntries(request.headers),
+      cookies: request.cookies
         .getAll()
         .map((c) => `${c.name}=${c.value}`)
         .join('; '),
-    );
+    });
   }
 
   return NextResponse.next();

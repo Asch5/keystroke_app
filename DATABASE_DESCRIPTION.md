@@ -157,3 +157,30 @@ const activeUserLists = await prisma.userList.findMany({
   },
 });
 ```
+
+erDiagram
+User ||--o{ UserDictionary : has
+User ||--o{ UserList : owns
+User ||--o{ UserLearningSession : tracks
+
+    Word ||--o{ WordDetails : contains
+    WordDetails ||--o{ WordDefinition : links
+    WordDefinition }|--|| Definition : references
+
+    Definition ||--o{ DefinitionExample : includes
+    Definition ||--o{ DefinitionTranslation : translates
+    Definition ||--|| Image : displays
+
+    List ||--o{ ListWord : contains
+    UserList ||--o{ UserListWord : manages
+
+    Translation ||--o{ DefinitionTranslation : provides
+    Translation ||--o{ ExampleTranslation : translates
+
+    Audio ||--o{ WordDetailsAudio : plays
+    Audio ||--o{ DefinitionAudio : sounds
+    Audio ||--o{ ExampleAudio : pronounces
+
+    WordDetails ||--o{ WordDetailsRelationship : relates
+    Definition ||--o{ DefinitionRelationship : connects
+    Word ||--o{ WordToWordRelationship : links

@@ -13,6 +13,7 @@ keystroke_app/
 ├── scripts/              # Build & utility scripts
 ├── src/                  # Main application code
 ├── tests/                # Test files & data
+├── logs/                 # Application logs (server.log, client.log)
 ├── .env.*               # Environment config
 └── config files         # TS, ESLint, Tailwind
 ```
@@ -30,6 +31,13 @@ pnpm run p-studio       # DB GUI
 pnpm run p-migrate      # Apply migrations
 pnpm run p-generate     # Generate Prisma client
 
+# Testing (Dual Architecture)
+pnpm test               # Component/unit tests (co-located)
+pnpm test:run          # Single run component tests
+pnpm test:coverage     # Coverage report
+cd tests && pnpm backup:db  # Server-side database backup
+cd tests && pnpm test:tts   # TTS service testing
+
 # Environment
 pnpm run validate-env   # Validate environment variables
 pnpm run env:check      # Check .env files exist
@@ -38,6 +46,197 @@ pnpm run env:template   # Generate environment template
 # Build Optimization
 # See BUILD_OPTIMIZATION_REPORT.md for performance analysis
 ```
+
+## 🏗️ **CRITICAL: Dual Testing Architecture**
+
+The project uses a **dual testing system** that separates concerns:
+
+### **Component Tests (Co-located)**
+
+- **Location**: Next to the components they test (`Button.test.tsx` next to `Button.tsx`)
+- **Framework**: Vitest + React Testing Library
+- **Config**: `vitest.config.ts` with jsdom environment
+- **Setup**: `src/test-setup.ts` with comprehensive mocks
+- **Purpose**: Component behavior, user interactions, UI logic
+- **Command**: `pnpm test` (from root)
+
+### **Server-Side Tests (Separate)**
+
+- **Location**: `/tests/` folder with its own `package.json`
+- **Framework**: Custom test harnesses + tsx
+- **Purpose**: Database operations, API integrations, server actions, backups
+- **Commands**: `cd tests && pnpm [command]`
+- **Examples**: `pnpm backup:db`, `pnpm test:tts`, `pnpm test:translations`
+
+**⚠️ IMPORTANT**: Never mix these architectures. Component tests stay co-located, server tests stay in `/tests/`.
+
+## 🔄 **Database Backup System** (Production Critical)
+
+### **Advanced Backup Architecture**
+
+- **Location**: `tests/danishDicitonary/backupProcess/`
+- **Daily Backups**: `backups/YYYY-MM-DD/` with `backup.json` and `metadata.json`
+- **Features**: Encryption, compression, incremental backups, data validation
+
+### **Backup Commands**
+
+```bash
+cd tests
+pnpm backup:db              # Create timestamped backup
+pnpm backup:db:encrypted    # Create encrypted backup
+pnpm restore:db            # Restore from backup
+pnpm backup:and:transform  # Backup + transform for analysis
+```
+
+### **Getting Latest Backup** (As per Rules)
+
+```bash
+cd tests
+pnpm backup:db  # Always run this to get the latest backup.json
+```
+
+## 📊 **Comprehensive Logging & Autonomous Debugging System**
+
+### **Logging Architecture**
+
+- **Server Logs**: `logs/server.log` (via `serverLogger.ts`)
+- **Client Logs**: `logs/client.log` + localStorage (via `clientLogger.ts`)
+- **Environment-Aware**: Auto-detects browser vs server, dev vs production
+
+### **Autonomous Debugging** (AI-Powered)
+
+- **DebugReader Class**: `src/core/infrastructure/monitoring/debugReader.ts`
+- **Capabilities**: Log analysis, pattern recognition, health monitoring, issue detection
+- **Browser Access**: `window.KeystrokeDebug` in development
+- **AI Analysis**: Automatic detection of auth, database, API, performance, and UX issues
+
+### **Logging Best Practices**
+
+```typescript
+// Server-side
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+serverLog.info('User action', { userId, action });
+
+// Client-side
+import { infoLog } from '@/core/infrastructure/monitoring/clientLogger';
+await infoLog('Component mounted', { component: 'UserProfile' });
+```
+
+## 🌍 **Dynamic Language System** (Core Feature)
+
+### **Architecture**
+
+- **Single Source of Truth**: `User.baseLanguageCode` for translation preferences
+- **Adaptive Content**: All content automatically adapts when user changes base language
+- **Translation Priority**: Native language translation > Original definition
+- **Flexible Learning**: Learn Danish with English/Spanish/any base language support
+
+### **Key Utilities**
+
+- `getBestDefinitionForUser()` - Translation-aware content display
+- `shouldUseTranslations()` - Language preference detection
+- Dynamic list inheritance with language adaptation
+
+## 🎵 **Audio/TTS Architecture** (Cost-Optimized)
+
+### **Audio Sources Priority**
+
+1. **Database Audio Files** (Primary) - Real recordings stored in blob storage
+2. **Web Speech API** (Fallback) - Browser-based TTS for practice mode
+3. **❌ No Google Cloud TTS** - Explicitly disabled to avoid costs
+
+### **Audio Services**
+
+- `AudioService.playAudioFromDatabase()` - Blob storage audio playback
+- `AudioDownloadService` - External audio download and local storage
+- `audioDownloadService` - Singleton for Danish/Merriam-Webster audio download
+
+### **Blob Storage Organization**
+
+```
+vercel-blob/
+├── audio/
+│   ├── da/words/          # Danish word audio
+│   ├── en/words/          # English word audio
+│   └── definitions/       # Definition audio
+```
+
+## 🤖 **AI Integrations**
+
+### **DeepSeek API** (Cost-Effective AI)
+
+- **Purpose**: Word extraction from definitions (~$0.0001 per definition)
+- **Location**: `src/core/infrastructure/services/deepseek-service.ts`
+- **Admin Integration**: Available in `/admin/dictionaries` for batch processing
+- **Rate Limiting**: 5 requests/second max, batch processing up to 50 definitions
+
+### **Other AI Features**
+
+- **Translation API**: Google Translate (free tier)
+- **Image AI**: Pexels API for vocabulary images
+- **Smart Word Selection**: AI-powered difficulty assessment for practice sessions
+
+## 🖼️ **Image Authentication System**
+
+### **Problem Solved**
+
+Next.js Image component + authenticated endpoints (`/api/images/`) = broken images
+
+### **Solution Components**
+
+- **AuthenticatedImage**: Auto-detects authenticated endpoints, uses unoptimized mode only when needed
+- **ImageWithFallback**: Enhanced error handling with authentication support
+- **Consolidated Config**: `next.config.mjs` with CORS headers and image optimization
+
+## 🔧 **Environment Validation System**
+
+### **Multi-Tier Validation**
+
+```bash
+pnpm run validate-env      # Full validation with detailed errors
+pnpm run env:check        # Check file existence
+pnpm run env:template     # Generate missing .env files
+```
+
+### **Environment Hierarchy** (Priority Order)
+
+1. `.env.local` (development secrets)
+2. `.env.development` (dev overrides)
+3. `.env.test` (test environment)
+4. `.env` (production)
+
+### **Pre-Build Validation**
+
+- **Automatic**: Runs before every build via `prebuild` script
+- **Build Blocking**: Invalid environments prevent deployment
+- **Detailed Errors**: Specific guidance for missing/invalid variables
+
+## 🔄 **Development Workflow**
+
+### **Git Hooks (Husky)**
+
+- **Pre-commit**: ESLint + Prettier + staged files only
+- **Pre-push**: Validation checks
+- **Conventional Commits**: Standardized commit messages
+
+### **Code Quality Pipeline**
+
+```bash
+# Automatic on commit
+lint-staged → eslint --fix → prettier --write
+
+# Manual quality checks
+pnpm lint           # ESLint check
+pnpm test:run      # Full test suite
+pnpm validate-env  # Environment validation
+```
+
+### **Development Best Practices**
+
+- **Hot Reload**: Configured for state preservation
+- **Performance Monitoring**: Vercel Speed Insights + custom performance monitor
+- **Error Tracking**: Comprehensive error boundaries and logging
+- **Type Safety**: Strict TypeScript with no `any` types allowed
 
 ## Environment Files Priority
 
@@ -62,6 +261,16 @@ import { updateUserProfile, getUserSettings } from '@/core/domains/user';
 // Infrastructure
 import { handlePrismaError } from '@/core/shared/database';
 import { useAppDispatch } from '@/core/state';
+
+// Logging (ALWAYS use these for consistency)
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import {
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
+
+// Audio (Database-only, no external TTS)
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 ```
 
 ## Tech Stack
@@ -74,7 +283,8 @@ import { useAppDispatch } from '@/core/state';
 - **State**: Redux Toolkit + Redux Persist
 - **Auth**: NextAuth.js v5
 - **Performance Monitoring**: Vercel Speed Insights + Custom Performance Monitor
-- **External APIs**: Google Cloud TTS, Pexels, Merriam-Webster, DeepSeek AI
+- **AI Services**: DeepSeek API (word extraction), Google Translate (free tier)
+- **Media Services**: Pexels (images), Vercel Blob (audio storage)
 - **Package Manager**: pnpm
 
 ## Performance Monitoring & Optimization
@@ -144,6 +354,8 @@ The application includes comprehensive performance monitoring through:
 - **Components**: `src/components/DESCRIPTION_OF_COMPONENT_FOLDER.md`
 - **Environment**: `documentation/ENVIRONMENT_VARIABLES.md`
 - **DB Schema**: `prisma/schema.prisma`
+- **Logging**: `logs/server.log`, `logs/client.log`
+- **Backups**: `tests/danishDicitonary/backupProcess/backups/[latest-date]/backup.json`
 
 ## URLs
 

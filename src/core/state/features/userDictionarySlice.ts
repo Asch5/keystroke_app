@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { RootState } from '@/core/state/store';
+import {
+  debugLog,
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 //import { prisma } from '@/lib/prisma';
 
 /**
@@ -54,11 +59,11 @@ export const fetchUserDictionary = createAsyncThunk(
   'userDictionary/fetchUserDictionary',
   async (userId: string, { rejectWithValue }) => {
     try {
-      console.log(`Fetching dictionary for user ID: ${userId}`);
+      await debugLog(`Fetching dictionary for user ID: ${userId}`);
 
       // Use Pages API route instead of App Router API
       const apiUrl = `${window.location.origin}/api/user-dictionary?userId=${userId}`;
-      console.log('API URL:', apiUrl);
+      await debugLog('API URL being called', { apiUrl });
 
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -70,13 +75,14 @@ export const fetchUserDictionary = createAsyncThunk(
         cache: 'no-store', // Prevent caching issues
       });
 
-      console.log('response', response);
+      await debugLog('API Response received', {
+        status: response.status,
+        statusText: response.statusText,
+      });
 
-      console.log('API Response Status:', response.status, response.statusText);
-      console.log(
-        'API Response Headers:',
-        Object.fromEntries([...response.headers.entries()]),
-      );
+      await debugLog('API Response headers', {
+        headers: Object.fromEntries([...response.headers.entries()]),
+      });
 
       if (!response.ok) {
         // Try to read the error message from the response
@@ -85,7 +91,7 @@ export const fetchUserDictionary = createAsyncThunk(
 
         try {
           const contentType = response.headers.get('content-type');
-          console.log('Content Type:', contentType);
+          await debugLog('Response content type', { contentType });
 
           if (contentType && contentType.includes('application/json')) {
             errorData = await response.json();
@@ -94,7 +100,9 @@ export const fetchUserDictionary = createAsyncThunk(
           } else {
             // If not JSON, get the raw text
             const textError = await response.text();
-            console.error('Raw error response:', textError.substring(0, 500)); // Limit to first 500 chars for readability
+            await errorLog('Raw error response received', {
+              textError: textError.substring(0, 500),
+            });
 
             // If it starts with <!DOCTYPE, it's likely an HTML error page
             if (textError.trim().startsWith('<!DOCTYPE')) {
@@ -105,11 +113,13 @@ export const fetchUserDictionary = createAsyncThunk(
             }
           }
         } catch (parseError) {
-          console.error('Error parsing error response:', parseError);
+          await errorLog('Error parsing error response', { parseError });
           const textError = await response
             .text()
             .catch(() => 'Could not read response body');
-          console.error('Raw error response:', textError.substring(0, 500));
+          await errorLog('Raw error response fallback', {
+            textError: textError.substring(0, 500),
+          });
         }
 
         return rejectWithValue({
@@ -122,9 +132,9 @@ export const fetchUserDictionary = createAsyncThunk(
       // Check content type
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        console.error('Response is not JSON:', contentType);
+        await errorLog('Response is not JSON', { contentType });
         const text = await response.text();
-        console.error('Response body:', text);
+        await errorLog('Non-JSON response body', { responseBody: text });
         return rejectWithValue({
           message: 'Response is not JSON',
           data: text,
@@ -132,10 +142,12 @@ export const fetchUserDictionary = createAsyncThunk(
       }
 
       const data = await response.json();
-      console.log('Fetched user dictionary data (count):', data.length);
+      await infoLog('User dictionary data fetched successfully', {
+        itemCount: data.length,
+      });
       return data;
     } catch (error) {
-      console.error('Error in fetchUserDictionary:', error);
+      await errorLog('Error in fetchUserDictionary', { error });
       return rejectWithValue({
         message:
           error instanceof Error ? error.message : 'An unknown error occurred',

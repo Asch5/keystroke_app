@@ -13,6 +13,34 @@ The components are organized into several main categories:
 - **UI**: Base UI components (from shadcn/ui)
 - **Utils**: Component utilities and helpers
 
+## 🎯 **CRITICAL: Co-Located Testing Architecture**
+
+Following CURSOR RULES, all component tests are **co-located** with their components:
+
+### **Test File Locations**
+
+- Component tests: `Component.test.tsx` (next to `Component.tsx`)
+- Hook tests: `useHook.test.ts` (next to `useHook.ts`)
+- Utility tests: `utils.test.ts` (next to `utils.ts`)
+
+### **Testing Infrastructure**
+
+- **Framework**: Vitest + React Testing Library
+- **Setup**: `src/test-setup.ts` (global mocks and configuration)
+- **Config**: `vitest.config.ts` (test environment configuration)
+- **Utilities**: `test-utils.ts` files for shared testing helpers
+
+### **Running Component Tests**
+
+```bash
+pnpm test              # Watch mode
+pnpm test:run         # Single run
+pnpm test:ui          # Visual interface
+pnpm test:coverage    # With coverage report
+```
+
+**⚠️ IMPORTANT**: Server-side tests (database, API integrations) are in `/tests/` folder with separate package.json. Never mix testing architectures.
+
 ## Features (`/features`)
 
 ### Practice Components (`/features/practice`)
@@ -67,6 +95,13 @@ Each component follows the <400 line rule and maintains single responsibility. T
 
 The admin dictionaries page was successfully refactored from 963 lines to 120 lines by breaking it into focused, modular components following Cursor Rules.
 
+**🤖 AI Integration Components:**
+
+- `DeepSeekWordExtractionDialog.tsx` - AI-powered word extraction dialog with comprehensive UI and progress tracking
+- **Features**: Batch processing (up to 50 definitions), language selection, real-time token usage and cost estimation, comprehensive result display with success/failure status
+- **Integration**: Designed for admin ActionButtonsToolbar in Media Generation group
+- **Cost**: ~$0.0001 per definition (~$0.001 per 1K tokens)
+
 **Modular WordDetails System:**
 
 - `WordDetails.tsx` (60 lines) - Main container component orchestrating all sections with optional dictionary actions
@@ -90,17 +125,7 @@ The WordDetails component was successfully refactored from 1043 lines to 60 line
 
 - `WordDetailEditForm.tsx` - Enhanced form for editing word details with comprehensive definition and example management
 - `RelationshipManager.tsx` - Two-level relationship management for linguistic connections
-- `DeepSeekWordExtractionDialog.tsx` - AI-powered word extraction dialog with comprehensive UI and progress tracking
-
-**DeepSeek Integration:**
-
-- **Cost-Effective AI**: Word extraction from definitions using DeepSeek API (~$0.0001 per definition)
-- **Batch Processing**: Up to 50 definitions with progress tracking and result display
-- **Language Selection**: Target language selection with source language auto-detection
-- **Real-Time Feedback**: Live processing status, token usage, and cost estimation
-- **Result Management**: Detailed results display with success/failure status and database connection confirmation
-- **Error Handling**: Comprehensive error handling with user-friendly messages
-- **Integration Ready**: Designed for integration with admin ActionButtonsToolbar in Media Generation group
+- `ManualFormsDialog.tsx` - Manual Danish word forms creation dialog with auto-fill functionality and standardized definition generation
 
 #### User Management (`/features/admin/users`)
 
@@ -115,13 +140,16 @@ The WordDetails component was successfully refactored from 1043 lines to 60 line
 - `WordTable.tsx` - Dictionary word display with actions
 - `DictionaryPagination.tsx` - Pagination controls
 - `DictionaryEmptyState.tsx` - Appropriate empty state messages
-- `useAudioPlayback.tsx` - Audio playback functionality hook
 
 **State Management:**
 
 - `useDictionaryState.ts` (~170 lines) - Data fetching and state management
 - `useDictionaryActions.ts` (~100 lines) - Word actions and dialog management
 - `DictionaryLoadingSkeleton.tsx` (~60 lines) - Loading state components
+
+**Audio Components:**
+
+- `useAudioPlayback.ts` - Audio playback functionality hook using AudioService
 
 The My Dictionary system was successfully refactored from 908 lines to 161 lines by breaking it into focused, modular components.
 
@@ -194,7 +222,7 @@ React context providers:
 
 ## Shared (`/shared`)
 
-### Image Components (`/shared`)
+### 🖼️ **Image Authentication Components** (Critical for `/api/images/` endpoints)
 
 **AuthenticatedImage** (`AuthenticatedImage.tsx`) - Advanced image component that solves Next.js Image authentication issues:
 
@@ -212,6 +240,34 @@ React context providers:
 - **Development Debugging**: Detailed error logging in development mode
 - **Loading States**: Animated placeholders while images load
 - **Backward Compatibility**: Maintains existing API for all current usage
+
+### 🎵 **Audio System Components** (Database-Only Architecture)
+
+**Core Audio Integration:**
+
+- All components use `AudioService.playAudioFromDatabase()` for audio playback
+- **Database Priority**: Real audio files from blob storage (primary source)
+- **Web Speech API**: Browser TTS fallback for practice mode only
+- **❌ No Google Cloud TTS**: Explicitly disabled to avoid unexpected costs
+
+**Audio Components:**
+
+- `useAudioPlayback.ts` - Reusable hook for database audio playback (used across dictionary, admin, and practice components)
+- **Integration Points**: WordDetails, AdminDictionary, Practice components all use AudioService
+- **Error Handling**: Graceful fallback to Web Speech API when database audio unavailable
+
+**Audio Architecture:**
+
+```typescript
+// Standard audio playback pattern
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+
+// Database audio (primary)
+await AudioService.playAudioFromDatabase(audioUrl);
+
+// Web Speech API fallback (practice mode only)
+await AudioService.playTextToSpeech(text, language);
+```
 
 ### Data Display (`/shared/data-display`)
 
@@ -302,8 +358,10 @@ Base UI components from shadcn/ui:
 2. **Admin Dictionary** - Reduced 963-line page to 120 lines with 6 modular components
 3. **My Dictionary** - Refactored 908-line component to 161 lines with enhanced search and modular design
 4. **WordDetails Display** - Broke down 1043-line component into 8 focused components with comprehensive word display functionality, dedicated page experience, and integrated dictionary actions
-5. **Audio System** - Simplified and fixed audio playback across components
+5. **Audio System** - Simplified and fixed audio playback across components with database-only architecture
 6. **Translation System** - Implemented native language prioritization throughout
+7. **Image Authentication** - Comprehensive solution for authenticated image endpoints with auto-detection
+8. **AI Integration** - Added DeepSeek API components for cost-effective word extraction
 
 Each refactoring maintains all original functionality while improving maintainability, reusability, and following established patterns for type safety and error handling.
 

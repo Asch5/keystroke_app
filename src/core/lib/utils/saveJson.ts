@@ -1,5 +1,6 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 export async function saveJson(data: unknown, name: string) {
   //let's save the data to a json file onside the project folder
@@ -32,8 +33,14 @@ export async function saveJson(data: unknown, name: string) {
       JSON.stringify(dataArray, null, 2),
       'utf-8',
     );
-    console.log('Merriam-Webster API response saved successfully');
+    await serverLog('Merriam-Webster API response saved successfully', 'info', {
+      name,
+      filePath: documentationPath,
+    });
   } catch (writeError) {
-    console.error('Error saving Merriam-Webster API response:', writeError);
+    await serverLog('Error saving Merriam-Webster API response', 'error', {
+      error: writeError,
+      name,
+    });
   }
 }

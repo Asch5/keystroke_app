@@ -1,4 +1,5 @@
 import { DbCleanupService } from '@/core/lib/utils/dbUtils/dbCleanupService';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 let isInitialized = false;
 
@@ -6,13 +7,13 @@ let isInitialized = false;
  * Initialize server-side services
  * This should be called once during server startup
  */
-export function initializeServerServices() {
+export async function initializeServerServices() {
   if (isInitialized) {
-    console.log('Server services already initialized');
+    await serverLog('Server services already initialized', 'info');
     return;
   }
 
-  console.log('Initializing server services...');
+  await serverLog('Initializing server services...', 'info');
 
   // Initialize database cleanup service
   const cleanupService = DbCleanupService.getInstance();
@@ -21,7 +22,7 @@ export function initializeServerServices() {
     audioCleanupIntervalMs: 24 * 60 * 60 * 1000, // Daily cleanup
   });
 
-  console.log('Server services initialized successfully');
+  await serverLog('Server services initialized successfully', 'info');
   isInitialized = true;
 }
 

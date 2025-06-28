@@ -1,5 +1,10 @@
 import { env } from '@/env.mjs';
 import { createClient } from 'pexels';
+import {
+  debugLog,
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 
 export interface PexelsPhoto {
   id: number;
@@ -61,7 +66,7 @@ export class PexelsService {
     options: PexelsSearchOptions = {},
   ): Promise<PexelsSearchResponse> {
     try {
-      console.log(`Searching Pexels for: "${query}" with options:`, options);
+      await debugLog('Searching Pexels for images', { query, options });
 
       const searchParams = {
         query,
@@ -76,24 +81,33 @@ export class PexelsService {
 
       // Check if there's an error in the response
       if ('error' in response) {
-        console.error(`Pexels API error: ${response.error}`);
+        await errorLog('Pexels API error occurred', {
+          error: response.error,
+          query,
+          options,
+        });
         throw new Error(`Pexels API error: ${response.error}`);
       }
 
       // Validate the response structure
       if (!response || !Array.isArray(response.photos)) {
-        console.error('Invalid response structure from Pexels:', response);
+        await errorLog('Invalid response structure from Pexels', { response });
         return { photos: [] };
       }
 
-      console.log(
-        `Pexels search completed for: "${query}". Found photos: ${response.photos.length}`,
-      );
+      await infoLog('Pexels search completed successfully', {
+        query,
+        photosFound: response.photos.length,
+      });
 
       // Return the response directly - our interface is compatible
       return response as PexelsSearchResponse;
     } catch (error) {
-      console.error('Error searching Pexels images:', error);
+      await errorLog('Error searching Pexels images', {
+        error,
+        query,
+        options,
+      });
       // Return empty response in case of error to avoid breaking the application
       return { photos: [] };
     }
@@ -104,7 +118,7 @@ export class PexelsService {
    */
   async getPhoto(id: number): Promise<PexelsPhoto | null> {
     try {
-      console.log(`Fetching Pexels photo with ID: ${id}`);
+      await debugLog('Fetching Pexels photo by ID', { photoId: id });
 
       const response = await this.client.photos.show({ id });
 
@@ -113,11 +127,11 @@ export class PexelsService {
         throw new Error(`Pexels API error: ${response.error}`);
       }
 
-      console.log(`Successfully fetched Pexels photo ID: ${id}`);
+      await infoLog('Pexels photo fetched successfully', { photoId: id });
 
       return response as unknown as PexelsPhoto;
     } catch (error) {
-      console.error('Error fetching Pexels photo:', error);
+      await errorLog('Error fetching Pexels photo', { error, photoId: id });
       return null;
     }
   }

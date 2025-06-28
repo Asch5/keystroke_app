@@ -1503,6 +1503,7 @@ export interface UserListWordWithDetails {
     languageCode: LanguageCode;
     translatedText: string;
   }>;
+  oneWordTranslation?: string | null; // Translation from DefinitionToOneWord
 }
 
 /**
@@ -1511,6 +1512,7 @@ export interface UserListWordWithDetails {
 export async function getUserListWords(
   userId: string,
   userListId: string,
+  userLanguages: { base: LanguageCode; target: LanguageCode },
   options: {
     search?: string;
     sortBy?: 'word' | 'progress' | 'lastReviewed' | 'orderIndex';
@@ -1661,6 +1663,11 @@ export async function getUserListWords(
                     translation: true,
                   },
                 },
+                oneWordLinks: {
+                  include: {
+                    word: true,
+                  },
+                },
               },
             },
           },
@@ -1720,6 +1727,15 @@ export async function getUserListWords(
 
           // Translation details
           translations,
+          oneWordTranslation: (() => {
+            // Find DefinitionToOneWord translation that matches user's base language
+            const matchingOneWordLink = definition.oneWordLinks?.find(
+              (link) => link.word.languageCode === userLanguages.base,
+            );
+
+            // Only return DefinitionToOneWord match, never fall back to DefinitionTranslation
+            return matchingOneWordLink?.word?.word || null;
+          })(),
         };
       },
     );

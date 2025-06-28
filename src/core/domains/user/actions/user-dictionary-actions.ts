@@ -75,6 +75,7 @@ export interface UserDictionaryItem {
     languageCode: LanguageCode;
     content: string;
   }>;
+  oneWordTranslation?: string | null; // Translation from DefinitionToOneWord
 }
 
 /**
@@ -261,6 +262,11 @@ export const getUserDictionary = cache(
                   translation: true,
                 },
               },
+              oneWordLinks: {
+                include: {
+                  word: true,
+                },
+              },
             },
           },
           userListWords: {
@@ -413,6 +419,16 @@ export const getUserDictionary = cache(
               languageCode: tl.translation.languageCode,
               content: tl.translation.content,
             })) || [],
+          oneWordTranslation: (() => {
+            // Find DefinitionToOneWord translation that matches user's base language
+            const matchingOneWordLink = entry.definition.oneWordLinks?.find(
+              (link) =>
+                link.word.languageCode === userLanguageConfig.baseLanguageCode,
+            );
+
+            // Only return DefinitionToOneWord match, never fall back to DefinitionTranslation
+            return matchingOneWordLink?.word?.word || null;
+          })(),
         };
       });
 

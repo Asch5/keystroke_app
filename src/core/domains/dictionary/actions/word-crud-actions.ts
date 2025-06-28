@@ -86,6 +86,13 @@ export interface DictionaryWordDetails {
   wordId: number;
   gender: Gender | null;
   forms: string | null;
+  // Translation support
+  translations?: Array<{
+    id: number;
+    languageCode: LanguageCode;
+    content: string;
+  }>;
+  oneWordTranslation?: string | null; // Translation from DefinitionToOneWord
 }
 
 /**
@@ -178,6 +185,16 @@ export async function fetchDictionaryWordDetails(
             definition: {
               include: {
                 image: true,
+                translationLinks: {
+                  include: {
+                    translation: true,
+                  },
+                },
+                oneWordLinks: {
+                  include: {
+                    word: true,
+                  },
+                },
               },
             },
           },
@@ -215,6 +232,18 @@ export async function fetchDictionaryWordDetails(
             ? definitionWords.slice(0, 3).join(' ') + '...'
             : definitionText;
 
+        // Get translations from DefinitionTranslation
+        const translations =
+          firstDefinition?.translationLinks?.map((tl) => ({
+            id: tl.translation.id,
+            languageCode: tl.translation.languageCode,
+            content: tl.translation.content,
+          })) || [];
+
+        // Get one-word translation from DefinitionToOneWord
+        const oneWordTranslation =
+          firstDefinition?.oneWordLinks?.[0]?.word?.word || null;
+
         return {
           id: details.id,
           wordText: details.word.word,
@@ -232,6 +261,9 @@ export async function fetchDictionaryWordDetails(
           wordId: details.wordId,
           gender: details.gender,
           forms: details.forms,
+          // Translation support
+          translations,
+          oneWordTranslation,
         };
       },
     );

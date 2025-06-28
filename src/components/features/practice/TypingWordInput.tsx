@@ -13,6 +13,7 @@ import { Volume2, SkipForward, Trophy, VolumeX } from 'lucide-react';
 import { cn } from '@/core/shared/utils/common/cn';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
+import { gameSoundService } from '@/core/domains/dictionary/services/game-sound-service';
 
 import type { SessionState, WordResult, TypingPracticeSettings } from './hooks';
 
@@ -50,6 +51,18 @@ export function TypingWordInput({
   onPlayAudio,
 }: TypingWordInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasPlayedAutoAudioRef = useRef(false);
+
+  // Initialize game sound service
+  useEffect(() => {
+    if (settings.enableGameSounds) {
+      gameSoundService.initialize({
+        volume: settings.gameSoundVolume,
+        enabled: settings.enableGameSounds,
+        useStaticFiles: true,
+      });
+    }
+  }, [settings.enableGameSounds, settings.gameSoundVolume]);
 
   // Auto-focus on the input when component mounts or when a new word appears
   useEffect(() => {
@@ -62,6 +75,69 @@ export function TypingWordInput({
       inputRef.current.focus();
     }
   }, [sessionState.currentWord, sessionState.isActive, showResult]);
+
+  // Auto-play audio when new word appears (if setting is enabled)
+  useEffect(() => {
+    const currentWord = sessionState.currentWord;
+    const shouldPlayAutoAudio =
+      settings.playAudioOnStart &&
+      currentWord &&
+      sessionState.isActive &&
+      !showResult &&
+      !hasPlayedAutoAudioRef.current;
+
+    if (shouldPlayAutoAudio && currentWord) {
+      console.log('🎵 Auto-playing audio for new word:', currentWord.wordText);
+      hasPlayedAutoAudioRef.current = true;
+
+      // Play audio automatically when word appears
+      onPlayAudio(
+        currentWord.wordText,
+        currentWord.audioUrl,
+        true, // neutral - not success or error
+      );
+    }
+
+    // Reset the flag when word changes
+    if (currentWord) {
+      hasPlayedAutoAudioRef.current = false;
+    }
+  }, [
+    sessionState.currentWord,
+    settings.playAudioOnStart,
+    sessionState.isActive,
+    showResult,
+    onPlayAudio,
+  ]);
+
+  // Handle typing feedback with game sounds
+  const handleInputChangeWithSound = (value: string) => {
+    const previousLength = sessionState.userInput.length;
+    const newLength = value.length;
+
+    // Character was added
+    if (newLength > previousLength && sessionState.currentWord) {
+      const newChar = value[newLength - 1];
+      const expectedChar = sessionState.currentWord.wordText[newLength - 1];
+
+      // Play keystroke sound if enabled
+      if (settings.enableKeystrokeSounds) {
+        gameSoundService.playKeystroke();
+      }
+
+      // Play feedback sound based on correctness
+      if (settings.enableGameSounds) {
+        if (newChar !== expectedChar) {
+          // Wrong character typed
+          gameSoundService.playError();
+        }
+        // Note: Success sound is played on word completion, not per character
+      }
+    }
+
+    // Call the original input handler
+    onInputChange(value);
+  };
 
   // Handle Enter key for submission, skip, and next word
   useEffect(() => {
@@ -87,6 +163,15 @@ export function TypingWordInput({
             // If user has typed something, submit the word
             console.log('✅ Triggering Submit');
             onWordSubmit();
+
+            // Play success sound if word is correct
+            if (settings.enableGameSounds && sessionState.currentWord) {
+              const isCorrect =
+                sessionState.userInput === sessionState.currentWord.wordText;
+              if (isCorrect) {
+                gameSoundService.playSuccess();
+              }
+            }
           } else {
             // If user hasn't typed anything, skip the word
             console.log('⏭️ Triggering Skip');
@@ -109,11 +194,23 @@ export function TypingWordInput({
   }, [
     sessionState.isActive,
     sessionState.userInput,
+    sessionState.currentWord,
     showResult,
+    settings.enableGameSounds,
     onWordSubmit,
     onNextWord,
     onSkipWord,
   ]);
+
+  // Play success sound when word is completed correctly
+  useEffect(() => {
+    if (showResult && wordResults.length > 0 && settings.enableGameSounds) {
+      const lastResult = wordResults[wordResults.length - 1];
+      if (lastResult?.isCorrect) {
+        gameSoundService.playSuccess();
+      }
+    }
+  }, [showResult, wordResults, settings.enableGameSounds]);
 
   if (!sessionState.currentWord) return null;
 
@@ -133,7 +230,7 @@ export function TypingWordInput({
           ref={inputRef}
           maxLength={wordLength}
           value={sessionState.userInput}
-          onChange={onInputChange}
+          onChange={handleInputChangeWithSound}
           disabled={!sessionState.isActive || showResult}
         >
           <InputOTPGroup className="gap-2">
@@ -198,25 +295,7 @@ export function TypingWordInput({
                         'px-1 py-0.5 rounded',
                         lastResult.mistakes.some((m) => m.position === index)
                           ? 'bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30'
-                          : 'bg-green-500/20 text-green-600 dark:text-green-400',
-                      )}
-                    >
-                      {char || '_'}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="text-muted-foreground mb-1">Correct word:</p>
-                <div className="font-mono text-lg">
-                  {lastResult.correctWord.split('').map((char, index) => (
-                    <span
-                      key={index}
-                      className={cn(
-                        'px-1 py-0.5 rounded',
-                        lastResult.mistakes.some((m) => m.position === index)
-                          ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/30'
-                          : 'bg-muted text-muted-foreground',
+                          : 'text-muted-foreground',
                       )}
                     >
                       {char}
@@ -224,169 +303,109 @@ export function TypingWordInput({
                   ))}
                 </div>
               </div>
+              <div>
+                <p className="text-muted-foreground mb-1">Correct word:</p>
+                <div className="font-mono text-lg text-green-600 dark:text-green-400">
+                  {lastResult.correctWord}
+                </div>
+              </div>
             </div>
 
-            {/* Mistake summary */}
-            {lastResult.mistakes.length > 0 && (
-              <div className="text-xs text-muted-foreground">
-                <p>
-                  {lastResult.mistakes.length} mistake
-                  {lastResult.mistakes.length !== 1 ? 's' : ''} found
-                </p>
-              </div>
-            )}
+            {/* Accuracy information */}
+            <div className="text-sm text-muted-foreground">
+              <p>Accuracy: {lastResult.accuracy}%</p>
+              {lastResult.mistakes.length > 0 && (
+                <p>Mistakes: {lastResult.mistakes.length}</p>
+              )}
+            </div>
           </div>
-        )}
-
-        {/* Success message for correct attempts */}
-        {isCorrect && (
-          <p className="text-sm text-green-600 dark:text-green-400 font-medium">
-            Perfect! The word was: <span className="font-mono">{word}</span>
-          </p>
         )}
       </div>
     );
   };
 
+  /**
+   * Render control buttons
+   */
+  const renderControls = () => (
+    <div className="flex justify-center gap-3">
+      {!showResult ? (
+        <>
+          <Button
+            onClick={onWordSubmit}
+            disabled={
+              !sessionState.userInput || sessionState.userInput.length === 0
+            }
+            className="flex items-center gap-2"
+          >
+            <Trophy className="h-4 w-4" />
+            Submit
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => onSkipWord()}
+            className="flex items-center gap-2"
+          >
+            <SkipForward className="h-4 w-4" />
+            Skip
+          </Button>
+        </>
+      ) : (
+        <Button onClick={onNextWord} className="flex items-center gap-2">
+          <SkipForward className="h-4 w-4" />
+          Next Word
+        </Button>
+      )}
+    </div>
+  );
+
   return (
-    <Card className="max-w-4xl mx-auto">
-      <CardContent className="p-8 space-y-8">
-        {/* Word Definition */}
-        <div className="text-center space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Type the word:
+    <Card>
+      <CardContent className="p-8 space-y-6">
+        {/* Word display */}
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-muted-foreground mb-2">
+            Type this word:
           </h2>
-
-          <div className="space-y-4">
-            {/* One-word translation (prominent) */}
-            {sessionState.currentWord.oneWordTranslation ? (
-              <div className="space-y-2">
-                <p className="text-3xl font-bold text-foreground">
-                  {sessionState.currentWord.oneWordTranslation}
-                </p>
-                {/* Full definition (smaller, below) */}
-                <p className="text-base text-muted-foreground max-w-2xl mx-auto">
-                  {sessionState.currentWord.definition}
-                </p>
-              </div>
-            ) : (
-              /* Fallback to full definition if no one-word translation */
-              <p className="text-2xl font-semibold text-foreground">
-                {sessionState.currentWord.definition}
-              </p>
-            )}
-
-            {/* Definition Image */}
-            {settings.showDefinitionImages &&
-              sessionState.currentWord.imageId && (
-                <div className="flex justify-center">
-                  <div className="w-64 max-w-xs">
-                    <AspectRatio
-                      ratio={16 / 9}
-                      className="bg-muted rounded-lg overflow-hidden border"
-                    >
-                      <AuthenticatedImage
-                        src={`/api/images/${sessionState.currentWord.imageId}`}
-                        alt={
-                          sessionState.currentWord.imageDescription ||
-                          sessionState.currentWord.definition
-                        }
-                        fill
-                        className="object-cover"
-                      />
-                    </AspectRatio>
-                    {sessionState.currentWord.imageDescription && (
-                      <p className="text-xs text-muted-foreground mt-2 text-center">
-                        {sessionState.currentWord.imageDescription}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-          </div>
-
-          <div className="flex items-center justify-center gap-4">
-            {sessionState.currentWord.phonetic && (
-              <p className="text-sm text-muted-foreground font-mono">
-                /{sessionState.currentWord.phonetic}/
-              </p>
-            )}
-            {sessionState.currentWord.partOfSpeech && (
-              <Badge variant="outline" className="text-xs">
-                {sessionState.currentWord.partOfSpeech}
-              </Badge>
-            )}
-          </div>
+          <div className="text-4xl font-bold mb-4">{word}</div>
         </div>
 
-        {/* Typing Input */}
+        {/* Definition */}
+        {sessionState.currentWord.definition && (
+          <div className="text-center">
+            <p className="text-muted-foreground max-w-lg mx-auto">
+              {sessionState.currentWord.definition}
+            </p>
+          </div>
+        )}
+
+        {/* Image */}
+        {settings.showDefinitionImages && sessionState.currentWord.imageUrl && (
+          <div className="flex justify-center">
+            <div className="w-48 h-32">
+              <AspectRatio ratio={3 / 2}>
+                <AuthenticatedImage
+                  src={sessionState.currentWord.imageUrl}
+                  alt={`Visual representation of ${word}`}
+                  fill
+                  className="rounded-md object-cover"
+                />
+              </AspectRatio>
+            </div>
+          </div>
+        )}
+
+        {/* Input area */}
         {renderWordInput()}
 
-        {/* Keyboard hint */}
-        <div className="text-center">
-          <p className="text-xs text-muted-foreground">
-            Press{' '}
-            <kbd className="px-1.5 py-0.5 text-xs font-semibold bg-muted border rounded">
-              Enter
-            </kbd>{' '}
-            to{' '}
-            {showResult
-              ? 'continue'
-              : sessionState.userInput && sessionState.userInput.length > 0
-                ? 'submit'
-                : 'skip'}
-          </p>
-        </div>
-
-        {/* Result Feedback */}
+        {/* Result feedback */}
         {renderResultFeedback()}
 
-        {/* Action Buttons */}
-        <div className="flex justify-center gap-3">
-          {!showResult && (
-            <>
-              <Button
-                variant="outline"
-                onClick={onSkipWord}
-                className="flex items-center gap-2"
-              >
-                <SkipForward className="h-4 w-4" />
-                Skip
-                {!sessionState.userInput && (
-                  <span className="text-xs text-muted-foreground ml-1">
-                    (Enter)
-                  </span>
-                )}
-              </Button>
+        {/* Controls */}
+        {renderControls()}
 
-              {sessionState.userInput && (
-                <Button
-                  onClick={onWordSubmit}
-                  className="flex items-center gap-2"
-                >
-                  <Trophy className="h-4 w-4" />
-                  Submit
-                  <span className="text-xs text-muted-foreground ml-1">
-                    (Enter)
-                  </span>
-                </Button>
-              )}
-            </>
-          )}
-
-          {showResult && (
-            <Button
-              onClick={onNextWord}
-              className="flex items-center gap-2 bg-primary"
-            >
-              <SkipForward className="h-4 w-4" />
-              Next Word
-              <span className="text-xs text-muted-foreground ml-1">
-                (Enter)
-              </span>
-            </Button>
-          )}
-
+        {/* Audio button */}
+        <div className="flex justify-center">
           <Button
             variant="outline"
             size="icon"

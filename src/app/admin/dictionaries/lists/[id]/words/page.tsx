@@ -45,39 +45,21 @@ import {
   SortAsc,
   SortDesc,
   Play,
-  Image as ImageIcon,
+  ImageIcon,
   ChevronLeft,
   ChevronRight,
   Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { PartOfSpeech } from '@prisma/client';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import { partOfSpeechDisplayNames } from '@/components/features/admin/dictionary/AdminDictionaryConstants';
 
-// Display names for part of speech
-const partOfSpeechDisplayNames: Record<PartOfSpeech, string> = {
-  noun: 'Noun',
-  verb: 'Verb',
-  phrasal_verb: 'Phrasal Verb',
-  adjective: 'Adjective',
-  adverb: 'Adverb',
-  pronoun: 'Pronoun',
-  preposition: 'Preposition',
-  conjunction: 'Conjunction',
-  interjection: 'Interjection',
-  numeral: 'Numeral',
-  article: 'Article',
-  exclamation: 'Exclamation',
-  abbreviation: 'Abbreviation',
-  suffix: 'Suffix',
-  first_part: 'First Part',
-  last_letter: 'Last Letter',
-  adj_pl: 'Adjective Plural',
-  symbol: 'Symbol',
-  phrase: 'Phrase',
-  sentence: 'Sentence',
-  undefined: 'Undefined',
-};
+// Types for the delete dialog
+interface DeleteDialogState {
+  open: boolean;
+  wordTexts: string[];
+  definitionIds: number[];
+}
 
 export default function AdminListWordsPage() {
   const router = useRouter();
@@ -97,21 +79,23 @@ export default function AdminListWordsPage() {
   );
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 20;
+  const pageSize = 50;
 
   // Selection states
   const [selectedWords, setSelectedWords] = useState<Set<number>>(new Set());
 
   // Dialog states
-  const [deleteDialog, setDeleteDialog] = useState<{
-    open: boolean;
-    wordTexts: string[];
-    definitionIds: number[];
-  }>({ open: false, wordTexts: [], definitionIds: [] });
+  const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>({
+    open: false,
+    wordTexts: [],
+    definitionIds: [],
+  });
 
   // Audio state
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [playingWordId, setPlayingWordId] = useState<string | null>(null);
+
+  // Language functionality removed - now only using DefinitionToOneWord translations
 
   // Fetch list details and words
   const fetchData = useCallback(async () => {
@@ -427,6 +411,7 @@ export default function AdminListWordsPage() {
                       ))}
                   </div>
                 </TableHead>
+                <TableHead>Translation</TableHead>
                 <TableHead>Definition</TableHead>
                 <TableHead
                   className="cursor-pointer"
@@ -469,6 +454,14 @@ export default function AdminListWordsPage() {
                         </div>
                       )}
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    {/* Translation Column - Show only DefinitionToOneWord or dash */}
+                    {word.oneWordTranslation ? (
+                      <span className="text-sm">{word.oneWordTranslation}</span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div className="max-w-md text-sm">{word.definition}</div>

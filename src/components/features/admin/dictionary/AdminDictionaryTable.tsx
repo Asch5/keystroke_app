@@ -46,6 +46,7 @@ interface AdminDictionaryTableProps {
   onClearSelection: () => void;
   onDeleteAudio: (wordId: number) => void;
   selectedLanguage: LanguageCode;
+  userBaseLanguage?: LanguageCode | undefined; // Still needed for interface compatibility
   onAddManualForms?: (wordDetail: DictionaryWordDetails) => void;
 }
 
@@ -61,6 +62,7 @@ export function AdminDictionaryTable({
   onClearSelection,
   onDeleteAudio,
   selectedLanguage,
+  userBaseLanguage, // eslint-disable-line @typescript-eslint/no-unused-vars
   onAddManualForms,
 }: AdminDictionaryTableProps) {
   const { playAudio, isPlaying } = useAudioPlayback();
@@ -202,6 +204,22 @@ export function AdminDictionaryTable({
             {sourceTypeDisplayNames[source] || source}
           </span>
         );
+      },
+    },
+    {
+      accessorKey: 'translation',
+      header: 'Translation',
+      cell: ({ row }) => {
+        const wordDetail = row.original;
+
+        // Show only DefinitionToOneWord or dash
+        if (wordDetail.oneWordTranslation) {
+          return (
+            <span className="text-sm">{wordDetail.oneWordTranslation}</span>
+          );
+        }
+
+        return <span className="text-muted-foreground">—</span>;
       },
     },
     {

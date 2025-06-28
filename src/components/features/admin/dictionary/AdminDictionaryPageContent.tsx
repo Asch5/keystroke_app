@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
 import { AddWordsToListDialog } from '@/components/features/admin/dictionary/AddWordsToListDialog';
@@ -11,6 +13,8 @@ import {
   AdminDictionaryTable,
   useAdminDictionaryState,
 } from '@/components/features/admin';
+import { LanguageCode } from '@prisma/client';
+import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
 
 /**
  * Admin Dictionary Page Content Component
@@ -18,6 +22,31 @@ import {
  * Separated for better code splitting and performance
  */
 export function AdminDictionaryPageContent() {
+  const { data: session } = useSession();
+  const [userBaseLanguage, setUserBaseLanguage] = useState<
+    LanguageCode | undefined
+  >();
+
+  // Get user's base language for translation support
+  useEffect(() => {
+    async function fetchUserLanguage() {
+      if (session?.user?.id) {
+        try {
+          const userSettings = await getUserSettings();
+          if (userSettings.user?.baseLanguageCode) {
+            setUserBaseLanguage(userSettings.user.baseLanguageCode);
+          }
+        } catch (error) {
+          console.error('Error fetching user language:', error);
+          // Default to English if error
+          setUserBaseLanguage(LanguageCode.en);
+        }
+      }
+    }
+
+    fetchUserLanguage();
+  }, [session?.user?.id]);
+
   const {
     // State
     selectedLanguage,
@@ -93,6 +122,7 @@ export function AdminDictionaryPageContent() {
             onClearSelection={clearSelection}
             onDeleteAudio={handleDeleteAudio}
             selectedLanguage={selectedLanguage}
+            userBaseLanguage={userBaseLanguage}
             onAddManualForms={openManualFormsDialog}
           />
         </CardContent>

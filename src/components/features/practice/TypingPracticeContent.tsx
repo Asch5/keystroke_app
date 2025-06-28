@@ -30,8 +30,8 @@ interface TypingPracticeContentProps {
 export function TypingPracticeContent({
   userListId,
   listId,
-  difficultyLevel = 3,
-  wordsCount = 10,
+  difficultyLevel: urlDifficultyLevel,
+  wordsCount: urlWordsCount,
   includeWordStatuses = [
     LearningStatus.notStarted,
     LearningStatus.inProgress,
@@ -42,6 +42,11 @@ export function TypingPracticeContent({
 
   // Use custom hooks for state management, audio, and settings
   const { settings } = useTypingPracticeSettings();
+
+  // Use settings values with URL parameters as fallback
+  const effectiveDifficultyLevel =
+    settings.difficultyLevel || urlDifficultyLevel || 3;
+  const effectiveWordsCount = settings.wordsCount || urlWordsCount || 10;
 
   const {
     sessionState,
@@ -57,8 +62,8 @@ export function TypingPracticeContent({
   } = useTypingPracticeState({
     userListId,
     listId,
-    difficultyLevel,
-    wordsCount,
+    difficultyLevel: effectiveDifficultyLevel,
+    wordsCount: effectiveWordsCount,
     includeWordStatuses,
     autoSubmitAfterCorrect: settings.autoSubmitAfterCorrect,
   });

@@ -143,6 +143,7 @@ export function WordTable({
         <TableHeader>
           <TableRow>
             <TableHead>Word</TableHead>
+            <TableHead>Translation</TableHead>
             <TableHead>Definition</TableHead>
             <TableHead>Lists</TableHead>
             <TableHead>Status</TableHead>
@@ -203,6 +204,14 @@ export function WordTable({
                     )}
                   </Button>
                 </div>
+              </TableCell>
+              <TableCell>
+                {/* Translation Column - Only DefinitionToOneWord or dash */}
+                {word.oneWordTranslation ? (
+                  <span className="text-sm">{word.oneWordTranslation}</span>
+                ) : (
+                  <span className="text-muted-foreground">—</span>
+                )}
               </TableCell>
               <TableCell>
                 <div className="max-w-xs">

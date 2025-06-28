@@ -146,11 +146,16 @@ export function ListDetailContent({
 
   // Load list info and words
   const loadData = useCallback(async () => {
+    // Don't load data until we have user languages
+    if (!userLanguages) {
+      return;
+    }
+
     try {
       setLoading(true);
 
-      // Use the proper getUserListWords function
-      const result = await getUserListWords(userId, listId, {
+      // Use the proper getUserListWords function with user languages
+      const result = await getUserListWords(userId, listId, userLanguages, {
         sortBy: 'orderIndex',
         sortOrder: 'asc',
       });
@@ -164,12 +169,18 @@ export function ListDetailContent({
     } finally {
       setLoading(false);
     }
-  }, [userId, listId]);
+  }, [userId, listId, userLanguages]);
 
   useEffect(() => {
     loadUserSettings();
-    loadData();
-  }, [loadUserSettings, loadData]);
+  }, [loadUserSettings]);
+
+  useEffect(() => {
+    // Load data after user languages are available
+    if (userLanguages) {
+      loadData();
+    }
+  }, [loadData, userLanguages]);
 
   // Filter words based on search
   useEffect(() => {
@@ -548,6 +559,7 @@ export function ListDetailContent({
               <TableHeader>
                 <TableRow>
                   <TableHead>Word</TableHead>
+                  <TableHead>Translation</TableHead>
                   <TableHead>Definition</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Progress</TableHead>
@@ -612,6 +624,16 @@ export function ListDetailContent({
                             )}
                           </Button>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        {/* Translation Column - Show only DefinitionToOneWord or dash */}
+                        {word.oneWordTranslation ? (
+                          <span className="text-sm">
+                            {word.oneWordTranslation}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <div className="max-w-md">

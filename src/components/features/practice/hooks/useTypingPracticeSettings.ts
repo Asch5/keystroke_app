@@ -5,18 +5,36 @@ import { useState, useCallback, useEffect } from 'react';
 export interface TypingPracticeSettings {
   autoSubmitAfterCorrect: boolean;
   showDefinitionImages: boolean;
+  wordsCount: number;
+  difficultyLevel: number;
+  enableTimeLimit: boolean;
+  timeLimitSeconds: number;
+  playAudioOnStart: boolean;
+  showProgressBar: boolean;
+  enableGameSounds: boolean;
+  gameSoundVolume: number;
+  enableKeystrokeSounds: boolean;
 }
 
 const DEFAULT_SETTINGS: TypingPracticeSettings = {
   autoSubmitAfterCorrect: false,
   showDefinitionImages: true,
+  wordsCount: 10,
+  difficultyLevel: 3,
+  enableTimeLimit: false,
+  timeLimitSeconds: 60,
+  playAudioOnStart: true,
+  showProgressBar: true,
+  enableGameSounds: true,
+  gameSoundVolume: 0.5,
+  enableKeystrokeSounds: false,
 };
 
 const STORAGE_KEY = 'typing-practice-settings';
 
 /**
  * Custom hook for managing typing practice settings
- * Persists settings to localStorage for user preferences
+ * Currently uses localStorage, will be enhanced with database integration
  */
 export function useTypingPracticeSettings() {
   const [settings, setSettings] =
@@ -67,6 +85,16 @@ export function useTypingPracticeSettings() {
     [],
   );
 
+  const updateMultipleSettings = useCallback(
+    (updates: Partial<TypingPracticeSettings>) => {
+      setSettings((prev) => ({
+        ...prev,
+        ...updates,
+      }));
+    },
+    [],
+  );
+
   const resetSettings = useCallback(() => {
     setSettings(DEFAULT_SETTINGS);
   }, []);
@@ -74,6 +102,7 @@ export function useTypingPracticeSettings() {
   return {
     settings,
     updateSetting,
+    updateMultipleSettings,
     resetSettings,
     isLoaded,
   };

@@ -47,6 +47,13 @@ export interface AdminListWordWithDetails {
   // Metadata
   wordId: number;
   wordDetailId: number;
+  // Translation support
+  translations?: Array<{
+    id: number;
+    languageCode: LanguageCode;
+    content: string;
+  }>;
+  oneWordTranslation?: string | null; // Translation from DefinitionToOneWord
 }
 
 /**
@@ -513,37 +520,48 @@ export async function getListWords(
       where: whereConditions,
     });
 
-    // Fetch list words with all related data
+    // Get list words with details
     const listWords = await prisma.listWord.findMany({
       where: whereConditions,
       include: {
         definition: {
           include: {
+            image: true,
             wordDetails: {
               include: {
                 wordDetails: {
                   include: {
                     word: true,
-                    // Include audio from WordDetailsAudio
                     audioLinks: {
+                      where: {
+                        isPrimary: true,
+                      },
                       include: {
                         audio: true,
                       },
-                      where: {
-                        isPrimary: true, // Only get primary audio
-                      },
+                      take: 1,
                     },
                   },
                 },
               },
             },
-            image: true,
+            // Add translation support
+            translationLinks: {
+              include: {
+                translation: true,
+              },
+            },
+            oneWordLinks: {
+              include: {
+                word: true,
+              },
+            },
           },
         },
       },
       orderBy,
-      ...(limit && { take: limit }),
       ...(offset && { skip: offset }),
+      ...(limit && { take: limit }),
     });
 
     // Transform data
@@ -556,6 +574,18 @@ export async function getListWords(
       const primaryAudio = wordDetails?.audioLinks?.[0]?.audio;
       const audioUrl = primaryAudio?.url || null;
       const imageUrl = definition.image?.url || null;
+
+      // Get translations from DefinitionTranslation
+      const translations =
+        definition.translationLinks?.map((tl) => ({
+          id: tl.translation.id,
+          languageCode: tl.translation.languageCode,
+          content: tl.translation.content,
+        })) || [];
+
+      // Get one-word translation from DefinitionToOneWord
+      const oneWordTranslation =
+        definition.oneWordLinks?.[0]?.word?.word || null;
 
       return {
         listId: listWord.listId,
@@ -573,6 +603,10 @@ export async function getListWords(
         // Metadata
         wordId: word?.id || 0,
         wordDetailId: wordDetails?.id || 0,
+
+        // Translation support
+        translations,
+        oneWordTranslation,
       };
     });
 

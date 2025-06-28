@@ -1,41 +1,24 @@
 import { env } from '@/env.mjs';
-import { createClient } from 'pexels';
+import {
+  createClient,
+  type PexelsApi,
+  type Photo as PexelsPhoto,
+  type PhotosSearchResponse,
+  type PhotosSearchParams,
+  type ErrorResponse,
+} from 'pexels';
 import {
   debugLog,
   infoLog,
   errorLog,
 } from '@/core/infrastructure/monitoring/clientLogger';
 
-export interface PexelsPhoto {
-  id: number;
-  width: number;
-  height: number;
-  url: string;
-  photographer: string;
-  photographer_url: string;
-  photographer_id: string | number; // Accept either string or number to handle Pexels API inconsistency
-  avg_color: string;
-  src: {
-    original: string;
-    large2x: string;
-    large: string;
-    medium: string;
-    small: string;
-    portrait: string;
-    landscape: string;
-    tiny: string;
-  };
-  alt: string;
-}
+// Export types for backward compatibility
+export type { PexelsPhoto };
 
-export interface PexelsSearchResponse {
-  total_results?: number;
-  page?: number;
-  per_page?: number;
-  photos: PexelsPhoto[];
-  next_page?: string | number;
-}
-
+/**
+ * Extended search options that match our current API
+ */
 export interface PexelsSearchOptions {
   orientation?: 'landscape' | 'portrait' | 'square';
   size?: 'large' | 'medium' | 'small';
@@ -45,10 +28,21 @@ export interface PexelsSearchOptions {
 }
 
 /**
+ * Extended search response that matches our current API
+ */
+export interface PexelsSearchResponse {
+  total_results?: number;
+  page?: number;
+  per_page?: number;
+  photos: PexelsPhoto[];
+  next_page?: string;
+}
+
+/**
  * Service for interacting with the Pexels API using the official library
  */
 export class PexelsService {
-  private readonly client: ReturnType<typeof createClient>;
+  private readonly client: PexelsApi;
 
   constructor() {
     const apiKey = env.PEXELS_API_KEY;
@@ -68,7 +62,7 @@ export class PexelsService {
     try {
       await debugLog('Searching Pexels for images', { query, options });
 
-      const searchParams = {
+      const searchParams: PhotosSearchParams = {
         query,
         orientation: options.orientation || 'portrait',
         size: options.size || 'small',
@@ -82,26 +76,37 @@ export class PexelsService {
       // Check if there's an error in the response
       if ('error' in response) {
         await errorLog('Pexels API error occurred', {
-          error: response.error,
+          error: (response as ErrorResponse).error,
           query,
           options,
         });
-        throw new Error(`Pexels API error: ${response.error}`);
+        throw new Error(
+          `Pexels API error: ${(response as ErrorResponse).error}`,
+        );
       }
 
       // Validate the response structure
-      if (!response || !Array.isArray(response.photos)) {
+      const searchResponse = response as PhotosSearchResponse;
+      if (!searchResponse || !Array.isArray(searchResponse.photos)) {
         await errorLog('Invalid response structure from Pexels', { response });
         return { photos: [] };
       }
 
       await infoLog('Pexels search completed successfully', {
         query,
-        photosFound: response.photos.length,
+        photosFound: searchResponse.photos.length,
       });
 
-      // Return the response directly - our interface is compatible
-      return response as PexelsSearchResponse;
+      // Return the response with our interface structure
+      return {
+        total_results: searchResponse.total_results,
+        page: searchResponse.page,
+        per_page: searchResponse.per_page,
+        photos: searchResponse.photos,
+        ...(searchResponse.next_page && {
+          next_page: searchResponse.next_page,
+        }),
+      };
     } catch (error) {
       await errorLog('Error searching Pexels images', {
         error,
@@ -124,12 +129,14 @@ export class PexelsService {
 
       // Check if there's an error
       if ('error' in response) {
-        throw new Error(`Pexels API error: ${response.error}`);
+        throw new Error(
+          `Pexels API error: ${(response as ErrorResponse).error}`,
+        );
       }
 
       await infoLog('Pexels photo fetched successfully', { photoId: id });
 
-      return response as unknown as PexelsPhoto;
+      return response as PexelsPhoto;
     } catch (error) {
       await errorLog('Error fetching Pexels photo', { error, photoId: id });
       return null;

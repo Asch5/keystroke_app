@@ -35,6 +35,10 @@ export function useAdminDictionaryState() {
     hasImage: null,
     hasVariant: null,
     hasDefinition: null,
+    frequencyGeneralMin: null,
+    frequencyGeneralMax: null,
+    frequencyMin: null,
+    frequencyMax: null,
   });
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -54,6 +58,18 @@ export function useAdminDictionaryState() {
   // Apply filters logic
   const applyFilters = useCallback(() => {
     let filtered = wordDetails;
+
+    // Debug: Log frequency data for first few items
+    if (wordDetails.length > 0) {
+      console.log(
+        'Debug: Sample frequency data:',
+        wordDetails.slice(0, 5).map((item) => ({
+          word: item.wordText,
+          frequencyGeneral: item.frequencyGeneral,
+          frequency: item.frequency,
+        })),
+      );
+    }
 
     // Filter by part of speech
     if (filters.partOfSpeech.length > 0) {
@@ -95,6 +111,77 @@ export function useAdminDictionaryState() {
       );
     }
 
+    // Filter by frequency general range
+    if (
+      filters.frequencyGeneralMin !== null ||
+      filters.frequencyGeneralMax !== null
+    ) {
+      console.log('Debug: Applying frequency general filter:', {
+        min: filters.frequencyGeneralMin,
+        max: filters.frequencyGeneralMax,
+        itemsBeforeFilter: filtered.length,
+        sampleItems: filtered.slice(0, 3).map((item) => ({
+          word: item.wordText,
+          frequencyGeneral: item.frequencyGeneral,
+        })),
+      });
+
+      filtered = filtered.filter((item) => {
+        const freq = item.frequencyGeneral;
+
+        // If frequency is null/undefined, only include if both min and max are null
+        // This means we're not filtering by frequency at all
+        if (freq === null || freq === undefined) {
+          return false; // Exclude items without frequency data when filter is active
+        }
+
+        let passes = true;
+
+        // Check minimum constraint
+        if (filters.frequencyGeneralMin !== null) {
+          passes = passes && freq >= filters.frequencyGeneralMin;
+        }
+
+        // Check maximum constraint
+        if (filters.frequencyGeneralMax !== null) {
+          passes = passes && freq <= filters.frequencyGeneralMax;
+        }
+
+        return passes;
+      });
+
+      console.log(
+        'Debug: Items after frequency general filter:',
+        filtered.length,
+      );
+    }
+
+    // Filter by specific frequency range
+    if (filters.frequencyMin !== null || filters.frequencyMax !== null) {
+      filtered = filtered.filter((item) => {
+        const freq = item.frequency;
+
+        // If frequency is null/undefined, exclude when filter is active
+        if (freq === null || freq === undefined) {
+          return false;
+        }
+
+        let passes = true;
+
+        // Check minimum constraint
+        if (filters.frequencyMin !== null) {
+          passes = passes && freq >= filters.frequencyMin;
+        }
+
+        // Check maximum constraint
+        if (filters.frequencyMax !== null) {
+          passes = passes && freq <= filters.frequencyMax;
+        }
+
+        return passes;
+      });
+    }
+
     setFilteredWordDetails(filtered);
   }, [wordDetails, filters]);
 
@@ -124,7 +211,7 @@ export function useAdminDictionaryState() {
   // Filter change handler
   const handleFilterChange = (
     filterType: keyof FilterState,
-    value: PartOfSpeech | SourceType | boolean | null,
+    value: PartOfSpeech | SourceType | boolean | number | null,
     checked?: boolean,
   ) => {
     setFilters((prev) => {
@@ -146,6 +233,13 @@ export function useAdminDictionaryState() {
         } else {
           newFilters.source = currentArray.filter((item) => item !== value);
         }
+      } else if (
+        filterType === 'frequencyGeneralMin' ||
+        filterType === 'frequencyGeneralMax' ||
+        filterType === 'frequencyMin' ||
+        filterType === 'frequencyMax'
+      ) {
+        newFilters[filterType] = value as number | null;
       } else {
         newFilters[filterType] = value as boolean | null;
       }
@@ -162,6 +256,10 @@ export function useAdminDictionaryState() {
       hasImage: null,
       hasVariant: null,
       hasDefinition: null,
+      frequencyGeneralMin: null,
+      frequencyGeneralMax: null,
+      frequencyMin: null,
+      frequencyMax: null,
     });
   };
 

@@ -3,6 +3,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -23,7 +25,7 @@ interface AdminDictionaryFiltersProps {
   filters: FilterState;
   onFilterChange: (
     filterType: keyof FilterState,
-    value: PartOfSpeech | SourceType | boolean | null,
+    value: PartOfSpeech | SourceType | boolean | number | null,
     checked?: boolean,
   ) => void;
   onClearAllFilters: () => void;
@@ -76,7 +78,7 @@ export function AdminDictionaryFilters({
       </Button>
       {filtersOpen && (
         <div className="space-y-4 pt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Part of Speech Filter */}
             <div className="space-y-2">
               <h4 className="font-medium">Part of Speech</h4>
@@ -220,6 +222,85 @@ export function AdminDictionaryFilters({
                       <SelectItem value="false">No Definition</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Frequency Filters */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h4 className="font-medium">Frequency</h4>
+
+                {/* Frequency General Range */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">
+                    General Frequency
+                  </Label>
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="Min"
+                      value={filters.frequencyGeneralMin?.toString() || ''}
+                      onChange={(e) => {
+                        const value = e.target.value
+                          ? parseInt(e.target.value)
+                          : null;
+                        onFilterChange('frequencyGeneralMin', value);
+                      }}
+                      className="w-20"
+                    />
+                    <span className="text-sm text-muted-foreground">to</span>
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="Max"
+                      value={filters.frequencyGeneralMax?.toString() || ''}
+                      onChange={(e) => {
+                        const value = e.target.value
+                          ? parseInt(e.target.value)
+                          : null;
+                        onFilterChange('frequencyGeneralMax', value);
+                      }}
+                      className="w-20"
+                    />
+                  </div>
+                </div>
+
+                {/* Specific Frequency Range */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">
+                    Specific Frequency
+                  </Label>
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="Min"
+                      value={filters.frequencyMin?.toString() || ''}
+                      onChange={(e) => {
+                        const value = e.target.value
+                          ? parseInt(e.target.value)
+                          : null;
+                        onFilterChange('frequencyMin', value);
+                      }}
+                      className="w-20"
+                    />
+                    <span className="text-sm text-muted-foreground">to</span>
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="Max"
+                      value={filters.frequencyMax?.toString() || ''}
+                      onChange={(e) => {
+                        const value = e.target.value
+                          ? parseInt(e.target.value)
+                          : null;
+                        onFilterChange('frequencyMax', value);
+                      }}
+                      className="w-20"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

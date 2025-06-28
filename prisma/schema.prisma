@@ -77,10 +77,25 @@ enum LanguageCode {
   de @map("de") // German
   it @map("it") // Italian
   pt @map("pt") // Portuguese
-  zh @map("zh") // Chinese
+  zh @map("zh") // Chinese Mandarin
   ja @map("ja") // Japanese
   ko @map("ko") // Korean
   ar @map("ar") // Arabic
+  pl @map("pl") // Polish
+  hi @map("hi") // Hindi (India)
+  ne @map("ne") // Nepali
+  tr @map("tr") // Turkish
+  sv @map("sv") // Swedish
+  no @map("no") // Norwegian
+  fi @map("fi") // Finnish
+  ur @map("ur") // Urdu
+  fa @map("fa") // Persian (Farsi)
+  uk @map("uk") // Ukrainian
+  ro @map("ro") // Romanian
+  nl @map("nl") // Dutch
+  vi @map("vi") // Vietnamese
+  bn @map("bn") // Bengali
+  id @map("id") // Indonesian
 }
 
 enum PartOfSpeech {

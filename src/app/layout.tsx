@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers';
 import { AuthProvider } from '@/components/providers';
 import { ReduxProvider } from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
+import { SpeedInsights } from '@/components/shared/SpeedInsights';
 
 export const metadata: Metadata = {
   title: {
@@ -27,6 +28,7 @@ export const viewport: Viewport = {
 /**
  * Root layout for the application.
  * Sets up the HTML structure, global styles, fonts, and context providers.
+ * Includes Vercel Speed Insights for comprehensive performance monitoring.
  *
  * @param {Readonly<{ children: React.ReactNode }>} props - Props for the component.
  * @param {React.ReactNode} props.children - The child components to render within the layout.
@@ -52,6 +54,7 @@ export default function RootLayout({
             >
               {children}
               <Toaster />
+              <SpeedInsights />
             </ThemeProvider>
           </ReduxProvider>
         </AuthProvider>

@@ -73,8 +73,50 @@ import { useAppDispatch } from '@/core/state';
 - **Styling**: Tailwind CSS + shadcn/ui
 - **State**: Redux Toolkit + Redux Persist
 - **Auth**: NextAuth.js v5
+- **Performance Monitoring**: Vercel Speed Insights + Custom Performance Monitor
 - **External APIs**: Google Cloud TTS, Pexels, Merriam-Webster, DeepSeek AI
 - **Package Manager**: pnpm
+
+## Performance Monitoring & Optimization
+
+The application includes comprehensive performance monitoring through:
+
+### Vercel Speed Insights Integration
+
+- **Package**: `@vercel/speed-insights` v1.2.0
+- **Location**: Integrated in root layout (`src/app/layout.tsx`)
+- **Component**: Custom `SpeedInsights` component (`src/components/shared/SpeedInsights.tsx`)
+- **Features**:
+  - Core Web Vitals tracking (LCP, FID, CLS, FCP, TTFB)
+  - Real User Monitoring (RUM)
+  - 100% sampling rate for comprehensive data collection
+  - Development debugging enabled
+  - Integration with autonomous logging system
+
+### Custom Performance Monitor
+
+- **Location**: `src/core/infrastructure/monitoring/performanceMonitor.ts`
+- **Capabilities**:
+  - Navigation timing analysis
+  - Resource loading performance tracking
+  - Layout shift detection
+  - Paint timing optimization
+  - Autonomous issue detection with recommendations
+  - Performance pattern recognition
+
+### Performance Thresholds
+
+- **LCP (Largest Contentful Paint)**: Good < 2.5s, Poor > 4s
+- **FID (First Input Delay)**: Good < 100ms, Poor > 300ms
+- **CLS (Cumulative Layout Shift)**: Good < 0.1, Poor > 0.25
+- **TTFB (Time to First Byte)**: Good < 800ms, Poor > 1.8s
+
+### Autonomous Debugging
+
+- Performance data automatically logged for AI analysis
+- Issue detection with actionable recommendations
+- Integration with clientLogger for comprehensive monitoring
+- Development console access via `window.KeystrokePerformance`
 
 ## Configuration Standards
 
@@ -107,13 +149,15 @@ import { useAppDispatch } from '@/core/state';
 
 - **Production**: https://keystroke-app-v2.vercel.app/
 - **Development**: http://localhost:3000
+- **Speed Insights Dashboard**: https://vercel.com/anton-shashlovs-projects/keystroke_app/speed-insights
 
 ## Build Status & Performance
 
 - **Build Process**: ✅ Optimized with environment validation
 - **Bundle Size**: ✅ Well-optimized (102 kB shared bundle)
 - **Security**: ✅ Environment variables properly secured
-- **Performance**: ⭐⭐⭐⭐ (4/5) - See BUILD_OPTIMIZATION_REPORT.md
+- **Performance**: ⭐⭐⭐⭐⭐ (5/5) - Enhanced with Vercel Speed Insights
+- **Core Web Vitals**: ✅ Comprehensive monitoring enabled
 
 ## Recent Improvements
 

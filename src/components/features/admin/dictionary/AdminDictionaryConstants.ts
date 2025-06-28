@@ -60,4 +60,9 @@ export interface FilterState {
   hasImage: boolean | null;
   hasVariant: boolean | null;
   hasDefinition: boolean | null;
+  // Frequency range filters (1-10 scale)
+  frequencyGeneralMin: number | null;
+  frequencyGeneralMax: number | null;
+  frequencyMin: number | null;
+  frequencyMax: number | null;
 }

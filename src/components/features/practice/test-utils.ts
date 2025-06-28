@@ -103,6 +103,15 @@ export const createMockSettings = (
 ): TypingPracticeSettings => ({
   autoSubmitAfterCorrect: false,
   showDefinitionImages: true,
+  wordsCount: 10,
+  difficultyLevel: 3,
+  enableTimeLimit: false,
+  timeLimitSeconds: 60,
+  playAudioOnStart: true,
+  showProgressBar: true,
+  enableGameSounds: true,
+  gameSoundVolume: 0.5,
+  enableKeystrokeSounds: false,
   ...overrides,
 });
 

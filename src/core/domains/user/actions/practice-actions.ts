@@ -348,7 +348,7 @@ export async function createTypingPracticeSession(
         correctAttempts: word.correctStreak || 0,
         audioUrl, // Include audio URL from database
         imageId: imageData?.id || undefined,
-        imageUrl: imageData?.url || undefined,
+        imageUrl: imageData?.id ? `/api/images/${imageData.id}` : undefined, // Use authenticated image endpoint
         imageDescription: imageData?.description || undefined,
       };
     });

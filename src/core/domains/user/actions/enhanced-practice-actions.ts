@@ -450,13 +450,15 @@ export async function getWordDifficultyAssessment(
         srsLevel: number;
         averageResponseTime: number;
         skipRate: number;
+        recencyFrequency: number;
       };
       linguistic: {
-        wordRarity: number;
-        phoneticIrregularity: number;
-        polysemy: number;
-        wordLength: number;
+        definitionComplexity: number;
         semanticAbstraction: number;
+        wordFrequency: number;
+        phoneticIrregularity: number;
+        definitionAmbiguity: number;
+        relationalComplexity: number;
       };
     };
   };
@@ -608,25 +610,15 @@ export async function getWordDifficultyAnalysis(
       : 365; // Default to a year if never reviewed
     const recencyFrequency = Math.max(0, 1 - daysSinceLastReview / 30); // Scale based on 30-day window
 
-    // Calculate linguistic metrics
+    // Calculate linguistic metrics from the new definition-centric structure
     const wordLength = wordData.word.word.length;
-    const wordRarity = result.factors.linguistic.wordRarity;
+
+    // Map the new definition-centric metrics to the old interface for backward compatibility
+    const wordRarity = result.factors.linguistic.wordFrequency; // wordFrequency replaces wordRarity
     const phoneticIrregularity = result.factors.linguistic.phoneticIrregularity;
-
-    // Estimate polysemy (multiple meanings) - simplified calculation
-    const polysemy = Math.min(
-      1,
-      userDictionaryEntry.definition.wordDetails.length / 5,
-    );
-
-    // Semantic abstraction - estimate based on word characteristics
-    const semanticAbstraction = calculateSemanticAbstraction(
-      wordData.word.word,
-      userDictionaryEntry.definition.definition,
-    );
-
-    // Relational complexity - based on word relationships
-    const relationalComplexity = Math.min(1, wordLength / 15); // Simplified
+    const polysemy = result.factors.linguistic.definitionAmbiguity; // definitionAmbiguity replaces polysemy concept
+    const semanticAbstraction = result.factors.linguistic.semanticAbstraction;
+    const relationalComplexity = result.factors.linguistic.relationalComplexity;
 
     // Build performance metrics
     const performanceMetrics = {
@@ -706,45 +698,6 @@ export async function getWordDifficultyAnalysis(
 }
 
 // Helper functions for difficulty analysis
-function calculateSemanticAbstraction(
-  word: string,
-  definition: string,
-): number {
-  // Simplified semantic abstraction calculation
-  // Abstract words tend to have longer definitions and certain patterns
-  const abstractKeywords = [
-    'concept',
-    'idea',
-    'feeling',
-    'emotion',
-    'abstract',
-    'theoretical',
-    'metaphorical',
-  ];
-  const concreteKeywords = [
-    'object',
-    'thing',
-    'tool',
-    'device',
-    'physical',
-    'tangible',
-    'material',
-  ];
-
-  const definitionLower = definition.toLowerCase();
-  const abstractScore = abstractKeywords.reduce(
-    (score, keyword) => score + (definitionLower.includes(keyword) ? 0.2 : 0),
-    0,
-  );
-  const concreteScore = concreteKeywords.reduce(
-    (score, keyword) => score + (definitionLower.includes(keyword) ? 0.2 : 0),
-    0,
-  );
-
-  // Base abstraction on definition length and keyword presence
-  const lengthScore = Math.min(1, definition.length / 200);
-  return Math.max(0, Math.min(1, lengthScore + abstractScore - concreteScore));
-}
 
 function generateRecommendations(
   learningStatus: LearningStatus,

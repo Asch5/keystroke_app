@@ -32,6 +32,7 @@ interface TypingWordInputProps {
     audioUrl: string | undefined,
     isCorrect: boolean,
   ) => void;
+  onFinishPractice: () => void;
 }
 
 /**
@@ -49,6 +50,7 @@ export function TypingWordInput({
   onSkipWord,
   onNextWord,
   onPlayAudio,
+  onFinishPractice,
 }: TypingWordInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const hasPlayedAutoAudioRef = useRef(false);
@@ -349,6 +351,13 @@ export function TypingWordInput({
             <SkipForward className="h-4 w-4" />
             Skip
           </Button>
+          <Button
+            variant="destructive"
+            onClick={onFinishPractice}
+            className="flex items-center gap-2"
+          >
+            🏁 Finish Practice
+          </Button>
         </>
       ) : (
         <Button onClick={onNextWord} className="flex items-center gap-2">
@@ -367,7 +376,22 @@ export function TypingWordInput({
           <h2 className="text-2xl font-bold text-muted-foreground mb-2">
             Type this word:
           </h2>
-          <div className="text-4xl font-bold mb-4">{word}</div>
+          {!showResult ? (
+            /* Show one-word translation or "-" during typing */
+            <div className="text-4xl font-bold mb-4">
+              {sessionState.currentWord.oneWordTranslation || '-'}
+            </div>
+          ) : (
+            /* Show target word with phonetic after completion */
+            <div className="space-y-2 mb-4">
+              <div className="text-4xl font-bold">{word}</div>
+              {sessionState.currentWord.phonetic && (
+                <div className="text-lg text-muted-foreground font-mono">
+                  /{sessionState.currentWord.phonetic}/
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Definition */}
@@ -389,9 +413,29 @@ export function TypingWordInput({
                   alt={`Visual representation of ${word}`}
                   fill
                   className="rounded-md object-cover"
+                  onImageError={(error) => {
+                    console.error('🖼️ Image loading error:', {
+                      word: sessionState.currentWord?.wordText,
+                      imageUrl: sessionState.currentWord?.imageUrl,
+                      imageId: sessionState.currentWord?.imageId,
+                      error,
+                    });
+                  }}
                 />
               </AspectRatio>
             </div>
+          </div>
+        )}
+
+        {/* Debug info in development */}
+        {process.env.NODE_ENV === 'development' && sessionState.currentWord && (
+          <div className="text-xs text-muted-foreground text-center space-y-1">
+            <div>🔧 Debug Info:</div>
+            <div>
+              Show Images: {settings.showDefinitionImages ? '✅' : '❌'}
+            </div>
+            <div>Image ID: {sessionState.currentWord.imageId || 'None'}</div>
+            <div>Image URL: {sessionState.currentWord.imageUrl || 'None'}</div>
           </div>
         )}
 

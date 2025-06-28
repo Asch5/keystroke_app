@@ -559,12 +559,18 @@ Types: `WordWithTranslations`
 
 ### Practice Actions (`actions/practice-actions.ts`)
 
-- `createTypingPracticeSession(request)` - Create a new typing practice session with intelligent word selection
+- `createTypingPracticeSession(request)` - Create a new typing practice session with intelligent word selection and **authenticated image URL generation**
 - `validateTypingInput({sessionId, userDictionaryId, userInput, responseTime})` - Validate user typing input with accuracy calculation and learning progress updates
 - `completePracticeSession(sessionId)` - Complete practice session with achievements detection and summary generation
 - `getPracticeSessionProgress(sessionId)` - Get live practice session progress and statistics
 
 Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `TypingValidationResult`, `PracticeSessionSummary`
+
+**🖼️ Image URL Construction Fix**:
+
+- **Fixed Image Display**: Updated `createTypingPracticeSession()` to generate proper authenticated image URLs using `/api/images/{id}` format instead of direct external URLs
+- **Authentication Support**: Images now properly utilize the authenticated image proxy system for secure access
+- **Consistent Handling**: Ensures all practice session images use the same URL pattern as other app components
 
 **Practice System Features:**
 

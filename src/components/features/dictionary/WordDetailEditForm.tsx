@@ -97,6 +97,21 @@ const languageDisplayNames: Record<LanguageCode, string> = {
   ja: 'Japanese',
   ko: 'Korean',
   ar: 'Arabic',
+  pl: 'Polish',
+  hi: 'Hindi',
+  ne: 'Nepali',
+  tr: 'Turkish',
+  sv: 'Swedish',
+  no: 'Norwegian',
+  fi: 'Finnish',
+  ur: 'Urdu',
+  fa: 'Persian',
+  uk: 'Ukrainian',
+  ro: 'Romanian',
+  nl: 'Dutch',
+  vi: 'Vietnamese',
+  bn: 'Bengali',
+  id: 'Indonesian',
 };
 
 interface WordDetailEditFormProps {

@@ -59,6 +59,7 @@ export function TypingPracticeContent({
     handleInputChange,
     handleNextWord,
     handleSkipWord,
+    finishPracticeEarly,
   } = useTypingPracticeState({
     userListId,
     listId,
@@ -170,6 +171,7 @@ export function TypingPracticeContent({
           onSkipWord={handleSkipWithAudio}
           onNextWord={handleNextWord}
           onPlayAudio={playWordAudio}
+          onFinishPractice={finishPracticeEarly}
         />
       )}
 

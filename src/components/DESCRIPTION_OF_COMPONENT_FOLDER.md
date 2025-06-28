@@ -50,19 +50,16 @@ Following Cursor Rules for performance, all large components have been optimized
 #### **Memoized Large Components**
 
 - **StatisticsContent** (856 lines) - Dashboard analytics component
-
   - **Optimization**: React.memo with useCallback for fetchData function
   - **Impact**: Prevents unnecessary re-renders when parent re-renders
   - **Benefits**: Improved dashboard navigation performance
 
 - **SideNav & SideNavContent** - Navigation components
-
   - **Optimization**: React.memo with memoized handlers (handleSignOut, handleToggleCollapse, handleSheetOpenChange)
   - **Additional**: useMemo for profilePictureUrl with cache-busting
   - **Benefits**: Smooth navigation transitions without re-computation
 
 - **NavLinks** - Navigation items component
-
   - **Optimization**: React.memo with useMemo for navItems array
   - **Impact**: Prevents navigation item recreation on every render
   - **Benefits**: Consistent navigation performance
@@ -76,7 +73,6 @@ Following Cursor Rules for performance, all large components have been optimized
 **Advanced Image Optimization** (`src/hooks/useOptimizedImage.ts`):
 
 - **useOptimizedImage Hook**:
-
   - Lazy loading with Intersection Observer API
   - Performance timing measurement and monitoring
   - Error handling with automatic retry logic
@@ -135,14 +131,22 @@ The practice system supports multiple types of vocabulary practice exercises:
 - `PracticeOverviewContent.tsx` - Practice type selection and list chooser
 - `TypingPracticeContent.tsx` - Main typing practice orchestrator (134 lines)
 - `TypingPracticeHeader.tsx` - Session statistics and progress display (100 lines)
-- `TypingWordInput.tsx` - OTP-style character input interface (266 lines)
+- `TypingWordInput.tsx` - OTP-style character input interface (266 lines) with enhanced word display logic:
+  - **Dynamic Word Display**: Shows one-word translation or "-" during typing, then target word with phonetic after completion
+  - **Image Support**: Proper authenticated image display using `/api/images/{id}` endpoints
+  - **Finish Practice Button**: Red "🏁 Finish Practice" button for early session termination
+  - **Debug Information**: Development-mode debugging for image URLs and settings
 - `TypingSessionSummary.tsx` - Results display with accuracy metrics (70 lines)
 - `TypingGettingStarted.tsx` - Initial welcome screen (30 lines)
 
 **Custom Hooks (`/features/practice/hooks`):**
 
-- `useTypingPracticeState.ts` - Complete state management for typing practice (315 lines)
+- `useTypingPracticeState.ts` - Complete state management for typing practice (315 lines) with enhanced functionality:
+  - **Early Finish**: `finishPracticeEarly()` function for ending sessions before completion
+  - **Session Completion**: Proper session cleanup and statistics tracking
+  - **Word Management**: Skip, submit, and next word handling with feedback
 - `useTypingAudioPlayback.ts` - Audio playback with database-only support (80 lines)
+- `useTypingPracticeSettings.ts` - Settings management with localStorage persistence and comprehensive practice configuration
 - `index.ts` - Barrel exports for hooks
 
 **Practice Type Support:**
@@ -170,7 +174,12 @@ Each component follows the <400 line rule and maintains single responsibility. T
 **Modular Admin Dictionary System:**
 
 - `AdminDictionaryPageHeader.tsx` (~70 lines) - Header with language selector and toolbar
-- `AdminDictionaryFilters.tsx` (~200 lines) - Comprehensive filtering system
+- `AdminDictionaryFilters.tsx` (~200 lines) - Comprehensive filtering system with enhanced frequency filtering capabilities:
+  - **Frequency Range Filtering**: Advanced frequency filters for both `frequencyGeneral` and `frequency` fields with full range support (not restricted to 1-10)
+  - **Flexible Range Inputs**: Min/max range inputs allowing administrators to filter words by any frequency values present in the dataset
+  - **Debug Logging**: Built-in debug logging capabilities to analyze frequency data distribution and troubleshoot filtering logic
+  - **Enhanced Filter Logic**: Improved filtering architecture that properly handles the complete range of frequency values found in Danish vocabulary data
+  - **Real-Time Filtering**: Instant results updating as frequency ranges are adjusted, with proper empty state handling
 - `AdminDictionaryTable.tsx` (~320 lines) - Data table with selection and actions
 - `useAdminDictionaryState.ts` (~315 lines) - Complete state management hook
 - `useAudioPlayback.ts` (~40 lines) - Reusable audio playback hook
@@ -181,7 +190,13 @@ The admin dictionaries page was successfully refactored from 963 lines to 120 li
 **🤖 AI Integration Components:**
 
 - `DeepSeekWordExtractionDialog.tsx` - AI-powered word extraction dialog with comprehensive UI and progress tracking
-- **Features**: Batch processing (up to 50 definitions), language selection, real-time token usage and cost estimation, comprehensive result display with success/failure status
+- **Enhanced Features**:
+  - **Multiple Target Language Selection**: Enhanced language picker with support for multiple target languages in a single batch operation
+  - **Full-Page Dialog**: Redesigned as full-page dialog for better UX and more workspace for large batch operations
+  - **Auto-Updating Definitions**: Selected definitions section automatically updates when "Only short definitions" checkbox is toggled, providing real-time filtering
+  - **Batch Processing**: Up to 50 definitions with intelligent chunking for large batches to respect API limits
+  - **Real-Time Updates**: Live progress tracking, token usage estimation, and cost calculation during processing
+  - **Enhanced UX**: Improved user experience with better visual feedback, error handling, and result presentation
 - **Integration**: Designed for admin ActionButtonsToolbar in Media Generation group
 - **Cost**: ~$0.0001 per definition (~$0.001 per 1K tokens)
 

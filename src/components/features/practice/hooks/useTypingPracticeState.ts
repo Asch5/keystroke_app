@@ -393,6 +393,17 @@ export function useTypingPracticeState({
   }, [sessionState.currentWord, sessionState.userInput]);
 
   /**
+   * Finish practice session early
+   */
+  const finishPracticeEarly = useCallback(() => {
+    if (sessionState.isActive && sessionState.sessionId) {
+      // Trigger session completion via useEffect
+      setShouldCompleteSession(true);
+      toast.info('Practice session finished early');
+    }
+  }, [sessionState.isActive, sessionState.sessionId]);
+
+  /**
    * Calculate progress percentage
    */
   const progressPercentage =
@@ -417,6 +428,7 @@ export function useTypingPracticeState({
     handleInputChange,
     handleNextWord,
     handleSkipWord,
+    finishPracticeEarly,
     setShowResult,
 
     // Utilities

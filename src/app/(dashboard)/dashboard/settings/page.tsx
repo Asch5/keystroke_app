@@ -10,6 +10,7 @@ import {
   AppSettingsForm,
   DangerZoneForm,
 } from '@/components/features/settings';
+import { SettingsStatusCard } from '@/components/features/settings/SettingsStatusCard';
 
 // Force dynamic rendering since this page uses authentication
 export const dynamic = 'force-dynamic';
@@ -136,6 +137,7 @@ async function SettingsContent() {
                 }
               }
             />
+            <SettingsStatusCard />
           </TabsContent>
 
           <TabsContent value="danger" className="space-y-6">

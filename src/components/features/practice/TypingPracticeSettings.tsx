@@ -27,7 +27,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { useState } from 'react';
-import { useTypingPracticeSettings } from './hooks/useTypingPracticeSettings';
+import { useTypingPracticeSettings } from '@/core/shared/hooks/useSettings';
 import { cn } from '@/core/shared/utils/common/cn';
 
 interface TypingPracticeSettingsProps {

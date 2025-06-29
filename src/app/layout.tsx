@@ -6,6 +6,7 @@ import {
   AuthProvider,
   ReduxProvider,
 } from '@/components/providers';
+import { SettingsProvider } from '@/components/providers/SettingsProvider';
 import { Toaster } from '@/components/ui/sonner';
 import { SpeedInsights } from '@/components/shared/SpeedInsights';
 import { PerformanceMonitoringProvider } from '@/components/providers/PerformanceMonitoringProvider';
@@ -55,11 +56,13 @@ export default function RootLayout({
         >
           <ReduxProvider>
             <AuthProvider>
-              <PerformanceMonitoringProvider>
-                {children}
-                <Toaster />
-                <SpeedInsights />
-              </PerformanceMonitoringProvider>
+              <SettingsProvider>
+                <PerformanceMonitoringProvider>
+                  {children}
+                  <Toaster />
+                  <SpeedInsights />
+                </PerformanceMonitoringProvider>
+              </SettingsProvider>
             </AuthProvider>
           </ReduxProvider>
         </ThemeProvider>

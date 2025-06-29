@@ -16,6 +16,7 @@ import themeReducer from './features/themeSlice';
 import authReducer from './features/authSlice';
 import userDictionaryReducer from './features/userDictionarySlice';
 import sessionReducer from './features/sessionSlice';
+import settingsReducer from './features/settingsSlice';
 
 // Create a root reducer
 const rootReducer = combineReducers({
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   userDictionary: userDictionaryReducer,
   session: sessionReducer,
+  settings: settingsReducer,
 });
 
 // Configuration for redux-persist

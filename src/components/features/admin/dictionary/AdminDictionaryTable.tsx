@@ -36,7 +36,7 @@ import {
   partOfSpeechDisplayNames,
   sourceTypeDisplayNames,
 } from './AdminDictionaryConstants';
-import { useAudioPlayback } from './useAudioPlayback';
+import { useAdminAudioPlayback } from './useAudioPlayback';
 
 interface AdminDictionaryTableProps {
   data: DictionaryWordDetails[];
@@ -65,7 +65,7 @@ export function AdminDictionaryTable({
   userBaseLanguage, // eslint-disable-line @typescript-eslint/no-unused-vars
   onAddManualForms,
 }: AdminDictionaryTableProps) {
-  const { playAudio, isPlaying } = useAudioPlayback();
+  const { playAudio, isPlaying } = useAdminAudioPlayback();
 
   const columns: ColumnDef<DictionaryWordDetails>[] = [
     {

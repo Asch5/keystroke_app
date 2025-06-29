@@ -15,4 +15,4 @@ export { AdminDictionaryPageHeader } from './dictionary/AdminDictionaryPageHeade
 export { AdminDictionaryFilters } from './dictionary/AdminDictionaryFilters';
 export { AdminDictionaryTable } from './dictionary/AdminDictionaryTable';
 export { useAdminDictionaryState } from './dictionary/useAdminDictionaryState';
-export { useAudioPlayback } from './dictionary/useAudioPlayback';
+export { useAdminAudioPlayback } from './dictionary/useAudioPlayback';

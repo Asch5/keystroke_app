@@ -585,7 +585,7 @@ export class PracticeSessionManager {
 
     if (attempt.skipRequested) {
       encouragement = "No worries! We'll come back to this word later.";
-      explanation = `The word "${unit.content.primary}" means: ${unit.content.secondary}`;
+      explanation = `The word "${unit.content.word}" means: ${unit.content.primary}`;
     } else if (isCorrect) {
       const responses = [
         'Great job! 🎉',
@@ -602,7 +602,7 @@ export class PracticeSessionManager {
       }
     } else {
       encouragement = 'Keep going! Every mistake is a step toward mastery. 💪';
-      explanation = `The correct answer is "${unit.content.primary}" which means: ${unit.content.secondary}`;
+      explanation = `The correct answer is "${unit.content.word}" which means: ${unit.content.primary}`;
     }
 
     return {

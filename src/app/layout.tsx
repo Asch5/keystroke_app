@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import { geistSans, geistMono } from '@/components/ui/fonts';
 import './globals.css';
-import { ThemeProvider } from '@/components/providers';
-import { AuthProvider } from '@/components/providers';
-import { ReduxProvider } from '@/components/providers';
+import {
+  ThemeProvider,
+  AuthProvider,
+  ReduxProvider,
+} from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
 import { SpeedInsights } from '@/components/shared/SpeedInsights';
 import { PerformanceMonitoringProvider } from '@/components/providers/PerformanceMonitoringProvider';

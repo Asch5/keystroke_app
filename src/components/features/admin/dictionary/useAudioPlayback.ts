@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 
 /**
- * Custom hook for managing audio playback state and functionality
+ * Custom hook for managing audio playback state and functionality in admin context
  * Ensures only one audio file plays at a time and handles errors gracefully
  * Updated to use AudioService for consistent blob storage and proxy handling
  */
-export function useAudioPlayback() {
+export function useAdminAudioPlayback() {
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
 
   const playAudio = async (audioUrl: string) => {

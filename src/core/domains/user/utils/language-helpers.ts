@@ -74,6 +74,21 @@ export function getLanguageDisplayInfo(languageCode: LanguageCode): {
     ja: { name: 'Japanese', flag: '🇯🇵' },
     ko: { name: 'Korean', flag: '🇰🇷' },
     ar: { name: 'Arabic', flag: '🇸🇦' },
+    pl: { name: 'Polish', flag: '🇵🇱' },
+    hi: { name: 'Hindi', flag: '🇮🇳' },
+    ne: { name: 'Nepali', flag: '🇳🇵' },
+    tr: { name: 'Turkish', flag: '🇹🇷' },
+    sv: { name: 'Swedish', flag: '🇸🇪' },
+    no: { name: 'Norwegian', flag: '🇳🇴' },
+    fi: { name: 'Finnish', flag: '🇫🇮' },
+    ur: { name: 'Urdu', flag: '🇵🇰' },
+    fa: { name: 'Persian', flag: '🇮🇷' },
+    uk: { name: 'Ukrainian', flag: '🇺🇦' },
+    ro: { name: 'Romanian', flag: '🇷🇴' },
+    nl: { name: 'Dutch', flag: '🇳🇱' },
+    vi: { name: 'Vietnamese', flag: '🇻🇳' },
+    bn: { name: 'Bengali', flag: '🇧🇩' },
+    id: { name: 'Indonesian', flag: '🇮🇩' },
   };
 
   return languageMap[languageCode] || { name: languageCode, flag: '🌐' };

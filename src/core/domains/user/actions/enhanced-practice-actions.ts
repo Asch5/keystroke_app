@@ -472,7 +472,16 @@ export async function getWordDifficultyAssessment(
 
     return {
       success: true,
-      assessment,
+      assessment: {
+        ...assessment,
+        factors: {
+          ...assessment.factors,
+          performance: {
+            ...assessment.factors.performance,
+            recencyFrequency: assessment.factors.performance.recencyScore,
+          },
+        },
+      },
     };
   } catch (error) {
     serverLog(`Error getting difficulty assessment: ${error}`, 'error', {

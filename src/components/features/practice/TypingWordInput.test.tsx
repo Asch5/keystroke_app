@@ -61,6 +61,15 @@ describe('TypingWordInput', () => {
   const mockSettings: TypingPracticeSettings = {
     autoSubmitAfterCorrect: false,
     showDefinitionImages: true,
+    wordsCount: 10,
+    difficultyLevel: 3,
+    enableTimeLimit: false,
+    timeLimitSeconds: 60,
+    playAudioOnStart: true,
+    showProgressBar: true,
+    enableGameSounds: true,
+    gameSoundVolume: 0.5,
+    enableKeystrokeSounds: false,
   };
 
   const defaultProps = {
@@ -78,6 +87,7 @@ describe('TypingWordInput', () => {
     }),
     onNextWord: vi.fn(),
     onPlayAudio: vi.fn(),
+    onFinishPractice: vi.fn(),
   };
 
   beforeEach(() => {

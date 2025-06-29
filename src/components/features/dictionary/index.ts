@@ -9,7 +9,7 @@ export { RelationshipManager } from './RelationshipManager';
 export { DictionaryOverview } from './DictionaryOverview';
 export { MyDictionaryContent } from './MyDictionaryContent';
 export { AddNewWordContent } from './AddNewWordContent';
-export { WordListsContent } from './WordListsContent';
+export { default as WordListsContent } from './WordListsContent';
 export { AddToListDialog } from './AddToListDialog';
 export { ListDetailContent } from './ListDetailContent';
 export { DictionaryEmptyState } from './DictionaryEmptyState';

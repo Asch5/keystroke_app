@@ -16,3 +16,4 @@ export { AdminDictionaryFilters } from './dictionary/AdminDictionaryFilters';
 export { AdminDictionaryTable } from './dictionary/AdminDictionaryTable';
 export { useAdminDictionaryState } from './dictionary/useAdminDictionaryState';
 export { useAdminAudioPlayback } from './dictionary/useAudioPlayback';
+export { default as AdminWordDetailEditForm } from './dictionary/AdminWordDetailEditForm';

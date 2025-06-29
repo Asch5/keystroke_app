@@ -14,4 +14,4 @@ export {
 
 // Re-export existing components
 export { default as WordDetails } from './WordDetails';
-export { default as WordDetailEditForm } from './WordDetailEditForm';
+export { default as AdminWordDetailEditForm } from './AdminWordDetailEditForm';

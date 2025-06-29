@@ -1,0 +1,147 @@
+'use client';
+
+import { DifficultyLevel } from '@prisma/client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Eye, Loader2 } from 'lucide-react';
+import { type PublicUserListSummary } from '@/core/domains/dictionary';
+
+interface PublicUserListCardProps {
+  list: PublicUserListSummary;
+  onAddToCollection: () => void;
+  onRemoveFromCollection: () => void;
+  onPreview?: () => void;
+  isPending: boolean;
+}
+
+const difficultyDisplayNames: Record<DifficultyLevel, string> = {
+  beginner: 'Beginner',
+  elementary: 'Elementary',
+  intermediate: 'Intermediate',
+  advanced: 'Advanced',
+  proficient: 'Proficient',
+};
+
+const difficultyColors: Record<DifficultyLevel, string> = {
+  beginner: 'bg-green-100 text-green-800',
+  elementary: 'bg-blue-100 text-blue-800',
+  intermediate: 'bg-yellow-100 text-yellow-800',
+  advanced: 'bg-orange-100 text-orange-800',
+  proficient: 'bg-red-100 text-red-800',
+};
+
+/**
+ * PublicUserListCard component for displaying community-created vocabulary lists
+ * Features author information, sample words, and collection management actions
+ */
+export function PublicUserListCard({
+  list,
+  onAddToCollection,
+  onRemoveFromCollection,
+  onPreview,
+  isPending,
+}: PublicUserListCardProps) {
+  return (
+    <Card className="group hover:shadow-md transition-shadow">
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-medium truncate">{list.name}</h3>
+              <Badge
+                className={difficultyColors[list.difficultyLevel]}
+                variant="secondary"
+              >
+                {difficultyDisplayNames[list.difficultyLevel]}
+              </Badge>
+            </div>
+
+            {list.description && (
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                {list.description}
+              </p>
+            )}
+
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span>by {list.createdBy.name}</span>
+              <span>•</span>
+              <span>{list.wordCount} words</span>
+            </div>
+
+            {list.sampleWords.length > 0 && (
+              <div className="mt-2">
+                <p className="text-xs text-muted-foreground mb-1">
+                  Sample words:
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {list.sampleWords.slice(0, 3).map((word, index) => (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      {word}
+                    </Badge>
+                  ))}
+                  {list.sampleWords.length > 3 && (
+                    <Badge variant="outline" className="text-xs">
+                      +{list.sampleWords.length - 3} more
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="pt-0">
+        <div className="space-y-2">
+          <div className="text-xs text-muted-foreground">
+            Created {new Date(list.createdAt).toLocaleDateString()}
+          </div>
+
+          <div className="space-y-2">
+            {onPreview && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onPreview}
+                className="w-full"
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Preview Words
+              </Button>
+            )}
+
+            {list.isInUserCollection ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onRemoveFromCollection}
+                disabled={isPending}
+                className="w-full text-red-600 hover:text-red-700"
+              >
+                {isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  'Remove'
+                )}
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={onAddToCollection}
+                disabled={isPending}
+                className="w-full"
+              >
+                {isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  'Add to Collection'
+                )}
+              </Button>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

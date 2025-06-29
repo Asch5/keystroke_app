@@ -9,7 +9,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { WordDetailEditForm } from '@/components/features/dictionary';
+import { AdminWordDetailEditForm } from '@/components/features/admin';
 
 export default function EditWordDetailPage() {
   const params = useParams();
@@ -92,10 +92,5 @@ export default function EditWordDetailPage() {
   }
 
   // Render the edit form
-  return (
-    <WordDetailEditForm
-      wordDetailId={Number(wordDetailId)}
-      initialData={wordDetailData}
-    />
-  );
+  return <AdminWordDetailEditForm wordDetailId={Number(wordDetailId)} />;
 }

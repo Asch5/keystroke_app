@@ -3,7 +3,7 @@ import {
   SourceType,
   LanguageCode,
   RelationshipType,
-} from '@prisma/client';
+} from '@/core/types';
 
 /**
  * API request/response types for dictionary domain

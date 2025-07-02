@@ -4,7 +4,7 @@ import {
   LanguageCode,
   SourceType,
   Gender,
-} from '@prisma/client';
+} from '@/core/types';
 
 //! Type definitions for dictionary operations
 
@@ -198,7 +198,13 @@ interface SubWordDefinition {
     url: string;
     description: string | null;
   } | null;
-  examples: DefinitionExampleOfProcessWordData[];
+  examples: {
+    id?: number | null;
+    example: string;
+    languageCode: string;
+    grammaticalNote?: string | null;
+    sourceOfExample?: string | null;
+  }[];
 }
 
 export interface SubWordData {

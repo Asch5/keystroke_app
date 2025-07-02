@@ -10,11 +10,6 @@ import {
   LanguageCode,
 } from '@/core/types';
 import { WordFormData } from '@/core/types/wordDefinition';
-import {
-  WordUpdateData,
-  ExampleUpdateData,
-  RelatedWordUpdateData,
-} from '@/core/types/dictionary';
 import { updateWordDetails } from '@/core/lib/actions/dictionaryActions';
 import { Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -114,6 +109,53 @@ interface WordEditFormProps {
   wordId: string;
   wordDetails: WordFormData | null;
   isLoading: boolean;
+}
+
+// Local type definitions to avoid Prisma imports
+interface ExampleUpdateData {
+  id?: number | undefined;
+  example: string;
+  grammaticalNote: string | null;
+}
+
+interface RelatedWordUpdateData {
+  id?: number | undefined;
+  word: string;
+  phonetic: string | null;
+}
+
+interface DefinitionUpdateData {
+  id?: number | undefined;
+  definition: string;
+  partOfSpeech: PartOfSpeech;
+  imageId: number | null;
+  isPlural: boolean;
+  source: SourceType;
+  languageCode: LanguageCode;
+  subjectStatusLabels: string | null;
+  generalLabels: string | null;
+  grammaticalNote: string | null;
+  usageNote: string | null;
+  isInShortDef: boolean;
+}
+
+interface AudioUpdateData {
+  id?: number | undefined;
+  url: string;
+  note?: string | null | undefined;
+  source: SourceType;
+  languageCode: LanguageCode;
+  isPrimary?: boolean;
+}
+
+interface WordUpdateData {
+  word: string;
+  phonetic: string | null;
+  etymology: string | null;
+  definitions?: DefinitionUpdateData[];
+  audioFiles?: AudioUpdateData[];
+  examples?: Record<number, ExampleUpdateData[]>;
+  relatedWords?: Record<RelationshipType, RelatedWordUpdateData[]>;
 }
 
 export default function WordEditForm({

@@ -5,7 +5,7 @@ import {
   DefinitionDisplayData,
   shouldUseTranslations,
 } from '../../dictionary/utils/translation-utils';
-import { getUserLanguageConfig } from './language-helpers';
+import { UserLanguageConfig } from './language-helpers-client';
 
 /**
  * Enhanced user dictionary item for display with dynamic language support
@@ -41,9 +41,10 @@ export interface DefinitionWithTranslations {
 
 /**
  * Process user dictionary item to use optimal language display based on user preferences
+ * Client-safe version that accepts user language config as parameter
  */
-export async function processUserDictionaryItemForDisplay(
-  userId: string,
+export function processUserDictionaryItemForDisplay(
+  userLanguageConfig: UserLanguageConfig,
   item: {
     id: string;
     word: string;
@@ -51,10 +52,7 @@ export async function processUserDictionaryItemForDisplay(
     targetLanguageCode: LanguageCode;
     translations: TranslationData[];
   },
-): Promise<UserDictionaryDisplayItem> {
-  // Get user's current language configuration
-  const userLanguageConfig = await getUserLanguageConfig(userId);
-
+): UserDictionaryDisplayItem {
   // Get the best definition to display
   const displayData = getBestDefinitionForUser(
     item.definition,
@@ -79,9 +77,10 @@ export async function processUserDictionaryItemForDisplay(
 
 /**
  * Process multiple dictionary items for display
+ * Client-safe version that accepts user language config as parameter
  */
-export async function processUserDictionaryItemsForDisplay(
-  userId: string,
+export function processUserDictionaryItemsForDisplay(
+  userLanguageConfig: UserLanguageConfig,
   items: Array<{
     id: string;
     word: string;
@@ -89,10 +88,7 @@ export async function processUserDictionaryItemsForDisplay(
     targetLanguageCode: LanguageCode;
     translations: TranslationData[];
   }>,
-): Promise<UserDictionaryDisplayItem[]> {
-  // Get user's language configuration once for efficiency
-  const userLanguageConfig = await getUserLanguageConfig(userId);
-
+): UserDictionaryDisplayItem[] {
   return items.map((item) => {
     const displayData = getBestDefinitionForUser(
       item.definition,

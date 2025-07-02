@@ -7,7 +7,7 @@ import { Theme } from '@/core/types/user';
 import { setUser } from '@/core/state/features/authSlice';
 import { useAppDispatch } from '@/core/state/store';
 import { useSession } from 'next-auth/react';
-import { LANGUAGE_MAP_ARRAY } from '@/core/types/dictionary';
+import { LANGUAGE_MAP_ARRAY } from '@/core/types/language-constants';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';

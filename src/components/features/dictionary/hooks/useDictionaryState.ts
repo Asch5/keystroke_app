@@ -13,7 +13,7 @@ import {
   PartOfSpeech,
   DifficultyLevel,
   LanguageCode,
-} from '@prisma/client';
+} from '@/core/types';
 
 /**
  * Custom hook for managing dictionary state and data fetching

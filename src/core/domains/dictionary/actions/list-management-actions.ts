@@ -5,7 +5,11 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { Prisma } from '@prisma/client';
+import {
+  safeDatabaseOperation,
+  getDatabaseErrorMessage,
+} from '@/core/lib/database-error-handler';
+import { WhereInput, OrderByInput } from '@/core/types/prisma-substitutes';
 
 export interface ListWithDetails {
   id: string;
@@ -59,7 +63,7 @@ export interface ListsResponse {
 export async function fetchAllLists(
   filters: ListFilters = {},
 ): Promise<ListsResponse> {
-  try {
+  return safeDatabaseOperation(async () => {
     const {
       search = '',
       category,
@@ -78,7 +82,7 @@ export async function fetchAllLists(
     );
 
     // Build where conditions
-    const whereConditions: Prisma.ListWhereInput = {
+    const whereConditions: WhereInput = {
       deletedAt: null, // Only non-deleted lists
     };
 
@@ -109,7 +113,7 @@ export async function fetchAllLists(
     }
 
     // Build order by
-    let orderBy: Prisma.ListOrderByWithRelationInput = {};
+    let orderBy: OrderByInput = {};
     if (sortBy === 'category') {
       orderBy = { category: { name: sortOrder } };
     } else if (sortBy === 'difficultyLevel') {
@@ -213,10 +217,7 @@ export async function fetchAllLists(
       hasNextPage: page < totalPages,
       hasPreviousPage: page > 1,
     };
-  } catch (error) {
-    serverLog(`Error fetching lists: ${error}`, 'error');
-    throw new Error('Failed to fetch lists');
-  }
+  });
 }
 
 /**
@@ -225,7 +226,7 @@ export async function fetchAllLists(
 export async function getListDetails(
   listId: string,
 ): Promise<ListWithDetails | null> {
-  try {
+  return safeDatabaseOperation(async () => {
     const list = await prisma.list.findUnique({
       where: { id: listId },
       include: {
@@ -306,10 +307,7 @@ export async function getListDetails(
       userListCount: list.userLists.length,
       sampleWords: allWords.slice(0, 10), // First 10 words for details view
     };
-  } catch (error) {
-    serverLog(`Error fetching list details: ${error}`, 'error');
-    throw new Error('Failed to fetch list details');
-  }
+  });
 }
 
 /**
@@ -328,13 +326,15 @@ export async function updateList(
   },
 ): Promise<{ success: boolean; message: string }> {
   try {
-    await prisma.list.update({
-      where: { id: listId },
-      data: {
-        ...data,
-        lastModified: new Date(),
-        updatedAt: new Date(),
-      },
+    await safeDatabaseOperation(async () => {
+      await prisma.list.update({
+        where: { id: listId },
+        data: {
+          ...data,
+          lastModified: new Date(),
+          updatedAt: new Date(),
+        },
+      });
     });
 
     revalidatePath('/admin/dictionaries/lists');
@@ -348,7 +348,7 @@ export async function updateList(
     serverLog(`Error updating list ${listId}: ${error}`, 'error');
     return {
       success: false,
-      message: 'Failed to update list',
+      message: getDatabaseErrorMessage(error),
     };
   }
 }
@@ -360,12 +360,14 @@ export async function deleteList(
   listId: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    await prisma.list.update({
-      where: { id: listId },
-      data: {
-        deletedAt: new Date(),
-        lastModified: new Date(),
-      },
+    await safeDatabaseOperation(async () => {
+      await prisma.list.update({
+        where: { id: listId },
+        data: {
+          deletedAt: new Date(),
+          lastModified: new Date(),
+        },
+      });
     });
 
     revalidatePath('/admin/dictionaries/lists');
@@ -379,7 +381,7 @@ export async function deleteList(
     serverLog(`Error deleting list ${listId}: ${error}`, 'error');
     return {
       success: false,
-      message: 'Failed to delete list',
+      message: getDatabaseErrorMessage(error),
     };
   }
 }
@@ -391,12 +393,14 @@ export async function restoreList(
   listId: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    await prisma.list.update({
-      where: { id: listId },
-      data: {
-        deletedAt: null,
-        lastModified: new Date(),
-      },
+    await safeDatabaseOperation(async () => {
+      await prisma.list.update({
+        where: { id: listId },
+        data: {
+          deletedAt: null,
+          lastModified: new Date(),
+        },
+      });
     });
 
     revalidatePath('/admin/dictionaries/lists');
@@ -410,7 +414,7 @@ export async function restoreList(
     serverLog(`Error restoring list ${listId}: ${error}`, 'error');
     return {
       success: false,
-      message: 'Failed to restore list',
+      message: getDatabaseErrorMessage(error),
     };
   }
 }
@@ -475,7 +479,7 @@ export async function updateListAction(
     serverLog(`Error in updateListAction: ${error}`, 'error');
     return {
       success: false,
-      message: 'Failed to update list',
+      message: getDatabaseErrorMessage(error),
     };
   }
 }

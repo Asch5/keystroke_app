@@ -1,4 +1,4 @@
-import { SessionType } from '@prisma/client';
+import { SessionType } from '@/core/types';
 
 /**
  * Core session types based on Prisma schema

@@ -1,6 +1,6 @@
 'use client';
 
-import { DifficultyLevel } from '@prisma/client';
+import { DifficultyLevel } from '@/core/types';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import {

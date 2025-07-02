@@ -55,7 +55,7 @@ import {
   type UserListWordWithDetails,
 } from '@/core/domains/dictionary/actions/user-list-actions';
 import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 import {
   getDisplayDefinition,

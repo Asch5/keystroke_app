@@ -6,7 +6,7 @@ import {
   deleteWordAudio,
   type DictionaryWordDetails,
 } from '@/core/domains/dictionary/actions';
-import { LanguageCode, PartOfSpeech, SourceType } from '@prisma/client';
+import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
 import { toast } from 'sonner';
 import { FilterState } from './AdminDictionaryConstants';
 

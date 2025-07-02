@@ -1,7 +1,8 @@
 'use server';
 
 import { prisma } from '@/core/shared/database/client';
-import { LanguageCode, DifficultyLevel, Prisma } from '@prisma/client';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
+import { UserListWhereInput } from '@/core/types/prisma-substitutes';
 import { revalidatePath } from 'next/cache';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
@@ -107,7 +108,7 @@ export async function getUserLists(
     } = filters;
 
     // Build where conditions
-    const whereConditions: Prisma.UserListWhereInput = {
+    const whereConditions: UserListWhereInput = {
       userId,
       deletedAt: null,
     };

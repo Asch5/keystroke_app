@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { useRouter } from 'next/navigation';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

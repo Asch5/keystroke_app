@@ -1,4 +1,4 @@
-import { PartOfSpeech, SourceType } from '@prisma/client';
+import { PartOfSpeech, SourceType } from '@/core/types';
 
 /**
  * Word details entity types for dictionary domain

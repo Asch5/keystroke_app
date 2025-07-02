@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { PartOfSpeech, SourceType, Gender } from '@prisma/client';
+import { PartOfSpeech, SourceType, Gender } from '@/core/types';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions';
 
 // Display name mappings

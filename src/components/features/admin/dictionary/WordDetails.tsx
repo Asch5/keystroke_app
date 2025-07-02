@@ -1,5 +1,5 @@
 import React from 'react';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { Accordion } from '@/components/ui/accordion';
 import { Card, CardContent } from '@/components/ui/card';
 import {

@@ -1,6 +1,6 @@
 'use server';
 
-import { LanguageCode, LearningStatus, PartOfSpeech } from '@prisma/client';
+import { LanguageCode, LearningStatus, PartOfSpeech } from '@/core/types';
 import { prisma } from '@/core/shared/database/client';
 import { getBestDefinitionForUser } from '../utils/translation-utils';
 

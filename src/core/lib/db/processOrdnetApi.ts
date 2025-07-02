@@ -11,13 +11,17 @@ import {
 import {
   LanguageCode,
   PartOfSpeech,
-  Prisma,
   RelationshipType,
   SourceType,
   Word,
   DifficultyLevel,
   Gender,
-} from '@prisma/client';
+} from '@/core/types';
+import {
+  DatabaseTransactionClient,
+  DatabaseKnownRequestError,
+  DatabaseTransactionIsolationLevel,
+} from '@/core/types/database';
 import { clientLog } from '@/core/lib/utils/logUtils';
 // Frequency services are now handled by FrequencyManager and WordService
 import { TranslationService } from '@/core/lib/services/translationService';
@@ -126,7 +130,7 @@ function determineSynonymPartOfSpeech(
  * @param sourceType Source of the word
  */
 export async function processTranslationsForWord(
-  tx: Prisma.TransactionClient,
+  tx: DatabaseTransactionClient,
   mainWordId: number,
   mainWordText: string,
   wordData: {
@@ -240,7 +244,7 @@ export async function processTranslationsForWord(
  * @param wordText Word text for metadata (optional)
  */
 async function processAudioForWord(
-  tx: Prisma.TransactionClient,
+  tx: DatabaseTransactionClient,
   wordDetailsId: number,
   audioFiles: AudioFile[],
   isPrimaryArg: boolean = false,
@@ -451,7 +455,7 @@ async function processAudioForWord(
 
 // Update the upsertWord function to use the shared WordService
 async function upsertWord(
-  tx: Prisma.TransactionClient,
+  tx: DatabaseTransactionClient,
   source: SourceType,
   wordText: string,
   languageCode: LanguageCode,
@@ -534,7 +538,7 @@ async function upsertWord(
  * This is needed to establish relationships between words based on part of speech
  */
 async function upsertWordDetails(
-  tx: Prisma.TransactionClient,
+  tx: DatabaseTransactionClient,
   wordId: number,
   partOfSpeech: PartOfSpeech | null, // Input can be null or a specific PoS
   source: SourceType = SourceType.user,
@@ -565,7 +569,7 @@ async function upsertWordDetails(
 
 export async function processAndSaveDanishWord(
   danishWordData: WordVariant,
-  pTx?: Prisma.TransactionClient, // Optional transaction client parameter
+  pTx?: DatabaseTransactionClient, // Optional transaction client parameter
 ): Promise<ProcessedWordData> {
   // --- 1. Initial Word Processing ---
   const mainWordText = danishWordData.word.word;
@@ -1478,7 +1482,7 @@ export async function processAndSaveDanishWord(
     }
   }
 
-  const performDbOperations = async (tx: Prisma.TransactionClient) => {
+  const performDbOperations = async (tx: DatabaseTransactionClient) => {
     const mainWord = await upsertWord(tx, source, mainWordText, language, {
       phonetic: processedData.word.phonetic || null,
       audioFiles: processedData.word.audioFiles || null,
@@ -2342,13 +2346,13 @@ export async function processAndSaveDanishWord(
       await prisma.$transaction(performDbOperations, {
         maxWait: 60000,
         timeout: 200000,
-        isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted,
+        isolationLevel: DatabaseTransactionIsolationLevel.ReadCommitted,
       });
     }
     return processedData;
   } catch (error) {
     console.error('Error saving Danish word data for:', mainWordText, error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof DatabaseKnownRequestError) {
       console.error('Prisma Error Code:', error.code);
     }
     throw new Error(

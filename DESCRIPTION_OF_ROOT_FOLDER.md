@@ -280,7 +280,7 @@ import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript 5.8+
-- **Database**: PostgreSQL (Neon) + Prisma 6.7+
+- **Database**: PostgreSQL (Neon) + Prisma 6.7+ (Server-only with Prisma-free client architecture via `prisma-generator-typescript-interfaces`)
 - **Validation**: Zod for schema validation and type safety
 - **Styling**: Tailwind CSS + shadcn/ui
 - **State**: Redux Toolkit + Redux Persist

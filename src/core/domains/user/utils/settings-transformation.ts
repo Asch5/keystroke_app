@@ -6,7 +6,7 @@ import {
   DictionaryFilterSettings,
   AdminDictionaryFilterSettings,
 } from '@/core/state/features/settingsSlice';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 
 // Default settings matching actual interfaces
 const DEFAULT_UI_PREFERENCES: UIPreferences = {

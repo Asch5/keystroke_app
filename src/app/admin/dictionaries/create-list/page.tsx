@@ -27,7 +27,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, List, Plus, X } from 'lucide-react';
-import { LanguageCode, DifficultyLevel } from '@prisma/client';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { ImageSelector } from '@/components/features/dictionary';
 
 // Language display names

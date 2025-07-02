@@ -1,32 +1,55 @@
 import { prisma } from '@/core/lib/prisma';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@/core/types';
+
 export type UserWithStatsAndMeta = UserWithStats & {
   stats: UserStats;
 };
 
-export type UserWithStats = Prisma.UserGetPayload<{
-  include: {
-    userSettings: true;
-    userDictionary: {
-      select: {
-        learningStatus: true;
-        progress: true;
-        correctStreak: true;
-      };
-    };
-    learningSessions: {
-      select: {
-        sessionType: true;
-        duration: true;
-        wordsLearned: true;
-        correctAnswers: true;
-        incorrectAnswers: true;
-        score: true;
-        startTime: true;
-      };
-    };
-  };
-}>;
+// Internal type to replace Prisma.UserGetPayload
+export type UserWithStats = {
+  id: string;
+  name: string;
+  email: string;
+  baseLanguageCode: string;
+  targetLanguageCode: string;
+  profilePictureUrl: string | null;
+  settings: Record<string, unknown> | null;
+  status: string;
+  lastLogin: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+  userSettings: {
+    id: string;
+    userId: string;
+    dailyGoal: number;
+    notificationsEnabled: boolean;
+    soundEnabled: boolean;
+    autoPlayAudio: boolean;
+    darkMode: boolean;
+    sessionDuration: number;
+    reviewInterval: number;
+    difficultyPreference: number;
+    learningReminders: Record<string, unknown> | null;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null;
+  userDictionary: Array<{
+    learningStatus: string;
+    progress: number;
+    correctStreak: number;
+    lastReviewedAt: Date | null;
+  }>;
+  learningSessions: Array<{
+    sessionType: string;
+    duration: number;
+    wordsLearned: number;
+    correctAnswers: number;
+    incorrectAnswers: number;
+    score: number | null;
+    startTime: Date;
+  }>;
+};
 
 export type UserStats = {
   totalWords: number;
@@ -109,7 +132,7 @@ export async function getUsers(
 
   const usersWithStats = users.map((user) => ({
     ...user,
-    stats: calculateUserStats(user),
+    stats: calculateUserStats(user as UserWithStats),
   }));
 
   return {

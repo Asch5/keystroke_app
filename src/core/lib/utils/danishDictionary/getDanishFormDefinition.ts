@@ -1,4 +1,4 @@
-import { RelationshipType } from '@prisma/client';
+import { RelationshipType } from '@/core/types';
 import { clientLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 /**

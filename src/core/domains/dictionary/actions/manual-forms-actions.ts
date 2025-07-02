@@ -6,8 +6,9 @@ import {
   LanguageCode,
   SourceType,
   PartOfSpeech,
-  Prisma,
-} from '@prisma/client';
+} from '@/core/types';
+
+import { DatabaseKnownRequestError } from '@/core/types/database';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { revalidatePath } from 'next/cache';
 import { getDanishFormDefinition } from '@/core/lib/utils/danishDictionary/getDanishFormDefinition';
@@ -307,7 +308,7 @@ export async function addManualWordForms({
     );
     console.error('Error adding manual word forms:', error);
 
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof DatabaseKnownRequestError) {
       return {
         success: false,
         error: `Database error: ${error.message}`,

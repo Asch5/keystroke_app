@@ -1,12 +1,12 @@
 import {
   LanguageCode,
   PartOfSpeech,
-  Prisma,
   SourceType,
   Word,
   DifficultyLevel,
   Gender,
-} from '@prisma/client';
+} from '@/core/types';
+import { DatabaseTransactionClient } from '@/core/types/database';
 import { clientLog } from '@/core/lib/utils/logUtils';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {
@@ -66,7 +66,7 @@ export class WordService {
    * Create or update a Word record with frequency data
    */
   static async upsertWord(
-    tx: Prisma.TransactionClient,
+    tx: DatabaseTransactionClient,
     source: SourceType,
     wordText: string,
     languageCode: LanguageCode,
@@ -124,7 +124,7 @@ export class WordService {
    * Create or update a WordDetails record
    */
   static async upsertWordDetails(
-    tx: Prisma.TransactionClient,
+    tx: DatabaseTransactionClient,
     wordId: number,
     partOfSpeech: PartOfSpeech | null,
     source: SourceType = SourceType.user,
@@ -325,7 +325,7 @@ export class WordService {
    * Convenience method for Danish API style upsertWordDetails
    */
   static async upsertWordDetailsDanish(
-    tx: Prisma.TransactionClient,
+    tx: DatabaseTransactionClient,
     wordId: number,
     partOfSpeech: PartOfSpeech | null,
     source: SourceType = SourceType.user,
@@ -363,7 +363,7 @@ export class WordService {
    * Convenience method for Merriam API style upsertWordDetails
    */
   static async upsertWordDetailsMerriam(
-    tx: Prisma.TransactionClient,
+    tx: DatabaseTransactionClient,
     wordId: number,
     partOfSpeech: PartOfSpeech | null,
     source: SourceType = SourceType.user,

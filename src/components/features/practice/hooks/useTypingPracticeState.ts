@@ -11,7 +11,7 @@ import {
   type CreatePracticeSessionRequest,
   type DifficultyConfig,
 } from '@/core/domains/user/actions/practice-actions';
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 
 interface SessionState {
   sessionId: string | null;

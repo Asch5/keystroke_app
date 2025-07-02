@@ -5,7 +5,7 @@
  * learning progress, word mastery, and session success criteria.
  */
 
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 
 /**
  * Core learning metrics for word mastery

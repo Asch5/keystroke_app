@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { AddToListDialog } from './AddToListDialog';
 import { DictionaryFilters } from './DictionaryFilters';
 import { WordTable } from './WordTable';

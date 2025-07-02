@@ -1,5 +1,9 @@
-import { Prisma } from '@prisma/client';
-import { PrismaOperationError } from '@/core/lib/prisma-middleware';
+import { PrismaOperationError } from '@/core/shared/database/middleware';
+import {
+  DatabaseKnownRequestError,
+  DatabaseValidationError,
+  DatabaseInitializationError,
+} from '@/core/types/database';
 
 /**
  * Type for the error response structure
@@ -24,7 +28,7 @@ export function handlePrismaError(error: unknown): ErrorResponse {
   }
 
   // Handle Prisma's known request errors
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+  if (error instanceof DatabaseKnownRequestError) {
     switch (error.code) {
       case 'P2002':
         return {
@@ -61,7 +65,7 @@ export function handlePrismaError(error: unknown): ErrorResponse {
   }
 
   // Handle Prisma validation errors
-  if (error instanceof Prisma.PrismaClientValidationError) {
+  if (error instanceof DatabaseValidationError) {
     return {
       message: 'Invalid data provided.',
       code: 'VALIDATION_ERROR',
@@ -70,7 +74,7 @@ export function handlePrismaError(error: unknown): ErrorResponse {
   }
 
   // Handle Prisma initialization errors
-  if (error instanceof Prisma.PrismaClientInitializationError) {
+  if (error instanceof DatabaseInitializationError) {
     return {
       message: 'Failed to initialize database connection.',
       code: 'DATABASE_CONNECTION_ERROR',

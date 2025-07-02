@@ -30,7 +30,7 @@ import {
   type DictionaryWordDetails,
 } from '@/core/domains/dictionary/actions';
 import { Volume2, Zap, DollarSign, Activity, Clock } from 'lucide-react';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 
 interface TTSControlsProps {
   selectedWords: Set<string>;

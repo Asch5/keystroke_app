@@ -7,7 +7,7 @@ import {
   updateWordLearningStatus,
   removeWordFromUserDictionary,
 } from '@/core/domains/user/actions/user-dictionary-actions';
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 
 /**
  * Custom hook for managing dictionary word actions

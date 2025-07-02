@@ -23,7 +23,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions';
-import { SourceType, LanguageCode } from '@prisma/client';
+import { SourceType, LanguageCode } from '@/core/types';
 
 // Display name mappings
 const sourceTypeDisplayNames: Record<SourceType, string> = {

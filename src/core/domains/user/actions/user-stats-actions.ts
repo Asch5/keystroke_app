@@ -1,6 +1,7 @@
 'use server';
 
-import { PrismaClient, LearningStatus, SessionType } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { LearningStatus, SessionType } from '@/core/types';
 import { cache } from 'react';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';

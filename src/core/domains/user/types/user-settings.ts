@@ -2,7 +2,7 @@ import {
   LanguageCode,
   UserSettings as PrismaUserSettings,
   User,
-} from '@prisma/client';
+} from '@/core/types';
 
 /**
  * Enhanced user settings types for the user domain

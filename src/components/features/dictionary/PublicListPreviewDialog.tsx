@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import {
   Dialog,
   DialogContent,

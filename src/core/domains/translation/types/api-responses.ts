@@ -1,4 +1,4 @@
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 
 /**
  * API response types for Danish translation

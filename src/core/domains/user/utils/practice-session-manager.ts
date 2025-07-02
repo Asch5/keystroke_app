@@ -6,7 +6,8 @@
  * supporting multiple practice types (typing, flashcards, pronunciation, etc.)
  */
 
-import { PrismaClient, SessionType, LearningStatus } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { SessionType, LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {
   DifficultyAssessment,

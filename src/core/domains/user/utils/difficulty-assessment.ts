@@ -9,7 +9,8 @@
  * Each Definition can have different difficulty scores even for the same Word.
  */
 
-import { PrismaClient, LearningStatus } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 const prisma = new PrismaClient();

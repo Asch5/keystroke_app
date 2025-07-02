@@ -1,11 +1,10 @@
 'use server';
 
+import { LanguageCode, SourceType, RelationshipType } from '@/core/types';
 import {
-  LanguageCode,
-  Prisma,
-  SourceType,
-  RelationshipType,
-} from '@prisma/client';
+  DatabaseTransactionClient,
+  DatabaseKnownRequestError,
+} from '@/core/types/database';
 import { TranslationService } from '@/core/lib/services/translationService';
 import { clientLog } from '@/core/lib/utils/logUtils';
 
@@ -226,10 +225,7 @@ export async function processTranslationsForWord(
       'error',
     );
     if (
-      !(
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2028'
-      )
+      !(error instanceof DatabaseKnownRequestError && error.code === 'P2028')
     ) {
       throw error;
     }
@@ -245,7 +241,7 @@ export async function processTranslationsForWord(
 export async function processEnglishTranslationsForDanishWord(
   danishWordData: ProcessedWordData,
   variantData: WordVariant,
-  tx: Prisma.TransactionClient,
+  tx: DatabaseTransactionClient,
 ): Promise<void> {
   try {
     if (!danishWordData || !variantData || !danishWordData.word) return;
@@ -621,7 +617,7 @@ export async function processEnglishTranslationsForDanishWord(
 
               // Find the matching example in the database
               const dbExample = definitionExamples.find(
-                (ex) => ex.example === exampleText,
+                (ex: { example: string }) => ex.example === exampleText,
               );
 
               if (!dbExample) {

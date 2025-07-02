@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User } from '@/core/types';
 
 /**
  * User entity types for user domain

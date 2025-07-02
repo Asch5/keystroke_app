@@ -1,4 +1,4 @@
-import { LanguageCode, PartOfSpeech } from '@prisma/client';
+import { LanguageCode, PartOfSpeech } from '@/core/types';
 
 /**
  * Frequency types for dictionary domain

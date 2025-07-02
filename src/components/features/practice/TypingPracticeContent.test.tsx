@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '@/core/state/features/authSlice';
 import { TypingPracticeContent } from './TypingPracticeContent';
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 import { vi, describe, beforeEach, it, expect } from 'vitest';
 
 // Mock useUser hook to return a user

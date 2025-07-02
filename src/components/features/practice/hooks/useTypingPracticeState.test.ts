@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTypingPracticeState } from './useTypingPracticeState';
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 
 // Mock the practice actions
 const mockCreateTypingPracticeSession = vi.fn();

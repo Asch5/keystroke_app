@@ -5,7 +5,7 @@ import { prisma } from '@/core/lib/prisma';
 import { deepSeekService } from '@/core/infrastructure/services/deepseek-service';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
-import type { LanguageCode, PartOfSpeech } from '@prisma/client';
+import { LanguageCode, PartOfSpeech } from '@/core/types';
 
 // Validation schemas
 const extractWordSchema = z.object({

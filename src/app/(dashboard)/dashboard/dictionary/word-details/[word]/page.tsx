@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { WordDetailsPageContent } from '@/components/features/dictionary/WordDetailsPageContent';
 import { DictionaryLoadingSkeleton } from '@/components/features/dictionary/DictionaryLoadingSkeleton';
 import { auth } from '@/core/lib/auth/config';

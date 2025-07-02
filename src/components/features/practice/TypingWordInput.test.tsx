@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TypingWordInput } from './TypingWordInput';
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 import type { SessionState, WordResult, TypingPracticeSettings } from './hooks';
 
 // Mock the ImageWithFallback component

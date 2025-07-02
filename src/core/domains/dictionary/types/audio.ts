@@ -1,4 +1,4 @@
-import { SourceType, LanguageCode } from '@prisma/client';
+import { SourceType, LanguageCode } from '@/core/types';
 
 /**
  * Audio types for dictionary domain

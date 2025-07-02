@@ -1592,3 +1592,227 @@
 [2025-06-29T12:05:33.925Z] [info] Initializing server services...
 [2025-06-29T12:05:33.936Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
 [2025-06-29T12:05:33.946Z] [info] Server services initialized successfully
+[2025-07-01T22:26:08.323Z] [info] Initializing server services...
+[2025-07-01T22:27:39.797Z] [info] Initializing server services...
+[2025-07-01T22:29:39.892Z] [info] Initializing server services...
+[2025-07-01T22:29:39.848Z] [info] Initializing server services...
+[2025-07-01T22:29:39.877Z] [info] Initializing server services...
+[2025-07-01T22:31:29.731Z] [info] Initializing server services...
+[2025-07-01T22:31:29.770Z] [info] Initializing server services...
+[2025-07-01T22:31:29.877Z] [info] Initializing server services...
+[2025-07-01T22:33:02.357Z] [info] Initializing server services...
+[2025-07-01T22:33:02.370Z] [info] Initializing server services...
+[2025-07-01T22:33:02.771Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:33:02.771Z] [info] Server services initialized successfully
+[2025-07-01T22:33:02.700Z] [info] Initializing server services...
+[2025-07-01T22:33:02.964Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:33:02.964Z] [info] Server services initialized successfully
+[2025-07-01T22:33:03.499Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:33:03.580Z] [info] Server services initialized successfully
+[2025-07-01T22:33:16.803Z] [info] Initializing server services...
+[2025-07-01T22:33:17.315Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:33:17.315Z] [info] Server services initialized successfully
+[2025-07-01T22:33:16.732Z] [info] Initializing server services...
+[2025-07-01T22:33:18.283Z] [info] Server services initialized successfully
+[2025-07-01T22:33:18.282Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:35:12.418Z] [info] Initializing server services...
+[2025-07-01T22:35:13.348Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:35:13.349Z] [info] Server services initialized successfully
+[2025-07-01T22:35:13.118Z] [info] Initializing server services...
+[2025-07-01T22:35:13.436Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:35:13.436Z] [info] Server services initialized successfully
+[2025-07-01T22:35:13.414Z] [info] Initializing server services...
+[2025-07-01T22:35:13.514Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:35:13.514Z] [info] Server services initialized successfully
+[2025-07-01T22:35:30.985Z] [info] Initializing server services...
+[2025-07-01T22:35:31.085Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:35:31.085Z] [info] Server services initialized successfully
+[2025-07-01T22:35:30.636Z] [info] Initializing server services...
+[2025-07-01T22:35:31.958Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:35:31.958Z] [info] Server services initialized successfully
+[2025-07-01T22:54:09.163Z] [info] Initializing server services...
+[2025-07-01T22:54:09.171Z] [info] Initializing server services...
+[2025-07-01T22:54:09.300Z] [info] Initializing server services...
+[2025-07-01T22:54:09.348Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:54:09.348Z] [info] Server services initialized successfully
+[2025-07-01T22:54:09.721Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:54:09.721Z] [info] Server services initialized successfully
+[2025-07-01T22:54:09.434Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:54:09.434Z] [info] Server services initialized successfully
+[2025-07-01T22:54:16.325Z] [info] Initializing server services...
+[2025-07-01T22:54:16.662Z] [info] Server services initialized successfully
+[2025-07-01T22:54:16.662Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:54:16.073Z] [info] Initializing server services...
+[2025-07-01T22:54:17.115Z] [info] Server services initialized successfully
+[2025-07-01T22:54:17.115Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:55:13.405Z] [info] Initializing server services...
+[2025-07-01T22:55:14.629Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:55:14.629Z] [info] Server services initialized successfully
+[2025-07-01T22:55:17.825Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-01T22:55:17.825Z"}
+[2025-07-01T22:55:18.671Z] [info] Initializing server services...
+[2025-07-01T22:55:18.875Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:55:18.947Z] [info] Server services initialized successfully
+[2025-07-01T22:55:38.265Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-01T22:55:38.307Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-01T22:55:38.900Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-01T22:55:38.902Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-01T22:55:39.778Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-01T22:55:39.779Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-01T22:55:39.781Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-01T22:55:39.782Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-01T22:55:39.785Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-01T22:55:39.786Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-01T22:55:39.787Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-01T22:55:47.184Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-01T22:55:47.185Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-01T22:55:47.253Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-01T22:55:47.256Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-01T22:55:47.663Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-01T22:55:47.664Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-01T22:55:47.665Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-01T22:55:47.666Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-01T22:55:47.668Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-01T22:55:47.670Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-01T22:55:47.671Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-01T22:55:48.171Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-01T22:55:48.173Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-01T22:55:48.230Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-01T22:55:48.232Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-01T22:55:48.645Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-01T22:55:48.647Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-01T22:55:48.650Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-01T22:55:48.652Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-01T22:55:48.653Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-01T22:55:48.655Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-01T22:55:48.656Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-01T22:56:12.384Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-01T22:56:12.384Z"}
+[2025-07-01T22:56:13.715Z] [info] Initializing server services...
+[2025-07-01T22:56:13.734Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:56:13.751Z] [info] Server services initialized successfully
+[2025-07-01T22:56:31.231Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-07-01T22:56:32.155Z] [info] Fetching categories for list creation
+[2025-07-01T22:56:32.242Z] [info] Fetched 4 categories
+[2025-07-01T22:56:42.671Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-01T22:56:42.671Z"}
+[2025-07-01T22:56:43.271Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-01T22:56:44.409Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-01T22:56:44.427Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-01T22:56:45.246Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-01T22:56:48.579Z] [info] Initializing server services...
+[2025-07-01T22:56:48.594Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-01T22:56:48.609Z] [info] Server services initialized successfully
+[2025-07-02T07:22:04.148Z] [info] Initializing server services...
+[2025-07-02T07:22:04.123Z] [info] Initializing server services...
+[2025-07-02T07:22:04.253Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:22:04.253Z] [info] Server services initialized successfully
+[2025-07-02T07:22:04.257Z] [info] Initializing server services...
+[2025-07-02T07:22:04.307Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:22:04.307Z] [info] Server services initialized successfully
+[2025-07-02T07:22:04.543Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:22:04.543Z] [info] Server services initialized successfully
+[2025-07-02T07:22:10.856Z] [info] Initializing server services...
+[2025-07-02T07:22:11.075Z] [info] Server services initialized successfully
+[2025-07-02T07:22:11.075Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:22:10.754Z] [info] Initializing server services...
+[2025-07-02T07:22:11.329Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:22:11.329Z] [info] Server services initialized successfully
+[2025-07-02T07:23:08.473Z] [info] Initializing server services...
+[2025-07-02T07:23:09.344Z] [info] Server services initialized successfully
+[2025-07-02T07:23:09.344Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:23:42.539Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:23:42.675Z] [info] Settings loaded successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","hasCustomSettings":true,"hasStudyPreferences":true}
+[2025-07-02T07:23:43.878Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:23:43.895Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:23:44.657Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:23:56.308Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:23:56.308Z"}
+[2025-07-02T07:23:56.399Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:23:57.045Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:23:57.074Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:23:57.130Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:24:02.529Z] [info] Initializing server services...
+[2025-07-02T07:24:02.591Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:24:02.633Z] [info] Server services initialized successfully
+[2025-07-02T07:25:43.922Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:25:43.922Z"}
+[2025-07-02T07:28:37.645Z] [info] Initializing server services...
+[2025-07-02T07:28:37.799Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:28:37.799Z] [info] Server services initialized successfully
+[2025-07-02T07:28:37.645Z] [info] Initializing server services...
+[2025-07-02T07:28:37.775Z] [info] Initializing server services...
+[2025-07-02T07:28:38.012Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:28:38.012Z] [info] Server services initialized successfully
+[2025-07-02T07:28:37.894Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:28:37.894Z] [info] Server services initialized successfully
+[2025-07-02T07:28:43.105Z] [info] Initializing server services...
+[2025-07-02T07:28:43.363Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:28:43.363Z] [info] Server services initialized successfully
+[2025-07-02T07:28:43.305Z] [info] Initializing server services...
+[2025-07-02T07:28:43.634Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:28:43.634Z] [info] Server services initialized successfully
+[2025-07-02T07:29:16.845Z] [info] Initializing server services...
+[2025-07-02T07:29:17.640Z] [info] Server services initialized successfully
+[2025-07-02T07:29:17.640Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:29:24.027Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:29:24.027Z"}
+[2025-07-02T07:29:24.150Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:29:25.337Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:29:25.361Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:29:26.061Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:29:28.490Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:29:28.490Z"}
+[2025-07-02T07:29:28.704Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:29:29.053Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:29:29.082Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:29:29.176Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:29:30.660Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:29:30.660Z"}
+[2025-07-02T07:29:30.875Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:29:31.497Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:29:31.516Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-02T07:29:31.604Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:29:31.727Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-02T07:29:31.729Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-02T07:29:32.151Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-02T07:29:32.153Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-02T07:29:33.093Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-02T07:29:33.095Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-02T07:29:33.097Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-02T07:29:33.098Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-02T07:29:33.100Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-02T07:29:33.101Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-02T07:29:33.102Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-02T07:29:36.258Z] [info] Creating typing practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","difficultyLevel":3,"wordsCount":10,"userListId":null,"listId":null}
+[2025-07-02T07:29:38.007Z] [info] Typing practice session created: bf37c607-abaa-48de-b0b1-f8d8b123e168 Context: {"sessionId":"bf37c607-abaa-48de-b0b1-f8d8b123e168","wordsCount":10}
+[2025-07-02T07:29:44.254Z] [info] Practice session completed: bf37c607-abaa-48de-b0b1-f8d8b123e168 Context: {"sessionId":"bf37c607-abaa-48de-b0b1-f8d8b123e168","accuracy":0,"wordsLearned":0,"timeSpent":6}
+[2025-07-02T07:29:53.565Z] [info] Initializing server services...
+[2025-07-02T07:29:53.630Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:29:53.657Z] [info] Server services initialized successfully
+[2025-07-02T07:31:39.053Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:31:39.053Z"}
+[2025-07-02T07:31:40.846Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:31:40.846Z"}
+[2025-07-02T07:31:47.516Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:31:47.516Z"}
+[2025-07-02T07:31:52.286Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:31:52.284Z"}
+[2025-07-02T07:31:53.526Z] [info] Initializing server services...
+[2025-07-02T07:31:53.548Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:31:53.565Z] [info] Server services initialized successfully
+[2025-07-02T07:31:57.239Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:31:57.239Z"}
+[2025-07-02T07:31:58.524Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-07-02T07:31:59.429Z] [info] Fetching categories for list creation
+[2025-07-02T07:31:59.513Z] [info] Fetched 4 categories
+[2025-07-02T07:31:59.869Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:31:59.869Z"}
+[2025-07-02T07:32:00.468Z] [info] Fetching lists with filters: {"search":"","category":"","sortBy":"createdAt","sortOrder":"desc","page":1,"pageSize":20}
+[2025-07-02T07:32:01.103Z] [info] Fetching categories for list creation
+[2025-07-02T07:32:01.143Z] [info] Fetched 4 categories
+[2025-07-02T07:32:25.323Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-02T07:32:25.323Z"}
+[2025-07-02T07:32:26.532Z] [info] Initializing server services...
+[2025-07-02T07:32:26.549Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:32:26.565Z] [info] Server services initialized successfully
+[2025-07-02T07:43:24.250Z] [info] Initializing server services...
+[2025-07-02T07:43:24.332Z] [info] Initializing server services...
+[2025-07-02T07:43:24.369Z] [info] Initializing server services...
+[2025-07-02T07:43:24.516Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:43:24.517Z] [info] Server services initialized successfully
+[2025-07-02T07:43:24.700Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:43:24.700Z] [info] Server services initialized successfully
+[2025-07-02T07:43:24.697Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:43:24.697Z] [info] Server services initialized successfully
+[2025-07-02T07:43:33.397Z] [info] Initializing server services...
+[2025-07-02T07:43:33.494Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:43:33.494Z] [info] Server services initialized successfully
+[2025-07-02T07:43:33.622Z] [info] Initializing server services...
+[2025-07-02T07:43:34.366Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-02T07:43:34.366Z] [info] Server services initialized successfully

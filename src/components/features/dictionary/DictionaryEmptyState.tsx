@@ -3,7 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Book } from 'lucide-react';
-import { LearningStatus, PartOfSpeech } from '@prisma/client';
+import { LearningStatus, PartOfSpeech } from '@/core/types';
 
 interface DictionaryEmptyStateProps {
   searchQuery: string;

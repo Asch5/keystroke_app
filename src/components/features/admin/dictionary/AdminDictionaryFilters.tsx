@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Filter, ChevronDown } from 'lucide-react';
-import { PartOfSpeech, SourceType } from '@prisma/client';
+import { PartOfSpeech, SourceType } from '@/core/types';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
 import {
   FilterState,

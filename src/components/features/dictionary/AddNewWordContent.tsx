@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useTransition } from 'react';
-import { LanguageCode, PartOfSpeech } from '@prisma/client';
+import { LanguageCode, PartOfSpeech } from '@/core/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
 import {
   Accordion,

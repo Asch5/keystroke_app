@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ActionButtonsToolbar } from '@/components/features/admin';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
 import { languageDisplayNames } from './AdminDictionaryConstants';
 

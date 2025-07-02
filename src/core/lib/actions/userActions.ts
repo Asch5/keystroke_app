@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
 import { put } from '@vercel/blob';
-import { Prisma, LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 const profileSchema = z.object({
@@ -89,14 +89,6 @@ interface UserSettings {
   theme?: 'light' | 'dark';
 }
 
-interface UpdateData {
-  name?: string;
-  baseLanguageCode?: string | null;
-  targetLanguageCode?: string | null;
-  settings?: Prisma.JsonValue;
-  profilePictureUrl?: string;
-}
-
 export async function updateUserProfile(
   prevState: State,
   formData: FormData,
@@ -140,8 +132,8 @@ export async function updateUserProfile(
     // Get current settings to merge with new ones
     const currentSettings = user.settings as UserSettings;
 
-    // Prepare update data object
-    const updateData: UpdateData = {};
+    // Prepare update data object - let TypeScript infer the type
+    const updateData: Record<string, unknown> = {};
 
     // Only add fields that are present in the validated data and have values
     if (validatedFields.data.name !== undefined) {
@@ -149,11 +141,13 @@ export async function updateUserProfile(
     }
 
     if (validatedFields.data.baseLanguageCode !== undefined) {
-      updateData.baseLanguageCode = validatedFields.data.baseLanguageCode;
+      updateData.baseLanguageCode = validatedFields.data
+        .baseLanguageCode as LanguageCode;
     }
 
     if (validatedFields.data.targetLanguageCode !== undefined) {
-      updateData.targetLanguageCode = validatedFields.data.targetLanguageCode;
+      updateData.targetLanguageCode = validatedFields.data
+        .targetLanguageCode as LanguageCode;
     }
 
     if (validatedFields.data.theme !== undefined) {
@@ -202,7 +196,7 @@ export async function updateUserProfile(
     if (Object.keys(updateData).length > 0) {
       await prisma.user.update({
         where: { id: user.id },
-        data: updateData as Prisma.UserUpdateInput,
+        data: updateData,
       });
 
       // Revalidate the settings page

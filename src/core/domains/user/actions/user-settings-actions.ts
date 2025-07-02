@@ -8,7 +8,8 @@ import { revalidatePath } from 'next/cache';
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '@/core/lib/prisma';
 import { getUserByEmail } from '@/core/lib/db/user';
-import { Prisma, LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
+
 import type {
   UserSettingsState,
   UserProfileState,
@@ -153,7 +154,14 @@ export async function updateUserProfile(
       return { errors: validatedFields.error.flatten().fieldErrors };
     }
 
-    const updateData: Partial<typeof user> = {};
+    // Create properly typed update data for Prisma
+    const updateData: {
+      name?: string;
+      email?: string;
+      baseLanguageCode?: LanguageCode;
+      targetLanguageCode?: LanguageCode;
+      profilePictureUrl?: string;
+    } = {};
 
     // Add validated fields to update data
     if (validatedFields.data.name) {
@@ -293,7 +301,7 @@ export async function updateUserProfile(
     if (Object.keys(updateData).length > 0) {
       await prisma.user.update({
         where: { id: user.id },
-        data: updateData as Prisma.UserUpdateInput,
+        data: updateData,
       });
 
       revalidatePath('/dashboard/settings');
@@ -364,9 +372,31 @@ export async function updateUserLearningSettings(
       return { errors: validatedFields.error.flatten().fieldErrors };
     }
 
-    // Create update data without undefined values
-    const updateData: Prisma.UserSettingsUpdateInput = {};
-    const createData: Prisma.UserSettingsUncheckedCreateInput = {
+    // Create properly typed update data for Prisma
+    const updateData: {
+      dailyGoal?: number;
+      notificationsEnabled?: boolean;
+      soundEnabled?: boolean;
+      autoPlayAudio?: boolean;
+      darkMode?: boolean;
+      sessionDuration?: number;
+      reviewInterval?: number;
+      difficultyPreference?: number;
+      learningReminders?: object;
+    } = {};
+
+    const createData: {
+      userId: string;
+      dailyGoal?: number;
+      notificationsEnabled?: boolean;
+      soundEnabled?: boolean;
+      autoPlayAudio?: boolean;
+      darkMode?: boolean;
+      sessionDuration?: number;
+      reviewInterval?: number;
+      difficultyPreference?: number;
+      learningReminders?: object;
+    } = {
       userId: user.id,
     };
 
@@ -408,10 +438,8 @@ export async function updateUserLearningSettings(
         validatedFields.data.difficultyPreference;
     }
     if (validatedFields.data.learningReminders !== undefined) {
-      updateData.learningReminders = validatedFields.data
-        .learningReminders as Prisma.InputJsonValue;
-      createData.learningReminders = validatedFields.data
-        .learningReminders as Prisma.InputJsonValue;
+      updateData.learningReminders = validatedFields.data.learningReminders;
+      createData.learningReminders = validatedFields.data.learningReminders;
     }
 
     // Check if user settings exist

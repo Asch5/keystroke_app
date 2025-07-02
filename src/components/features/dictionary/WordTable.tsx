@@ -37,7 +37,7 @@ import {
   FileText,
   Brain,
 } from 'lucide-react';
-import { LearningStatus, LanguageCode } from '@prisma/client';
+import { LearningStatus, LanguageCode } from '@/core/types';
 import { cn } from '@/core/shared/utils/common/cn';
 import {
   getDisplayDefinition,

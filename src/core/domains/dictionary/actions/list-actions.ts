@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/core/lib/prisma';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
-import { LanguageCode, DifficultyLevel, PartOfSpeech } from '@prisma/client';
+import { LanguageCode, DifficultyLevel, PartOfSpeech } from '@/core/types';
 
 // Types for list management
 export interface CategoryData {

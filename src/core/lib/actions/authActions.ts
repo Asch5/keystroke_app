@@ -8,7 +8,7 @@ import { getUserByEmail } from '@/core/lib/db/user';
 import { prisma } from '@/core/lib/prisma';
 import { hash } from 'bcryptjs';
 import { UserBasicData } from '@/core/types/user';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 
 const formSchemaLogin = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),

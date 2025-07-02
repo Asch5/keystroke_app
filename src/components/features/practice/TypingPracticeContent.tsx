@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { useUser } from '@/core/shared/hooks/useUser';
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 import { TypingPracticeHeader } from './TypingPracticeHeader';
 import { TypingWordInput } from './TypingWordInput';
 import { TypingSessionSummary } from './TypingSessionSummary';

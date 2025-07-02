@@ -9,7 +9,7 @@ import {
   DifficultyLevel,
   PartOfSpeech,
   Gender,
-} from '@prisma/client';
+} from '@/core/types';
 import { getUserLanguageConfig } from '../utils/language-helpers';
 
 /**

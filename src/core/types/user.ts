@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User } from '@/core/types';
 
 export type UserBasicData = Pick<
   User,

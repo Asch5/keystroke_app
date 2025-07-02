@@ -5,7 +5,7 @@ import {
   updateWordDetailById,
   type WordDetailEditData,
 } from '@/core/domains/dictionary/actions';
-import { SourceType } from '@prisma/client';
+import { SourceType } from '@/core/types';
 
 interface UseWordDetailEditActionsProps {
   formData: WordDetailEditData;

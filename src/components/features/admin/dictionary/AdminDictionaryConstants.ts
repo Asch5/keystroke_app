@@ -1,4 +1,4 @@
-import { LanguageCode, PartOfSpeech, SourceType } from '@prisma/client';
+import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
 
 // Map for display names of language codes
 export const languageDisplayNames: Record<LanguageCode, string> = {

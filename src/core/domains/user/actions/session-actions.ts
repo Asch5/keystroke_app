@@ -1,7 +1,8 @@
 'use server';
 
+import { PrismaClient } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
-import { PrismaClient, SessionType } from '@prisma/client';
+import { SessionType } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import type {

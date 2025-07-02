@@ -1,4 +1,4 @@
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 
 /**
  * Finds a translation in the specified target language from an array of translations

@@ -26,7 +26,7 @@ import {
   Languages,
   Target,
 } from 'lucide-react';
-import { LanguageCode, DifficultyLevel } from '@prisma/client';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 // Language and difficulty display names
 const languageDisplayNames: Record<LanguageCode, string> = {

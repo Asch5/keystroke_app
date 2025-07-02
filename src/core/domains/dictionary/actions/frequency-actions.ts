@@ -7,7 +7,7 @@ import {
   FrequencyPartOfSpeech,
 } from '@/core/lib/utils/commonDictUtils/frequencyUtils';
 import { prisma } from '@/core/lib/prisma';
-import { LanguageCode, PartOfSpeech } from '@prisma/client';
+import { LanguageCode, PartOfSpeech } from '@/core/types';
 
 /**
  * Determines the WordFrequency enum value based on the word's position in the frequency list

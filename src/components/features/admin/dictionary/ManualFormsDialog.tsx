@@ -31,7 +31,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Plus, X, Save, Loader2 } from 'lucide-react';
-import { RelationshipType } from '@prisma/client';
+import { RelationshipType } from '@/core/types';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';

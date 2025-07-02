@@ -8,7 +8,7 @@ import {
   RelationshipType,
   SourceType,
   LanguageCode,
-} from '@prisma/client';
+} from '@/core/types';
 import { WordFormData } from '@/core/types/wordDefinition';
 import {
   WordUpdateData,

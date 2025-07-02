@@ -1,4 +1,4 @@
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 import type { SessionState, WordResult, TypingPracticeSettings } from './hooks';
 
 /**

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Search, SortAsc, SortDesc, Star, Clock, Edit } from 'lucide-react';
-import { LearningStatus, PartOfSpeech } from '@prisma/client';
+import { LearningStatus, PartOfSpeech } from '@/core/types';
 
 interface DictionaryFiltersProps {
   searchQuery: string;

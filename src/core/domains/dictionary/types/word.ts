@@ -1,4 +1,4 @@
-import { PartOfSpeech, SourceType, LanguageCode, Gender } from '@prisma/client';
+import { PartOfSpeech, SourceType, LanguageCode, Gender } from '@/core/types';
 
 /**
  * Core word entity types for dictionary domain

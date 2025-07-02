@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { LanguageCode, DifficultyLevel } from '@prisma/client';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { toast } from 'sonner';
 import {
   addListToUserCollection,

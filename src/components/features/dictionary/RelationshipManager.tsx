@@ -20,7 +20,7 @@ import {
   searchWordsForRelationships,
   type WordDetailEditData,
 } from '@/core/domains/dictionary/actions';
-import { PartOfSpeech, RelationshipType } from '@prisma/client';
+import { PartOfSpeech, RelationshipType } from '@/core/types';
 
 // Display name mappings
 const partOfSpeechDisplayNames: Record<PartOfSpeech, string> = {

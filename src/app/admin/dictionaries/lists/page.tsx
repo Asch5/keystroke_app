@@ -60,7 +60,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-import { LanguageCode, DifficultyLevel } from '@prisma/client';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { toast } from 'sonner';
 import { AdminCreateListDialog } from '@/components/features/admin/dictionary/AdminCreateListDialog';
 

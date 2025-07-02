@@ -3,13 +3,12 @@
 import { prisma } from '@/core/lib/prisma';
 import {
   LanguageCode,
-  Prisma,
   DifficultyLevel,
   PartOfSpeech,
   SourceType,
   Gender,
-} from '@prisma/client';
-
+} from '@/core/types';
+// Database types are handled within server actions
 // Add type definition for image data
 // interface ImageData {
 //   id: number;
@@ -33,28 +32,31 @@ import {
 //   translations?: TranslationData[];
 // }
 
-type WordWithAudioAndDefinitions = Prisma.WordGetPayload<{
-  include: {
-    details: {
-      include: {
-        definitions: {
-          include: {
-            definition: {
-              include: {
-                examples: true;
-              };
-            };
-          };
-        };
-        audioLinks: {
-          include: {
-            audio: true;
-          };
-        };
+// Internal type for word with audio and definitions
+type WordWithAudioAndDefinitions = {
+  id: number;
+  word: string;
+  languageCode: string;
+  details: Array<{
+    id: number;
+    definitions: Array<{
+      definition: {
+        id: number;
+        definition: string;
+        examples: Array<{
+          id: number;
+          example: string;
+        }>;
       };
-    };
-  };
-}>;
+    }>;
+    audioLinks: Array<{
+      audio: {
+        id: number;
+        url: string;
+      };
+    }>;
+  }>;
+};
 
 // Update the Word type to match the schema
 interface DictionaryWord {
@@ -149,8 +151,8 @@ export async function fetchDictionaryWords(
           id: String(entry.id),
           text: entry.word,
           translation: primaryDefinition?.definition || '',
-          languageId: entry.languageCode,
-          category: primaryDefinition?.source || '',
+          languageId: entry.languageCode as LanguageCode,
+          category: 'dictionary', // Default category since definition doesn't have source
           difficulty: DifficultyLevel.intermediate,
           audioUrl: primaryAudio?.url || '',
           exampleSentence: primaryDefinition?.examples[0]?.example || '',
@@ -322,7 +324,18 @@ export async function addWordToUserDictionary(
 export async function checkWordExistsByUuid(
   id: string,
   uuid: string,
-): Promise<Prisma.WordGetPayload<{ select: object }> | null> {
+): Promise<{
+  id: number;
+  word: string;
+  phoneticGeneral: string | null;
+  frequencyGeneral: number | null;
+  languageCode: LanguageCode;
+  isHighlighted: boolean;
+  additionalInfo: Record<string, unknown> | null;
+  sourceEntityId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+} | null> {
   try {
     // Create the sourceEntityId format as it appears in the database
     const sourceEntityIdLearners = `merriam_learners-${id}-${uuid}`;
@@ -349,7 +362,15 @@ export async function checkWordExistsByUuid(
       },
     });
 
-    return existingWord;
+    return existingWord
+      ? {
+          ...existingWord,
+          additionalInfo: existingWord.additionalInfo as Record<
+            string,
+            unknown
+          > | null,
+        }
+      : null;
   } catch (error) {
     console.error('Error checking word existence by UUID:', error);
     throw new Error('Failed to check word existence by UUID');

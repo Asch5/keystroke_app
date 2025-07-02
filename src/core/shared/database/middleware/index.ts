@@ -1,4 +1,8 @@
-import { Prisma } from '@prisma/client';
+import {
+  DatabaseKnownRequestError,
+  DatabaseValidationError,
+} from '@/core/types/database';
+import { MiddlewareParams } from '@/core/types/prisma-substitutes';
 
 /**
  * Custom error class for Prisma operations
@@ -11,8 +15,8 @@ export class PrismaOperationError extends Error {
     public readonly args: Record<string, unknown>,
     public readonly error:
       | Error
-      | Prisma.PrismaClientKnownRequestError
-      | Prisma.PrismaClientValidationError,
+      | DatabaseKnownRequestError
+      | DatabaseValidationError,
   ) {
     super(message);
     this.name = 'PrismaOperationError';
@@ -25,8 +29,8 @@ type MiddlewareReturn = Promise<unknown>;
  * Middleware for logging query performance
  */
 export const performanceMiddleware = async (
-  params: Prisma.MiddlewareParams,
-  next: (params: Prisma.MiddlewareParams) => MiddlewareReturn,
+  params: MiddlewareParams,
+  next: (params: MiddlewareParams) => MiddlewareReturn,
 ) => {
   const startTime = performance.now();
   const result = await next(params);
@@ -54,8 +58,8 @@ export const performanceMiddleware = async (
  * Middleware for error handling
  */
 export const errorHandlingMiddleware = async (
-  params: Prisma.MiddlewareParams,
-  next: (params: Prisma.MiddlewareParams) => MiddlewareReturn,
+  params: MiddlewareParams,
+  next: (params: MiddlewareParams) => MiddlewareReturn,
 ) => {
   try {
     return await next(params);
@@ -71,7 +75,7 @@ export const errorHandlingMiddleware = async (
     }
 
     // Handle specific Prisma errors
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof DatabaseKnownRequestError) {
       switch (error.code) {
         case 'P2002':
           throw new PrismaOperationError(
@@ -101,7 +105,7 @@ export const errorHandlingMiddleware = async (
     }
 
     // Handle validation errors
-    if (error instanceof Prisma.PrismaClientValidationError) {
+    if (error instanceof DatabaseValidationError) {
       throw new PrismaOperationError(
         'Validation error in database query',
         params.action,
@@ -143,8 +147,8 @@ const SOFT_DELETE_MODELS = new Set([
  * Middleware for soft delete handling
  */
 export const softDeleteMiddleware = async (
-  params: Prisma.MiddlewareParams,
-  next: (params: Prisma.MiddlewareParams) => MiddlewareReturn,
+  params: MiddlewareParams,
+  next: (params: MiddlewareParams) => MiddlewareReturn,
 ) => {
   // Only apply soft delete logic to models that support it
   if (!params.model || !SOFT_DELETE_MODELS.has(params.model)) {
@@ -157,9 +161,10 @@ export const softDeleteMiddleware = async (
       params.args.where = {};
     }
 
+    const whereClause = params.args.where as Record<string, unknown>;
     // Only add the deletedAt filter if it's not already specified
-    if (params.args.where.deletedAt === undefined) {
-      params.args.where.deletedAt = null;
+    if (whereClause.deletedAt === undefined) {
+      whereClause.deletedAt = null;
     }
   }
 
@@ -177,8 +182,8 @@ export const softDeleteMiddleware = async (
  * Middleware for query batching optimization
  */
 export const batchingMiddleware = async (
-  params: Prisma.MiddlewareParams,
-  next: (params: Prisma.MiddlewareParams) => MiddlewareReturn,
+  params: MiddlewareParams,
+  next: (params: MiddlewareParams) => MiddlewareReturn,
 ) => {
   // Add dataloader implementation here if needed
   return next(params);

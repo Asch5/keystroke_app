@@ -28,6 +28,99 @@ src/core/
 └── lib/ (legacy)         # Legacy - Maintained for compatibility
 ```
 
+## 🚀 **CRITICAL: Prisma-Free Client Architecture**
+
+### **Architecture Overview**
+
+**Complete separation between client and server code to eliminate Prisma bundling issues:**
+
+- **Server Actions/API Routes**: Use `@prisma/client` directly for database operations
+- **Client Components**: Use internal type system from `src/core/types/`
+- **Zero Client Bundling**: Prisma types never reach browser bundles
+
+### **Internal Type System** (`src/core/types/`)
+
+**Core Files:**
+
+- **index.ts** - _Auto-generated_ by `prisma-generator-typescript-interfaces` containing all types
+- **database.ts** (85 lines) - Database operation types and error classes to replace Prisma namespaces
+- **prisma-substitutes.ts** (156 lines) - Internal interfaces that mirror Prisma input/output types
+- **enums.ts**, **models.ts** - _Legacy files_ (can be removed, now all types are in index.ts)
+
+### **Type Generation** (`prisma-generator-typescript-interfaces`)
+
+**Prisma Generator Configuration** (in `prisma/schema.prisma`):
+
+- Uses `prisma-generator-typescript-interfaces` package for zero-dependency type generation
+- Generates clean TypeScript interfaces in `src/core/types/index.ts`
+- Automatically extracts all enums and models from Prisma schema
+- Maintains single source of truth from database schema
+
+### **Database Abstraction Layer**
+
+**Error Handling** (`database-error-handler.ts`):
+
+```typescript
+// Converts Prisma errors to internal types
+export function handleDatabaseError(error: unknown): never {
+  if (error instanceof PrismaClientKnownRequestError) {
+    throw new DatabaseKnownRequestError(error.message, error.code, error.meta);
+  }
+  // ... other error conversions
+}
+```
+
+**Transaction Types** (`database.ts`):
+
+```typescript
+// Safe transaction client type extraction
+export type DatabaseTransactionClient = Parameters<
+  Parameters<PrismaClient['$transaction']>[0]
+>[0];
+
+// Internal error classes
+export class DatabaseKnownRequestError extends Error {
+  code: string;
+  meta?: Record<string, unknown>;
+}
+```
+
+### **Import Patterns**
+
+```typescript
+// ❌ NEVER in client code
+import { Prisma, User } from '@prisma/client';
+
+// ✅ Client-side components
+import { User, LanguageCode, UserRole } from '@/core/types';
+import { DatabaseKnownRequestError } from '@/core/types/database';
+
+// ✅ Server actions/API routes
+import { Prisma, PrismaClient } from '@prisma/client';
+import { handleDatabaseError } from '@/core/lib/database-error-handler';
+```
+
+### **Maintenance Commands**
+
+```bash
+# Generate internal type system from Prisma schema
+pnpm p-generate
+
+# Generate Prisma client and TypeScript interfaces
+prisma generate
+
+# Reset and regenerate all types
+pnpm p-reset && pnpm p-generate
+```
+
+### **Key Benefits**
+
+- **Zero Browser Bundling**: Eliminates "PrismaClient is unable to run in this browser environment" errors
+- **Type Safety**: Maintains full TypeScript support throughout application
+- **Single Source of Truth**: Prisma schema remains authoritative
+- **Automated Sync**: Scripts ensure consistency between schema and internal types
+- **Server Performance**: No impact on server-side database operations
+
 ## 📊 **CRITICAL: Comprehensive Monitoring & Autonomous Debugging System**
 
 ### **Enhanced Logging Architecture** (`infrastructure/monitoring/`)

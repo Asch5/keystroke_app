@@ -1,4 +1,4 @@
-import { PartOfSpeech, Gender } from '@prisma/client';
+import { PartOfSpeech, Gender } from '@/core/types';
 import { PartOfSpeechDanish } from '@/core/types/translationDanishTypes';
 /**
  * Maps Danish grammatical terms to PartOfSpeech enum values

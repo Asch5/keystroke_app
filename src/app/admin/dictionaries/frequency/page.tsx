@@ -22,7 +22,7 @@ import { AlertCircleIcon, FileJsonIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { importFrequencyJson } from '@/core/domains/dictionary/actions';
 
 type FrequencyWord = {

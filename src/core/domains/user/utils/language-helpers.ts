@@ -1,4 +1,4 @@
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { prisma } from '@/core/shared/database/client';
 
 /**

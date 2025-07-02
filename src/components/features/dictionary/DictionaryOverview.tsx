@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { getUserDictionaryStats } from '@/core/domains/user/actions/user-dictionary-actions';
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 
 /**
  * Dictionary Overview Component Props Interface

@@ -3,8 +3,9 @@
 import { prisma } from '@/core/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { LanguageCode, DifficultyLevel, Prisma } from '@prisma/client';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { Prisma } from '@prisma/client';
 
 export interface ListWithDetails {
   id: string;

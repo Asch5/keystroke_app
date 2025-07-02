@@ -1,4 +1,4 @@
-import { LanguageCode, PartOfSpeech } from '@prisma/client';
+import { LanguageCode, PartOfSpeech } from '@/core/types';
 
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {

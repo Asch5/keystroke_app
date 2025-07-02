@@ -1,4 +1,4 @@
-import { PartOfSpeech, SourceType, LanguageCode } from '@prisma/client';
+import { PartOfSpeech, SourceType, LanguageCode } from '@/core/types';
 import { WordDefinition } from '@/core/types/wordDefinition';
 
 export interface Definition {

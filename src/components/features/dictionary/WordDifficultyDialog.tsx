@@ -33,7 +33,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { LearningStatus } from '@prisma/client';
+import { LearningStatus } from '@/core/types';
 import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
 import { getWordDifficultyAnalysis } from '@/core/domains/user/actions/enhanced-practice-actions';
 

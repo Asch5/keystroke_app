@@ -13,7 +13,7 @@ import {
   AdminDictionaryTable,
   useAdminDictionaryState,
 } from '@/components/features/admin';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
 
 /**

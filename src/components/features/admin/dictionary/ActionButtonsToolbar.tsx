@@ -20,7 +20,7 @@ import {
   ListPlus,
   Zap,
 } from 'lucide-react';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
 
 interface ActionButtonsToolbarProps {

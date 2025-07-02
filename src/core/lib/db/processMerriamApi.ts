@@ -9,16 +9,20 @@ import {
 } from '@/core/types/dictionary'; // Extended interface to include ID for database trackinginterface DefinitionExampleWithId extends DefinitionExampleOfProcessWordData {  id?: number | null;}
 import { saveJson } from '@/core/lib/utils/saveJson';
 import {
+  DatabaseTransactionClient,
+  DatabaseKnownRequestError,
+  DatabaseTransactionIsolationLevel,
+} from '@/core/types/database';
+import {
   LanguageCode,
   PartOfSpeech,
-  Prisma,
   RelationshipType,
   SourceType,
   Word,
   DifficultyLevel,
   Definition,
   Gender,
-} from '@prisma/client';
+} from '@/core/types';
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 import { clientLog } from '@/core/lib/utils/logUtils';
 import { ImageService } from '@/core/lib/services/imageService';
@@ -2492,7 +2496,7 @@ sourceWordText processing
       {
         maxWait: 120000,
         timeout: 800000,
-        isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted,
+        isolationLevel: DatabaseTransactionIsolationLevel.ReadCommitted,
       },
     );
 
@@ -2620,7 +2624,7 @@ sourceWordText processing
     return processedData;
   } catch (error) {
     console.error('Error saving word data for:', apiResponse?.meta?.id, error);
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof DatabaseKnownRequestError) {
       console.error('Prisma Error Code:', error.code);
       // Add specific error handling based on error codes
       if (error.code === 'P2028') {
@@ -3139,7 +3143,7 @@ function processNestedExamples(
  * @param isPrimary Whether this is the primary audio for the word
  */
 async function processAudioForWord(
-  tx: Prisma.TransactionClient,
+  tx: DatabaseTransactionClient,
   wordDetailsId: number,
   audioFiles: AudioFile[],
   wordText: string,
@@ -3266,7 +3270,7 @@ async function processAudioForWord(
 
 // Update the upsertWord function to use the new audio processing
 async function upsertWord(
-  tx: Prisma.TransactionClient,
+  tx: DatabaseTransactionClient,
   source: SourceType,
   wordText: string,
   languageCode: LanguageCode,
@@ -3346,7 +3350,7 @@ async function upsertWord(
  * This is needed to establish relationships between words based on part of speech
  */
 async function upsertWordDetails(
-  tx: Prisma.TransactionClient,
+  tx: DatabaseTransactionClient,
   wordId: number,
   partOfSpeech: PartOfSpeech | null,
   source: SourceType = SourceType.user,

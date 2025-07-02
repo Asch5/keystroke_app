@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LanguageCode, PartOfSpeech, LearningStatus } from '@prisma/client';
+import { LanguageCode, PartOfSpeech, LearningStatus } from '@/core/types';
 
 // =============================================
 // COMPREHENSIVE SETTINGS STATE MANAGEMENT

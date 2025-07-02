@@ -1,4 +1,4 @@
-import { PartOfSpeech, SourceType, LanguageCode } from '@prisma/client';
+import { PartOfSpeech, SourceType, LanguageCode } from '@/core/types';
 import { WordFrequency } from '@/core/lib/utils/commonDictUtils/frequencyUtils';
 
 /**

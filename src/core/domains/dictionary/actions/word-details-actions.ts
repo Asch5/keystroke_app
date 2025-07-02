@@ -3,12 +3,13 @@
 import { prisma } from '@/core/lib/prisma';
 import {
   LanguageCode,
-  Prisma,
   PartOfSpeech,
   SourceType,
   RelationshipType,
   Gender,
-} from '@prisma/client';
+} from '@/core/types';
+import { DatabaseJsonValue } from '@/core/types/database';
+import { WordDetailsUpdateInput } from '@/core/types/prisma-substitutes';
 import {
   getFrequencyPartOfSpeechEnum,
   FrequencyPartOfSpeech,
@@ -115,7 +116,7 @@ export interface WordEntryData {
     type: string;
     context: string | null;
     incorrectValue: string | null;
-    mistakeData: Prisma.JsonValue;
+    mistakeData: DatabaseJsonValue;
     createdAt: Date;
     updatedAt: Date;
     userId: string;
@@ -337,7 +338,7 @@ export async function getWordDetails(
       relatedWords: {},
       mistakes: wordRecord.mistakes.map((mistake) => ({
         ...mistake,
-        mistakeData: mistake.mistakeData as Prisma.JsonValue,
+        mistakeData: mistake.mistakeData as DatabaseJsonValue,
       })),
     };
 
@@ -873,7 +874,7 @@ export async function updateWordDetailById(
     await prisma.$transaction(
       async (tx) => {
         // Update WordDetail fields
-        const wordDetailUpdates: Prisma.WordDetailsUpdateInput = {};
+        const wordDetailUpdates: WordDetailsUpdateInput = {};
 
         if (updateData.partOfSpeech !== undefined)
           wordDetailUpdates.partOfSpeech = updateData.partOfSpeech;

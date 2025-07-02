@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 // fs import will be needed when file deletion is enabled
 // import fs from 'fs';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 

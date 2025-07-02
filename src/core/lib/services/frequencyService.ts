@@ -1,4 +1,4 @@
-import { LanguageCode, PartOfSpeech } from '@prisma/client';
+import { LanguageCode, PartOfSpeech } from '@/core/types';
 import { FrequencyRequest, FrequencyResponse } from '@/core/types/dictionary';
 
 import { clientLog } from '@/core/lib/utils/logUtils';

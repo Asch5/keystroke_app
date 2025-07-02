@@ -28,7 +28,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Save, Plus, X, Edit } from 'lucide-react';
-import { DifficultyLevel } from '@prisma/client';
+import { DifficultyLevel } from '@/core/types';
 
 // Difficulty level display names
 const difficultyDisplayNames: Record<DifficultyLevel, string> = {

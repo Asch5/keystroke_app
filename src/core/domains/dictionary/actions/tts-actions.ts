@@ -15,7 +15,7 @@ import { prisma } from '@/core/shared/database/client';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { revalidatePath } from 'next/cache';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 
 export interface GenerateTTSResult {
   success: boolean;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {

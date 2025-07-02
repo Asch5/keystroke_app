@@ -1,4 +1,4 @@
-import { RelationshipType } from '@prisma/client';
+import { RelationshipType } from '@/core/types';
 import { PartOfSpeechDanish } from '@/core/types/translationDanishTypes';
 
 export interface DanishWordEntry {

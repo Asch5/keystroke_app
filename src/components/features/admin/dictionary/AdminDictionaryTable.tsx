@@ -29,7 +29,7 @@ import {
   MoreHorizontal,
   Plus,
 } from 'lucide-react';
-import { LanguageCode, PartOfSpeech, SourceType } from '@prisma/client';
+import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
 import Image from 'next/image';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
 import {

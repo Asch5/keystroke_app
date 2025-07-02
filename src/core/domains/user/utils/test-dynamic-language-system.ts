@@ -4,7 +4,7 @@
  */
 
 import { getBestDefinitionForUser } from '../../dictionary/utils/translation-utils';
-import { LanguageCode } from '@prisma/client';
+import { LanguageCode } from '@/core/types';
 
 // Note: getUserLanguageConfig and processUserDictionaryItemForDisplay are available for testing
 // but not used in this mock test file to avoid database dependencies

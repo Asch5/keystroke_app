@@ -1,4 +1,4 @@
-# Core Folder Documentation - Essential Reference
+# Core Folder BufferFolder - Essential Reference
 
 ## Structure Overview
 
@@ -468,7 +468,7 @@ Types: `UserListWithDetails`, `PublicListSummary`, `PublicUserListSummary`, `Use
 **Testing**:
 
 - Comprehensive test cases in `imageService-grammatical-forms.test.ts`
-- Detailed documentation in `imageService-grammatical-forms-summary.md`
+- Detailed bufferfolder in `imageService-grammatical-forms-summary.md`
 
 ### List Management (`actions/list-actions.ts`)
 

@@ -200,11 +200,11 @@ Your deployment is successful when:
 
 ## 📞 Support Resources
 
-- **Vercel Documentation**: https://vercel.com/docs
+- **Vercel BufferFolder**: https://vercel.com/docs
 - **Environment Variables Guide**: https://vercel.com/docs/environment-variables
 - **Next.js Deployment**: https://nextjs.org/docs/deployment
 - **Neon PostgreSQL**: https://neon.tech/docs
-- **Your Project Docs**: `documentation/` folder
+- **Your Project Docs**: `bufferfolder/` folder
 
 ---
 

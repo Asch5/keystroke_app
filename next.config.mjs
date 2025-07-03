@@ -89,6 +89,20 @@ const nextConfig = {
       },
     ];
   },
+
+  // Add Speed Insights configuration for development environment
+  async rewrites() {
+    return [
+      {
+        source: '/_vercel/speed-insights/script.js',
+        destination: '/api/mock-speed-insights-script',
+      },
+      {
+        source: '/_vercel/speed-insights/vitals',
+        destination: '/api/mock-speed-insights-vitals',
+      },
+    ];
+  },
 };
 
 export default withBundleAnalyzer(nextConfig);

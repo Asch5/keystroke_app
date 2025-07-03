@@ -9,6 +9,7 @@ import {
 import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
 import { toast } from 'sonner';
 import { FilterState } from './AdminDictionaryConstants';
+import { useAdminDictionaryFilters } from '@/core/shared/hooks/useSettings';
 
 /**
  * Custom hook for managing all state and business logic for the admin dictionaries page
@@ -17,9 +18,16 @@ import { FilterState } from './AdminDictionaryConstants';
 export function useAdminDictionaryState() {
   const router = useRouter();
 
+  // Use settings hook for filter persistence
+  const {
+    filters: reduxFilters,
+    updateFilter,
+    clearFilters,
+  } = useAdminDictionaryFilters();
+
   // Language and data state
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
-    LanguageCode.en,
+    reduxFilters.selectedLanguage || LanguageCode.en,
   );
   const [wordDetails, setWordDetails] = useState<DictionaryWordDetails[]>([]);
   const [filteredWordDetails, setFilteredWordDetails] = useState<
@@ -27,7 +35,7 @@ export function useAdminDictionaryState() {
   >([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Filter state
+  // Filter state - mapped from FilterState to match our component needs
   const [filters, setFilters] = useState<FilterState>({
     partOfSpeech: [],
     source: [],
@@ -41,6 +49,11 @@ export function useAdminDictionaryState() {
     frequencyMax: null,
   });
   const [filtersOpen, setFiltersOpen] = useState(false);
+
+  // Update Redux when language changes
+  useEffect(() => {
+    updateFilter('selectedLanguage', selectedLanguage);
+  }, [selectedLanguage, updateFilter]);
 
   // Selection state
   const [selectedWords, setSelectedWords] = useState<Set<string>>(new Set());
@@ -208,12 +221,53 @@ export function useAdminDictionaryState() {
     applyFilters();
   }, [applyFilters]);
 
-  // Filter change handler
+  // Map Redux filter state to component filter state
+  useEffect(() => {
+    // Map Redux filter settings to component filter state
+    const mappedFilters: FilterState = {
+      partOfSpeech: reduxFilters.selectedPartOfSpeech as PartOfSpeech[],
+      source: reduxFilters.selectedSource as SourceType[],
+      hasAudio:
+        reduxFilters.selectedAudio === 'with_audio'
+          ? true
+          : reduxFilters.selectedAudio === 'without_audio'
+            ? false
+            : null,
+      hasImage:
+        reduxFilters.selectedImage === 'with_image'
+          ? true
+          : reduxFilters.selectedImage === 'without_image'
+            ? false
+            : null,
+      hasVariant:
+        reduxFilters.selectedVariant === 'with_variant'
+          ? true
+          : reduxFilters.selectedVariant === 'without_variant'
+            ? false
+            : null,
+      hasDefinition:
+        reduxFilters.selectedDefinition === 'short_only' ||
+        reduxFilters.selectedDefinition === 'long_only'
+          ? true
+          : reduxFilters.selectedDefinition === 'all'
+            ? null
+            : false,
+      frequencyGeneralMin: reduxFilters.frequencyRange.min,
+      frequencyGeneralMax: reduxFilters.frequencyRange.max,
+      frequencyMin: reduxFilters.specificFrequencyRange.min,
+      frequencyMax: reduxFilters.specificFrequencyRange.max,
+    };
+
+    setFilters(mappedFilters);
+  }, [reduxFilters]);
+
+  // Filter change handler - update both local state and Redux
   const handleFilterChange = (
     filterType: keyof FilterState,
     value: PartOfSpeech | SourceType | boolean | number | null,
     checked?: boolean,
   ) => {
+    // Update local filter state
     setFilters((prev) => {
       const newFilters = { ...prev };
 
@@ -221,33 +275,114 @@ export function useAdminDictionaryState() {
         const currentArray = newFilters.partOfSpeech;
         if (checked) {
           newFilters.partOfSpeech = [...currentArray, value as PartOfSpeech];
+          // Update Redux
+          updateFilter('selectedPartOfSpeech', [
+            ...currentArray,
+            value as PartOfSpeech,
+          ]);
         } else {
           newFilters.partOfSpeech = currentArray.filter(
             (item) => item !== value,
+          );
+          // Update Redux
+          updateFilter(
+            'selectedPartOfSpeech',
+            currentArray.filter((item) => item !== value),
           );
         }
       } else if (filterType === 'source') {
         const currentArray = newFilters.source;
         if (checked) {
           newFilters.source = [...currentArray, value as SourceType];
+          // Update Redux
+          updateFilter('selectedSource', [
+            ...currentArray,
+            value as SourceType,
+          ]);
         } else {
           newFilters.source = currentArray.filter((item) => item !== value);
+          // Update Redux
+          updateFilter(
+            'selectedSource',
+            currentArray.filter((item) => item !== value),
+          );
         }
       } else if (
         filterType === 'frequencyGeneralMin' ||
-        filterType === 'frequencyGeneralMax' ||
+        filterType === 'frequencyGeneralMax'
+      ) {
+        newFilters[filterType] = value as number | null;
+        // Update Redux
+        updateFilter('frequencyRange', {
+          min:
+            filterType === 'frequencyGeneralMin'
+              ? (value as number | null)
+              : newFilters.frequencyGeneralMin,
+          max:
+            filterType === 'frequencyGeneralMax'
+              ? (value as number | null)
+              : newFilters.frequencyGeneralMax,
+        });
+      } else if (
         filterType === 'frequencyMin' ||
         filterType === 'frequencyMax'
       ) {
         newFilters[filterType] = value as number | null;
+        // Update Redux
+        updateFilter('specificFrequencyRange', {
+          min:
+            filterType === 'frequencyMin'
+              ? (value as number | null)
+              : newFilters.frequencyMin,
+          max:
+            filterType === 'frequencyMax'
+              ? (value as number | null)
+              : newFilters.frequencyMax,
+        });
       } else {
         newFilters[filterType] = value as boolean | null;
+
+        // Update Redux based on filter type
+        if (filterType === 'hasAudio') {
+          updateFilter(
+            'selectedAudio',
+            value === true
+              ? 'with_audio'
+              : value === false
+                ? 'without_audio'
+                : 'all',
+          );
+        } else if (filterType === 'hasImage') {
+          updateFilter(
+            'selectedImage',
+            value === true
+              ? 'with_image'
+              : value === false
+                ? 'without_image'
+                : 'all',
+          );
+        } else if (filterType === 'hasVariant') {
+          updateFilter(
+            'selectedVariant',
+            value === true
+              ? 'with_variant'
+              : value === false
+                ? 'without_variant'
+                : 'all',
+          );
+        } else if (filterType === 'hasDefinition') {
+          updateFilter(
+            'selectedDefinition',
+            value === true ? 'short_only' : value === false ? 'all' : 'all',
+          );
+        }
       }
 
       return newFilters;
     });
   };
 
+  // Clear all filters - both local and Redux
   const clearAllFilters = () => {
     setFilters({
       partOfSpeech: [],
@@ -261,6 +396,9 @@ export function useAdminDictionaryState() {
       frequencyMin: null,
       frequencyMax: null,
     });
+
+    // Clear Redux filters
+    clearFilters();
   };
 
   // Word selection handlers

@@ -1,6 +1,6 @@
 /**
  * Type definitions for pexels library
- * Based on Pexels API v1 documentation and official library interface
+ * Based on Pexels API v1 bufferfolder and official library interface
  */
 
 declare module 'pexels' {

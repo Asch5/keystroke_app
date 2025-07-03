@@ -7,7 +7,7 @@ keystroke_app/
 ├── .github/workflows/     # CI/CD automation
 ├── .husky/               # Git hooks (pre-commit/pre-push)
 ├── .next/                # Build output (auto-generated)
-├── documentation/        # Project docs & API schemas
+├── bufferfolder/        # Project docs & API schemas
 ├── prisma/               # DB schema, migrations, seed
 ├── public/               # Static assets
 ├── scripts/              # Build & utility scripts
@@ -446,7 +446,7 @@ pnpm lighthouse            # Lighthouse CI (if configured)
 
 - **Core Logic**: `src/core/DESCRIPTION_OF_CORE_FOLDER.md`
 - **Components**: `src/components/DESCRIPTION_OF_COMPONENT_FOLDER.md`
-- **Environment**: `documentation/ENVIRONMENT_VARIABLES.md`
+- **Environment**: `bufferfolder/ENVIRONMENT_VARIABLES.md`
 - **DB Schema**: `prisma/schema.prisma`
 - **Logging**: `logs/server.log`, `logs/client.log`
 - **Backups**: `tests/danishDicitonary/backupProcess/backups/[latest-date]/backup.json`
@@ -486,7 +486,7 @@ pnpm lighthouse            # Lighthouse CI (if configured)
 - **REFACTORED**: Sidebar Navigation - Migrated from custom SideNav component to shadcn/ui Sidebar primitives for better consistency, accessibility, and modern design patterns. New AppSidebar component features collapsible design, persistent state, keyboard shortcuts (Cmd/Ctrl+B), responsive mobile support, and proper semantic structure using SidebarProvider, SidebarHeader, SidebarContent, and SidebarFooter components.
 - **ENHANCED**: Sidebar Sub-Navigation - Added expandable dictionary section with collapsible sub-menus for internal routes (Overview, My Dictionary, Add New Word, Word Lists). Improved user profile display with modern avatar layout in footer and brand header following shadcn/ui design patterns.
 - **REMOVED**: Profile Route - Removed /dashboard/profile route and cleaned up all references including navigation links, sidebar links, and revalidation paths. User profile functionality is now integrated into the settings page.
-- **IMPROVED**: Header Layout Coordination - Updated dashboard and admin layouts to match shadcn/ui sidebar documentation patterns with proper spacing, visual separators, responsive transitions, and optimized trigger positioning for consistent design language.
+- **IMPROVED**: Header Layout Coordination - Updated dashboard and admin layouts to match shadcn/ui sidebar bufferfolder patterns with proper spacing, visual separators, responsive transitions, and optimized trigger positioning for consistent design language.
 - **ENHANCED**: Admin Navigation Icons - Updated admin navigation with more appropriate and descriptive icons: ShieldCheck for Admin access, List for Lists Management, MagnifyingGlass for Check Word, Plus for Add New Word, ChartBar for Frequency analysis, and PencilSquare for Edit Word functionality.
 - **NEW**: Admin List Word Management - Implemented comprehensive word management functionality for admin public lists. Admins can now view, search, sort, and remove words from public vocabulary lists through a dedicated management interface at `/admin/dictionaries/lists/[id]/words`. Features include bulk selection, real-time search, sortable columns (word, order, part of speech), audio playback, pagination, and confirmation dialogs for word removal. This complements the existing user list management and provides full administrative control over public vocabulary collections.
 - **MODERNIZED**: Admin WordDetail Edit System - Completely modernized the admin edit-word functionality to edit specific WordDetails instead of entire Words. The system now navigates using WordDetail IDs, allowing precise editing of individual word variants/parts of speech without affecting other WordDetails of the same word. Features include: 1) WordDetail-specific editing with clear separation between Word fields (shared across all WordDetails) and WordDetail fields (specific to the variant), 2) Comprehensive form with all WordDetail properties (part of speech, variant, gender, etymology, phonetic, forms, frequency, source), 3) Inline editing of related definitions and audio files, 4) Warning system about Word field impacts, 5) Modern shadcn/ui interface with proper validation and error handling. The new `fetchWordDetailById` and `updateWordDetailById` actions provide targeted CRUD operations for WordDetail management.

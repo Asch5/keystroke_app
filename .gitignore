@@ -45,10 +45,10 @@ next-env.d.ts
 prisma/generated
 .prisma/client
 
-# Documentation
-documentation/
-documentation/*.json
-documentation/schema_merriam.json
+# BufferFolder
+bufferfolder/
+bufferfolder/*.json
+bufferfolder/schema_merriam.json
 
 # tests
 tests/

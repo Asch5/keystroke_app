@@ -132,12 +132,10 @@ export function isContentCompatibleWithUser(
 ### 📋 **NEXT PRIORITY ACTIONS:**
 
 1. **Complete Phase 1**:
-
    - Fix remaining database operations (user-list-actions.ts, word-crud-actions.ts, list-actions.ts)
    - Update all baseLanguageCode references to use User model
 
 2. **Implement Phase 2**:
-
    - Enhance translation logic integration
    - Update components to use new dynamic approach
 

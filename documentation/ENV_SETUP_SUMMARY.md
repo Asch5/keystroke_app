@@ -54,9 +54,9 @@ Development:  http://localhost:3000
 Production:   https://keystroke-app-v2.vercel.app
 ```
 
-## 📚 Documentation Added
+## 📚 BufferFolder Added
 
-- `documentation/ENVIRONMENT_VARIABLES.md` - Complete setup guide
+- `bufferfolder/ENVIRONMENT_VARIABLES.md` - Complete setup guide
 - `scripts/validate-env.mjs` - Validation script
 - Environment validation integrated into build process
 
@@ -110,7 +110,6 @@ The DeepSeek API is used for AI-powered word extraction from definitions in the 
 ### Setup Steps:
 
 1. **Get API Key:**
-
    - Visit [platform.deepseek.com](https://platform.deepseek.com)
    - Create an account and get your API key
    - Add credits to your account (minimum $1-5 recommended)

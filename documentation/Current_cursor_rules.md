@@ -2,15 +2,15 @@ Act as a senior developer. Take all my suggestions with a grain of salt; you don
 
 Before starting, you must read and understand the following documents to gain full context of the project architecture, database schema, and live data structure:
 
-/DESCRIPTION_OF_ROOT_FOLDER.md
+/documentation/DESCRIPTION_OF_ROOT_FOLDER.md
 
-src/core/DESCRIPTION_OF_CORE_FOLDER.md
+/documentation/DESCRIPTION_OF_CORE_FOLDER.md
 
-src/components/DESCRIPTION_OF_COMPONENT_FOLDER.md
+/documentation/DESCRIPTION_OF_COMPONENT_FOLDER.md
 
-/DATABASE_DESCRIPTION.md
+/documentation/DATABASE_DESCRIPTION.md
 
-prisma\schema.prisma
+/prisma/schema.prisma
 
 The latest database backup file to understand the live data structure. To do this, find the folder with the most recent date in tests/danishDicitonary/backupProcess/backups/ and read the backup.json file within it and the metadata.json file. IMPORTANT: to be sure that backup.json is the latest, you can run the command "pnpm backup:db" from /tests folder an get the latest backup.json file.
 
@@ -29,14 +29,14 @@ The latest database backup file to understand the live data structure. To do thi
 
 ## 2. Technology Stack and Versions
 
-**Rule:** Adhere strictly to the specified versions of our core technologies and their documentation.
+**Rule:** Adhere strictly to the specified versions of our core technologies and their bufferfolder.
 
 **Implementation:**
 
 - React Version: Use React ^19.0.0.
 - Next.js Version: Use Next.js ^15.3.2 with the App Router.
 - Validation Library: Use Zod for all server-side validation and schema definition.
-- Documentation Gaps: If you lack documentation for a package, you must ask for it.
+- BufferFolder Gaps: If you lack bufferfolder for a package, you must ask for it.
 - **Version Compatibility**: Always check package compatibility matrices before suggesting upgrades.
 - **Feature Flags**: Use Next.js experimental features only when explicitly approved and documented.
 
@@ -67,7 +67,7 @@ The latest database backup file to understand the live data structure. To do thi
 - **Cache Invalidation**: Implement intelligent cache invalidation strategies using tags and selective updates.
 - **State Persistence**: Use Redux Persist selectively - only persist critical user preferences, not entire application state.
 
-## 5. Code Documentation and Comments
+## 5. Code BufferFolder and Comments
 
 **Rule:** All non-obvious code must be documented to explain its purpose, logic, and usage.
 
@@ -76,12 +76,12 @@ The latest database backup file to understand the live data structure. To do thi
 - JSDoc: Add JSDoc for all functions, components, and hooks (@param, @returns, @example).
 - Inline Comments: Use inline comments (//) to explain complex logic or workarounds.
 - **Architecture Decision Records (ADRs)**: Document significant architectural decisions in /docs/adr/.
-- **API Documentation**: Maintain OpenAPI/Swagger specs for all API endpoints.
+- **API BufferFolder**: Maintain OpenAPI/Swagger specs for all API endpoints.
 - **Component Stories**: Document component usage with Storybook examples.
 
-## 6. Project Structure and Documentation Integrity
+## 6. Project Structure and BufferFolder Integrity
 
-**Rule:** Maintain the integrity of the project's structure and its documentation. Any change to the structure must be reflected in the corresponding documentation file.
+**Rule:** Maintain the integrity of the project's structure and its bufferfolder. Any change to the structure must be reflected in the corresponding bufferfolder file.
 
 **Implementation:**
 
@@ -412,7 +412,7 @@ const formattedPrice = new Intl.NumberFormat(locale, {
 - **Hot Module Replacement**: Configure HMR to preserve state during development.
 - **Development Debugging**: Set up comprehensive debugging configurations for VS Code/IDE.
 - **Code Generation**: Create templates and snippets for common patterns.
-- **Developer Onboarding**: Maintain comprehensive setup documentation and scripts.
+- **Developer Onboarding**: Maintain comprehensive setup bufferfolder and scripts.
 - **IDE Integration**: Configure IDE settings for consistent code formatting and linting.
 - **Development Environment Parity**: Ensure development environment closely matches production.
 
@@ -436,7 +436,7 @@ Before considering any feature complete, verify:
 - [ ] **Security**: All inputs validated, authorization checked
 - [ ] **Error Handling**: Graceful error handling with user feedback
 - [ ] **Testing**: Unit and integration tests written and passing (component tests co-located, server tests in /tests folder)
-- [ ] **Documentation**: Code documented, DESCRIPTION_OF_ROOT_FOLDER.md, DESCRIPTION_OF_CORE_FOLDER.md, DESCRIPTION_OF_COMPONENT_FOLDER.md updated if necessary
+- [ ] **BufferFolder**: Code documented, DESCRIPTION_OF_ROOT_FOLDER.md, DESCRIPTION_OF_CORE_FOLDER.md, DESCRIPTION_OF_COMPONENT_FOLDER.md updated if necessary
 - [ ] **Type Safety**: No TypeScript errors, comprehensive typing
 - [ ] **Bundle Impact**: Bundle size impact analyzed and acceptable
 - [ ] **Browser Compatibility**: Tested in supported browsers

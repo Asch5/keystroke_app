@@ -414,6 +414,6 @@ When adding new components or modifying existing ones:
 2. **Test critical user paths** and edge cases
 3. **Mock external dependencies** appropriately
 4. **Follow existing patterns** in similar test files
-5. **Update this documentation** if adding new testing patterns
+5. **Update this bufferfolder** if adding new testing patterns
 
 Remember: Good tests increase confidence in your code and help prevent regressions, especially for critical functionality like the typing practice system we just fixed!

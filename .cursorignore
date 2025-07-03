@@ -45,10 +45,10 @@ prisma/generated
 .prisma/client
 
 
-# Documentation
+# BufferFolder
 
-documentation/*.json
-documentation/schema_merriam.json
+bufferfolder/*.json
+bufferfolder/schema_merriam.json
 
 # tests
 

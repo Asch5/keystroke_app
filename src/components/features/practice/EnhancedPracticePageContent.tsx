@@ -8,6 +8,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { useUser } from '@/core/shared/hooks/useUser';
 import { EnhancedPracticeContent } from './EnhancedPracticeContent';
+import { VocabularyPracticeSettings } from './settings';
+import { useVocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
 import {
   createEnhancedPracticeSession,
   createUnifiedPracticeSession,
@@ -24,6 +26,7 @@ export function EnhancedPracticePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useUser();
+  const { settings } = useVocabularyPracticeSettings();
 
   const [session, setSession] = useState<EnhancedPracticeSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -61,8 +64,8 @@ export function EnhancedPracticePageContent() {
         userId: user.id,
         userListId: userListId || null,
         listId: listId || null,
-        difficultyLevel: 3, // Default difficulty
-        wordsCount: 20, // Default word count
+        difficultyLevel: settings.difficultyLevel,
+        wordsCount: settings.wordsCount,
         practiceType: sessionPracticeType,
       };
 
@@ -202,6 +205,9 @@ export function EnhancedPracticePageContent() {
           Back to Overview
         </Button>
       </div>
+
+      {/* Practice Settings */}
+      <VocabularyPracticeSettings className="max-w-4xl mx-auto" />
 
       {/* Practice Content */}
       <EnhancedPracticeContent

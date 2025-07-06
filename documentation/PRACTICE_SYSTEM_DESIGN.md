@@ -68,6 +68,36 @@ The practice system now supports two main modes:
 - `useTypingInputManager.ts` (71 lines) - Input handling and auto-submit
 - `useTypingInputState.ts` (204 lines) - Typing input state management
 
+## Universal WordCard Component
+
+### Enhanced WordCard Functionality (NEW)
+
+**Component**: `WordCard.tsx` (204 lines) - Universal word review component
+
+**Key Features**:
+
+- **Automatic Audio Playback**: Plays word pronunciation when card appears (configurable)
+- **Manual Audio Control**: Play button for on-demand audio playback
+- **Comprehensive Word Display**: Shows word text, phonetic pronunciation, definition, translation, part of speech, learning status
+- **Visual Content**: Displays word images when available with proper aspect ratio
+- **Learning Status Badges**: Color-coded badges for learning progress (New, In Progress, Learned, Difficult, Needs Review)
+- **Responsive Design**: Mobile-first design with proper touch targets
+- **Accessibility**: ARIA labels and semantic HTML structure
+
+**Integration**:
+
+- `PracticeWordCardRenderer.tsx` (78 lines) - Wrapper component for practice sessions
+- Integrated into `EnhancedPracticeContent.tsx` for unified practice system
+- Supports both automatic and manual audio playback modes
+- Configurable through `VocabularyPracticeSettings`
+
+**Audio Integration**:
+
+- Uses `AudioService` for consistent audio playback
+- Supports both database-stored audio and external URLs
+- Automatic playback prevention for repeated words
+- Loading states and error handling
+
 ## Game Components Architecture
 
 ### Modular Game Structure
@@ -109,6 +139,8 @@ All game components have been refactored to follow the modular pattern:
 
 ### Modular Settings System
 
+#### Legacy Typing Practice Settings
+
 **Main Component**: `TypingPracticeSettings.tsx` (165 lines) - Reduced from 487 lines
 
 **Modular Settings Components**:
@@ -122,6 +154,31 @@ All game components have been refactored to follow the modular pattern:
 **State Management**:
 
 - `useTypingPracticeSettings.ts` (110 lines) - Settings state management
+
+#### Vocabulary Practice Settings (NEW)
+
+**Main Component**: `VocabularyPracticeSettings.tsx` (249 lines) - Comprehensive vocabulary practice configuration
+
+**Modular Settings Components**:
+
+- `ExerciseTypeSettings.tsx` (239 lines) - Exercise type selection with individual controls
+- `VocabularySessionConfigurationSettings.tsx` (175 lines) - Session configuration (words count, difficulty, word card settings)
+- `VocabularyTimeSettings.tsx` (73 lines) - Time limit settings for vocabulary practice
+- `VocabularyAudioSettings.tsx` (132 lines) - Audio settings (auto-play, game sounds, volume)
+- `VocabularyBehaviorSettings.tsx` (261 lines) - Behavior and display settings for vocabulary practice
+
+**State Management**:
+
+- `useVocabularyPracticeSettings.ts` (193 lines) - Comprehensive vocabulary practice settings management
+
+**Key Features**:
+
+- **Exercise Type Selection**: Toggle individual exercise types (Remember Translation, Choose Right Word, Make Up Word, Write by Definition, Write by Sound)
+- **Adaptive Configuration**: Settings adapt to enabled exercise types
+- **Comprehensive Audio Control**: Auto-play settings for Word Card and game start
+- **Advanced Behavior Settings**: Pause on incorrect answers, show correct answers, adaptive difficulty
+- **Visual Display Options**: Control visibility of progress bar, images, phonetic pronunciation, part of speech, learning status
+- **LocalStorage Persistence**: Settings persist across browser sessions
 
 ## Practice Overview System
 
@@ -140,6 +197,41 @@ All game components have been refactored to follow the modular pattern:
 - User's custom lists and inherited public lists
 - Difficulty level filtering and word count display
 - Practice type selection with feature descriptions
+
+## Recent Enhancements (2024)
+
+### Vocabulary Practice Settings System
+
+**Implementation Date**: December 2024
+
+**Key Achievements**:
+
+- ✅ **Universal WordCard Enhancement**: Added automatic audio playback and manual play button to WordCard component
+- ✅ **Comprehensive Settings Framework**: Created modular vocabulary practice settings system with 20+ configuration options
+- ✅ **Exercise Type Control**: Individual toggles for all 5 exercise types with adaptive configuration
+- ✅ **Advanced Audio Settings**: Auto-play controls for Word Card and game start, volume control, game sound effects
+- ✅ **Behavior Customization**: Pause on incorrect answers, show correct answers, adaptive difficulty, skip difficult words
+- ✅ **Display Preferences**: Control visibility of progress bar, images, phonetic pronunciation, part of speech, learning status
+- ✅ **Settings Integration**: Seamless integration with enhanced practice system and localStorage persistence
+
+**Components Created**:
+
+- `VocabularyPracticeSettings.tsx` (249 lines) - Main settings orchestrator
+- `ExerciseTypeSettings.tsx` (239 lines) - Exercise type selection with visual cards
+- `VocabularySessionConfigurationSettings.tsx` (175 lines) - Session configuration
+- `VocabularyTimeSettings.tsx` (73 lines) - Time limit settings
+- `VocabularyAudioSettings.tsx` (132 lines) - Audio configuration
+- `VocabularyBehaviorSettings.tsx` (261 lines) - Behavior and display settings
+- `useVocabularyPracticeSettings.ts` (193 lines) - Settings state management hook
+
+**Technical Excellence**:
+
+- All components follow Cursor Rules (under 400 lines)
+- Comprehensive TypeScript interfaces and type safety
+- Modular architecture for maintainability and reusability
+- Proper error handling and validation
+- Responsive design with mobile-first approach
+- Accessibility compliance with ARIA labels and semantic HTML
 
 ## Technical Implementation
 
@@ -295,14 +387,24 @@ src/components/features/practice/
 │   ├── ChooseRightWordGame.tsx  # Level 2 game (221 lines)
 │   └── MakeUpWordGame.tsx       # Level 3 game (370 lines - needs refactoring)
 ├── overview/                    # PracticeOverviewContent modular components
-├── settings/                    # TypingPracticeSettings modular components
+├── settings/                    # Practice settings components
+│   ├── TypingPracticeSettings.tsx           # Legacy typing practice settings (165 lines)
+│   ├── VocabularyPracticeSettings.tsx       # Main vocabulary practice settings (249 lines)
+│   ├── ExerciseTypeSettings.tsx             # Exercise type selection (239 lines)
+│   ├── VocabularySessionConfigurationSettings.tsx # Session config (175 lines)
+│   ├── VocabularyTimeSettings.tsx           # Time settings (73 lines)
+│   ├── VocabularyAudioSettings.tsx          # Audio settings (132 lines)
+│   ├── VocabularyBehaviorSettings.tsx       # Behavior settings (261 lines)
+│   └── [legacy typing settings]             # Legacy typing practice settings
 ├── hooks/                       # Refactored practice hooks
 │   ├── useTypingPracticeState.ts      # Main orchestrator (153 lines)
 │   ├── useTypingSessionManager.ts     # Session management (273 lines)
 │   ├── useTypingWordValidator.ts      # Word validation (175 lines)
 │   ├── useTypingInputManager.ts       # Input handling (71 lines)
 │   ├── usePracticeGameState.ts        # Unified practice state (180 lines)
-│   └── useTypingInputState.ts         # Typing input state (204 lines)
+│   ├── useTypingInputState.ts         # Typing input state (204 lines)
+│   ├── useVocabularyPracticeSettings.ts # Vocabulary practice settings (193 lines)
+│   └── useTypingPracticeSettings.ts   # Legacy typing practice settings (110 lines)
 ├── shared/                      # Shared practice components
 ├── EnhancedPracticeContent.tsx  # Unified practice orchestrator (177 lines)
 ├── PracticeOverviewContent.tsx  # Practice selection (164 lines)

@@ -149,6 +149,8 @@ export function EnhancedPracticeContent({
         <PracticeWordCardRenderer
           currentWord={currentWord}
           onNext={handleWordCardNext}
+          {...(onAudioPlay && { onAudioPlay })}
+          autoPlayAudio={true}
         />
       )}
 

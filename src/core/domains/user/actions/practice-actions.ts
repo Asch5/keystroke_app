@@ -30,16 +30,87 @@ export type PracticeType =
   | 'write-by-sound'
   | 'unified-practice';
 
-export const PRACTICE_TYPE_MULTIPLIERS = {
+// Convert object exports to async functions
+export async function getPracticeTypeMultipliers() {
+  return {
+    'remember-translation': 0.5, // Difficulty 1
+    'choose-right-word': 1.0, // Difficulty 2
+    'make-up-word': 1.5, // Difficulty 3
+    'write-by-definition': 2.0, // Difficulty 4
+    'write-by-sound': 2.5, // Difficulty 4+
+    typing: 1.2, // Current system
+  } as const;
+}
+
+export async function getPracticeTypeConfigs() {
+  return {
+    'remember-translation': {
+      difficultyLevel: 1,
+      maxAttempts: 1,
+      autoAdvance: true,
+      requiresAudio: false,
+      requiresInput: false,
+    },
+    'choose-right-word': {
+      difficultyLevel: 2,
+      maxAttempts: 1,
+      autoAdvance: true,
+      requiresAudio: false,
+      requiresInput: false,
+      optionCount: 4,
+    },
+    'make-up-word': {
+      difficultyLevel: 3,
+      maxAttempts: 3,
+      maxAttemptsPhrase: 6,
+      autoAdvance: true,
+      requiresAudio: false,
+      requiresInput: true,
+    },
+    'write-by-definition': {
+      difficultyLevel: 4,
+      maxAttempts: 1,
+      autoAdvance: false, // Changed: Exercise 4 has "Next" button
+      requiresAudio: false,
+      requiresInput: true,
+    },
+    'write-by-sound': {
+      difficultyLevel: 4,
+      maxAttempts: 1,
+      autoAdvance: false, // Changed: Exercise 5 has "Next" button
+      requiresAudio: true,
+      requiresInput: true,
+      maxAudioReplays: 3,
+    },
+    'unified-practice': {
+      difficultyLevel: 3, // Average difficulty level
+      maxAttempts: 1,
+      autoAdvance: false, // Controlled by unified system
+      requiresAudio: false,
+      requiresInput: true,
+    },
+    typing: {
+      difficultyLevel: 3,
+      maxAttempts: 1,
+      autoAdvance: false,
+      requiresAudio: false,
+      requiresInput: true,
+    },
+  } as const;
+}
+
+// Keep these constants for internal use - used in the exported functions
+const PRACTICE_TYPE_MULTIPLIERS = {
   'remember-translation': 0.5, // Difficulty 1
   'choose-right-word': 1.0, // Difficulty 2
   'make-up-word': 1.5, // Difficulty 3
   'write-by-definition': 2.0, // Difficulty 4
   'write-by-sound': 2.5, // Difficulty 4+
   typing: 1.2, // Current system
+  'unified-practice': 1.5, // Average difficulty for unified practice
 } as const;
 
-export const PRACTICE_TYPE_CONFIGS = {
+const PRACTICE_TYPE_CONFIGS = {
   'remember-translation': {
     difficultyLevel: 1,
     maxAttempts: 1,
@@ -926,16 +997,17 @@ export async function isNewWordForUser(
 }
 
 /**
- * Calculate max attempts based on practice type and word characteristics
+ * Calculate max attempts for a practice type
  */
 export async function calculateMaxAttempts(
   practiceType: PracticeType,
   isPhrase: boolean = false,
 ): Promise<number> {
+  // Use the internal PRACTICE_TYPE_CONFIGS constant
   const config = PRACTICE_TYPE_CONFIGS[practiceType];
 
-  if (practiceType === 'make-up-word') {
-    return isPhrase ? 6 : config.maxAttempts; // 6 for phrases, 3 for single words
+  if (isPhrase && 'maxAttemptsPhrase' in config) {
+    return config.maxAttemptsPhrase as number;
   }
 
   return config.maxAttempts;
@@ -1129,8 +1201,7 @@ function getDifficultyLevel(customDifficulty: unknown): number | null {
 }
 
 /**
- * Word Progression Algorithm
- * Determines the most appropriate exercise type based on word learning progress
+ * Determine the appropriate exercise type based on word learning status
  */
 export async function determineExerciseType(
   word: PracticeWord,
@@ -1139,40 +1210,50 @@ export async function determineExerciseType(
     forceDifficulty?: number;
   },
 ): Promise<PracticeType> {
-  const { learningStatus, attempts, correctAttempts } = word;
-  const successRate = attempts > 0 ? correctAttempts / attempts : 0;
-  const isNewWord = await isNewWordForUser(
-    learningStatus,
-    attempts,
-    correctAttempts,
-  );
+  // Use the internal PRACTICE_TYPE_MULTIPLIERS constant for difficulty calculation
+  const successRate =
+    word.attempts > 0 ? (word.correctAttempts / word.attempts) * 100 : 0;
 
-  // For new words or words with very low success rate, start with easiest exercises
-  if (isNewWord || successRate < 0.3) {
-    return userPreferences?.skipRememberTranslation === true
-      ? 'choose-right-word'
-      : 'remember-translation';
+  // Force specific difficulty if requested
+  if (userPreferences?.forceDifficulty) {
+    const difficulty = userPreferences.forceDifficulty;
+
+    if (difficulty === 1) return 'remember-translation';
+    if (difficulty === 2) return 'choose-right-word';
+    if (difficulty === 3) return 'make-up-word';
+    if (difficulty === 4) return 'write-by-definition';
+    if (difficulty === 5) return 'write-by-sound';
   }
 
-  // For words with low success rate, use multiple choice
-  if (successRate < 0.6) {
+  // Skip remember-translation if requested
+  if (
+    userPreferences?.skipRememberTranslation &&
+    (word.attempts === 0 || word.learningStatus === 'notStarted')
+  ) {
     return 'choose-right-word';
   }
 
-  // For words with moderate success rate, use drag-and-drop
-  if (successRate < 0.8) {
+  // New words or words with very low success rate start with easier exercises
+  if (word.attempts === 0 || word.learningStatus === 'notStarted') {
+    return 'remember-translation';
+  }
+
+  // Based on success rate, assign appropriate exercise type
+  if (successRate < 30) {
+    return 'remember-translation';
+  } else if (successRate < 60) {
+    return 'choose-right-word';
+  } else if (successRate < 80) {
     return 'make-up-word';
+  } else {
+    // For high success rate, alternate between harder exercises
+    // Check if audio is available for write-by-sound
+    if (word.audioUrl && Math.random() > 0.5) {
+      return 'write-by-sound';
+    } else {
+      return 'write-by-definition';
+    }
   }
-
-  // For words with high success rate, alternate between harder exercises
-  if (successRate >= 0.8) {
-    // Use word difficulty and attempt count to determine between exercises 4 and 5
-    const shouldUseAudio = word.audioUrl && attempts % 3 === 0; // Every 3rd attempt uses audio
-    return shouldUseAudio ? 'write-by-sound' : 'write-by-definition';
-  }
-
-  // Default fallback
-  return 'choose-right-word';
 }
 
 /**
@@ -1313,38 +1394,64 @@ export async function updateWordProgressAndSelectNext(
   error?: string;
 }> {
   try {
-    // First, update the word's learning progress (existing logic)
-    const updateResult = await validateTypingInput({
-      sessionId,
-      userDictionaryId: wordId,
-      userInput,
-      responseTime: 0, // We'll need to pass this from the frontend
+    // Get the word's current progress data
+    const wordData = await getWordProgressData(wordId);
+    if (!wordData) {
+      return {
+        success: false,
+        error: 'Word not found',
+      };
+    }
+
+    // Calculate points based on exercise difficulty and correctness
+    let exerciseMultiplier = 1.0; // Default multiplier
+
+    if (currentExerciseType in PRACTICE_TYPE_MULTIPLIERS) {
+      exerciseMultiplier =
+        PRACTICE_TYPE_MULTIPLIERS[
+          currentExerciseType as keyof typeof PRACTICE_TYPE_MULTIPLIERS
+        ];
+    }
+
+    const basePoints = isCorrect ? 10 : 0;
+    const pointsEarned = Math.round(basePoints * exerciseMultiplier);
+
+    // Update word progress in database
+    await prisma.userDictionary.update({
+      where: {
+        id: wordId,
+      },
+      data: {
+        // Update learning metrics based on exercise results
+        masteryScore: {
+          increment: isCorrect ? pointsEarned : 0,
+        },
+        progress: {
+          increment: isCorrect ? 5 : 0,
+        },
+        correctStreak: isCorrect
+          ? {
+              increment: 1,
+            }
+          : 0,
+        amountOfMistakes: isCorrect
+          ? {
+              increment: 0,
+            }
+          : {
+              increment: 1,
+            },
+      },
     });
 
-    if (!updateResult.success) {
-      return {
-        success: false,
-        error: updateResult.error || 'Failed to update word progress',
-      };
-    }
-
-    // Get updated word data to determine next exercise type
-    const updatedWord = await getWordProgressData(wordId);
-    if (!updatedWord) {
-      return {
-        success: false,
-        error: 'Failed to get updated word data',
-      };
-    }
-
     // Determine next exercise type based on updated progress
-    const nextExerciseType = await determineExerciseType(updatedWord);
+    const nextExerciseType = await determineExerciseType(wordData);
     const shouldShowWordCard =
       !isCorrect ||
       (await isNewWordForUser(
-        updatedWord.learningStatus,
-        updatedWord.attempts,
-        updatedWord.correctAttempts,
+        wordData.learningStatus,
+        wordData.attempts,
+        wordData.correctAttempts,
       ));
 
     return {

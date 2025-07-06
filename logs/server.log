@@ -9661,3 +9661,26 @@ Unique constraint failed on the fields: (`word_id`,`part_of_speech`,`variant`) C
 [2025-07-06T14:13:12.104Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
 [2025-07-06T14:13:12.105Z] [info] getUserLists - Returning 1 processed user lists
 [2025-07-06T14:13:12.106Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-06T14:29:33.871Z] [info] Initializing server services...
+[2025-07-06T14:29:34.116Z] [info] Server services initialized successfully
+[2025-07-06T14:29:34.116Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T14:29:34.023Z] [info] Initializing server services...
+[2025-07-06T14:29:34.045Z] [info] Initializing server services...
+[2025-07-06T14:29:34.577Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T14:29:34.579Z] [info] Server services initialized successfully
+[2025-07-06T14:29:34.303Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T14:29:34.311Z] [info] Server services initialized successfully
+[2025-07-06T14:29:43.016Z] [info] Initializing server services...
+[2025-07-06T14:29:43.652Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T14:29:43.653Z] [info] Server services initialized successfully
+[2025-07-06T14:29:43.062Z] [info] Initializing server services...
+[2025-07-06T14:29:43.977Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T14:29:43.978Z] [info] Server services initialized successfully
+[2025-07-06T14:31:11.588Z] [info] Initializing server services...
+[2025-07-06T14:31:14.021Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T14:31:14.022Z] [info] Server services initialized successfully
+[2025-07-06T14:31:14.853Z] [info] Creating typing practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","difficultyLevel":3,"wordsCount":20,"userListId":null,"listId":null}
+[2025-07-06T14:31:14.852Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","difficultyLevel":3,"wordsCount":20,"userListId":null,"listId":null}
+[2025-07-06T14:31:14.980Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-06T14:31:14.980Z"}
+[2025-07-06T14:31:16.966Z] [info] Typing practice session created: ecf9de31-7d3c-4b7e-b413-db18a5aa869d Context: {"sessionId":"ecf9de31-7d3c-4b7e-b413-db18a5aa869d","wordsCount":20}
+[2025-07-06T14:31:17.028Z] [info] Created unified practice session ecf9de31-7d3c-4b7e-b413-db18a5aa869d Context: {"wordsCount":20,"exerciseDistribution":{"remember-translation":1,"choose-right-word":0,"make-up-word":3,"write-by-definition":9,"write-by-sound":7,"unified-practice":0,"typing":0}}

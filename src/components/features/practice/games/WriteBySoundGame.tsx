@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -84,13 +84,55 @@ export function WriteBySoundGame({
     setCharacterStates(states);
   }, [userInput, targetWord]);
 
+  // Create handleAudioPlay with useCallback to avoid dependency issues
+  const handleAudioPlay = useCallback(
+    (isInitial = false) => {
+      if (!word.audioUrl || isPlaying) return;
+
+      if (!isInitial) {
+        if (replayCount >= maxReplays) return;
+        setReplayCount((prev) => prev + 1);
+      }
+
+      setIsPlaying(true);
+
+      // Create new audio instance for each play
+      const audio = new Audio(word.audioUrl);
+
+      audio.onloadstart = () => setIsPlaying(true);
+      audio.oncanplaythrough = () => {
+        audio.play().catch(console.error);
+      };
+      audio.onended = () => setIsPlaying(false);
+      audio.onerror = () => {
+        console.error('Audio failed to load');
+        setIsPlaying(false);
+      };
+
+      // Cleanup
+      audioRef.current = audio;
+
+      if (onAudioPlay) {
+        onAudioPlay(word.wordText, word.audioUrl);
+      }
+    },
+    [
+      word.audioUrl,
+      word.wordText,
+      isPlaying,
+      replayCount,
+      maxReplays,
+      onAudioPlay,
+    ],
+  );
+
   // Auto-play initial audio
   useEffect(() => {
     if (autoPlayAudio && !hasPlayedInitial && word.audioUrl) {
       handleAudioPlay(true);
       setHasPlayedInitial(true);
     }
-  }, [autoPlayAudio, hasPlayedInitial, word.audioUrl]);
+  }, [autoPlayAudio, hasPlayedInitial, word.audioUrl, handleAudioPlay]);
 
   // Focus input after initial audio
   useEffect(() => {
@@ -101,37 +143,6 @@ export function WriteBySoundGame({
       return () => clearTimeout(timer);
     }
   }, [hasPlayedInitial, hasSubmitted]);
-
-  const handleAudioPlay = (isInitial = false) => {
-    if (!word.audioUrl || isPlaying) return;
-
-    if (!isInitial) {
-      if (replayCount >= maxReplays) return;
-      setReplayCount((prev) => prev + 1);
-    }
-
-    setIsPlaying(true);
-
-    // Create new audio instance for each play
-    const audio = new Audio(word.audioUrl);
-
-    audio.onloadstart = () => setIsPlaying(true);
-    audio.oncanplaythrough = () => {
-      audio.play().catch(console.error);
-    };
-    audio.onended = () => setIsPlaying(false);
-    audio.onerror = () => {
-      console.error('Audio failed to load');
-      setIsPlaying(false);
-    };
-
-    // Cleanup
-    audioRef.current = audio;
-
-    if (onAudioPlay) {
-      onAudioPlay(word.wordText, word.audioUrl);
-    }
-  };
 
   const handleSubmit = () => {
     if (hasSubmitted || userInput.trim() === '') return;

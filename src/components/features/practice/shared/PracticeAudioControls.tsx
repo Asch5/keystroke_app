@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
@@ -51,6 +51,38 @@ export function PracticeAudioControls({
   const [hasAutoPlayed, setHasAutoPlayed] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const handlePlay = useCallback(async () => {
+    if (!audioRef.current || !audioUrl) return;
+
+    // Check replay limit for write-by-sound game
+    if (maxReplays && replayCount >= maxReplays) {
+      toast.warning(`Maximum ${maxReplays} replays reached`);
+      return;
+    }
+
+    try {
+      await audioRef.current.play();
+      setIsPlaying(true);
+
+      // Increment replay count
+      const newCount = replayCount + 1;
+      setReplayCount(newCount);
+      onReplayCountChange?.(newCount);
+      onPlay?.();
+    } catch (error) {
+      console.error('Failed to play audio:', error);
+      toast.error('Failed to play audio');
+    }
+  }, [audioUrl, maxReplays, replayCount, onReplayCountChange, onPlay]);
+
+  const handlePause = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      onPause?.();
+    }
+  }, [onPause]);
 
   // Initialize audio element
   useEffect(() => {
@@ -106,45 +138,13 @@ export function PracticeAudioControls({
         audio.pause();
       };
     }
-  }, [audioUrl, volume, autoPlay, hasAutoPlayed]);
+  }, [audioUrl, volume, autoPlay, hasAutoPlayed, handlePlay, onPause]);
 
   // Reset auto-play flag when audio URL changes
   useEffect(() => {
     setHasAutoPlayed(false);
     setReplayCount(0);
   }, [audioUrl]);
-
-  const handlePlay = async () => {
-    if (!audioRef.current || !audioUrl) return;
-
-    // Check replay limit for write-by-sound game
-    if (maxReplays && replayCount >= maxReplays) {
-      toast.warning(`Maximum ${maxReplays} replays reached`);
-      return;
-    }
-
-    try {
-      await audioRef.current.play();
-      setIsPlaying(true);
-
-      // Increment replay count
-      const newCount = replayCount + 1;
-      setReplayCount(newCount);
-      onReplayCountChange?.(newCount);
-      onPlay?.();
-    } catch (error) {
-      console.error('Failed to play audio:', error);
-      toast.error('Failed to play audio');
-    }
-  };
-
-  const handlePause = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      onPause?.();
-    }
-  };
 
   const handleVolumeChange = (newVolume: number[]) => {
     // Ensure volumeValue is not undefined by providing a default value

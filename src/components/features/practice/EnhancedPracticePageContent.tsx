@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
@@ -35,14 +35,16 @@ export function EnhancedPracticePageContent() {
   const userListId = searchParams.get('userListId');
   const listId = searchParams.get('listId');
 
-  // Initialize session on component mount
-  useEffect(() => {
-    if (user) {
-      initializePracticeSession();
-    }
-  }, [user, practiceType, userListId, listId]);
+  /**
+   * Determine practice type for unified system
+   * This is where the word progression algorithm will be implemented
+   */
+  const determineUnifiedPracticeType = (): PracticeType => {
+    // Return unified practice type to enable the unified system
+    return 'unified-practice';
+  };
 
-  const initializePracticeSession = async () => {
+  const initializePracticeSession = useCallback(async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -85,16 +87,14 @@ export function EnhancedPracticePageContent() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, practiceType, userListId, listId]);
 
-  /**
-   * Determine practice type for unified system
-   * This is where the word progression algorithm will be implemented
-   */
-  const determineUnifiedPracticeType = (): PracticeType => {
-    // Return unified practice type to enable the unified system
-    return 'unified-practice';
-  };
+  // Initialize session on component mount
+  useEffect(() => {
+    if (user) {
+      initializePracticeSession();
+    }
+  }, [user, initializePracticeSession]);
 
   const handleWordComplete = (
     wordId: string,

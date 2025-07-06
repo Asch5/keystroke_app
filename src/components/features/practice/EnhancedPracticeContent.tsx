@@ -30,7 +30,7 @@ import type {
   EnhancedPracticeSession,
   UnifiedPracticeWord,
 } from '@/core/domains/user/actions/practice-actions';
-import { PRACTICE_TYPE_CONFIGS } from '@/core/domains/user/actions/practice-actions';
+import { getPracticeTypeConfigs } from '@/core/domains/user/actions/practice-actions';
 
 interface EnhancedPracticeContentProps {
   session: EnhancedPracticeSession;
@@ -76,9 +76,46 @@ export function EnhancedPracticeContent({
   });
   const [error, setError] = useState<string | null>(null);
 
+  // Define a proper type for practice configs
+  type PracticeConfigsType = Record<
+    PracticeType,
+    {
+      difficultyLevel: number;
+      maxAttempts: number;
+      autoAdvance: boolean;
+      requiresAudio: boolean;
+      requiresInput: boolean;
+      optionCount?: number;
+      maxAttemptsPhrase?: number;
+      maxAudioReplays?: number;
+    }
+  >;
+
+  const [practiceConfigs, setPracticeConfigs] =
+    useState<PracticeConfigsType | null>(null);
+
   const currentWord = session.words[currentWordIndex];
   const isLastWord = currentWordIndex >= session.words.length - 1;
-  const practiceConfig = PRACTICE_TYPE_CONFIGS[session.practiceType];
+
+  // Fetch practice configs on component mount
+  useEffect(() => {
+    const fetchConfigs = async () => {
+      try {
+        const configs = await getPracticeTypeConfigs();
+        setPracticeConfigs(configs as PracticeConfigsType);
+      } catch (err) {
+        console.error('Failed to fetch practice configs:', err);
+        setError('Failed to load practice configuration');
+      }
+    };
+
+    fetchConfigs();
+  }, []);
+
+  // Use the session's config directly if practiceConfigs is not loaded yet
+  const practiceConfig = practiceConfigs
+    ? practiceConfigs[session.practiceType]
+    : session.config;
 
   // Determine initial phase based on word familiarity
   useEffect(() => {
@@ -155,7 +192,8 @@ export function EnhancedPracticeContent({
   }, []);
 
   const renderPracticeGame = () => {
-    if (!currentWord || currentPhase !== 'game') return null;
+    if (!currentWord || currentPhase !== 'game' || !practiceConfigs)
+      return null;
 
     // Ensure word has required properties for game components
     const wordForGame = {
@@ -212,7 +250,7 @@ export function EnhancedPracticeContent({
         );
 
       case 'write-by-definition': {
-        const nextFn = PRACTICE_TYPE_CONFIGS[effectivePracticeType].autoAdvance
+        const nextFn = practiceConfigs[effectivePracticeType].autoAdvance
           ? () => {} // Empty function if auto-advance
           : handleGameNext;
 
@@ -228,7 +266,7 @@ export function EnhancedPracticeContent({
       }
 
       case 'write-by-sound': {
-        const nextFn = PRACTICE_TYPE_CONFIGS[effectivePracticeType].autoAdvance
+        const nextFn = practiceConfigs[effectivePracticeType].autoAdvance
           ? () => {} // Empty function if auto-advance
           : handleGameNext;
 

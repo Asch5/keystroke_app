@@ -1,383 +1,315 @@
-# Enhanced Practice System Design Document
+# Keystroke App Practice System Design
 
 ## Overview
 
-This document outlines the complete refactor and enhancement of the Keystroke App's practice system. The goal is to expand from the current typing practice to a comprehensive 5-practice-type system with universal components, enhanced user workflows, and sophisticated game mechanics.
+The Keystroke App practice system is designed to help users learn vocabulary through a variety of interactive exercises. The system has been comprehensively refactored to provide both a unified practice experience and a legacy typing practice mode, with extensive modularization following Cursor Rules (components under 400 lines).
 
-## Current System Assessment
+## Practice Types
 
-### Strengths
+The system includes the following exercise types:
 
-- **Modular Architecture**: Well-separated concerns with focused components (<400 lines each)
-- **Comprehensive State Management**: useTypingPracticeState hook handles all business logic
-- **Backend Integration**: Robust session management with learning analytics
-- **Audio/Image Support**: Database-only audio files and authenticated image endpoints
-- **Dynamic Language System**: User.baseLanguageCode as single source of truth
-- **Type Safety**: Internal type system eliminating Prisma client bundling issues
+1. **Remember Translation** (Level 1) - Simple recognition exercise showing a word and its translation
+2. **Choose Right Word** (Level 2) - Multiple choice exercise with 4 options
+3. **Make Up Word** (Level 3) - Drag and drop letters to form the correct word
+4. **Write by Definition** (Level 4) - Type the word based on its definition
+5. **Write by Sound** (Level 5) - Type the word based on its pronunciation
 
-### Areas for Enhancement
+## Practice System Architecture
 
-- **Practice Variety**: Only typing practice available, need 4 more practice types
-- **User Experience**: Need universal WordCard system for consistent word review
-- **Game Mechanics**: Sophisticated feedback systems and auto-advance workflows
-- **Difficulty System**: Enhanced evaluation using practice type multipliers
+The practice system now supports two main modes:
 
-## Practice Types Specification
+### 1. Unified Practice System (Enhanced Practice)
 
-### 1. Choose the Right Word (Difficulty Level 2)
+**Location**: `/dashboard/practice/enhanced`
 
-**Concept**: Multiple choice translation selection
-**Mechanics**:
+**Main Components**:
 
-- Display definition/translation in user's base language
-- Show 4 options: 1 correct target word + 3 distractors
-- Single attempt per word
-- Auto-advance to WordCard after selection
-- Immediate visual feedback (green/red highlighting)
-- Audio pronunciation of correct answer
+- `EnhancedPracticeContent.tsx` (177 lines) - Main orchestrator for unified practice
+- `PracticeGameRenderer.tsx` (153 lines) - Renders appropriate game components
+- `PracticeSessionSummary.tsx` (81 lines) - Session completion summary
+- `PracticeWordCardRenderer.tsx` (37 lines) - Word card display
 
-**UI Components**:
+**State Management**:
 
-- Question display area with definition/translation
-- 4-option button grid with hover states
-- Visual feedback animations
-- Auto-advance progress indicator
+- `usePracticeGameState.ts` (180 lines) - Unified practice state management
 
-### 2. Make Up the Word (Difficulty Level 3)
-
-**Concept**: Character-by-character word assembly
-**Mechanics**:
-
-- Show definition/translation and character slots for target word
-- Provide scrambled character pool (correct letters + distractors)
-- Click/drag characters into slots
-- 3 attempts for single words, 6 attempts for phrases
-- Wrong character placement shows visual feedback (shake/red flash)
-- Auto-advance to WordCard after completion/attempts exhausted
-
-**UI Components**:
-
-- Character pool with draggable/clickable letters
-- Target word slots with drop zones
-- Attempt counter and visual feedback system
-- Character validation and error animations
-
-### 3. Do You Remember the Translation (Difficulty Level 1)
-
-**Concept**: Simple recognition practice
-**Mechanics**:
-
-- Show target word with phonetic pronunciation
-- Present "I Remember" / "Don't Remember" buttons
-- Immediate feedback with actual translation reveal
-- No time pressure, self-assessment based
-- Auto-advance to WordCard for review
-
-**UI Components**:
-
-- Clean word presentation with large typography
-- Phonetic display
-- Two prominent action buttons
-- Translation reveal animation
-- Progress tracking
-
-### 4. Write the Word by Definition (Difficulty Level 4)
-
-**Concept**: Full word typing from definition
-**Mechanics**:
-
-- Display definition/translation in base language
-- Free-form text input for target word
-- Real-time character validation (like current typing practice)
-- Single attempt with partial credit for close matches
-- Optional on-screen keyboard toggle
-- Auto-advance to WordCard after submission
-
-**UI Components**:
-
-- Definition display area
-- Text input with character-by-character feedback
-- Optional virtual keyboard component
-- Submit button and validation feedback
-- Progress indicators
-
-### 5. Write the Word by Sound (Difficulty Level 4)
-
-**Concept**: Audio-only word typing
-**Mechanics**:
-
-- Play audio pronunciation (database files only)
-- Text input for typing the heard word
-- Replay button for additional listens (max 3 plays)
-- Real-time character validation
-- Auto-advance to WordCard after submission
-
-**UI Components**:
-
-- Audio control interface with waveform visualization
-- Play/replay buttons with usage counter
-- Text input with typing feedback
-- Audio progress indicator
-- Volume controls
-
-## Universal Components Architecture
-
-### WordCard Component
-
-**Purpose**: Consistent word review experience across all practice types
 **Features**:
 
-- Target word display with phonetic notation
-- Definition in user's base language
-- Example sentences with translations
-- Audio pronunciation controls
-- Associated image display (if available)
-- "Next" button for manual progression
-- Learning status indicators
+- Automatically selects the most appropriate exercise type based on word familiarity and learning progress
+- Shows WordCard first for new words to introduce them before testing
+- Starts with exercises directly for familiar words
+- Dynamically adjusts difficulty based on user performance
 
-**Design Pattern**:
+### 2. Legacy Typing Practice System
 
-```
-[Target Word] [Audio Button]
-[Phonetic Pronunciation]
-[Definition/Translation]
-[Example Sentences]
-[Associated Image]
-[Next Button]
-```
+**Location**: `/dashboard/practice/typing`
 
-### UniversalProgressIndicator Component
+**Main Components**:
 
-**Purpose**: Consistent progress tracking across all practice types
+- `TypingPracticeContent.tsx` (192 lines) - Main typing practice orchestrator
+- `TypingPracticeHeader.tsx` (103 lines) - Session statistics and progress
+- `TypingWordInput.tsx` (107 lines) - Main typing interface (refactored from 493 lines)
+- `TypingSessionSummary.tsx` (73 lines) - Results display
+- `TypingGettingStarted.tsx` (32 lines) - Welcome screen
+
+**Modular Input Components** (refactored from TypingWordInput):
+
+- `TypingWordDisplay.tsx` (95 lines) - Word display with images and debug info
+- `TypingInputField.tsx` (73 lines) - OTP-style input field
+- `TypingResultFeedback.tsx` (79 lines) - Result feedback and word comparison
+- `TypingControls.tsx` (66 lines) - Control buttons
+- `TypingAudioButton.tsx` (67 lines) - Audio functionality
+
+**State Management Hooks** (refactored from useTypingPracticeState):
+
+- `useTypingPracticeState.ts` (153 lines) - Main orchestrator hook (refactored from 440 lines)
+- `useTypingSessionManager.ts` (273 lines) - Session creation, completion, and state
+- `useTypingWordValidator.ts` (175 lines) - Word validation and result tracking
+- `useTypingInputManager.ts` (71 lines) - Input handling and auto-submit
+- `useTypingInputState.ts` (204 lines) - Typing input state management
+
+## Game Components Architecture
+
+### Modular Game Structure
+
+All game components have been refactored to follow the modular pattern:
+
+#### Write by Sound Game (Level 5)
+
+**Main Component**: `WriteBySoundGame.tsx` (111 lines) - Reduced from 450 lines
+
+**Modular Components**:
+
+- `useWriteBySoundState.ts` (203 lines) - Game state management
+- `WriteBySoundHeader.tsx` (40 lines) - Game header with instructions
+- `WriteBySoundAudioControls.tsx` (85 lines) - Audio controls with replay functionality
+- `WriteBySoundHint.tsx` (25 lines) - Word length hint display
+- `WriteBySoundInput.tsx` (95 lines) - Input section with character feedback
+- `WriteBySoundFeedback.tsx` (85 lines) - Feedback section with results
+
+#### Write by Definition Game (Level 4)
+
+**Main Component**: `WriteByDefinitionGame.tsx` (96 lines) - Reduced from 416 lines
+
+**Modular Components**:
+
+- `useWriteByDefinitionState.ts` (220 lines) - Game state management
+- `WriteByDefinitionHeader.tsx` (106 lines) - Definition display and controls
+- `WriteByDefinitionInput.tsx` (103 lines) - Input field with character feedback
+- `WriteByDefinitionFeedback.tsx` (88 lines) - Results display with audio controls
+- `WriteByDefinitionKeyboard.tsx` (64 lines) - Virtual keyboard component
+
+#### Other Games
+
+- `RememberTranslationGame.tsx` (241 lines) - Level 1 recognition exercise
+- `ChooseRightWordGame.tsx` (221 lines) - Level 2 multiple choice
+- `MakeUpWordGame.tsx` (370 lines) - Level 3 drag and drop (needs refactoring)
+
+## Practice Settings Architecture
+
+### Modular Settings System
+
+**Main Component**: `TypingPracticeSettings.tsx` (165 lines) - Reduced from 487 lines
+
+**Modular Settings Components**:
+
+- `SessionConfigurationSettings.tsx` (98 lines) - Words count and difficulty
+- `TimeSettings.tsx` (71 lines) - Time limit toggle and slider
+- `AudioSoundSettings.tsx` (112 lines) - Audio and sound options
+- `BehaviorDisplaySettings.tsx` (98 lines) - Behavior and display settings
+- `SettingsSummary.tsx` (57 lines) - Settings summary display
+
+**State Management**:
+
+- `useTypingPracticeSettings.ts` (110 lines) - Settings state management
+
+## Practice Overview System
+
+### List Selection and Practice Type Choice
+
+**Main Component**: `PracticeOverviewContent.tsx` (164 lines) - Reduced from 403 lines
+
+**Modular Components**:
+
+- `PracticeTypeCard.tsx` (94 lines) - Individual practice type display
+- `VocabularyListSelector.tsx` (210 lines) - Vocabulary list selection with details
+
 **Features**:
 
-- Current word position (X of Y)
-- Progress bar with completion percentage
-- Session type badge
-- Time elapsed (if applicable)
-- Accuracy indicator
+- Support for all user vocabulary
+- User's custom lists and inherited public lists
+- Difficulty level filtering and word count display
+- Practice type selection with feature descriptions
 
-### PracticeGameContainer Component
+## Technical Implementation
 
-**Purpose**: Wrapper for all practice game components
-**Features**:
+### Refactoring Achievements
 
-- Consistent padding and layout
-- Error boundary for game failures
-- Loading states
-- Universal keyboard shortcuts
-- Accessibility support
+The practice system underwent comprehensive refactoring to comply with Cursor Rules:
 
-## Enhanced User Workflows
+| Component                       | Original Lines | Refactored Lines | Reduction | New Components Created |
+| ------------------------------- | -------------- | ---------------- | --------- | ---------------------- |
+| **EnhancedPracticeContent.tsx** | 461            | 177              | 62%       | 4 components           |
+| **TypingWordInput.tsx**         | 493            | 107              | 78%       | 6 components           |
+| **TypingPracticeSettings.tsx**  | 487            | 165              | 66%       | 5 components           |
+| **WriteBySoundGame.tsx**        | 450            | 111              | 75%       | 6 components           |
+| **useTypingPracticeState.ts**   | 440            | 153              | 65%       | 3 hooks                |
+| **WriteByDefinitionGame.tsx**   | 416            | 96               | 77%       | 5 components           |
+| **PracticeOverviewContent.tsx** | 403            | 164              | 59%       | 2 components           |
 
-### New vs Familiar Word Logic
+**Total Impact**: From 3,150 lines to 969 lines (**69% overall reduction**)
 
-```
-Word Assessment:
-├── New Word (first encounter)
-│   └── Show WordCard FIRST → Then Practice Game
-└── Familiar Word (seen before)
-    └── Practice Game FIRST → Auto-advance to WordCard
-```
+### Word Progression Algorithm
 
-### Auto-Advance Pattern
+The system uses a sophisticated algorithm (`determineExerciseType`) to select the appropriate exercise based on:
 
-- **In Games**: No "Next" buttons - automatic progression to WordCard
-- **In WordCard**: Manual "Next" button for user-controlled review time
-- **Audio Integration**: Automatic pronunciation after game completion
+- Word familiarity (attempts, learning status)
+- Success rate (correct attempts / total attempts)
+- Audio availability (for write-by-sound exercises)
+- User preferences (can skip easier exercises)
 
-### Sound Integration Strategy
+### Manual Navigation
 
-**Success Sounds** (database stored):
+Exercises 4 and 5 (Write by Definition and Write by Sound) now include "Next" buttons instead of auto-advancing, giving users control over their learning pace.
 
-- Correct answer: Cheering/celebration sound
-- Incorrect answer: Gentle error sound (not harsh)
-- Session completion: Achievement sound
+### Server Actions
 
-**Word Audio** (database stored):
+The practice system uses Next.js server actions for database operations with proper async/await patterns:
 
-- Automatic playback after game completion
-- Manual replay controls in WordCard
-- Volume controls and mute options
+- `createUnifiedPracticeSession` - Creates a practice session with dynamic exercise selection
+- `updateWordProgressAndSelectNext` - Updates word progress and determines the next exercise type
+- `determineExerciseType` - Selects the appropriate exercise based on learning metrics
+- `getPracticeTypeConfigs` - Provides configuration for each practice type
 
-## Enhanced Backend Requirements
+## Component Architecture Principles
 
-### Session Management Extensions
+### Single Responsibility Principle
 
-```typescript
-interface EnhancedPracticeSession {
-  sessionId: string;
-  practiceType:
-    | 'typing'
-    | 'choose-right-word'
-    | 'make-up-word'
-    | 'remember-translation'
-    | 'write-by-definition'
-    | 'write-by-sound';
-  words: PracticeWord[];
-  difficultyLevel: number;
-  currentWordIndex: number;
-  settings: PracticeSettings;
-}
+Each component now has a focused, single responsibility:
 
-interface PracticeWord {
-  // Existing fields...
-  isNewWord: boolean; // Determines workflow pattern
-  gameAttempts: number; // Tracks attempts in current game
-  maxAttempts: number; // Based on practice type
-  characterPool?: string[]; // For make-up-word game
-  distractorOptions?: string[]; // For choose-right-word game
-}
-```
+- **Game Components**: Handle specific exercise types
+- **State Hooks**: Manage specific aspects of state (session, validation, input)
+- **UI Components**: Handle specific UI sections (headers, inputs, feedback)
 
-### Difficulty Evaluation System
+### Reusability and Composition
 
-```typescript
-const PRACTICE_TYPE_MULTIPLIERS = {
-  'remember-translation': 0.5, // Difficulty 1
-  'choose-right-word': 1.0, // Difficulty 2
-  'make-up-word': 1.5, // Difficulty 3
-  'write-by-definition': 2.0, // Difficulty 4
-  'write-by-sound': 2.5, // Difficulty 4+
-  typing: 1.2, // Current system
-};
-```
-
-### Audio Management Enhancement
-
-- Extend existing AudioService for game-specific sounds
-- Implement audio preloading for smooth experience
-- Add audio queue management for rapid-fire games
-
-## Implementation Architecture
-
-### Directory Structure
-
-```
-src/components/features/practice/
-├── shared/
-│   ├── WordCard.tsx
-│   ├── UniversalProgressIndicator.tsx
-│   ├── PracticeGameContainer.tsx
-│   └── PracticeAudioControls.tsx
-├── games/
-│   ├── ChooseRightWordGame.tsx
-│   ├── MakeUpWordGame.tsx
-│   ├── RememberTranslationGame.tsx
-│   ├── WriteByDefinitionGame.tsx
-│   └── WriteBySound Game.tsx
-├── hooks/
-│   ├── useGameState.ts
-│   ├── useWordCardState.ts
-│   ├── usePracticeAudio.ts
-│   └── useGameSettings.ts
-└── EnhancedPracticeContent.tsx
-```
-
-### Component Hierarchy
-
-```
-EnhancedPracticeContent
-├── UniversalProgressIndicator
-├── PracticeGameContainer
-│   ├── [Specific Game Component]
-│   └── PracticeAudioControls
-├── WordCard
-│   ├── PracticeAudioControls
-│   └── Next Button
-└── PracticeSettings
-```
-
-## State Management Strategy
-
-### Central State Hook
-
-```typescript
-interface EnhancedPracticeState {
-  session: EnhancedPracticeSession | null;
-  currentPhase: 'game' | 'word-card' | 'summary';
-  gameState: GameSpecificState;
-  wordCardState: WordCardState;
-  audioState: AudioState;
-  progressState: ProgressState;
-}
-```
-
-### Game-Specific State Interfaces
-
-Each practice type will have its own state interface while sharing common patterns through the universal state system.
-
-## Accessibility & Performance
-
-### Accessibility Features
-
-- Full keyboard navigation for all games
-- Screen reader support with descriptive labels
-- High contrast mode compatibility
-- Focus management across components
-- Audio controls with keyboard shortcuts
+- Components are designed to be reusable across different contexts
+- Composition over inheritance approach
+- Proper prop interfaces for flexible usage
 
 ### Performance Optimizations
 
-- Component memoization for game components
-- Audio preloading and caching
-- Image lazy loading with proper fallbacks
-- Virtual scrolling for large option lists
-- Debounced input validation
+- React.memo applied where beneficial
+- useCallback and useMemo for expensive operations
+- Proper dependency arrays in useEffect hooks
 
-## Testing Strategy
+### TypeScript Safety
 
-### Component Testing (Co-located)
+- Comprehensive type definitions for all components
+- Proper interface definitions for props and state
+- Type-safe prop passing with conditional spreading
 
-- Individual game component tests
-- WordCard interaction testing
-- Audio integration testing
-- State management hook testing
+## Testing Architecture
 
-### Integration Testing (Server-side)
+Following Cursor Rules, tests are co-located with components:
 
-- Complete practice session workflows
-- Database session management
-- Audio file serving and management
-- Learning analytics accuracy
+### Current Test Coverage
 
-## Migration Strategy
+**Practice Components** - ✅ COMPLETE
 
-### Phase 1: Universal Components
+- `useTypingPracticeState.test.ts` - State management and core functionality
+- `TypingWordInput.test.tsx` - Enter key behavior and user interactions
+- `TypingPracticeContent.test.tsx` - Full workflow integration tests
+- `test-utils.ts` - Shared testing utilities and mock data
 
-1. Create WordCard component
-2. Implement UniversalProgressIndicator
-3. Build enhanced state management hooks
-4. Update existing typing practice to use new components
+**Critical functionality tested**:
 
-### Phase 2: Game Implementation
+- ✅ Skip functionality shows correct word
+- ✅ Word progression prevents getting stuck
+- ✅ Enter key behavior: skip → submit → next
+- ✅ Auto-submit settings integration
+- ✅ Audio playback after skip/submit
+- ✅ Settings persistence and application
 
-1. Choose the Right Word game (simplest)
-2. Do You Remember the Translation game
-3. Make Up the Word game
-4. Write by Definition/Sound games (most complex)
+## Technical Fixes
 
-### Phase 3: Integration & Polish
+### 'use server' Compliance
 
-1. Enhanced audio integration
-2. Difficulty evaluation system
-3. Comprehensive testing
-4. Performance optimization
+Fixed the 'use server' directive requirements by:
 
-## Success Metrics
+- Converting exported objects (PRACTICE_TYPE_CONFIGS, PRACTICE_TYPE_MULTIPLIERS) to async functions
+- Creating internal constants for use within the file
+- Using proper async/await patterns for all exported functions
 
-### User Experience Metrics
+### React Hook Dependencies
 
-- Session completion rates across practice types
-- User engagement time per practice type
-- Preferred practice type adoption rates
-- Learning effectiveness per practice type
+Fixed missing dependencies in useEffect hooks:
 
-### Technical Metrics
+- Added proper dependency arrays to useEffect hooks
+- Used useCallback for functions referenced in useEffect dependencies
+- Restructured component code to avoid dependency cycles
 
-- Component render performance (<16ms)
-- Audio loading times (<1s)
-- Error rates across games
-- Memory usage optimization
+### TypeScript Type Safety
 
-This design provides a comprehensive foundation for implementing the enhanced practice system while maintaining the app's architectural excellence and user experience standards.
+Enhanced type safety throughout the practice system:
+
+- Added proper type definitions for practice configs
+- Fixed LearningStatus enum comparisons
+- Added null checks and default values
+- Used proper TypeScript techniques for indexing objects with string keys
+- Added comprehensive interface definitions for all components
+
+## User Experience
+
+The practice system now provides:
+
+1. **Adaptive Learning** - Exercise difficulty matches user proficiency
+2. **Proper Introduction** - New words are properly introduced before testing
+3. **User Control** - Manual navigation through exercises with Next buttons
+4. **Comprehensive Feedback** - Visual and audio feedback for learning reinforcement
+5. **Progress Tracking** - Session progress with accuracy and score metrics
+6. **Modular Architecture** - Maintainable, testable, and reusable components
+
+## Future Enhancements
+
+Potential future improvements include:
+
+1. **Complete Game Refactoring** - Refactor remaining games (MakeUpWordGame.tsx at 370 lines)
+2. **Spaced Repetition** - Implement SRS algorithm for optimal review scheduling
+3. **Performance Analytics** - Track and visualize learning patterns over time
+4. **Personalized Difficulty** - Further customize exercise selection based on user preferences
+5. **Additional Exercise Types** - Expand with more interactive learning activities
+6. **Mobile Optimization** - Enhanced touch interactions for mobile users
+7. **Advanced Testing** - Expand test coverage to all game components and hooks
+
+## Folder Structure
+
+```
+src/components/features/practice/
+├── games/
+│   ├── write-by-sound/          # WriteBySoundGame modular components
+│   ├── write-by-definition/     # WriteByDefinitionGame modular components
+│   ├── WriteBySoundGame.tsx     # Main game component (111 lines)
+│   ├── WriteByDefinitionGame.tsx # Main game component (96 lines)
+│   ├── RememberTranslationGame.tsx # Level 1 game (241 lines)
+│   ├── ChooseRightWordGame.tsx  # Level 2 game (221 lines)
+│   └── MakeUpWordGame.tsx       # Level 3 game (370 lines - needs refactoring)
+├── overview/                    # PracticeOverviewContent modular components
+├── settings/                    # TypingPracticeSettings modular components
+├── hooks/                       # Refactored practice hooks
+│   ├── useTypingPracticeState.ts      # Main orchestrator (153 lines)
+│   ├── useTypingSessionManager.ts     # Session management (273 lines)
+│   ├── useTypingWordValidator.ts      # Word validation (175 lines)
+│   ├── useTypingInputManager.ts       # Input handling (71 lines)
+│   ├── usePracticeGameState.ts        # Unified practice state (180 lines)
+│   └── useTypingInputState.ts         # Typing input state (204 lines)
+├── shared/                      # Shared practice components
+├── EnhancedPracticeContent.tsx  # Unified practice orchestrator (177 lines)
+├── PracticeOverviewContent.tsx  # Practice selection (164 lines)
+├── TypingPracticeContent.tsx    # Legacy typing practice (192 lines)
+├── TypingWordInput.tsx          # Main typing interface (107 lines)
+├── TypingPracticeSettings.tsx   # Settings interface (165 lines)
+└── [other typing components]    # Modular typing components
+```
+
+This architecture ensures maintainability, testability, and adherence to modern React development practices while providing a comprehensive vocabulary learning experience.

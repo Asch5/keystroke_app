@@ -9684,3 +9684,86 @@ Unique constraint failed on the fields: (`word_id`,`part_of_speech`,`variant`) C
 [2025-07-06T14:31:14.980Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-06T14:31:14.980Z"}
 [2025-07-06T14:31:16.966Z] [info] Typing practice session created: ecf9de31-7d3c-4b7e-b413-db18a5aa869d Context: {"sessionId":"ecf9de31-7d3c-4b7e-b413-db18a5aa869d","wordsCount":20}
 [2025-07-06T14:31:17.028Z] [info] Created unified practice session ecf9de31-7d3c-4b7e-b413-db18a5aa869d Context: {"wordsCount":20,"exerciseDistribution":{"remember-translation":1,"choose-right-word":0,"make-up-word":3,"write-by-definition":9,"write-by-sound":7,"unified-practice":0,"typing":0}}
+[2025-07-06T15:34:37.515Z] [info] Initializing server services...
+[2025-07-06T15:34:37.635Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:34:37.052Z] [info] Initializing server services...
+[2025-07-06T15:34:37.671Z] [info] Server services initialized successfully
+[2025-07-06T15:34:37.671Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:34:37.635Z] [info] Server services initialized successfully
+[2025-07-06T15:34:37.736Z] [info] Initializing server services...
+[2025-07-06T15:34:38.914Z] [info] Server services initialized successfully
+[2025-07-06T15:34:38.904Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:34:49.860Z] [info] Initializing server services...
+[2025-07-06T15:34:50.896Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:34:50.896Z] [info] Server services initialized successfully
+[2025-07-06T15:34:49.881Z] [info] Initializing server services...
+[2025-07-06T15:34:51.135Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:34:51.148Z] [info] Server services initialized successfully
+[2025-07-06T15:39:01.736Z] [info] Initializing server services...
+[2025-07-06T15:39:01.965Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:39:01.965Z] [info] Server services initialized successfully
+[2025-07-06T15:39:01.748Z] [info] Initializing server services...
+[2025-07-06T15:39:01.980Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:39:01.980Z] [info] Server services initialized successfully
+[2025-07-06T15:39:01.844Z] [info] Initializing server services...
+[2025-07-06T15:39:02.901Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:39:02.901Z] [info] Server services initialized successfully
+[2025-07-06T15:39:22.896Z] [info] Initializing server services...
+[2025-07-06T15:39:24.810Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:39:24.810Z] [info] Server services initialized successfully
+[2025-07-06T15:39:23.579Z] [info] Initializing server services...
+[2025-07-06T15:39:25.327Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:39:25.327Z] [info] Server services initialized successfully
+[2025-07-06T15:46:51.816Z] [info] Initializing server services...
+[2025-07-06T15:46:51.872Z] [info] Initializing server services...
+[2025-07-06T15:46:52.098Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:46:52.098Z] [info] Server services initialized successfully
+[2025-07-06T15:46:51.982Z] [info] Initializing server services...
+[2025-07-06T15:46:52.205Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:46:52.205Z] [info] Server services initialized successfully
+[2025-07-06T15:46:52.705Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:46:52.707Z] [info] Server services initialized successfully
+[2025-07-06T15:47:01.838Z] [info] Initializing server services...
+[2025-07-06T15:47:02.260Z] [info] Server services initialized successfully
+[2025-07-06T15:47:02.260Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:47:01.815Z] [info] Initializing server services...
+[2025-07-06T15:47:03.184Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:47:03.184Z] [info] Server services initialized successfully
+[2025-07-06T15:52:04.221Z] [info] Initializing server services...
+[2025-07-06T15:52:04.342Z] [info] Server services initialized successfully
+[2025-07-06T15:52:04.342Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:52:04.374Z] [info] Initializing server services...
+[2025-07-06T15:52:04.778Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:52:04.778Z] [info] Server services initialized successfully
+[2025-07-06T15:52:04.531Z] [info] Initializing server services...
+[2025-07-06T15:52:05.412Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:52:05.412Z] [info] Server services initialized successfully
+[2025-07-06T15:52:16.497Z] [info] Initializing server services...
+[2025-07-06T15:52:16.592Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T15:52:16.592Z] [info] Server services initialized successfully
+[2025-07-06T15:52:16.292Z] [info] Initializing server services...
+[2025-07-06T15:52:17.404Z] [info] Server services initialized successfully
+[2025-07-06T15:52:17.403Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T16:02:55.917Z] [info] Initializing server services...
+[2025-07-06T16:02:55.870Z] [info] Initializing server services...
+[2025-07-06T16:02:56.075Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T16:02:56.076Z] [info] Server services initialized successfully
+[2025-07-06T16:02:56.052Z] [info] Initializing server services...
+[2025-07-06T16:02:56.182Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T16:02:56.182Z] [info] Server services initialized successfully
+[2025-07-06T16:02:56.271Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T16:02:56.271Z] [info] Server services initialized successfully
+[2025-07-06T16:03:03.410Z] [info] Initializing server services...
+[2025-07-06T16:03:03.062Z] [info] Initializing server services...
+[2025-07-06T16:03:03.528Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T16:03:03.528Z] [info] Server services initialized successfully
+[2025-07-06T16:03:03.440Z] [info] Server services initialized successfully
+[2025-07-06T16:03:03.440Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T16:03:32.212Z] [info] Initializing server services...
+[2025-07-06T16:03:34.192Z] [info] Server services initialized successfully
+[2025-07-06T16:03:34.192Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-06T16:03:34.741Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","difficultyLevel":3,"wordsCount":20,"userListId":null,"listId":null}
+[2025-07-06T16:03:34.742Z] [info] Creating typing practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","difficultyLevel":3,"wordsCount":20,"userListId":null,"listId":null}
+[2025-07-06T16:03:34.979Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-06T16:03:34.979Z"}
+[2025-07-06T16:03:37.292Z] [info] Typing practice session created: 9fa25045-f433-468a-962d-f8e33e8aa388 Context: {"sessionId":"9fa25045-f433-468a-962d-f8e33e8aa388","wordsCount":20}
+[2025-07-06T16:03:37.351Z] [info] Created unified practice session 9fa25045-f433-468a-962d-f8e33e8aa388 Context: {"wordsCount":20,"exerciseDistribution":{"remember-translation":1,"choose-right-word":0,"make-up-word":3,"write-by-definition":6,"write-by-sound":10,"unified-practice":0,"typing":0}}

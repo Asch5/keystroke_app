@@ -1,23 +1,36 @@
 // Legacy typing practice components
 export { TypingPracticeContent } from './TypingPracticeContent';
-export { TypingWordInput } from './TypingWordInput';
-export { TypingPracticeSettings } from './TypingPracticeSettings';
 export { TypingSessionSummary } from './TypingSessionSummary';
 export { TypingPracticeHeader } from './TypingPracticeHeader';
 export { TypingGettingStarted } from './TypingGettingStarted';
 
-// Enhanced practice system components
+// Main practice components
 export { EnhancedPracticeContent } from './EnhancedPracticeContent';
 export { EnhancedPracticePageContent } from './EnhancedPracticePageContent';
+export { PracticeOverviewContent } from './PracticeOverviewContent';
+export { TypingWordInput } from './TypingWordInput';
+export { TypingPracticeSettings } from './TypingPracticeSettings';
 
-// Universal components
-export * from './shared';
+// Enhanced practice components
+export { PracticeGameRenderer } from './PracticeGameRenderer';
+export { PracticeSessionSummary } from './PracticeSessionSummary';
+export { PracticeWordCardRenderer } from './PracticeWordCardRenderer';
 
-// Practice games
+// Typing components
+export { TypingWordDisplay } from './TypingWordDisplay';
+export { TypingInputField } from './TypingInputField';
+export { TypingResultFeedback } from './TypingResultFeedback';
+export { TypingControls } from './TypingControls';
+export { TypingAudioButton } from './TypingAudioButton';
+
+// Settings components
+export * from './settings';
+
+// Games
 export * from './games';
 
-// Practice overview
-export { PracticeOverviewContent } from './PracticeOverviewContent';
+// Shared components
+export * from './shared';
 
 // Hooks
 export * from './hooks';

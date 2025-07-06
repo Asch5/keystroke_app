@@ -666,4 +666,37 @@ pnpm test:coverage    # With coverage report
 - **Integration Testing**: Complete workflows and component interactions
 - **Mobile-First**: Responsive design and touch interactions
 
-See `src/components/TESTING.md` for detailed testing guidelines and patterns.
+See `documentation/TESTING.md` for detailed testing guidelines and patterns.
+
+### Practice Components (`/features/practice`)
+
+The practice system supports multiple types of vocabulary practice exercises:
+
+**Enhanced Practice System:**
+
+- `EnhancedPracticeContent.tsx` - Main orchestrator for 5-practice-type system (366 lines)
+- **Universal Components** (`/features/practice/shared/`):
+  - `WordCard.tsx` - Universal word review component (204 lines)
+  - `UniversalProgressIndicator.tsx` - Session progress tracking component (198 lines)
+  - `PracticeGameContainer.tsx` - Wrapper with error boundaries and accessibility (163 lines)
+  - `PracticeAudioControls.tsx` - Enhanced audio playback controls (292 lines)
+- **Practice Games** (`/features/practice/games/`):
+  - `ChooseRightWordGame.tsx` - Multiple choice translation selection (221 lines)
+  - `RememberTranslationGame.tsx` - Self-assessment recognition practice (241 lines)
+  - `MakeUpWordGame.tsx` - Character-by-character assembly game (366 lines)
+  - `WriteByDefinitionGame.tsx` - Full word typing from definition (400 lines)
+  - `WriteBySoundGame.tsx` - Audio-only typing practice (400 lines)
+
+**Practice Type Support:**
+
+- **Choose the Right Word** (Difficulty 2) - Multiple choice translation selection
+- **Make Up the Word** (Difficulty 3) - Character-by-character assembly
+- **Do You Remember the Translation** (Difficulty 1) - Simple recognition
+- **Write the Word by Definition** (Difficulty 4) - Full word typing from definition
+- **Write the Word by Sound** (Difficulty 4) - Audio-only typing
+
+**Legacy Components:**
+
+- `TypingPracticeContent.tsx` - Original typing practice orchestrator (192 lines)
+- `TypingWordInput.tsx` - Character input interface (493 lines)
+- `TypingPracticeSettings.tsx` - Settings management (487 lines)

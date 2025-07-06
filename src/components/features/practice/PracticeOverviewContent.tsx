@@ -19,16 +19,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import {
-  Keyboard,
-  Target,
-  BookOpen,
-  Users,
-  Clock,
-  Trophy,
-  Gamepad2,
-  Brain,
-} from 'lucide-react';
+import { Keyboard, Target, BookOpen, Users, Clock, Trophy } from 'lucide-react';
 import { useUser } from '@/core/shared/hooks/useUser';
 import {
   getUserLists,
@@ -48,40 +39,32 @@ interface PracticeType {
 
 const PRACTICE_TYPES: PracticeType[] = [
   {
+    id: 'unified-practice',
+    name: 'Vocabulary Practice',
+    description:
+      'Comprehensive practice with all 5 exercise types, automatically alternating based on word progress',
+    icon: <Target className="h-6 w-6" />,
+    status: 'available',
+    features: [
+      'All 5 exercise types combined',
+      'Automatic exercise selection',
+      'Progressive difficulty system',
+      'Smart word progression algorithm',
+      'Alternates between all difficulty levels',
+    ],
+  },
+  {
     id: 'typing',
-    name: 'Typing Practice',
-    description: 'Practice typing words to improve spelling and muscle memory',
+    name: 'Typing Practice (Legacy)',
+    description: 'Classic typing practice with character-by-character feedback',
     icon: <Keyboard className="h-6 w-6" />,
     status: 'available',
     features: [
       'Character-by-character input',
       'Real-time feedback',
       'Progress tracking',
+      'Original system',
     ],
-  },
-  {
-    id: 'flashcards',
-    name: 'Flashcards',
-    description: 'Study vocabulary with interactive flashcards',
-    icon: <BookOpen className="h-6 w-6" />,
-    status: 'coming-soon',
-    features: ['Spaced repetition', 'Audio pronunciation', 'Multiple choice'],
-  },
-  {
-    id: 'quiz',
-    name: 'Vocabulary Quiz',
-    description: 'Test your knowledge with multiple choice questions',
-    icon: <Brain className="h-6 w-6" />,
-    status: 'coming-soon',
-    features: ['Multiple formats', 'Timed challenges', 'Difficulty levels'],
-  },
-  {
-    id: 'games',
-    name: 'Word Games',
-    description: 'Learn through fun and engaging word games',
-    icon: <Gamepad2 className="h-6 w-6" />,
-    status: 'coming-soon',
-    features: ['Word matching', 'Crosswords', 'Word search'],
   },
 ];
 
@@ -130,13 +113,9 @@ export function PracticeOverviewContent() {
    * Start practice with selected list
    */
   const startPractice = (practiceType: string) => {
-    if (practiceType !== 'typing') {
-      // For coming soon features, just show a message
-      return;
-    }
-
     const params = new URLSearchParams();
 
+    // Add list selection
     if (selectedList !== 'all') {
       // Check if it's a user list or public list
       const userList = userLists.find((list) => list.id === selectedList);
@@ -147,7 +126,19 @@ export function PracticeOverviewContent() {
       }
     }
 
-    router.push(`/dashboard/practice/typing?${params.toString()}`);
+    // Route based on practice type
+    if (practiceType === 'typing') {
+      // Legacy typing practice
+      router.push(`/dashboard/practice/typing?${params.toString()}`);
+    } else if (practiceType === 'unified-practice') {
+      // Unified practice system - route to enhanced practice without type parameter
+      // This will trigger the unified practice mode in EnhancedPracticeContent
+      router.push(`/dashboard/practice/enhanced?${params.toString()}`);
+    } else {
+      // Other practice types (shouldn't happen with current setup)
+      params.set('type', practiceType);
+      router.push(`/dashboard/practice/enhanced?${params.toString()}`);
+    }
   };
 
   /**

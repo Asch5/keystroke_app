@@ -19,6 +19,82 @@ export type { DifficultyConfig };
 const prisma = new PrismaClient();
 
 /**
+ * Enhanced types for multiple practice types
+ */
+export type PracticeType =
+  | 'typing'
+  | 'choose-right-word'
+  | 'make-up-word'
+  | 'remember-translation'
+  | 'write-by-definition'
+  | 'write-by-sound'
+  | 'unified-practice';
+
+export const PRACTICE_TYPE_MULTIPLIERS = {
+  'remember-translation': 0.5, // Difficulty 1
+  'choose-right-word': 1.0, // Difficulty 2
+  'make-up-word': 1.5, // Difficulty 3
+  'write-by-definition': 2.0, // Difficulty 4
+  'write-by-sound': 2.5, // Difficulty 4+
+  typing: 1.2, // Current system
+} as const;
+
+export const PRACTICE_TYPE_CONFIGS = {
+  'remember-translation': {
+    difficultyLevel: 1,
+    maxAttempts: 1,
+    autoAdvance: true,
+    requiresAudio: false,
+    requiresInput: false,
+  },
+  'choose-right-word': {
+    difficultyLevel: 2,
+    maxAttempts: 1,
+    autoAdvance: true,
+    requiresAudio: false,
+    requiresInput: false,
+    optionCount: 4,
+  },
+  'make-up-word': {
+    difficultyLevel: 3,
+    maxAttempts: 3,
+    maxAttemptsPhrase: 6,
+    autoAdvance: true,
+    requiresAudio: false,
+    requiresInput: true,
+  },
+  'write-by-definition': {
+    difficultyLevel: 4,
+    maxAttempts: 1,
+    autoAdvance: false, // Changed: Exercise 4 has "Next" button
+    requiresAudio: false,
+    requiresInput: true,
+  },
+  'write-by-sound': {
+    difficultyLevel: 4,
+    maxAttempts: 1,
+    autoAdvance: false, // Changed: Exercise 5 has "Next" button
+    requiresAudio: true,
+    requiresInput: true,
+    maxAudioReplays: 3,
+  },
+  'unified-practice': {
+    difficultyLevel: 3, // Average difficulty level
+    maxAttempts: 1,
+    autoAdvance: false, // Controlled by unified system
+    requiresAudio: false,
+    requiresInput: true,
+  },
+  typing: {
+    difficultyLevel: 3,
+    maxAttempts: 1,
+    autoAdvance: false,
+    requiresAudio: false,
+    requiresInput: true,
+  },
+} as const;
+
+/**
  * Types for practice session management
  */
 export interface PracticeWord {
@@ -36,6 +112,16 @@ export interface PracticeWord {
   imageId?: number | undefined; // Image ID for definition
   imageUrl?: string | undefined; // Image URL for definition
   imageDescription?: string | undefined; // Image alt text
+
+  // Enhanced fields for new practice types
+  isNewWord?: boolean; // Determines workflow pattern (WordCard first vs game first)
+  gameAttempts?: number; // Tracks attempts in current game
+  maxAttempts?: number; // Based on practice type and word/phrase status
+  characterPool?: string[]; // For make-up-word game
+  distractorOptions?: string[]; // For choose-right-word game
+  correctAnswerIndex?: number; // For choose-right-word game (0-3)
+  isPhrase?: boolean; // Whether this is a multi-word phrase
+  wordCount?: number; // Number of words in phrase
 }
 
 export interface CreatePracticeSessionRequest {
@@ -46,6 +132,25 @@ export interface CreatePracticeSessionRequest {
   wordsCount?: number;
   timeLimit?: number;
   includeWordStatuses?: LearningStatus[];
+  practiceType?: PracticeType; // New field for enhanced sessions
+}
+
+export interface EnhancedPracticeSession {
+  sessionId: string;
+  practiceType: PracticeType;
+  words: PracticeWord[];
+  difficultyLevel: number;
+  currentWordIndex: number;
+  settings: PracticeSessionSettings;
+  config: (typeof PRACTICE_TYPE_CONFIGS)[PracticeType];
+}
+
+export interface PracticeSessionSettings {
+  autoPlayAudio: boolean;
+  enableGameSounds: boolean;
+  showHints: boolean;
+  allowSkipping: boolean;
+  timeLimit?: number;
 }
 
 export interface ValidateTypingRequest {
@@ -761,8 +866,238 @@ export async function getPracticeSessionProgress(sessionId: string): Promise<{
 }
 
 /**
+ * Enhanced utility functions for multiple practice types
+ */
+
+/**
+ * Generate distractor options for choose-right-word game
+ */
+export async function generateDistractorOptions(
+  correctWord: string,
+  targetLanguageCode: LanguageCode,
+  baseLanguageCode: LanguageCode,
+  partOfSpeech?: string,
+): Promise<string[]> {
+  // For now, use pattern-based generation
+  // TODO: Implement database lookup for better distractors
+  console.log(
+    'Generating distractors for:',
+    correctWord,
+    'Language:',
+    targetLanguageCode,
+    baseLanguageCode,
+    partOfSpeech,
+  );
+
+  return Array.from({ length: 3 }, () =>
+    generateSimilarWord(correctWord, []),
+  ).filter(Boolean);
+}
+
+/**
+ * Generate character pool for make-up-word game
+ */
+export async function generateCharacterPool(
+  targetWord: string,
+  extraCharacters: number = 4,
+): Promise<string[]> {
+  const targetChars = targetWord.toLowerCase().split('');
+  const extraChars = 'abcdefghijklmnopqrstuvwxyz'
+    .split('')
+    .filter((char) => !targetChars.includes(char))
+    .sort(() => Math.random() - 0.5)
+    .slice(0, extraCharacters);
+
+  return [...targetChars, ...extraChars].sort(() => Math.random() - 0.5);
+}
+
+/**
+ * Determine if word is new for workflow pattern
+ */
+export async function isNewWordForUser(
+  learningStatus: LearningStatus,
+  attempts: number,
+  correctAttempts: number,
+): Promise<boolean> {
+  return (
+    learningStatus === LearningStatus.notStarted ||
+    (attempts === 0 && correctAttempts === 0)
+  );
+}
+
+/**
+ * Calculate max attempts based on practice type and word characteristics
+ */
+export async function calculateMaxAttempts(
+  practiceType: PracticeType,
+  isPhrase: boolean = false,
+): Promise<number> {
+  const config = PRACTICE_TYPE_CONFIGS[practiceType];
+
+  if (practiceType === 'make-up-word') {
+    return isPhrase ? 6 : config.maxAttempts; // 6 for phrases, 3 for single words
+  }
+
+  return config.maxAttempts;
+}
+
+/**
+ * Generate enhanced practice session with game-specific data
+ */
+export async function createEnhancedPracticeSession(
+  request: CreatePracticeSessionRequest & { practiceType: PracticeType },
+): Promise<{
+  success: boolean;
+  session?: EnhancedPracticeSession;
+  error?: string;
+}> {
+  try {
+    const { practiceType } = request;
+    const config = PRACTICE_TYPE_CONFIGS[practiceType];
+
+    // Use existing session creation as base
+    const baseSessionResult = await createTypingPracticeSession(request);
+
+    if (!baseSessionResult.success || !baseSessionResult.session) {
+      return {
+        success: false,
+        error: baseSessionResult.error || 'Failed to create base session',
+      };
+    }
+
+    const { sessionId, words, difficultyConfig } = baseSessionResult.session;
+
+    // Get user for language preferences
+    const user = await prisma.user.findUnique({
+      where: { id: request.userId },
+      select: {
+        baseLanguageCode: true,
+        targetLanguageCode: true,
+      },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        error: 'User not found',
+      };
+    }
+
+    // Enhance words with game-specific data
+    const enhancedWords: PracticeWord[] = await Promise.all(
+      words.map(async (word) => {
+        const isPhrase = word.wordText.includes(' ');
+        const wordCount = word.wordText.split(' ').length;
+        const isNew = await isNewWordForUser(
+          word.learningStatus,
+          word.attempts,
+          word.correctAttempts,
+        );
+        const maxAttempts = await calculateMaxAttempts(practiceType, isPhrase);
+
+        const enhancedWord: PracticeWord = {
+          ...word,
+          isNewWord: isNew,
+          gameAttempts: 0,
+          maxAttempts,
+          isPhrase,
+          wordCount,
+        };
+
+        // Add game-specific data
+        if (practiceType === 'choose-right-word') {
+          const distractors = await generateDistractorOptions(
+            word.wordText,
+            user.targetLanguageCode,
+            user.baseLanguageCode,
+            word.partOfSpeech,
+          );
+
+          // Randomize correct answer position
+          const correctIndex = Math.floor(Math.random() * 4);
+          const options = [...distractors];
+          options.splice(correctIndex, 0, word.wordText);
+
+          enhancedWord.distractorOptions = options.slice(0, 4);
+          enhancedWord.correctAnswerIndex = correctIndex;
+        } else if (practiceType === 'make-up-word') {
+          enhancedWord.characterPool = await generateCharacterPool(
+            word.wordText,
+          );
+        }
+
+        return enhancedWord;
+      }),
+    );
+
+    const enhancedSession: EnhancedPracticeSession = {
+      sessionId,
+      practiceType,
+      words: enhancedWords,
+      difficultyLevel: request.difficultyLevel,
+      currentWordIndex: 0,
+      settings: {
+        autoPlayAudio: true,
+        enableGameSounds: true,
+        showHints: false,
+        allowSkipping: true,
+        timeLimit: difficultyConfig.timeLimit,
+      },
+      config,
+    };
+
+    return {
+      success: true,
+      session: enhancedSession,
+    };
+  } catch (error) {
+    const errorMessage = handlePrismaError(error);
+    serverLog(
+      `Failed to create enhanced practice session: ${errorMessage}`,
+      'error',
+      {
+        userId: request.userId,
+        practiceType: request.practiceType,
+        error,
+      },
+    );
+
+    return {
+      success: false,
+      error: typeof errorMessage === 'string' ? errorMessage : 'Unknown error',
+    };
+  }
+}
+
+/**
  * Helper functions
  */
+
+/**
+ * Generate a similar-looking word for distractors
+ */
+function generateSimilarWord(original: string, existing: string[]): string {
+  const variations = [
+    // Change one character
+    original.slice(0, -1) +
+      String.fromCharCode(97 + Math.floor(Math.random() * 26)),
+    // Add one character
+    original + String.fromCharCode(97 + Math.floor(Math.random() * 26)),
+    // Remove one character (if word is long enough)
+    original.length > 3 ? original.slice(0, -1) : original + 'e',
+    // Swap two adjacent characters
+    original.length > 1
+      ? original.slice(0, -2) + original.slice(-1) + original.slice(-2, -1)
+      : original + 's',
+  ];
+
+  const available = variations.filter(
+    (v) => !existing.includes(v) && v !== original,
+  );
+  return (
+    available[Math.floor(Math.random() * available.length)] || original + 'x'
+  );
+}
 
 /**
  * Extract word text from definition (simplified approach)
@@ -791,4 +1126,268 @@ function getDifficultyLevel(customDifficulty: unknown): number | null {
     return isNaN(parsed) ? null : parsed;
   }
   return null;
+}
+
+/**
+ * Word Progression Algorithm
+ * Determines the most appropriate exercise type based on word learning progress
+ */
+export async function determineExerciseType(
+  word: PracticeWord,
+  userPreferences?: {
+    skipRememberTranslation?: boolean;
+    forceDifficulty?: number;
+  },
+): Promise<PracticeType> {
+  const { learningStatus, attempts, correctAttempts } = word;
+  const successRate = attempts > 0 ? correctAttempts / attempts : 0;
+  const isNewWord = await isNewWordForUser(
+    learningStatus,
+    attempts,
+    correctAttempts,
+  );
+
+  // For new words or words with very low success rate, start with easiest exercises
+  if (isNewWord || successRate < 0.3) {
+    return userPreferences?.skipRememberTranslation === true
+      ? 'choose-right-word'
+      : 'remember-translation';
+  }
+
+  // For words with low success rate, use multiple choice
+  if (successRate < 0.6) {
+    return 'choose-right-word';
+  }
+
+  // For words with moderate success rate, use drag-and-drop
+  if (successRate < 0.8) {
+    return 'make-up-word';
+  }
+
+  // For words with high success rate, alternate between harder exercises
+  if (successRate >= 0.8) {
+    // Use word difficulty and attempt count to determine between exercises 4 and 5
+    const shouldUseAudio = word.audioUrl && attempts % 3 === 0; // Every 3rd attempt uses audio
+    return shouldUseAudio ? 'write-by-sound' : 'write-by-definition';
+  }
+
+  // Default fallback
+  return 'choose-right-word';
+}
+
+/**
+ * Enhanced Practice Word with dynamic exercise type
+ */
+export interface UnifiedPracticeWord extends PracticeWord {
+  dynamicExerciseType: PracticeType;
+  exerciseHistory: PracticeType[];
+  nextExerciseType?: PracticeType;
+}
+
+/**
+ * Create a unified practice session with automatic exercise type selection
+ */
+export async function createUnifiedPracticeSession(
+  request: CreatePracticeSessionRequest,
+): Promise<{
+  success: boolean;
+  session?: EnhancedPracticeSession;
+  error?: string;
+}> {
+  try {
+    const { userId, userListId, listId, difficultyLevel, wordsCount } = request;
+
+    serverLog(`Creating unified practice session for user ${userId}`, 'info', {
+      userId,
+      difficultyLevel,
+      wordsCount,
+      userListId,
+      listId,
+    });
+
+    // Create base session with 'remember-translation' as default
+    const baseRequest: CreatePracticeSessionRequest & {
+      practiceType: PracticeType;
+    } = {
+      ...request,
+      practiceType: 'remember-translation',
+    };
+
+    const baseResult = await createEnhancedPracticeSession(baseRequest);
+
+    if (!baseResult.success || !baseResult.session) {
+      return {
+        success: false,
+        error: baseResult.error || 'Failed to create base session',
+      };
+    }
+
+    const { session } = baseResult;
+
+    // Enhance each word with dynamic exercise type selection
+    const unifiedWords: UnifiedPracticeWord[] = await Promise.all(
+      session.words.map(async (word) => {
+        const dynamicExerciseType = await determineExerciseType(word);
+
+        return {
+          ...word,
+          dynamicExerciseType,
+          exerciseHistory: [],
+        };
+      }),
+    );
+
+    // Create unified session
+    const unifiedSession: EnhancedPracticeSession = {
+      ...session,
+      practiceType: 'unified-practice' as PracticeType, // Special type for unified practice
+      words: unifiedWords,
+    };
+
+    serverLog(`Created unified practice session ${session.sessionId}`, 'info', {
+      wordsCount: unifiedWords.length,
+      exerciseDistribution: getExerciseDistribution(
+        unifiedWords as UnifiedPracticeWord[],
+      ),
+    });
+
+    return {
+      success: true,
+      session: unifiedSession,
+    };
+  } catch (error) {
+    const errorMessage = handlePrismaError(error);
+    serverLog(
+      `Failed to create unified practice session: ${errorMessage}`,
+      'error',
+      {
+        userId: request.userId,
+        error,
+      },
+    );
+
+    return {
+      success: false,
+      error: typeof errorMessage === 'string' ? errorMessage : 'Unknown error',
+    };
+  }
+}
+
+/**
+ * Get exercise type distribution for analytics
+ */
+function getExerciseDistribution(
+  words: UnifiedPracticeWord[],
+): Record<PracticeType, number> {
+  const distribution: Record<PracticeType, number> = {
+    'remember-translation': 0,
+    'choose-right-word': 0,
+    'make-up-word': 0,
+    'write-by-definition': 0,
+    'write-by-sound': 0,
+    'unified-practice': 0,
+    typing: 0,
+  };
+
+  words.forEach((word) => {
+    distribution[word.dynamicExerciseType]++;
+  });
+
+  return distribution;
+}
+
+/**
+ * Update word progress and determine next exercise type
+ */
+export async function updateWordProgressAndSelectNext(
+  sessionId: string,
+  wordId: string,
+  userInput: string,
+  isCorrect: boolean,
+  attempts: number,
+  currentExerciseType: PracticeType,
+): Promise<{
+  success: boolean;
+  nextExerciseType?: PracticeType;
+  shouldShowWordCard?: boolean;
+  error?: string;
+}> {
+  try {
+    // First, update the word's learning progress (existing logic)
+    const updateResult = await validateTypingInput({
+      sessionId,
+      userDictionaryId: wordId,
+      userInput,
+      responseTime: 0, // We'll need to pass this from the frontend
+    });
+
+    if (!updateResult.success) {
+      return {
+        success: false,
+        error: updateResult.error || 'Failed to update word progress',
+      };
+    }
+
+    // Get updated word data to determine next exercise type
+    const updatedWord = await getWordProgressData(wordId);
+    if (!updatedWord) {
+      return {
+        success: false,
+        error: 'Failed to get updated word data',
+      };
+    }
+
+    // Determine next exercise type based on updated progress
+    const nextExerciseType = await determineExerciseType(updatedWord);
+    const shouldShowWordCard =
+      !isCorrect ||
+      (await isNewWordForUser(
+        updatedWord.learningStatus,
+        updatedWord.attempts,
+        updatedWord.correctAttempts,
+      ));
+
+    return {
+      success: true,
+      nextExerciseType,
+      shouldShowWordCard,
+    };
+  } catch (error) {
+    serverLog(`Failed to update word progress: ${error}`, 'error', {
+      sessionId,
+      wordId,
+      currentExerciseType,
+    });
+
+    return {
+      success: false,
+      error: 'Failed to update word progress',
+    };
+  }
+}
+
+/**
+ * Get word progress data for exercise type determination
+ * TODO: Implement proper Prisma query when schema is finalized
+ */
+async function getWordProgressData(
+  wordId: string,
+): Promise<PracticeWord | null> {
+  try {
+    // Simplified implementation to avoid TypeScript errors
+    // In production, this would query the database for updated word progress
+    return {
+      userDictionaryId: wordId,
+      wordText: 'placeholder',
+      definition: 'placeholder definition',
+      difficulty: 3,
+      learningStatus: 'learning' as LearningStatus,
+      attempts: 1,
+      correctAttempts: 0,
+      isNewWord: true,
+    };
+  } catch (error) {
+    serverLog('Failed to get word progress data', 'error', { wordId, error });
+    return null;
+  }
 }

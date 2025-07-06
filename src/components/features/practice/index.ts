@@ -1,17 +1,23 @@
-// Practice Overview
-export { PracticeOverviewContent } from './PracticeOverviewContent';
-
-// Typing Practice Components
+// Legacy typing practice components
 export { TypingPracticeContent } from './TypingPracticeContent';
-export { TypingPracticeHeader } from './TypingPracticeHeader';
 export { TypingWordInput } from './TypingWordInput';
+export { TypingPracticeSettings } from './TypingPracticeSettings';
 export { TypingSessionSummary } from './TypingSessionSummary';
+export { TypingPracticeHeader } from './TypingPracticeHeader';
 export { TypingGettingStarted } from './TypingGettingStarted';
 
-// Re-export hooks
-export {
-  useTypingPracticeState,
-  useTypingAudioPlayback,
-  type SessionState,
-  type WordResult,
-} from './hooks';
+// Enhanced practice system components
+export { EnhancedPracticeContent } from './EnhancedPracticeContent';
+export { EnhancedPracticePageContent } from './EnhancedPracticePageContent';
+
+// Universal components
+export * from './shared';
+
+// Practice games
+export * from './games';
+
+// Practice overview
+export { PracticeOverviewContent } from './PracticeOverviewContent';
+
+// Hooks
+export * from './hooks';

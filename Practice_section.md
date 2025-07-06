@@ -1,6 +1,8 @@
 We have to improve here dashboard/practice our Typing Practice section.
 
-We will have 4 types of exercises:
+We will have 5 types of exercises:
+
+\*NEW: all these types work together as a single Practice. They (types of exercises) alternate between each other according to the word's progress.
 
 1.Name "Choose the right word": look at these screens to understand it
 @game_1_choose_the_right_translation.jpg
@@ -30,16 +32,14 @@ instruction:
    @game_4_write_the_word-withKeyBoard.jpg
    @game_4_write_the_word-withoutKeyBoard.jpg
    Difficulty level:4
-   instruction:
-   - if it was done correctly we move to this word's wordCard with cheering sound effect automatically.
-   - if it was done incorrectly we move to this word's wordCard with sad sound effect automatically.
+   \*CORRECT: instruction:
+   this exercise has the button "Next" on the bottom of the screen.
 
 5. "Write the word_by_sound" (using sound)
    @game_5_write_the_word-withSound.jpg
    Difficulty level:4
-   instruction:
-   - if it was done correctly we move to this word's wordCard with cheering sound effect automatically.
-   - if it was done incorrectly we move to this word's wordCard with sad sound effect automatically.
+   \*CORRECT: instruction:
+   this exercise has the button "Next" on the bottom of the screen.
 
 - Universal WordCard:
   @word_card_p1.jpg
@@ -63,3 +63,7 @@ Work flow:
 Actually if look at the structure of component we will see that the progress indicator is always at the top of the screen at the same place despite a game it is or a WordCard it is.
 
 Also important that we have the strong system of evaluation a word (a word definitions as a unit) in terms of difficulty level and progress system. Here we need to look at a Difficulty level of game to astimate a progress of a word correctly. We can take a hight difficult game before a low difficult game as a 100% progress of a word.
+
+////////////////////////////////////////////////////////////
+
+New: Overal we have to have only one Practice here /dashboard/practice section. And this Practice will be a combination of all 5 types of exercises.

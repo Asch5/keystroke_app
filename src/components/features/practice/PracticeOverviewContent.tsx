@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Keyboard, Target } from 'lucide-react';
 import { useUser } from '@/core/shared/hooks/useUser';
+import { VocabularyPracticeSettingsDialog } from './settings';
 import {
   getUserLists,
   getAvailablePublicLists,
@@ -55,6 +56,7 @@ export function PracticeOverviewContent() {
   const [userLists, setUserLists] = useState<UserListWithDetails[]>([]);
   const [publicLists, setPublicLists] = useState<PublicListSummary[]>([]);
   const [selectedList, setSelectedList] = useState<string>('all');
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
   /**
    * Load user lists and public lists
@@ -85,6 +87,15 @@ export function PracticeOverviewContent() {
 
     loadLists();
   }, [user]);
+
+  /**
+   * Handle opening settings for practice types
+   */
+  const handleOpenSettings = (practiceTypeId: string) => {
+    if (practiceTypeId === 'unified-practice') {
+      setSettingsDialogOpen(true);
+    }
+  };
 
   /**
    * Start practice with selected list
@@ -149,6 +160,12 @@ export function PracticeOverviewContent() {
         onListChange={setSelectedList}
       />
 
+      {/* Vocabulary Practice Settings Dialog */}
+      <VocabularyPracticeSettingsDialog
+        open={settingsDialogOpen}
+        onOpenChange={setSettingsDialogOpen}
+      />
+
       {/* Practice Types */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {PRACTICE_TYPES.map((practiceType) => (
@@ -156,6 +173,7 @@ export function PracticeOverviewContent() {
             key={practiceType.id}
             practiceType={practiceType}
             onStartPractice={startPractice}
+            onOpenSettings={handleOpenSettings}
           />
         ))}
       </div>

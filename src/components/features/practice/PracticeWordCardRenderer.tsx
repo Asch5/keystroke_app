@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { WordCard } from './shared';
 import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
+import type { VocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 
 interface PracticeWordCardRendererProps {
   currentWord: PracticeWord;
+  settings: VocabularyPracticeSettings;
   onNext: () => void;
   onAudioPlay?: (word: string, audioUrl?: string) => void;
   autoPlayAudio?: boolean;
@@ -18,6 +20,7 @@ interface PracticeWordCardRendererProps {
  */
 export function PracticeWordCardRenderer({
   currentWord,
+  settings,
   onNext,
   onAudioPlay,
   autoPlayAudio = true,
@@ -55,12 +58,16 @@ export function PracticeWordCardRenderer({
     wordText: currentWord.wordText,
     definition: currentWord.definition,
     oneWordTranslation: currentWord.oneWordTranslation || '',
-    phonetic: currentWord.phonetic || '',
-    partOfSpeech: currentWord.partOfSpeech || '',
+    phonetic: settings.showPhoneticPronunciation
+      ? currentWord.phonetic || ''
+      : '',
+    partOfSpeech: settings.showPartOfSpeech
+      ? currentWord.partOfSpeech || ''
+      : '',
     learningStatus: currentWord.learningStatus,
     audioUrl: currentWord.audioUrl || '',
-    imageId: currentWord.imageId || 0,
-    imageUrl: currentWord.imageUrl || '',
+    imageId: settings.showDefinitionImages ? currentWord.imageId || 0 : 0,
+    imageUrl: settings.showDefinitionImages ? currentWord.imageUrl || '' : '',
     imageDescription: currentWord.imageDescription || '',
   };
 

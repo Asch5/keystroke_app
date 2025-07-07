@@ -13,6 +13,7 @@ import type {
   UnifiedPracticeWord,
   PracticeWord,
 } from '@/core/domains/user/actions/practice-actions';
+import type { VocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
 
 type PracticeConfigsType = Record<
   PracticeType,
@@ -30,6 +31,7 @@ type PracticeConfigsType = Record<
 
 interface PracticeGameRendererProps {
   session: EnhancedPracticeSession;
+  settings: VocabularyPracticeSettings;
   currentWord: PracticeWord;
   practiceConfigs: PracticeConfigsType | null;
   onGameAnswer: (
@@ -47,6 +49,7 @@ interface PracticeGameRendererProps {
  */
 export function PracticeGameRenderer({
   session,
+  settings,
   currentWord,
   practiceConfigs,
   onGameAnswer,
@@ -66,7 +69,7 @@ export function PracticeGameRenderer({
   // Create specific props for each game type to match their expected interfaces
   const baseGameProps = {
     word: wordForGame,
-    autoPlayAudio: session.settings?.autoPlayAudio ?? true,
+    autoPlayAudio: settings.autoPlayAudioOnGameStart,
     className: 'w-full',
   };
 

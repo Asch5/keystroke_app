@@ -22,6 +22,7 @@ import {
 
 interface VocabularyPracticeSettingsProps {
   className?: string;
+  defaultOpen?: boolean;
 }
 
 /**
@@ -30,10 +31,11 @@ interface VocabularyPracticeSettingsProps {
  */
 export function VocabularyPracticeSettings({
   className,
+  defaultOpen = true,
 }: VocabularyPracticeSettingsProps) {
   const { settings, updateSetting, resetSettings, isLoaded } =
     useVocabularyPracticeSettings();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   if (!isLoaded) {
     return null; // Don't render until settings are loaded

@@ -1,5 +1,6 @@
 // Vocabulary Practice Settings Components
 export { VocabularyPracticeSettings } from './VocabularyPracticeSettings';
+export { VocabularyPracticeSettingsDialog } from './VocabularyPracticeSettingsDialog';
 export { ExerciseTypeSettings } from './ExerciseTypeSettings';
 export { VocabularySessionConfigurationSettings } from './VocabularySessionConfigurationSettings';
 export { VocabularyTimeSettings } from './VocabularyTimeSettings';

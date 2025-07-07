@@ -19,9 +19,11 @@ import type {
   PracticeType,
   EnhancedPracticeSession,
 } from '@/core/domains/user/actions/practice-actions';
+import type { VocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
 
 interface EnhancedPracticeContentProps {
   session: EnhancedPracticeSession;
+  settings: VocabularyPracticeSettings;
   onWordComplete: (
     wordId: string,
     userInput: string,
@@ -43,6 +45,7 @@ interface EnhancedPracticeContentProps {
  */
 export function EnhancedPracticeContent({
   session,
+  settings,
   onWordComplete,
   onSessionComplete,
   onSessionPause,
@@ -91,7 +94,7 @@ export function EnhancedPracticeContent({
   return (
     <div className={cn('space-y-6', className)}>
       {/* Universal Progress Indicator */}
-      {currentPhase !== 'summary' && (
+      {currentPhase !== 'summary' && settings.showProgressBar && (
         <UniversalProgressIndicator
           currentWordIndex={currentWordIndex}
           totalWords={session.words.length}
@@ -135,6 +138,7 @@ export function EnhancedPracticeContent({
         <PracticeGameContainer className="max-w-4xl mx-auto">
           <PracticeGameRenderer
             session={session}
+            settings={settings}
             currentWord={currentWord}
             practiceConfigs={practiceConfigs}
             onGameAnswer={handleGameAnswer}
@@ -148,9 +152,10 @@ export function EnhancedPracticeContent({
       {currentPhase === 'word-card' && showWordCard && currentWord && (
         <PracticeWordCardRenderer
           currentWord={currentWord}
+          settings={settings}
           onNext={handleWordCardNext}
           {...(onAudioPlay && { onAudioPlay })}
-          autoPlayAudio={true}
+          autoPlayAudio={settings.autoPlayAudioOnWordCard}
         />
       )}
 

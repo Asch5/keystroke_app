@@ -1208,21 +1208,41 @@ export async function determineExerciseType(
   userPreferences?: {
     skipRememberTranslation?: boolean;
     forceDifficulty?: number;
+    enabledExerciseTypes?: string[];
   },
 ): Promise<PracticeType> {
   // Use the internal PRACTICE_TYPE_MULTIPLIERS constant for difficulty calculation
   const successRate =
     word.attempts > 0 ? (word.correctAttempts / word.attempts) * 100 : 0;
 
+  // Get enabled exercise types from user preferences
+  const enabledTypes = userPreferences?.enabledExerciseTypes || [
+    'remember-translation',
+    'choose-right-word',
+    'make-up-word',
+    'write-by-definition',
+    'write-by-sound',
+  ];
+
+  // Helper function to check if exercise type is enabled
+  const isTypeEnabled = (type: PracticeType): boolean => {
+    return enabledTypes.includes(type);
+  };
+
   // Force specific difficulty if requested
   if (userPreferences?.forceDifficulty) {
     const difficulty = userPreferences.forceDifficulty;
 
-    if (difficulty === 1) return 'remember-translation';
-    if (difficulty === 2) return 'choose-right-word';
-    if (difficulty === 3) return 'make-up-word';
-    if (difficulty === 4) return 'write-by-definition';
-    if (difficulty === 5) return 'write-by-sound';
+    if (difficulty === 1 && isTypeEnabled('remember-translation'))
+      return 'remember-translation';
+    if (difficulty === 2 && isTypeEnabled('choose-right-word'))
+      return 'choose-right-word';
+    if (difficulty === 3 && isTypeEnabled('make-up-word'))
+      return 'make-up-word';
+    if (difficulty === 4 && isTypeEnabled('write-by-definition'))
+      return 'write-by-definition';
+    if (difficulty === 5 && isTypeEnabled('write-by-sound'))
+      return 'write-by-sound';
   }
 
   // Skip remember-translation if requested
@@ -1230,30 +1250,79 @@ export async function determineExerciseType(
     userPreferences?.skipRememberTranslation &&
     (word.attempts === 0 || word.learningStatus === 'notStarted')
   ) {
-    return 'choose-right-word';
+    if (isTypeEnabled('choose-right-word')) {
+      return 'choose-right-word';
+    }
   }
 
   // New words or words with very low success rate start with easier exercises
   if (word.attempts === 0 || word.learningStatus === 'notStarted') {
-    return 'remember-translation';
+    if (isTypeEnabled('remember-translation')) {
+      return 'remember-translation';
+    } else if (isTypeEnabled('choose-right-word')) {
+      return 'choose-right-word';
+    }
   }
 
   // Based on success rate, assign appropriate exercise type
+  // Fallback to next available type if preferred type is disabled
   if (successRate < 30) {
-    return 'remember-translation';
+    if (isTypeEnabled('remember-translation')) {
+      return 'remember-translation';
+    } else if (isTypeEnabled('choose-right-word')) {
+      return 'choose-right-word';
+    }
   } else if (successRate < 60) {
-    return 'choose-right-word';
+    if (isTypeEnabled('choose-right-word')) {
+      return 'choose-right-word';
+    } else if (isTypeEnabled('remember-translation')) {
+      return 'remember-translation';
+    } else if (isTypeEnabled('make-up-word')) {
+      return 'make-up-word';
+    }
   } else if (successRate < 80) {
-    return 'make-up-word';
+    if (isTypeEnabled('make-up-word')) {
+      return 'make-up-word';
+    } else if (isTypeEnabled('choose-right-word')) {
+      return 'choose-right-word';
+    } else if (isTypeEnabled('write-by-definition')) {
+      return 'write-by-definition';
+    }
   } else {
     // For high success rate, alternate between harder exercises
     // Check if audio is available for write-by-sound
-    if (word.audioUrl && Math.random() > 0.5) {
+    if (
+      word.audioUrl &&
+      Math.random() > 0.5 &&
+      isTypeEnabled('write-by-sound')
+    ) {
       return 'write-by-sound';
-    } else {
+    } else if (isTypeEnabled('write-by-definition')) {
       return 'write-by-definition';
+    } else if (isTypeEnabled('write-by-sound')) {
+      return 'write-by-sound';
+    } else if (isTypeEnabled('make-up-word')) {
+      return 'make-up-word';
     }
   }
+
+  // Fallback: return first enabled exercise type
+  const fallbackTypes: PracticeType[] = [
+    'remember-translation',
+    'choose-right-word',
+    'make-up-word',
+    'write-by-definition',
+    'write-by-sound',
+  ];
+
+  for (const type of fallbackTypes) {
+    if (isTypeEnabled(type)) {
+      return type;
+    }
+  }
+
+  // Final fallback (shouldn't happen if settings validation works)
+  return 'write-by-definition';
 }
 
 /**
@@ -1269,14 +1338,23 @@ export interface UnifiedPracticeWord extends PracticeWord {
  * Create a unified practice session with automatic exercise type selection
  */
 export async function createUnifiedPracticeSession(
-  request: CreatePracticeSessionRequest,
+  request: CreatePracticeSessionRequest & {
+    enabledExerciseTypes?: string[];
+  },
 ): Promise<{
   success: boolean;
   session?: EnhancedPracticeSession;
   error?: string;
 }> {
   try {
-    const { userId, userListId, listId, difficultyLevel, wordsCount } = request;
+    const {
+      userId,
+      userListId,
+      listId,
+      difficultyLevel,
+      wordsCount,
+      enabledExerciseTypes,
+    } = request;
 
     serverLog(`Creating unified practice session for user ${userId}`, 'info', {
       userId,
@@ -1284,6 +1362,7 @@ export async function createUnifiedPracticeSession(
       wordsCount,
       userListId,
       listId,
+      enabledExerciseTypes,
     });
 
     // Create base session with 'remember-translation' as default
@@ -1305,10 +1384,24 @@ export async function createUnifiedPracticeSession(
 
     const { session } = baseResult;
 
+    // Create user preferences object for exercise type determination
+    const userPreferences = {
+      enabledExerciseTypes: enabledExerciseTypes || [
+        'remember-translation',
+        'choose-right-word',
+        'make-up-word',
+        'write-by-definition',
+        'write-by-sound',
+      ],
+    };
+
     // Enhance each word with dynamic exercise type selection
     const unifiedWords: UnifiedPracticeWord[] = await Promise.all(
       session.words.map(async (word) => {
-        const dynamicExerciseType = await determineExerciseType(word);
+        const dynamicExerciseType = await determineExerciseType(
+          word,
+          userPreferences,
+        );
 
         return {
           ...word,
@@ -1337,19 +1430,14 @@ export async function createUnifiedPracticeSession(
       session: unifiedSession,
     };
   } catch (error) {
-    const errorMessage = handlePrismaError(error);
-    serverLog(
-      `Failed to create unified practice session: ${errorMessage}`,
-      'error',
-      {
-        userId: request.userId,
-        error,
-      },
-    );
+    serverLog(`Failed to create unified practice session: ${error}`, 'error', {
+      userId: request.userId,
+      error: error instanceof Error ? error.message : String(error),
+    });
 
     return {
       success: false,
-      error: typeof errorMessage === 'string' ? errorMessage : 'Unknown error',
+      error: 'Failed to create unified practice session',
     };
   }
 }

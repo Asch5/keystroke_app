@@ -8,7 +8,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { useUser } from '@/core/shared/hooks/useUser';
 import { EnhancedPracticeContent } from './EnhancedPracticeContent';
-import { VocabularyPracticeSettings } from './settings';
 import { useVocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
 import {
   createEnhancedPracticeSession,
@@ -58,7 +57,19 @@ export function EnhancedPracticePageContent() {
       const sessionPracticeType =
         practiceType || determineUnifiedPracticeType();
 
-      const request: CreatePracticeSessionRequest & {
+      // Extract enabled exercise types from settings
+      const enabledExerciseTypes = [];
+      if (settings.enableRememberTranslation)
+        enabledExerciseTypes.push('remember-translation');
+      if (settings.enableChooseRightWord)
+        enabledExerciseTypes.push('choose-right-word');
+      if (settings.enableMakeUpWord) enabledExerciseTypes.push('make-up-word');
+      if (settings.enableWriteByDefinition)
+        enabledExerciseTypes.push('write-by-definition');
+      if (settings.enableWriteBySound)
+        enabledExerciseTypes.push('write-by-sound');
+
+      const baseRequest: CreatePracticeSessionRequest & {
         practiceType: PracticeType;
       } = {
         userId: user.id,
@@ -68,6 +79,12 @@ export function EnhancedPracticePageContent() {
         wordsCount: settings.wordsCount,
         practiceType: sessionPracticeType,
       };
+
+      // Add enabled exercise types for unified practice
+      const request =
+        sessionPracticeType === 'unified-practice'
+          ? { ...baseRequest, enabledExerciseTypes }
+          : baseRequest;
 
       // Use unified practice system if no specific type provided
       const result =
@@ -90,7 +107,7 @@ export function EnhancedPracticePageContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [user, practiceType, userListId, listId]);
+  }, [user, practiceType, userListId, listId, settings]);
 
   // Initialize session on component mount
   useEffect(() => {
@@ -206,16 +223,14 @@ export function EnhancedPracticePageContent() {
         </Button>
       </div>
 
-      {/* Practice Settings */}
-      <VocabularyPracticeSettings className="max-w-4xl mx-auto" />
-
       {/* Practice Content */}
       <EnhancedPracticeContent
         session={session}
+        settings={settings}
         onWordComplete={handleWordComplete}
         onSessionComplete={handleSessionComplete}
         onWordCardNext={handleWordCardNext}
-        className="min-h-[600px]"
+        className="space-y-8"
       />
     </div>
   );

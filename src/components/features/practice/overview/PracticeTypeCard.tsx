@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Clock } from 'lucide-react';
+import { Trophy, Clock, Settings } from 'lucide-react';
 
 interface PracticeType {
   id: string;
@@ -23,6 +23,7 @@ interface PracticeType {
 interface PracticeTypeCardProps {
   practiceType: PracticeType;
   onStartPractice: (practiceTypeId: string) => void;
+  onOpenSettings?: (practiceTypeId: string) => void;
 }
 
 /**
@@ -31,6 +32,7 @@ interface PracticeTypeCardProps {
 export function PracticeTypeCard({
   practiceType,
   onStartPractice,
+  onOpenSettings,
 }: PracticeTypeCardProps) {
   return (
     <Card
@@ -67,6 +69,18 @@ export function PracticeTypeCard({
               ))}
             </ul>
           </div>
+
+          {/* Show settings button for vocabulary practice */}
+          {practiceType.id === 'unified-practice' && onOpenSettings && (
+            <Button
+              variant="outline"
+              onClick={() => onOpenSettings(practiceType.id)}
+              className="w-full mb-2"
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Practice Settings
+            </Button>
+          )}
 
           <Button
             onClick={() => onStartPractice(practiceType.id)}

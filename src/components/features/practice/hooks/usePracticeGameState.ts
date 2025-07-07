@@ -83,9 +83,17 @@ export function usePracticeGameState({
   }, []);
 
   // Use the session's config directly if practiceConfigs is not loaded yet
+  const defaultConfig = {
+    difficultyLevel: 3,
+    maxAttempts: 1,
+    autoAdvance: false,
+    requiresAudio: false,
+    requiresInput: true,
+  };
+
   const practiceConfig = practiceConfigs
     ? practiceConfigs[session.practiceType]
-    : session.config;
+    : (session.config as typeof defaultConfig) || defaultConfig;
 
   // Determine initial phase based on word familiarity
   useEffect(() => {

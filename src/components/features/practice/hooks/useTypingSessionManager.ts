@@ -88,20 +88,16 @@ export function useTypingSessionManager({
       try {
         const response = await completePracticeSession(sessionState.sessionId);
 
-        if (response.success && response.sessionSummary) {
-          const summary = response.sessionSummary;
+        if (response.success && response.sessionResult) {
+          const result = response.sessionResult;
 
           toast.success(
-            `Session completed! Accuracy: ${summary.accuracy}% | Score: ${summary.score}`,
+            `Session completed! Accuracy: ${result.accuracy.toFixed(1)}% | Score: ${result.sessionScore}`,
             { duration: 5000 },
           );
 
-          // Show achievements
-          if (summary.achievements.length > 0) {
-            summary.achievements.forEach((achievement) => {
-              toast.success(`🏆 ${achievement}`, { duration: 3000 });
-            });
-          }
+          // Show achievements if any
+          // Note: achievements would be implemented in future enhancement
         }
       } catch (error) {
         console.error('Error completing session:', error);

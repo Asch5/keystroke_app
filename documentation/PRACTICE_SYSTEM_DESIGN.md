@@ -6,13 +6,85 @@ The Keystroke App practice system is designed to help users learn vocabulary thr
 
 ## Practice Types
 
-The system includes the following exercise types:
+The system includes the following exercise types with progressive learning levels:
 
-1. **Remember Translation** (Level 1) - Simple recognition exercise showing a word and its translation
+1. **Remember Translation** (Level 0-1) - Simple recognition exercise showing a word and its translation
 2. **Choose Right Word** (Level 2) - Multiple choice exercise with 4 options
 3. **Make Up Word** (Level 3) - Drag and drop letters to form the correct word
 4. **Write by Definition** (Level 4) - Type the word based on its definition
 5. **Write by Sound** (Level 5) - Type the word based on its pronunciation
+
+## Progressive Learning System
+
+### Level-Based Word Progression
+
+**Implementation Date**: December 2024
+
+The system now uses a sophisticated progressive learning algorithm that ensures words advance through exercise levels sequentially:
+
+#### Exercise Level Mapping
+
+- **Level 0**: New words start with Remember Translation
+- **Level 1**: Remember Translation (confidence building)
+- **Level 2**: Choose Right Word (recognition)
+- **Level 3**: Make Up Word (construction)
+- **Level 4**: Write by Definition (recall)
+- **Level 5**: Write by Sound (mastery)
+
+#### Progression Rules
+
+**Advancement Requirements**:
+
+- **Advance Threshold**: 2 successful attempts at current level
+- **Success Rate Required**: 60% or higher to maintain/advance
+- **Sequential Progression**: Words cannot skip levels (must complete Level 1 before Level 2)
+
+**Regression Rules**:
+
+- **Regression Threshold**: 3 failed attempts with success rate below 60%
+- **Level Decrease**: Words regress to previous level when failing
+- **Minimum Level**: Words can regress to Level 0 (restart learning)
+
+#### Database Integration
+
+**SRS Level Tracking**: Uses existing `UserDictionary.srsLevel` field (0-5) to track progression
+**Learning Status Updates**: Automatically updates based on level:
+
+- Level 0: `notStarted`
+- Levels 1-2: `inProgress`
+- Levels 3-4: `inProgress` (with higher mastery score)
+- Level 5: `learned`
+- Failed words: `needsReview` or `difficult`
+
+#### Progressive Algorithm Functions
+
+**`determineExerciseTypeProgressive`** - Determines exercise type based on current level
+
+- Respects user-enabled exercise types
+- Enforces sequential progression
+- Provides progression analytics
+
+**`updateWordProgression`** - Updates word progression after practice attempts
+
+- Calculates level advancement/regression
+- Updates learning status and mastery score
+- Manages SRS review intervals
+
+#### Settings Integration
+
+**Exercise Type Filtering**: Progressive system respects user settings:
+
+- Only uses exercise types enabled in `VocabularyPracticeSettings`
+- Falls back to available types when preferred type is disabled
+- Maintains progression logic within enabled types
+
+**Benefits of Progressive Learning**:
+
+1. **Structured Learning**: Words follow a logical difficulty progression
+2. **Prevents Skipping**: Users must master basics before advanced exercises
+3. **Smart Regression**: Failed attempts move back to appropriate level
+4. **Personalized Pace**: Each word progresses at its own rate
+5. **Status Accuracy**: Learning status reflects actual mastery level
 
 ## Practice System Architecture
 
@@ -253,6 +325,25 @@ All game components have been refactored to follow the modular pattern:
    - `showDefinitionImages` - Controls image display in WordCard and games
    - `showLearningStatus` - Controls learning status badge visibility
 
+**Progressive Learning System Implementation (December 2024)**:
+
+3. **Exercise Settings Fix**: Fixed bug where enabled exercise types in user settings were not being applied to practice sessions
+   - Updated `createUnifiedPracticeSession` to properly pass `enabledExerciseTypes` from user settings
+   - Fixed `determineExerciseTypeProgressive` to respect user's enabled exercise types
+   - Exercise types now correctly filter based on user preferences in settings
+
+4. **Progressive Learning Algorithm**: Implemented comprehensive level-based word progression system
+   - **Sequential Progression**: Words must advance through levels 0→1→2→3→4→5 sequentially
+   - **Smart Advancement**: 2 successful attempts + 60% success rate required to advance
+   - **Intelligent Regression**: 3 failed attempts with <60% success rate triggers level decrease
+   - **Database Integration**: Uses existing `UserDictionary.srsLevel` field for tracking progression
+   - **Learning Status Updates**: Automatically updates learning status based on progression level
+
+5. **Validation Integration**: Integrated progressive learning into existing practice validation
+   - Updated `validateTypingInput` to use `updateWordProgression` for level-based updates
+   - Maintains compatibility with existing typing practice while adding progressive features
+   - Preserves all existing learning metrics and session tracking
+
 **Technical Implementation Details**:
 
 - **Enhanced Dialog Interface**: `VocabularyPracticeSettingsDialog.tsx` (330 lines) - Full-screen scrollable modal with proper ScrollArea configuration
@@ -316,10 +407,23 @@ Exercises 4 and 5 (Write by Definition and Write by Sound) now include "Next" bu
 
 The practice system uses Next.js server actions for database operations with proper async/await patterns:
 
-- `createUnifiedPracticeSession` - Creates a practice session with dynamic exercise selection
+**Session Management**:
+
+- `createUnifiedPracticeSession` - Creates a practice session with dynamic exercise selection using progressive learning
 - `updateWordProgressAndSelectNext` - Updates word progress and determines the next exercise type
-- `determineExerciseType` - Selects the appropriate exercise based on learning metrics
 - `getPracticeTypeConfigs` - Provides configuration for each practice type
+
+**Progressive Learning (NEW)**:
+
+- `determineExerciseTypeProgressive` - Selects exercise type based on current learning level with sequential progression
+- `updateWordProgression` - Updates word progression after practice attempts with level advancement/regression logic
+- `EXERCISE_LEVEL_MAPPING` - Maps learning levels (0-5) to appropriate exercise types
+- `PROGRESSION_REQUIREMENTS` - Defines thresholds for advancement and regression
+
+**Legacy Support**:
+
+- `determineExerciseType` - Original exercise selection algorithm (maintained for backward compatibility)
+- `validateTypingInput` - Validates practice attempts and integrates with progressive learning system
 
 ## Component Architecture Principles
 

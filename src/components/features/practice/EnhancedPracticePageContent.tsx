@@ -11,11 +11,13 @@ import { EnhancedPracticeContent } from './EnhancedPracticeContent';
 import { useVocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
 import {
   createEnhancedPracticeSession,
-  createUnifiedPracticeSession,
   PracticeType,
   EnhancedPracticeSession,
   CreatePracticeSessionRequest,
 } from '@/core/domains/user/actions/practice-actions';
+import { createUnifiedPracticeSession } from '@/core/domains/user/actions/practice-unified';
+import { UnifiedPracticeSession } from '@/core/domains/user/actions/practice-types';
+import { LanguageCode } from '@/core/types';
 
 /**
  * Enhanced Practice Page Content Component
@@ -27,7 +29,9 @@ export function EnhancedPracticePageContent() {
   const { user } = useUser();
   const { settings } = useVocabularyPracticeSettings();
 
-  const [session, setSession] = useState<EnhancedPracticeSession | null>(null);
+  const [session, setSession] = useState<
+    EnhancedPracticeSession | UnifiedPracticeSession | null
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -89,7 +93,22 @@ export function EnhancedPracticePageContent() {
       // Use unified practice system if no specific type provided
       const result =
         sessionPracticeType === 'unified-practice'
-          ? await createUnifiedPracticeSession(request)
+          ? await createUnifiedPracticeSession(request.userId, {
+              practiceType: request.practiceType,
+              wordsToStudy: request.wordsCount || 20,
+              difficulty: request.difficultyLevel,
+              targetLanguageCode: 'da' as LanguageCode,
+              timeLimit: undefined,
+              listId: request.listId || undefined,
+              userListId: request.userListId || undefined,
+              settings: {
+                autoPlayAudio: settings.autoPlayAudioOnWordCard,
+                enableGameSounds: settings.enableGameSounds,
+                showHints: true,
+                allowSkipping: true,
+              },
+              enabledExerciseTypes,
+            })
           : await createEnhancedPracticeSession(request);
 
       if (result.success && result.session) {
@@ -225,7 +244,7 @@ export function EnhancedPracticePageContent() {
 
       {/* Practice Content */}
       <EnhancedPracticeContent
-        session={session}
+        session={session as EnhancedPracticeSession}
         settings={settings}
         onWordComplete={handleWordComplete}
         onSessionComplete={handleSessionComplete}

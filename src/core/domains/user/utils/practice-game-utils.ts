@@ -7,35 +7,19 @@ import { PracticeType } from '../actions/practice-types';
 
 /**
  * Generate character pool for make-up-word exercise
+ * Creates a pool with exactly the characters needed for the target word,
+ * including duplicate characters if they appear multiple times in the word.
  */
-export function generateCharacterPool(
-  correctWord: string,
-  extraCharacters: number = 8,
-): string[] {
+export function generateCharacterPool(correctWord: string): string[] {
+  // Convert to lowercase and split into individual characters
   const wordChars = correctWord.toLowerCase().split('');
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 
-  // Get unique characters from the word
-  const uniqueWordChars = [...new Set(wordChars)];
+  // For make-up-word exercise, we want exactly the characters from the word
+  // including duplicates (e.g., "corkscrew" should have two 'c' characters)
+  // No extra characters are added to make it challenging but fair
 
-  // Add extra random characters
-  const extraChars: string[] = [];
-  let attempts = 0;
-
-  while (extraChars.length < extraCharacters && attempts < 50) {
-    const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
-    if (
-      !uniqueWordChars.includes(randomChar!) &&
-      !extraChars.includes(randomChar!)
-    ) {
-      extraChars.push(randomChar!);
-    }
-    attempts++;
-  }
-
-  // Combine and shuffle
-  const allChars = [...wordChars, ...extraChars];
-  return shuffleArray(allChars);
+  // Simply shuffle the word characters and return them
+  return shuffleArray(wordChars);
 }
 
 /**

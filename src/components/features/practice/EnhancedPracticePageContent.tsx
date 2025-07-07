@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { useUser } from '@/core/shared/hooks/useUser';
 import { EnhancedPracticeContent } from './EnhancedPracticeContent';
-import { useVocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
+import { useVocabularyPracticeSettings } from '@/core/shared/hooks/useSettings';
 import {
   createEnhancedPracticeSession,
   PracticeType,
@@ -27,7 +27,8 @@ export function EnhancedPracticePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useUser();
-  const { settings } = useVocabularyPracticeSettings();
+  const { settings, isLoaded: settingsLoaded } =
+    useVocabularyPracticeSettings();
 
   const [session, setSession] = useState<
     EnhancedPracticeSession | UnifiedPracticeSession | null
@@ -51,7 +52,7 @@ export function EnhancedPracticePageContent() {
   };
 
   const initializePracticeSession = useCallback(async () => {
-    if (!user) return;
+    if (!user || !settingsLoaded) return;
 
     setIsLoading(true);
     setError(null);
@@ -126,14 +127,14 @@ export function EnhancedPracticePageContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [user, practiceType, userListId, listId, settings]);
+  }, [user, practiceType, userListId, listId, settings, settingsLoaded]);
 
   // Initialize session on component mount
   useEffect(() => {
-    if (user) {
+    if (user && settingsLoaded) {
       initializePracticeSession();
     }
-  }, [user, initializePracticeSession]);
+  }, [user, initializePracticeSession, settingsLoaded]);
 
   const handleWordComplete = (
     wordId: string,
@@ -168,12 +169,14 @@ export function EnhancedPracticePageContent() {
     router.push('/dashboard/practice');
   };
 
-  if (isLoading) {
+  if (!settingsLoaded || isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="text-sm text-muted-foreground">
-          Creating practice session...
+          {!settingsLoaded
+            ? 'Loading settings...'
+            : 'Creating practice session...'}
         </p>
       </div>
     );

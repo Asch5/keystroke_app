@@ -5,6 +5,10 @@ import { LanguageCode, LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import {
+  getBestDefinitionForUser,
+  TranslationData,
+} from '../../dictionary/utils/translation-utils';
+import {
   PracticeType,
   PracticeWord,
   UnifiedPracticeSession,
@@ -554,11 +558,39 @@ async function enhanceWordsWithExerciseTypes(
       userPreferences,
     );
 
-    enhancedWords.push({
+    // Create enhanced word with exercise type
+    const enhancedWord: PracticeWord & {
+      exerciseType: PracticeType;
+      reasoning: string;
+    } = {
       ...word,
       exerciseType,
       reasoning,
-    });
+    };
+
+    // Add game-specific data based on exercise type
+    if (exerciseType === 'make-up-word') {
+      // Generate character pool for make-up-word exercise
+      const { generateCharacterPool } = await import(
+        '../utils/practice-game-utils'
+      );
+      enhancedWord.characterPool = generateCharacterPool(word.wordText);
+      enhancedWord.isPhrase = word.wordText.includes(' ');
+      enhancedWord.maxAttempts = enhancedWord.isPhrase ? 6 : 3;
+    } else if (exerciseType === 'choose-right-word') {
+      // Generate distractor options for multiple choice
+      const { generateDistractorOptions } = await import(
+        '../utils/practice-game-utils'
+      );
+      enhancedWord.distractorOptions = generateDistractorOptions(
+        word.wordText,
+        'da',
+        3,
+      );
+      enhancedWord.correctAnswerIndex = Math.floor(Math.random() * 4); // Random position for correct answer
+    }
+
+    enhancedWords.push(enhancedWord);
   }
 
   return enhancedWords;
@@ -649,6 +681,17 @@ export async function getAdaptivePracticeWords(
                   },
                 },
               },
+              image: true,
+              translationLinks: {
+                include: {
+                  translation: true,
+                },
+              },
+              oneWordLinks: {
+                include: {
+                  word: true,
+                },
+              },
             },
           },
         },
@@ -656,21 +699,56 @@ export async function getAdaptivePracticeWords(
         take: remainingCount,
       });
 
-      additionalWords = userWords.map((userWord) => ({
-        userDictionaryId: userWord.id,
-        wordText:
-          userWord.definition.wordDetails[0]?.wordDetails?.word?.word || '',
-        definition: userWord.definition.definition,
-        difficulty: userWord.srsLevel || 0,
-        learningStatus: userWord.learningStatus,
-        attempts: userWord.reviewCount || 0,
-        correctAttempts: Math.round(
-          ((userWord.reviewCount || 0) * (userWord.masteryScore || 0)) / 100,
-        ),
-        srsLevel: userWord.srsLevel || 0,
-        imageUrl: undefined,
-        imageId: userWord.definition.imageId || undefined,
-      }));
+      // Get user's base language for translations
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { baseLanguageCode: true },
+      });
+      const baseLanguageCode = (user?.baseLanguageCode as LanguageCode) || 'en';
+
+      additionalWords = userWords.map((userWord) => {
+        // Prepare translation data
+        const translations: TranslationData[] =
+          userWord.definition.translationLinks.map((link) => ({
+            id: link.translation.id,
+            languageCode: link.translation.languageCode as LanguageCode,
+            content: link.translation.content,
+          }));
+
+        // Get the best definition content (prioritize user's base language)
+        const definitionData = getBestDefinitionForUser(
+          userWord.definition.definition,
+          config.targetLanguageCode,
+          translations,
+          baseLanguageCode,
+        );
+
+        // Get one-word translation from DefinitionToOneWord table
+        const oneWordLink = userWord.definition.oneWordLinks?.[0];
+        const oneWordTranslation = oneWordLink?.word?.word || '';
+
+        const wordDetail = userWord.definition.wordDetails[0]?.wordDetails;
+
+        return {
+          userDictionaryId: userWord.id,
+          wordText:
+            userWord.definition.wordDetails[0]?.wordDetails?.word?.word || '',
+          definition: definitionData.content,
+          oneWordTranslation,
+          difficulty: userWord.srsLevel || 0,
+          learningStatus: userWord.learningStatus,
+          attempts: userWord.reviewCount || 0,
+          correctAttempts: Math.round(
+            ((userWord.reviewCount || 0) * (userWord.masteryScore || 0)) / 100,
+          ),
+          srsLevel: userWord.srsLevel || 0,
+          imageUrl: userWord.definition.image?.url,
+          imageId: userWord.definition.imageId || undefined,
+          partOfSpeech: wordDetail?.partOfSpeech || undefined,
+          phonetic: wordDetail?.word?.phoneticGeneral || undefined,
+          audioUrl: '', // Will be populated by audio service if available
+        };
+      });
     }
 
     const allWords = [...srsWords, ...additionalWords];

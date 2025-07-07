@@ -16,7 +16,7 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import type { VocabularyPracticeSettings } from '../hooks/useVocabularyPracticeSettings';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface ExerciseTypeSettingsProps {
   settings: VocabularyPracticeSettings;
@@ -25,6 +25,8 @@ interface ExerciseTypeSettingsProps {
     enabled: boolean,
   ) => void;
   onMakeUpWordMaxAttemptsChange: (attempts: number[]) => void;
+  onMakeUpWordTimeLimitChange?: (timeLimit: number[]) => void;
+  onMakeUpWordAdditionalCharactersChange?: (characters: number[]) => void;
 }
 
 /**
@@ -34,7 +36,14 @@ export function ExerciseTypeSettings({
   settings,
   onExerciseTypeToggle,
   onMakeUpWordMaxAttemptsChange,
+  onMakeUpWordTimeLimitChange,
+  onMakeUpWordAdditionalCharactersChange,
 }: ExerciseTypeSettingsProps) {
+  // Defensive checks to prevent undefined access errors during loading
+  if (!settings || typeof settings.enableRememberTranslation === 'undefined') {
+    return null;
+  }
+
   // Exercise type configurations
   const exerciseTypes = [
     {
@@ -43,7 +52,7 @@ export function ExerciseTypeSettings({
       description: 'Simple recognition exercise showing word and translation',
       icon: <Brain className="h-4 w-4" />,
       difficulty: 1,
-      enabled: settings.enableRememberTranslation,
+      enabled: settings.enableRememberTranslation ?? true,
       color:
         'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     },
@@ -53,7 +62,7 @@ export function ExerciseTypeSettings({
       description: 'Multiple choice exercise with 4 options',
       icon: <Target className="h-4 w-4" />,
       difficulty: 2,
-      enabled: settings.enableChooseRightWord,
+      enabled: settings.enableChooseRightWord ?? true,
       color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     },
     {
@@ -62,7 +71,7 @@ export function ExerciseTypeSettings({
       description: 'Drag and drop letters to form the correct word',
       icon: <Puzzle className="h-4 w-4" />,
       difficulty: 3,
-      enabled: settings.enableMakeUpWord,
+      enabled: settings.enableMakeUpWord ?? true,
       color:
         'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
       hasSettings: true,
@@ -73,7 +82,7 @@ export function ExerciseTypeSettings({
       description: 'Type the word based on its definition',
       icon: <Keyboard className="h-4 w-4" />,
       difficulty: 4,
-      enabled: settings.enableWriteByDefinition,
+      enabled: settings.enableWriteByDefinition ?? true,
       color:
         'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
     },
@@ -83,7 +92,7 @@ export function ExerciseTypeSettings({
       description: 'Type the word based on its pronunciation',
       icon: <Volume2 className="h-4 w-4" />,
       difficulty: 5,
-      enabled: settings.enableWriteBySound,
+      enabled: settings.enableWriteBySound ?? true,
       color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
     },
   ];
@@ -153,7 +162,9 @@ export function ExerciseTypeSettings({
               exerciseType.enabled && (
                 <CardContent className="pt-0">
                   <Separator className="mb-3" />
-                  <div className="flex items-center justify-between">
+
+                  {/* Maximum Attempts */}
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex-1">
                       <Label className="text-sm font-medium">
                         Maximum Attempts
@@ -166,30 +177,130 @@ export function ExerciseTypeSettings({
                       <button
                         onClick={() =>
                           onMakeUpWordMaxAttemptsChange([
-                            Math.max(1, settings.makeUpWordMaxAttempts - 1),
+                            Math.max(
+                              1,
+                              (settings.makeUpWordMaxAttempts ?? 3) - 1,
+                            ),
                           ])
                         }
-                        disabled={settings.makeUpWordMaxAttempts <= 1}
+                        disabled={(settings.makeUpWordMaxAttempts ?? 3) <= 1}
                         className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center disabled:opacity-50"
                       >
                         -
                       </button>
                       <span className="w-8 text-center text-sm font-medium">
-                        {settings.makeUpWordMaxAttempts}
+                        {settings.makeUpWordMaxAttempts ?? 3}
                       </span>
                       <button
                         onClick={() =>
                           onMakeUpWordMaxAttemptsChange([
-                            Math.min(6, settings.makeUpWordMaxAttempts + 1),
+                            Math.min(
+                              6,
+                              (settings.makeUpWordMaxAttempts ?? 3) + 1,
+                            ),
                           ])
                         }
-                        disabled={settings.makeUpWordMaxAttempts >= 6}
+                        disabled={(settings.makeUpWordMaxAttempts ?? 3) >= 6}
                         className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center disabled:opacity-50"
                       >
                         +
                       </button>
                     </div>
                   </div>
+
+                  {/* Time Limit */}
+                  {onMakeUpWordTimeLimitChange && (
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex-1">
+                        <Label className="text-sm font-medium">
+                          Time Limit (seconds)
+                        </Label>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Maximum time per word (0 = no limit)
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() =>
+                            onMakeUpWordTimeLimitChange([
+                              Math.max(0, settings.makeUpWordTimeLimit - 5),
+                            ])
+                          }
+                          disabled={settings.makeUpWordTimeLimit <= 0}
+                          className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center disabled:opacity-50"
+                        >
+                          -
+                        </button>
+                        <span className="w-12 text-center text-sm font-medium">
+                          {settings.makeUpWordTimeLimit === 0
+                            ? '∞'
+                            : settings.makeUpWordTimeLimit}
+                        </span>
+                        <button
+                          onClick={() =>
+                            onMakeUpWordTimeLimitChange([
+                              Math.min(120, settings.makeUpWordTimeLimit + 5),
+                            ])
+                          }
+                          disabled={settings.makeUpWordTimeLimit >= 120}
+                          className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center disabled:opacity-50"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Additional Characters */}
+                  {onMakeUpWordAdditionalCharactersChange && (
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <Label className="text-sm font-medium">
+                          Additional Characters
+                        </Label>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Extra random characters in the pool (0 = exact match)
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() =>
+                            onMakeUpWordAdditionalCharactersChange([
+                              Math.max(
+                                0,
+                                settings.makeUpWordAdditionalCharacters - 1,
+                              ),
+                            ])
+                          }
+                          disabled={
+                            settings.makeUpWordAdditionalCharacters <= 0
+                          }
+                          className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center disabled:opacity-50"
+                        >
+                          -
+                        </button>
+                        <span className="w-8 text-center text-sm font-medium">
+                          {settings.makeUpWordAdditionalCharacters}
+                        </span>
+                        <button
+                          onClick={() =>
+                            onMakeUpWordAdditionalCharactersChange([
+                              Math.min(
+                                10,
+                                settings.makeUpWordAdditionalCharacters + 1,
+                              ),
+                            ])
+                          }
+                          disabled={
+                            settings.makeUpWordAdditionalCharacters >= 10
+                          }
+                          className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center disabled:opacity-50"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               )}
           </Card>

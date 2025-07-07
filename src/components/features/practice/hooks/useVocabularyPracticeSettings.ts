@@ -16,6 +16,8 @@ export interface VocabularyPracticeSettings {
 
   // Exercise Configuration
   makeUpWordMaxAttempts: number;
+  makeUpWordTimeLimit: number; // seconds per word for Make Up Word exercise
+  makeUpWordAdditionalCharacters: number; // extra characters beyond what's needed
   showWordCardFirst: boolean;
   autoAdvanceFromWordCard: boolean;
   autoAdvanceDelaySeconds: number;
@@ -58,6 +60,8 @@ const DEFAULT_SETTINGS: VocabularyPracticeSettings = {
 
   // Exercise Configuration
   makeUpWordMaxAttempts: 3,
+  makeUpWordTimeLimit: 30,
+  makeUpWordAdditionalCharacters: 5,
   showWordCardFirst: true,
   autoAdvanceFromWordCard: false,
   autoAdvanceDelaySeconds: 3,

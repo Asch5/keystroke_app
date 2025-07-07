@@ -11,7 +11,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Target, Clock, BookOpen } from 'lucide-react';
-import type { VocabularyPracticeSettings } from '../hooks/useVocabularyPracticeSettings';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface VocabularySessionConfigurationSettingsProps {
   settings: VocabularyPracticeSettings;
@@ -33,6 +33,11 @@ export function VocabularySessionConfigurationSettings({
   onAutoAdvanceFromWordCardToggle,
   onAutoAdvanceDelayChange,
 }: VocabularySessionConfigurationSettingsProps) {
+  // Defensive checks to prevent undefined access errors during loading
+  if (!settings || typeof settings.wordsCount === 'undefined') {
+    return null;
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -52,7 +57,7 @@ export function VocabularySessionConfigurationSettings({
         </div>
         <div className="w-24">
           <Select
-            value={settings.wordsCount.toString()}
+            value={(settings.wordsCount ?? 10).toString()}
             onValueChange={onWordsCountChange}
           >
             <SelectTrigger>
@@ -85,7 +90,7 @@ export function VocabularySessionConfigurationSettings({
         </div>
         <div className="w-32">
           <Select
-            value={settings.difficultyLevel.toString()}
+            value={(settings.difficultyLevel ?? 3).toString()}
             onValueChange={onDifficultyChange}
           >
             <SelectTrigger>
@@ -121,7 +126,7 @@ export function VocabularySessionConfigurationSettings({
         </div>
         <Switch
           id="show-word-card-first"
-          checked={settings.showWordCardFirst}
+          checked={settings.showWordCardFirst ?? true}
           onCheckedChange={onShowWordCardFirstToggle}
         />
       </div>
@@ -141,17 +146,17 @@ export function VocabularySessionConfigurationSettings({
         </div>
         <Switch
           id="auto-advance"
-          checked={settings.autoAdvanceFromWordCard}
+          checked={settings.autoAdvanceFromWordCard ?? false}
           onCheckedChange={onAutoAdvanceFromWordCardToggle}
         />
       </div>
 
       {/* Auto Advance Delay */}
-      {settings.autoAdvanceFromWordCard && (
+      {(settings.autoAdvanceFromWordCard ?? false) && (
         <div className="flex items-center justify-between space-x-4">
           <div className="flex-1 space-y-1">
             <Label className="text-sm font-medium">
-              Auto-advance delay: {settings.autoAdvanceDelaySeconds}s
+              Auto-advance delay: {settings.autoAdvanceDelaySeconds ?? 3}s
             </Label>
             <p className="text-xs text-muted-foreground">
               How long to wait before automatically advancing
@@ -159,7 +164,7 @@ export function VocabularySessionConfigurationSettings({
           </div>
           <div className="w-32">
             <Slider
-              value={[settings.autoAdvanceDelaySeconds]}
+              value={[settings.autoAdvanceDelaySeconds ?? 3]}
               onValueChange={onAutoAdvanceDelayChange}
               min={1}
               max={10}

@@ -20,6 +20,51 @@ export interface TypingPracticeSettings {
   enableKeystrokeSounds: boolean;
 }
 
+// Vocabulary Practice Settings
+export interface VocabularyPracticeSettings {
+  // Session Configuration
+  wordsCount: number;
+  difficultyLevel: number;
+
+  // Exercise Type Selection
+  enableRememberTranslation: boolean;
+  enableChooseRightWord: boolean;
+  enableMakeUpWord: boolean;
+  enableWriteByDefinition: boolean;
+  enableWriteBySound: boolean;
+
+  // Exercise Configuration
+  makeUpWordMaxAttempts: number;
+  makeUpWordTimeLimit: number;
+  makeUpWordAdditionalCharacters: number;
+  showWordCardFirst: boolean;
+  autoAdvanceFromWordCard: boolean;
+  autoAdvanceDelaySeconds: number;
+
+  // Time Settings
+  enableTimeLimit: boolean;
+  timeLimitSeconds: number;
+
+  // Audio Settings
+  autoPlayAudioOnWordCard: boolean;
+  autoPlayAudioOnGameStart: boolean;
+  enableGameSounds: boolean;
+  gameSoundVolume: number;
+
+  // Display Settings
+  showProgressBar: boolean;
+  showDefinitionImages: boolean;
+  showPhoneticPronunciation: boolean;
+  showPartOfSpeech: boolean;
+  showLearningStatus: boolean;
+
+  // Behavior Settings
+  pauseOnIncorrectAnswer: boolean;
+  showCorrectAnswerOnMistake: boolean;
+  allowSkipDifficultWords: boolean;
+  adaptiveDifficulty: boolean;
+}
+
 // Dictionary/Table Filter Settings
 export interface DictionaryFilterSettings {
   searchQuery: string;
@@ -82,6 +127,7 @@ export interface SettingsState {
   learning: LearningPreferences;
   practice: {
     typing: TypingPracticeSettings;
+    vocabulary: VocabularyPracticeSettings;
     flashcards: Record<string, unknown>; // Future expansion
     quiz: Record<string, unknown>; // Future expansion
   };
@@ -142,6 +188,50 @@ const DEFAULT_TYPING_PRACTICE_SETTINGS: TypingPracticeSettings = {
   enableKeystrokeSounds: false,
 };
 
+const DEFAULT_VOCABULARY_PRACTICE_SETTINGS: VocabularyPracticeSettings = {
+  // Session Configuration
+  wordsCount: 10,
+  difficultyLevel: 3,
+
+  // Exercise Type Selection (all enabled by default)
+  enableRememberTranslation: true,
+  enableChooseRightWord: true,
+  enableMakeUpWord: true,
+  enableWriteByDefinition: true,
+  enableWriteBySound: true,
+
+  // Exercise Configuration
+  makeUpWordMaxAttempts: 3,
+  makeUpWordTimeLimit: 30,
+  makeUpWordAdditionalCharacters: 5,
+  showWordCardFirst: true,
+  autoAdvanceFromWordCard: false,
+  autoAdvanceDelaySeconds: 3,
+
+  // Time Settings
+  enableTimeLimit: false,
+  timeLimitSeconds: 60,
+
+  // Audio Settings
+  autoPlayAudioOnWordCard: true,
+  autoPlayAudioOnGameStart: true,
+  enableGameSounds: true,
+  gameSoundVolume: 0.5,
+
+  // Display Settings
+  showProgressBar: true,
+  showDefinitionImages: true,
+  showPhoneticPronunciation: true,
+  showPartOfSpeech: true,
+  showLearningStatus: true,
+
+  // Behavior Settings
+  pauseOnIncorrectAnswer: false,
+  showCorrectAnswerOnMistake: true,
+  allowSkipDifficultWords: true,
+  adaptiveDifficulty: true,
+};
+
 const DEFAULT_DICTIONARY_FILTERS: DictionaryFilterSettings = {
   searchQuery: '',
   selectedStatus: [],
@@ -176,6 +266,7 @@ const initialState: SettingsState = {
   learning: DEFAULT_LEARNING_PREFERENCES,
   practice: {
     typing: DEFAULT_TYPING_PRACTICE_SETTINGS,
+    vocabulary: DEFAULT_VOCABULARY_PRACTICE_SETTINGS,
     flashcards: {},
     quiz: {},
   },
@@ -246,6 +337,47 @@ const settingsSlice = createSlice({
       state.sync.pendingChanges = true;
     },
 
+    updateBulkTypingPracticeSettings: (
+      state,
+      action: PayloadAction<Partial<TypingPracticeSettings>>,
+    ) => {
+      state.practice.typing = { ...state.practice.typing, ...action.payload };
+      state.sync.pendingChanges = true;
+    },
+
+    resetTypingPracticeSettings: (state) => {
+      state.practice.typing = DEFAULT_TYPING_PRACTICE_SETTINGS;
+      state.sync.pendingChanges = true;
+    },
+
+    // Vocabulary Practice Settings
+    updateVocabularyPracticeSetting: <
+      K extends keyof VocabularyPracticeSettings,
+    >(
+      state: SettingsState,
+      action: PayloadAction<{ key: K; value: VocabularyPracticeSettings[K] }>,
+    ) => {
+      const { key, value } = action.payload;
+      state.practice.vocabulary[key] = value;
+      state.sync.pendingChanges = true;
+    },
+
+    updateBulkVocabularyPracticeSettings: (
+      state,
+      action: PayloadAction<Partial<VocabularyPracticeSettings>>,
+    ) => {
+      state.practice.vocabulary = {
+        ...state.practice.vocabulary,
+        ...action.payload,
+      };
+      state.sync.pendingChanges = true;
+    },
+
+    resetVocabularyPracticeSettings: (state) => {
+      state.practice.vocabulary = DEFAULT_VOCABULARY_PRACTICE_SETTINGS;
+      state.sync.pendingChanges = true;
+    },
+
     // Dictionary Filters
     updateDictionaryFilter: <K extends keyof DictionaryFilterSettings>(
       state: SettingsState,
@@ -288,14 +420,6 @@ const settingsSlice = createSlice({
       state.sync.pendingChanges = true;
     },
 
-    updateBulkTypingPracticeSettings: (
-      state,
-      action: PayloadAction<Partial<TypingPracticeSettings>>,
-    ) => {
-      state.practice.typing = { ...state.practice.typing, ...action.payload };
-      state.sync.pendingChanges = true;
-    },
-
     // Clear filters
     clearDictionaryFilters: (state) => {
       state.filters.dictionary = DEFAULT_DICTIONARY_FILTERS;
@@ -308,11 +432,6 @@ const settingsSlice = createSlice({
     },
 
     // Reset to defaults
-    resetTypingPracticeSettings: (state) => {
-      state.practice.typing = DEFAULT_TYPING_PRACTICE_SETTINGS;
-      state.sync.pendingChanges = true;
-    },
-
     resetUIPreferences: (state) => {
       state.ui = DEFAULT_UI_PREFERENCES;
       state.sync.pendingChanges = true;
@@ -350,14 +469,17 @@ export const {
   updateUIPreference,
   updateLearningPreference,
   updateTypingPracticeSetting,
+  updateBulkTypingPracticeSettings,
+  resetTypingPracticeSettings,
+  updateVocabularyPracticeSetting,
+  updateBulkVocabularyPracticeSettings,
+  resetVocabularyPracticeSettings,
   updateDictionaryFilter,
   updateAdminDictionaryFilter,
   updateBulkUIPreferences,
   updateBulkLearningPreferences,
-  updateBulkTypingPracticeSettings,
   clearDictionaryFilters,
   clearAdminDictionaryFilters,
-  resetTypingPracticeSettings,
   resetUIPreferences,
   resetLearningPreferences,
   setSyncInProgress,
@@ -374,6 +496,9 @@ export const selectLearningPreferences = (state: { settings: SettingsState }) =>
 export const selectTypingPracticeSettings = (state: {
   settings: SettingsState;
 }) => state.settings.practice.typing;
+export const selectVocabularyPracticeSettings = (state: {
+  settings: SettingsState;
+}) => state.settings.practice.vocabulary;
 export const selectDictionaryFilters = (state: { settings: SettingsState }) =>
   state.settings.filters.dictionary;
 export const selectAdminDictionaryFilters = (state: {

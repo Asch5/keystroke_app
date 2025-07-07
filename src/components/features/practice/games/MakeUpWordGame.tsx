@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, RotateCcw, Shuffle, Target } from 'lucide-react';
 import { cn } from '@/core/shared/utils/common/cn';
 import { PracticeAudioControls } from '../shared/PracticeAudioControls';
+import { gameSoundService } from '@/core/domains/dictionary/services/game-sound-service';
 
 interface MakeUpWordGameProps {
   word: {
@@ -23,6 +24,7 @@ interface MakeUpWordGameProps {
   onAnswer: (userInput: string, isCorrect: boolean, attempts: number) => void;
   onAudioPlay?: (word: string, audioUrl?: string) => void;
   autoPlayAudio?: boolean;
+  onNext?: () => void;
   className?: string;
 }
 
@@ -36,6 +38,7 @@ export function MakeUpWordGame({
   onAnswer,
   onAudioPlay,
   autoPlayAudio = false,
+  onNext,
   className,
 }: MakeUpWordGameProps) {
   const [selectedChars, setSelectedChars] = useState<string[]>([]);
@@ -44,12 +47,13 @@ export function MakeUpWordGame({
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [wrongPositions, setWrongPositions] = useState<number[]>([]);
+  const [isGameCompleted, setIsGameCompleted] = useState(false);
 
   const maxAttempts = word.maxAttempts || (word.isPhrase ? 6 : 3);
   const targetWord = word.wordText.toLowerCase();
   const userInput = selectedChars.join('').toLowerCase();
 
-  // Initialize character pool
+  // Initialize character pool with repetitive character tracking
   useEffect(() => {
     if (word.characterPool) {
       setAvailableChars([...word.characterPool]);
@@ -58,21 +62,87 @@ export function MakeUpWordGame({
       setShowFeedback(false);
       setIsCorrect(false);
       setWrongPositions([]);
+      setIsGameCompleted(false);
     }
   }, [word.characterPool, word.wordText]);
 
-  const handleCharacterSelect = (char: string, index: number) => {
-    if (showFeedback) return;
+  // Initialize game sound service
+  useEffect(() => {
+    gameSoundService.initialize({
+      volume: 0.5,
+      enabled: true,
+      useStaticFiles: true,
+    });
+  }, []);
 
-    // Move character from available to selected
+  // Check if character selection is valid (correct position in word)
+  const isCharacterSelectionValid = (
+    char: string,
+    currentPosition: number,
+  ): boolean => {
+    if (currentPosition >= targetWord.length) return false;
+    return targetWord[currentPosition] === char.toLowerCase();
+  };
+
+  const handleCharacterSelect = (char: string, index: number) => {
+    if (showFeedback || isGameCompleted) return;
+
+    const currentPosition = selectedChars.length;
+    const isValidSelection = isCharacterSelectionValid(char, currentPosition);
+
+    if (!isValidSelection) {
+      // Wrong character selection - play error sound and reduce attempts
+      gameSoundService.playError();
+
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+
+      // Check if attempts are exhausted
+      if (newAttempts >= maxAttempts) {
+        setIsGameCompleted(true);
+        setShowFeedback(true);
+        setIsCorrect(false);
+
+        // Call onAnswer with final result
+        onAnswer(userInput, false, newAttempts);
+
+        // Auto-advance to word card after 2 seconds
+        setTimeout(() => {
+          onNext?.();
+        }, 2000);
+      }
+
+      return; // Don't add the wrong character
+    }
+
+    // Valid character selection - move character from available to selected
     const newAvailable = [...availableChars];
     newAvailable.splice(index, 1);
     setAvailableChars(newAvailable);
     setSelectedChars([...selectedChars, char]);
+
+    // Check if word is completed
+    const newUserInput = [...selectedChars, char].join('').toLowerCase();
+    if (newUserInput === targetWord) {
+      setIsCorrect(true);
+      setShowFeedback(true);
+      setIsGameCompleted(true);
+
+      // Play success sound
+      gameSoundService.playSuccess();
+
+      // Call onAnswer with success
+      onAnswer(newUserInput, true, attempts + 1);
+
+      // Auto-advance to word card after 1.5 seconds
+      setTimeout(() => {
+        onNext?.();
+      }, 1500);
+    }
   };
 
   const handleCharacterRemove = (index: number) => {
-    if (showFeedback) return;
+    if (showFeedback || isGameCompleted) return;
 
     // Move character from selected back to available
     const charToRemove = selectedChars[index];
@@ -87,7 +157,7 @@ export function MakeUpWordGame({
   };
 
   const handleSubmit = () => {
-    if (showFeedback || selectedChars.length === 0) return;
+    if (showFeedback || selectedChars.length === 0 || isGameCompleted) return;
 
     const newAttempts = attempts + 1;
     setAttempts(newAttempts);
@@ -95,8 +165,13 @@ export function MakeUpWordGame({
     const correct = userInput === targetWord;
     setIsCorrect(correct);
     setShowFeedback(true);
+    setIsGameCompleted(true);
 
-    if (!correct) {
+    if (correct) {
+      gameSoundService.playSuccess();
+    } else {
+      gameSoundService.playError();
+
       // Find wrong positions
       const wrong: number[] = [];
       for (let i = 0; i < Math.min(userInput.length, targetWord.length); i++) {
@@ -110,32 +185,24 @@ export function MakeUpWordGame({
     // Call the answer handler
     onAnswer(userInput, correct, newAttempts);
 
-    // Auto-advance or allow retry
+    // Auto-advance to word card
     setTimeout(
       () => {
-        if (correct || newAttempts >= maxAttempts) {
-          // Game completed
-        } else {
-          // Reset for next attempt
-          setShowFeedback(false);
-          setWrongPositions([]);
-          // Keep the same character pool but reset positions
-          resetCharacterPool();
-        }
+        onNext?.();
       },
-      correct ? 1500 : 2500,
+      correct ? 1500 : 2000,
     );
   };
 
   const resetCharacterPool = () => {
-    if (word.characterPool) {
+    if (word.characterPool && !isGameCompleted) {
       setAvailableChars([...word.characterPool]);
       setSelectedChars([]);
     }
   };
 
   const shuffleAvailableChars = () => {
-    if (showFeedback) return;
+    if (showFeedback || isGameCompleted) return;
     setAvailableChars([...availableChars].sort(() => Math.random() - 0.5));
   };
 
@@ -159,13 +226,71 @@ export function MakeUpWordGame({
     return 'bg-green-100 border-green-500 text-green-700';
   };
 
+  // Enhanced character display with repetitive character handling
+  const renderCharacterButton = (
+    char: string,
+    index: number,
+    isAvailable: boolean = true,
+  ) => {
+    // Count occurrences of this character up to this point
+    const charArray = isAvailable ? availableChars : selectedChars;
+    const sameCharsBefore = charArray
+      .slice(0, index)
+      .filter((c) => c === char).length;
+    const totalSameChars = (word.characterPool || []).filter(
+      (c) => c === char,
+    ).length;
+
+    // Show numbered badge for repetitive characters
+    const showNumberBadge = totalSameChars > 1;
+    const charNumber = sameCharsBefore + 1;
+
+    return (
+      <div key={`${char}-${index}`} className="relative">
+        <Button
+          variant={isAvailable ? 'secondary' : 'outline'}
+          size="lg"
+          onClick={() =>
+            isAvailable
+              ? handleCharacterSelect(char, index)
+              : handleCharacterRemove(index)
+          }
+          disabled={showFeedback || isGameCompleted}
+          className={cn(
+            'h-12 w-12 text-lg font-bold transition-all duration-200',
+            isAvailable
+              ? 'hover:bg-primary/20 hover:border-primary'
+              : cn(
+                  getCharacterStyle(index),
+                  !showFeedback &&
+                    'hover:bg-destructive/10 hover:border-destructive',
+                ),
+          )}
+        >
+          {char === ' ' ? '␣' : char}
+        </Button>
+        {showNumberBadge && (
+          <Badge
+            variant="secondary"
+            className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+          >
+            {charNumber}
+          </Badge>
+        )}
+      </div>
+    );
+  };
+
   return (
     <Card className={cn('w-full max-w-4xl mx-auto', className)}>
       <CardHeader className="text-center pb-4">
         <div className="flex items-center justify-center gap-4 mb-4">
           <CardTitle className="text-xl">Make Up the Word</CardTitle>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="flex items-center gap-1">
+            <Badge
+              variant={attempts >= maxAttempts ? 'destructive' : 'outline'}
+              className="flex items-center gap-1"
+            >
               <Target className="h-3 w-3" />
               {attempts}/{maxAttempts}
             </Badge>
@@ -221,9 +346,14 @@ export function MakeUpWordGame({
           </p>
           <p className="text-sm text-muted-foreground">
             {word.isPhrase
-              ? 'Include spaces for multi-word phrases'
-              : 'Click characters in order to build the word'}
+              ? 'Include spaces for multi-word phrases. Choose characters in the correct order!'
+              : 'Click characters in the correct order to build the word'}
           </p>
+          {attempts > 0 && attempts < maxAttempts && (
+            <p className="text-sm text-orange-600">
+              Wrong selection! {maxAttempts - attempts} attempts remaining
+            </p>
+          )}
         </div>
 
         {/* Word Building Area */}
@@ -236,23 +366,9 @@ export function MakeUpWordGame({
                   Click characters below to start building...
                 </p>
               ) : (
-                selectedChars.map((char, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="lg"
-                    onClick={() => handleCharacterRemove(index)}
-                    disabled={showFeedback}
-                    className={cn(
-                      'h-12 w-12 text-lg font-bold transition-all duration-200',
-                      getCharacterStyle(index),
-                      !showFeedback &&
-                        'hover:bg-destructive/10 hover:border-destructive',
-                    )}
-                  >
-                    {char === ' ' ? '␣' : char}
-                  </Button>
-                ))
+                selectedChars.map((char, index) =>
+                  renderCharacterButton(char, index, false),
+                )
               )}
             </div>
           </div>
@@ -267,7 +383,7 @@ export function MakeUpWordGame({
                 variant="ghost"
                 size="sm"
                 onClick={shuffleAvailableChars}
-                disabled={showFeedback}
+                disabled={showFeedback || isGameCompleted}
                 className="text-xs"
               >
                 <Shuffle className="h-3 w-3 mr-1" />
@@ -276,24 +392,15 @@ export function MakeUpWordGame({
             </div>
 
             <div className="flex flex-wrap gap-2 justify-center p-4 bg-muted/10 rounded-lg border">
-              {availableChars.map((char, index) => (
-                <Button
-                  key={index}
-                  variant="secondary"
-                  size="lg"
-                  onClick={() => handleCharacterSelect(char, index)}
-                  disabled={showFeedback}
-                  className="h-12 w-12 text-lg font-bold hover:bg-primary/20 hover:border-primary transition-all duration-200"
-                >
-                  {char === ' ' ? '␣' : char}
-                </Button>
-              ))}
+              {availableChars.map((char, index) =>
+                renderCharacterButton(char, index, true),
+              )}
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        {!showFeedback && selectedChars.length > 0 && (
+        {!showFeedback && !isGameCompleted && selectedChars.length > 0 && (
           <div className="flex gap-3 justify-center">
             <Button
               variant="outline"
@@ -314,7 +421,7 @@ export function MakeUpWordGame({
         )}
 
         {/* Feedback */}
-        {showFeedback && (
+        {(showFeedback || isGameCompleted) && (
           <div className="text-center space-y-4">
             <div
               className={cn(
@@ -330,16 +437,18 @@ export function MakeUpWordGame({
               ) : (
                 <>
                   <XCircle className="h-5 w-5" />
-                  {attempts >= maxAttempts ? 'No more attempts' : 'Try again!'}
+                  {attempts >= maxAttempts ? 'No more attempts' : 'Incorrect!'}
                 </>
               )}
             </div>
 
             {!isCorrect && (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Your answer: <span className="font-mono">{userInput}</span>
-                </p>
+                {userInput && (
+                  <p className="text-sm text-muted-foreground">
+                    Your answer: <span className="font-mono">{userInput}</span>
+                  </p>
+                )}
                 {attempts >= maxAttempts && (
                   <p className="text-sm text-muted-foreground">
                     Correct answer:{' '}
@@ -350,15 +459,17 @@ export function MakeUpWordGame({
             )}
 
             <Badge variant="outline" className="mt-2">
-              {isCorrect || attempts >= maxAttempts
-                ? 'Auto-advancing to word review...'
-                : 'Get ready for next attempt...'}
+              {isCorrect
+                ? 'Excellent work! Advancing to word review...'
+                : attempts >= maxAttempts
+                  ? 'Advancing to word review...'
+                  : 'Try again on next attempt...'}
             </Badge>
           </div>
         )}
 
         {/* Loading state */}
-        {showResult && !showFeedback && (
+        {showResult && !showFeedback && !isGameCompleted && (
           <div className="text-center">
             <Badge variant="outline">Processing your answer...</Badge>
           </div>

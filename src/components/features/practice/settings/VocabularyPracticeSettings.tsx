@@ -10,7 +10,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { useState } from 'react';
-import { useVocabularyPracticeSettings } from '../hooks/useVocabularyPracticeSettings';
+import { useVocabularyPracticeSettings } from '@/core/shared/hooks/useSettings';
 import { cn } from '@/lib/utils';
 import {
   ExerciseTypeSettings,
@@ -79,6 +79,18 @@ export function VocabularyPracticeSettings({
     }
   };
 
+  const handleMakeUpWordTimeLimitChange = (value: number[]) => {
+    if (value[0] !== undefined) {
+      updateSetting('makeUpWordTimeLimit', value[0]);
+    }
+  };
+
+  const handleMakeUpWordAdditionalCharactersChange = (value: number[]) => {
+    if (value[0] !== undefined) {
+      updateSetting('makeUpWordAdditionalCharacters', value[0]);
+    }
+  };
+
   const handleExerciseTypeToggle = (
     exerciseType: keyof typeof settings,
     checked: boolean,
@@ -131,6 +143,10 @@ export function VocabularyPracticeSettings({
                 onExerciseTypeToggle={handleExerciseTypeToggle}
                 onMakeUpWordMaxAttemptsChange={
                   handleMakeUpWordMaxAttemptsChange
+                }
+                onMakeUpWordTimeLimitChange={handleMakeUpWordTimeLimitChange}
+                onMakeUpWordAdditionalCharactersChange={
+                  handleMakeUpWordAdditionalCharactersChange
                 }
               />
 

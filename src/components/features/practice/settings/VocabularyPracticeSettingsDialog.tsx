@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Settings, RotateCcw, X } from 'lucide-react';
-import { useVocabularyPracticeSettings } from '../hooks/useVocabularyPracticeSettings';
+import { useVocabularyPracticeSettings } from '@/core/shared/hooks/useSettings';
 import {
   ExerciseTypeSettings,
   VocabularySessionConfigurationSettings,

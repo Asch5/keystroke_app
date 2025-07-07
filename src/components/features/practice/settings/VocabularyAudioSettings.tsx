@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Volume2, VolumeX, Play } from 'lucide-react';
-import type { VocabularyPracticeSettings } from '../hooks/useVocabularyPracticeSettings';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface VocabularyAudioSettingsProps {
   settings: VocabularyPracticeSettings;

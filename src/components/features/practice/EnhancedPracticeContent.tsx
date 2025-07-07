@@ -19,7 +19,7 @@ import type {
   PracticeType,
   EnhancedPracticeSession,
 } from '@/core/domains/user/actions/practice-actions';
-import type { VocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface EnhancedPracticeContentProps {
   session: EnhancedPracticeSession;

@@ -5,6 +5,7 @@ import {
   TypingPracticeSettings,
   DictionaryFilterSettings,
   AdminDictionaryFilterSettings,
+  VocabularyPracticeSettings,
 } from '@/core/state/features/settingsSlice';
 import { LanguageCode } from '@/core/types';
 
@@ -74,6 +75,50 @@ const DEFAULT_ADMIN_DICTIONARY_FILTERS: AdminDictionaryFilterSettings = {
   pageSize: 20,
 };
 
+const DEFAULT_VOCABULARY_PRACTICE_SETTINGS: VocabularyPracticeSettings = {
+  // Session Configuration
+  wordsCount: 10,
+  difficultyLevel: 3,
+
+  // Exercise Type Selection (all enabled by default)
+  enableRememberTranslation: true,
+  enableChooseRightWord: true,
+  enableMakeUpWord: true,
+  enableWriteByDefinition: true,
+  enableWriteBySound: true,
+
+  // Exercise Configuration
+  makeUpWordMaxAttempts: 3,
+  makeUpWordTimeLimit: 30,
+  makeUpWordAdditionalCharacters: 5,
+  showWordCardFirst: true,
+  autoAdvanceFromWordCard: false,
+  autoAdvanceDelaySeconds: 3,
+
+  // Time Settings
+  enableTimeLimit: false,
+  timeLimitSeconds: 60,
+
+  // Audio Settings
+  autoPlayAudioOnWordCard: true,
+  autoPlayAudioOnGameStart: true,
+  enableGameSounds: true,
+  gameSoundVolume: 0.5,
+
+  // Display Settings
+  showProgressBar: true,
+  showDefinitionImages: true,
+  showPhoneticPronunciation: true,
+  showPartOfSpeech: true,
+  showLearningStatus: true,
+
+  // Behavior Settings
+  pauseOnIncorrectAnswer: false,
+  showCorrectAnswerOnMistake: true,
+  allowSkipDifficultWords: true,
+  adaptiveDifficulty: true,
+};
+
 /**
  * Safely transforms database JSON to UIPreferences with validation
  */
@@ -123,6 +168,25 @@ export function transformTypingPracticeSettings(
     return DEFAULT_TYPING_PRACTICE_SETTINGS;
   } catch {
     return DEFAULT_TYPING_PRACTICE_SETTINGS;
+  }
+}
+
+/**
+ * Safely transforms database JSON to VocabularyPracticeSettings with validation
+ */
+export function transformVocabularyPracticeSettings(
+  data: unknown,
+): VocabularyPracticeSettings {
+  try {
+    if (data && typeof data === 'object') {
+      return {
+        ...DEFAULT_VOCABULARY_PRACTICE_SETTINGS,
+        ...(data as Partial<VocabularyPracticeSettings>),
+      };
+    }
+    return DEFAULT_VOCABULARY_PRACTICE_SETTINGS;
+  } catch {
+    return DEFAULT_VOCABULARY_PRACTICE_SETTINGS;
   }
 }
 
@@ -241,11 +305,13 @@ export function transformDatabaseSettingsToState(
   };
 
   const typingData = safeGet(practiceData, ['typing']);
+  const vocabularyData = safeGet(practiceData, ['vocabulary']);
   const flashcardsData = safeGet(practiceData, ['flashcards']);
   const quizData = safeGet(practiceData, ['quiz']);
 
   const practice = {
     typing: transformTypingPracticeSettings(typingData),
+    vocabulary: transformVocabularyPracticeSettings(vocabularyData),
     flashcards: (flashcardsData as Record<string, unknown>) || {},
     quiz: (quizData as Record<string, unknown>) || {},
   };
@@ -282,6 +348,7 @@ export function transformStateToDatabase(state: Partial<SettingsState>): {
     learning: state.learning || {},
     practice: {
       typing: state.practice?.typing || {},
+      vocabulary: state.practice?.vocabulary || {},
       flashcards: state.practice?.flashcards || {},
       quiz: state.practice?.quiz || {},
     },

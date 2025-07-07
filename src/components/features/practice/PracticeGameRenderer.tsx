@@ -10,10 +10,9 @@ import {
 import type {
   PracticeType,
   EnhancedPracticeSession,
-  UnifiedPracticeWord,
   PracticeWord,
 } from '@/core/domains/user/actions/practice-actions';
-import type { VocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 type PracticeConfigsType = Record<
   PracticeType,
@@ -28,6 +27,9 @@ type PracticeConfigsType = Record<
     maxAudioReplays?: number;
   }
 >;
+
+// Type for words with exerciseType from unified practice
+type UnifiedPracticeWordType = PracticeWord & { exerciseType: PracticeType };
 
 interface PracticeGameRendererProps {
   session: EnhancedPracticeSession;
@@ -76,11 +78,21 @@ export function PracticeGameRenderer({
   // Create a no-op function for required callbacks that might be undefined
   const handleAudioPlay = onAudioPlay || (() => {});
 
-  // For unified practice, use the dynamic exercise type from the word
+  // For unified practice, use the exerciseType from the word
   const effectivePracticeType =
     session.practiceType === 'unified-practice'
-      ? (currentWord as UnifiedPracticeWord).dynamicExerciseType
+      ? (currentWord as UnifiedPracticeWordType).exerciseType
       : session.practiceType;
+
+  // Type guard to ensure the practice type is valid
+  if (!practiceConfigs[effectivePracticeType]) {
+    console.error(`Unknown practice type: ${effectivePracticeType}`);
+    return (
+      <div className="text-center p-8 text-red-500">
+        Unknown practice type: {effectivePracticeType}
+      </div>
+    );
+  }
 
   switch (effectivePracticeType) {
     case 'choose-right-word':
@@ -109,6 +121,7 @@ export function PracticeGameRenderer({
           {...baseGameProps}
           onAnswer={onGameAnswer}
           onAudioPlay={handleAudioPlay}
+          onNext={onGameNext}
         />
       );
 

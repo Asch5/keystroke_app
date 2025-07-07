@@ -9,6 +9,9 @@ import {
   updateBulkUIPreferences,
   updateBulkLearningPreferences,
   updateBulkTypingPracticeSettings,
+  updateVocabularyPracticeSetting,
+  updateBulkVocabularyPracticeSettings,
+  resetVocabularyPracticeSettings,
   clearDictionaryFilters,
   clearAdminDictionaryFilters,
   resetTypingPracticeSettings,
@@ -17,6 +20,7 @@ import {
   selectUIPreferences,
   selectLearningPreferences,
   selectTypingPracticeSettings,
+  selectVocabularyPracticeSettings,
   selectDictionaryFilters,
   selectAdminDictionaryFilters,
   selectSyncStatus,
@@ -25,6 +29,7 @@ import {
   UIPreferences,
   LearningPreferences,
   TypingPracticeSettings,
+  VocabularyPracticeSettings,
   DictionaryFilterSettings,
   AdminDictionaryFilterSettings,
 } from '@/core/state/features/settingsSlice';
@@ -186,6 +191,71 @@ export function useTypingPracticeSettings() {
     updateMultiple,
     resetSettings,
     isLoaded,
+  };
+}
+
+/**
+ * Vocabulary Practice Settings hook - provides database-persisted vocabulary practice settings
+ */
+export function useVocabularyPracticeSettings() {
+  const dispatch = useAppDispatch();
+  const settings = useAppSelector(selectVocabularyPracticeSettings);
+  const isLoaded = useAppSelector(selectIsSettingsLoaded);
+
+  const updateSetting = useCallback(
+    <K extends keyof VocabularyPracticeSettings>(
+      key: K,
+      value: VocabularyPracticeSettings[K],
+    ) => {
+      dispatch(updateVocabularyPracticeSetting({ key, value }));
+    },
+    [dispatch],
+  );
+
+  const updateMultiple = useCallback(
+    (updates: Partial<VocabularyPracticeSettings>) => {
+      dispatch(updateBulkVocabularyPracticeSettings(updates));
+    },
+    [dispatch],
+  );
+
+  const resetSettings = useCallback(() => {
+    dispatch(resetVocabularyPracticeSettings());
+  }, [dispatch]);
+
+  // Helper function to get enabled exercise types
+  const getEnabledExerciseTypes = useCallback(() => {
+    const exerciseTypes = [];
+    if (settings.enableRememberTranslation)
+      exerciseTypes.push('remember-translation');
+    if (settings.enableChooseRightWord) exerciseTypes.push('choose-right-word');
+    if (settings.enableMakeUpWord) exerciseTypes.push('make-up-word');
+    if (settings.enableWriteByDefinition)
+      exerciseTypes.push('write-by-definition');
+    if (settings.enableWriteBySound) exerciseTypes.push('write-by-sound');
+    return exerciseTypes;
+  }, [settings]);
+
+  // Helper function to validate settings
+  const validateSettings = useCallback(() => {
+    const enabledExercises = getEnabledExerciseTypes();
+    const isValid = enabledExercises.length > 0;
+
+    return {
+      isValid,
+      errors: isValid ? [] : ['At least one exercise type must be enabled'],
+      enabledExercises,
+    };
+  }, [getEnabledExerciseTypes]);
+
+  return {
+    settings,
+    updateSetting,
+    updateMultiple,
+    resetSettings,
+    isLoaded,
+    getEnabledExerciseTypes,
+    validateSettings,
   };
 }
 

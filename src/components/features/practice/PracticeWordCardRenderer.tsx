@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { WordCard } from './shared';
 import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
-import type { VocabularyPracticeSettings } from './hooks/useVocabularyPracticeSettings';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 
 interface PracticeWordCardRendererProps {
@@ -23,7 +23,7 @@ export function PracticeWordCardRenderer({
   settings,
   onNext,
   onAudioPlay,
-  autoPlayAudio = true,
+  autoPlayAudio,
 }: PracticeWordCardRendererProps) {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
@@ -77,7 +77,7 @@ export function PracticeWordCardRenderer({
       onNext={onNext}
       onPlayAudio={handlePlayAudio}
       isPlayingAudio={isPlayingAudio}
-      autoPlayAudio={autoPlayAudio}
+      autoPlayAudio={autoPlayAudio ?? settings.autoPlayAudioOnWordCard}
       className="w-full"
     />
   );

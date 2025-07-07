@@ -7,6 +7,10 @@ import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import { LearningMetricsCalculator } from '../utils/learning-metrics';
 import {
+  getBestDefinitionForUser,
+  TranslationData,
+} from '../../dictionary/utils/translation-utils';
+import {
   SessionConfiguration,
   PracticeSessionResult,
   PracticeWord,
@@ -393,6 +397,11 @@ async function selectPracticeWords(
               translation: true,
             },
           },
+          oneWordLinks: {
+            include: {
+              word: true,
+            },
+          },
         },
       },
     },
@@ -408,10 +417,31 @@ async function selectPracticeWords(
     const wordDetail = userWord.definition.wordDetails[0]?.wordDetails;
     const word = wordDetail?.word;
 
+    // Prepare translation data for getBestDefinitionForUser
+    const translations: TranslationData[] =
+      userWord.definition.translationLinks.map((link) => ({
+        id: link.translation.id,
+        languageCode: link.translation.languageCode as LanguageCode,
+        content: link.translation.content,
+      }));
+
+    // Get the best definition content (prioritize user's base language)
+    const definitionData = getBestDefinitionForUser(
+      userWord.definition.definition,
+      config.targetLanguageCode,
+      translations,
+      baseLanguageCode,
+    );
+
+    // Get one-word translation from DefinitionToOneWord table
+    const oneWordLink = userWord.definition.oneWordLinks?.[0];
+    const oneWordTranslation = oneWordLink?.word?.word || '';
+
     return {
       userDictionaryId: userWord.id,
       wordText: word?.word || '',
-      definition: userWord.definition.definition,
+      definition: definitionData.content,
+      oneWordTranslation,
       difficulty: userWord.srsLevel || 0,
       learningStatus: userWord.learningStatus,
       attempts: userWord.reviewCount || 0,
@@ -422,11 +452,9 @@ async function selectPracticeWords(
       imageUrl: userWord.definition.image?.url,
       imageId: userWord.definition.image?.id,
       imageDescription: userWord.definition.image?.description || undefined,
-      translations: userWord.definition.translationLinks.map(
-        (link) => link.translation.content,
-      ),
       partOfSpeech: wordDetail?.partOfSpeech || undefined,
-      phoneticPronunciation: wordDetail?.word?.phoneticGeneral || undefined,
+      phonetic: wordDetail?.word?.phoneticGeneral || undefined,
+      audioUrl: '', // Will be populated by audio service if available
     };
   });
 

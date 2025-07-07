@@ -309,68 +309,98 @@ All game components have been refactored to follow the modular pattern:
 - ✅ **Advanced Audio Settings**: Auto-play controls for Word Card and game start, volume control, game sound effects
 - ✅ **Behavior Customization**: Pause on incorrect answers, show correct answers, adaptive difficulty, skip difficult words
 - ✅ **Display Preferences**: Control visibility of progress bar, images, phonetic pronunciation, part of speech, learning status
-- ✅ **Settings Integration**: Seamless integration with enhanced practice system and localStorage persistence
-- ✅ **Dialog Scrolling Fix**: Fixed ScrollArea configuration for proper scrolling in settings dialog
-- ✅ **Complete Settings Application**: All settings now properly apply to practice components
+- ✅ **Database Settings Persistence**: Complete integration with Redux state management and database synchronization
+- ✅ **Loading State Handling**: Proper loading state management to prevent undefined access errors
+- ✅ **Settings Integration**: Seamless integration with enhanced practice system and cross-device sync
 
 **Recent Fixes (Latest Update)**:
 
-1. **Dialog Scrolling Issue Resolved**: Fixed `VocabularyPracticeSettingsDialog` by moving padding from ScrollArea content to ScrollArea itself, enabling proper scrolling behavior across all screen sizes
-2. **Settings Integration Complete**: All vocabulary practice settings now properly propagate to and control practice components:
-   - `showProgressBar` - Controls Universal Progress Indicator visibility
-   - `autoPlayAudioOnWordCard` - Controls automatic audio in WordCard component
-   - `autoPlayAudioOnGameStart` - Controls automatic audio when games start
-   - `showPhoneticPronunciation` - Controls phonetic display in WordCard
-   - `showPartOfSpeech` - Controls part of speech display in WordCard
-   - `showDefinitionImages` - Controls image display in WordCard and games
-   - `showLearningStatus` - Controls learning status badge visibility
+1. **Settings Loading Race Condition Fixed**: Resolved critical error where `wordsCount` was undefined due to component accessing settings before they were loaded from database
+   - Added proper `isLoaded` state checking in `EnhancedPracticePageContent`
+   - Components now wait for settings to load before accessing properties
+   - Loading states show appropriate messages ("Loading settings..." vs "Creating practice session...")
 
-**Progressive Learning System Implementation (December 2024)**:
+2. **Database Persistence Complete**: Full integration with existing Redux settings system
+   - Added `VocabularyPracticeSettings` interface to Redux `settingsSlice`
+   - Implemented database transformation utilities for vocabulary practice settings
+   - Created Redux actions and selectors for vocabulary practice settings management
+   - Enhanced `useVocabularyPracticeSettings` hook with database persistence capabilities
 
-3. **Exercise Settings Fix**: Fixed bug where enabled exercise types in user settings were not being applied to practice sessions
-   - Updated `createUnifiedPracticeSession` to properly pass `enabledExerciseTypes` from user settings
-   - Fixed `determineExerciseTypeProgressive` to respect user's enabled exercise types
-   - Exercise types now correctly filter based on user preferences in settings
-
-4. **Progressive Learning Algorithm**: Implemented comprehensive level-based word progression system
-   - **Sequential Progression**: Words must advance through levels 0→1→2→3→4→5 sequentially
-   - **Smart Advancement**: 2 successful attempts + 60% success rate required to advance
-   - **Intelligent Regression**: 3 failed attempts with <60% success rate triggers level decrease
-   - **Database Integration**: Uses existing `UserDictionary.srsLevel` field for tracking progression
-   - **Learning Status Updates**: Automatically updates learning status based on progression level
-
-5. **Validation Integration**: Integrated progressive learning into existing practice validation
-   - Updated `validateTypingInput` to use `updateWordProgression` for level-based updates
-   - Maintains compatibility with existing typing practice while adding progressive features
-   - Preserves all existing learning metrics and session tracking
+3. **Cross-Device Synchronization**: Settings now persist across devices and browser sessions
+   - Uses same robust sync system as admin dictionary filters
+   - Settings stored in User.settings JSON field in database
+   - Automatic sync with pending changes tracking and error handling
+   - Real-time updates across multiple tabs/sessions
 
 **Technical Implementation Details**:
 
-- **Enhanced Dialog Interface**: `VocabularyPracticeSettingsDialog.tsx` (330 lines) - Full-screen scrollable modal with proper ScrollArea configuration
-- **Settings Propagation**: Settings flow from `EnhancedPracticePageContent` → `EnhancedPracticeContent` → `PracticeGameRenderer` & `PracticeWordCardRenderer`
-- **Display Control**: WordCard component dynamically shows/hides elements based on user settings
-- **Audio Control**: Both WordCard and game components respect audio auto-play preferences
-- **Type Safety**: All components use proper TypeScript interfaces for settings integration
+**Redux Integration**:
 
-**Components Created**:
+- **Settings Slice Enhancement**: Added `VocabularyPracticeSettings` to Redux state structure
+- **Actions Created**: `updateVocabularyPracticeSetting`, `updateBulkVocabularyPracticeSettings`, `resetVocabularyPracticeSettings`
+- **Selectors Added**: `selectVocabularyPracticeSettings` for state access
+- **Transformation Utilities**: `transformVocabularyPracticeSettings` for database JSON parsing
 
-- `VocabularyPracticeSettings.tsx` (249 lines) - Main settings orchestrator (legacy)
-- `VocabularyPracticeSettingsDialog.tsx` (330 lines) - Enhanced dialog interface for settings
-- `ExerciseTypeSettings.tsx` (239 lines) - Exercise type selection with visual cards
-- `VocabularySessionConfigurationSettings.tsx` (175 lines) - Session configuration
-- `VocabularyTimeSettings.tsx` (73 lines) - Time limit settings
-- `VocabularyAudioSettings.tsx` (132 lines) - Audio configuration
-- `VocabularyBehaviorSettings.tsx` (261 lines) - Behavior and display settings
-- `useVocabularyPracticeSettings.ts` (193 lines) - Settings state management hook
+**Database Architecture**:
 
-**Technical Excellence**:
+- **Storage Location**: `User.settings.practice.vocabulary` JSON field
+- **Sync Service**: Uses existing settings sync service with automatic change detection
+- **Error Handling**: Comprehensive error handling with fallback to default settings
+- **Type Safety**: Full TypeScript support with proper interfaces and validation
 
-- All components follow Cursor Rules (under 400 lines)
-- Comprehensive TypeScript interfaces and type safety
-- Modular architecture for maintainability and reusability
-- Proper error handling and validation
-- Responsive design with mobile-first approach
-- Accessibility compliance with ARIA labels and semantic HTML
+**Loading State Management**:
+
+- **Race Condition Prevention**: Components check `isLoaded` before accessing settings
+- **Progressive Loading**: Clear loading messages for different states
+- **Error Recovery**: Graceful handling of settings loading failures
+- **Performance Optimization**: Minimal re-renders during settings updates
+
+**Settings Propagation Flow**:
+
+```
+Database → Redux Store → useVocabularyPracticeSettings → Components
+     ↑                                                        ↓
+Settings Sync Service ← Pending Changes Detection ← User Interactions
+```
+
+**Default Settings Structure**:
+
+```typescript
+const DEFAULT_VOCABULARY_PRACTICE_SETTINGS = {
+  // Session Configuration
+  wordsCount: 10,
+  difficultyLevel: 3,
+
+  // Exercise Type Selection (all enabled by default)
+  enableRememberTranslation: true,
+  enableChooseRightWord: true,
+  enableMakeUpWord: true,
+  enableWriteByDefinition: true,
+  enableWriteBySound: true,
+
+  // Audio Settings
+  autoPlayAudioOnWordCard: true,
+  autoPlayAudioOnGameStart: true,
+  enableGameSounds: true,
+  gameSoundVolume: 0.5,
+
+  // Display Preferences
+  showDefinitionImages: true,
+  showPhoneticPronunciation: true,
+  showPartOfSpeech: true,
+  showLearningStatus: true,
+  showProgressBar: true,
+
+  // Advanced Configuration
+  makeUpWordMaxAttempts: 3,
+  makeUpWordTimeLimit: 30,
+  makeUpWordAdditionalCharacters: 5,
+  showWordCardFirst: true,
+  autoAdvanceFromWordCard: false,
+  enableTimeLimit: false,
+  timeLimitSeconds: 60,
+};
+```
 
 ## Technical Implementation
 
@@ -567,3 +597,56 @@ src/components/features/practice/
 ```
 
 This architecture ensures maintainability, testability, and adherence to modern React development practices while providing a comprehensive vocabulary learning experience.
+
+## Troubleshooting
+
+### Common Settings Issues
+
+#### Settings Loading Race Condition
+
+**Error**: `Cannot read properties of undefined (reading 'wordsCount')`
+**Symptoms**: Components crash when accessing settings properties before they're loaded from database
+
+**Root Cause**: Components trying to access Redux settings before database data has been loaded and transformed
+
+**Solution**:
+
+```typescript
+// ❌ Wrong - accessing settings without checking if loaded
+const { settings } = useVocabularyPracticeSettings();
+const wordsCount = settings.wordsCount; // Can cause undefined error
+
+// ✅ Correct - check loading state first
+const { settings, isLoaded } = useVocabularyPracticeSettings();
+if (!isLoaded) {
+  return <LoadingSpinner />;
+}
+const wordsCount = settings.wordsCount; // Safe to access
+```
+
+**Prevention**: Always check `isLoaded` state before accessing settings properties in components
+
+#### Settings Not Persisting
+
+**Symptoms**: Settings reset to defaults after browser refresh or device change
+
+**Debugging**:
+
+```typescript
+// Check if settings sync is working
+const { hasPendingChanges, lastSyncedAt } = useSettingsPersistence();
+console.log('Sync status:', { hasPendingChanges, lastSyncedAt });
+
+// Verify settings are being saved to Redux
+const settings = useAppSelector(selectVocabularyPracticeSettings);
+console.log('Current settings in Redux:', settings);
+```
+
+**Solutions**:
+
+- Ensure user is authenticated before settings operations
+- Check network connectivity for database sync
+- Verify settings sync service is running properly
+- Check browser developer tools for any console errors during settings updates
+
+### Component Architecture Principles

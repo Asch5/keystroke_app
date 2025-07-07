@@ -14,7 +14,7 @@ import {
   Hash,
   Award,
 } from 'lucide-react';
-import type { VocabularyPracticeSettings } from '../hooks/useVocabularyPracticeSettings';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface VocabularyBehaviorSettingsProps {
   settings: VocabularyPracticeSettings;

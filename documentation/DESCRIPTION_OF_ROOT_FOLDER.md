@@ -181,6 +181,10 @@ vercel-blob/
 
 ## 🖼️ **Image Authentication System**
 
+### **⚠️ CRITICAL: Read DESCRIPTION_OF_CORE_FOLDER.md Image Section First**
+
+**Before debugging any image issues, READ the comprehensive "Image Authentication Architecture" section in `DESCRIPTION_OF_CORE_FOLDER.md`. Multiple hours were spent debugging issues that are already solved.**
+
 ### **Problem Solved**
 
 Next.js Image component + authenticated endpoints (`/api/images/`) = broken images
@@ -190,6 +194,25 @@ Next.js Image component + authenticated endpoints (`/api/images/`) = broken imag
 - **AuthenticatedImage**: Auto-detects authenticated endpoints, uses unoptimized mode only when needed
 - **ImageWithFallback**: Enhanced error handling with authentication support
 - **Consolidated Config**: `next.config.mjs` with CORS headers and image optimization
+
+### **Quick Reference**
+
+```typescript
+// ✅ ALWAYS USE - Never use Next.js Image directly for /api/images/ endpoints
+<AuthenticatedImage
+  src={word.imageId ? `/api/images/${word.imageId}` : word.imageUrl!}
+  alt={word.imageDescription || `Visual representation of ${word.wordText}`}
+  fill
+  className="object-cover"
+/>
+```
+
+### **Key Files**
+
+- **Detailed Documentation**: `DESCRIPTION_OF_CORE_FOLDER.md` → "Image Authentication Architecture" section
+- **AuthenticatedImage**: `src/components/shared/AuthenticatedImage.tsx`
+- **ImageWithFallback**: `src/components/shared/ImageWithFallback.tsx`
+- **API Route**: `src/app/api/images/[id]/route.ts`
 
 ## 🔧 **Environment Validation System**
 

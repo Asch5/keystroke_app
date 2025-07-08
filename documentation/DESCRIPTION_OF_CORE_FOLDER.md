@@ -234,6 +234,10 @@ import { deepSeekService } from '@/core/infrastructure/services/deepseek-service
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
 
+// 🖼️ CRITICAL: Image Authentication Components (ALWAYS use these for images)
+import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
+import { ImageWithFallback } from '@/components/shared/ImageWithFallback';
+
 // State management
 import { useAppDispatch, store } from '@/core/state/store';
 import { updateUserProfile } from '@/core/state/features/authSlice';
@@ -245,6 +249,232 @@ import { useUserProfileUpdate } from '@/core/shared/hooks/useUserProfileUpdate';
 // Legacy imports (still work)
 import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
 ```
+
+## 🖼️ **CRITICAL: Image Authentication Architecture**
+
+### **⚠️ NEVER DEBUG IMAGE ISSUES AGAIN - READ THIS FIRST**
+
+**This section exists because multiple hours were spent debugging image authentication issues that are already solved.**
+
+### **The Problem**
+
+Next.js Image component + authenticated endpoints (`/api/images/`) = **broken images**
+
+```typescript
+// ❌ THIS BREAKS - Next.js Image cannot handle authenticated endpoints
+<Image src="/api/images/321" alt="word image" width={300} height={200} />
+
+// ❌ THIS ALSO BREAKS - External URLs need proper handling
+<Image src="https://images.pexels.com/photos/5128180/pexels-photo-5128180.jpeg" alt="word" />
+```
+
+### **The Solution - AuthenticatedImage Component**
+
+```typescript
+// ✅ ALWAYS USE THIS - Handles everything automatically
+<AuthenticatedImage
+  src={word.imageId ? `/api/images/${word.imageId}` : word.imageUrl!}
+  alt={word.imageDescription || `Visual representation of ${word.wordText}`}
+  fill
+  className="object-cover"
+/>
+```
+
+### **Why This Works**
+
+1. **Auto-Detection**: Automatically detects `/api/images/` endpoints
+2. **Smart Optimization**: Uses unoptimized mode ONLY for authenticated endpoints
+3. **External URL Support**: Handles Pexels and other external URLs properly
+4. **Error Handling**: Comprehensive fallback and loading states
+5. **Performance**: Preserves ALL Next.js Image benefits for non-authenticated sources
+
+### **Image Data Structure in Practice System**
+
+```typescript
+// Practice sessions provide BOTH imageId and imageUrl
+interface PracticeWord {
+  imageId: number | null; // For authenticated images: /api/images/{id}
+  imageUrl: string | null; // For external images: Pexels URLs
+  imageDescription?: string; // Alt text description
+}
+
+// ALWAYS prioritize imageId over imageUrl for authenticated images
+const imageSrc = word.imageId ? `/api/images/${word.imageId}` : word.imageUrl;
+```
+
+### **Image URL Priority Logic**
+
+```typescript
+// ✅ CORRECT: Priority logic in components
+{(word.imageId || word.imageUrl) && (
+  <AuthenticatedImage
+    src={word.imageId ? `/api/images/${word.imageId}` : word.imageUrl!}
+    alt={word.imageDescription || `Visual for ${word.wordText}`}
+    fill
+    className="object-cover"
+  />
+)}
+```
+
+### **Practice Session Image Setup**
+
+Practice sessions generate images with this structure:
+
+```typescript
+// In practice-session-management.ts and vocabulary-practice-actions.ts
+{
+  imageUrl: userWord.definition.image?.url,           // External URL (Pexels)
+  imageId: userWord.definition.image?.id,             // Database ID for /api/images/
+  imageDescription: userWord.definition.image?.description || undefined,
+}
+```
+
+### **Development Debug Information**
+
+The WordCard component includes debug information in development mode:
+
+```typescript
+{process.env.NODE_ENV === 'development' && (
+  <div className="text-xs text-muted-foreground p-2 bg-muted/30 rounded">
+    🔧 Image Debug: ID={word.imageId}, URL={word.imageUrl?.substring(0, 50)}...
+    <br />
+    Using: {word.imageId ? `/api/images/${word.imageId}` : 'External URL'}
+  </div>
+)}
+```
+
+### **Key Files**
+
+- **AuthenticatedImage**: `src/components/shared/AuthenticatedImage.tsx`
+- **ImageWithFallback**: `src/components/shared/ImageWithFallback.tsx`
+- **Next.js Config**: `next.config.mjs` (image optimization settings)
+- **API Route**: `src/app/api/images/[id]/route.ts` (authenticated image serving)
+
+### **🚨 If Images Don't Display**
+
+1. **Check the data**: Use development debug info to verify `imageId` and `imageUrl`
+2. **Verify API route**: Test `/api/images/{id}` endpoint directly in browser
+3. **Check AuthenticatedImage**: Ensure you're using the component, not Next.js Image
+4. **Review priority logic**: `imageId` should take precedence over `imageUrl`
+
+**Remember**: This architecture is already implemented and tested. DO NOT try to debug image authentication from scratch - use the existing solution.
+
+## 🎵 **CRITICAL: Audio Playback Architecture**
+
+### **⚠️ AUDIO APPROACH - READ THIS TO AVOID DEBUGGING AUDIO ISSUES**
+
+**This section prevents spending hours debugging audio issues that are already solved.**
+
+### **Audio Sources Priority System**
+
+```typescript
+// 1. Database Audio Files (Primary) - Real recordings from blob storage
+await AudioService.playAudioFromDatabase(audioUrl);
+
+// 2. Web Speech API (Fallback) - Browser TTS for practice mode ONLY
+await AudioService.playTextToSpeech(text, language);
+
+// ❌ 3. NO Google Cloud TTS - Explicitly disabled to avoid costs
+```
+
+### **Practice Session Audio Setup**
+
+```typescript
+// Practice sessions fetch audio URLs from junction tables
+{
+  audioUrl: '', // WILL BE POPULATED by enhanced audio fetching
+  // Enhanced fetching from:
+  // - DefinitionAudio junction table (primary)
+  // - WordDetailsAudio junction table (secondary)
+}
+```
+
+### **Critical Audio Components**
+
+```typescript
+// ✅ CORRECT: Use AudioService for all audio playback
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+
+// Database audio (primary)
+await AudioService.playAudioFromDatabase(audioUrl);
+
+// ❌ WRONG: Direct new Audio() usage (removed from codebase)
+// const audio = new Audio(audioUrl); // DO NOT USE
+```
+
+### **Audio Fetching Pattern**
+
+```typescript
+// Enhanced practice session audio fetching includes:
+include: {
+  definition: {
+    include: {
+      // Audio from DefinitionAudio junction table
+      audioLinks: {
+        include: { audio: true },
+        take: 1,
+      },
+      wordDetails: {
+        include: {
+          wordDetails: {
+            include: {
+              // Audio from WordDetailsAudio junction table
+              audioLinks: {
+                include: { audio: true },
+                take: 1,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+},
+```
+
+### **Audio State Management**
+
+```typescript
+// Audio button logic - ONLY show when audio exists
+const shouldShowAudio = !!audioUrl && !!onPlayAudio;
+
+{shouldShowAudio && (
+  <Button onClick={() => onPlayAudio?.(audioUrl)}>
+    🔊 Play Audio
+  </Button>
+)}
+```
+
+### **Web Speech API Removal**
+
+**CRITICAL**: Web Speech API fallback was completely removed per user requirements:
+
+```typescript
+// ❌ REMOVED: All Web Speech API fallback functionality
+// - playAudioWithFallback() method
+// - playTextToSpeech() fallback logic
+// - speechSynthesis references
+
+// ✅ CURRENT: Database-only audio approach
+// If no audioUrl exists, show "No audio available" message
+```
+
+### **Key Files**
+
+- **AudioService**: `src/core/domains/dictionary/services/audio-service.ts`
+- **Practice Audio**: `src/components/features/practice/hooks/useTypingAudioPlayback.ts`
+- **Enhanced Fetching**: `src/core/domains/user/actions/practice-session-management.ts`
+- **Vocabulary Practice**: `src/core/domains/user/actions/vocabulary-practice-actions.ts`
+
+### **🚨 If Audio Doesn't Work**
+
+1. **Check audioUrl**: Verify practice session provides actual audio URL (not empty string)
+2. **Verify junction tables**: Ensure DefinitionAudio and WordDetailsAudio have data
+3. **Check AudioService**: Use only `playAudioFromDatabase()` method
+4. **Review practice actions**: Confirm enhanced audio fetching is implemented
+5. **No Web Speech API**: If no database audio, show "No audio available" message
+
+**Remember**: Audio architecture is database-only with no external TTS fallback. DO NOT try to re-implement Web Speech API fallback.
 
 ## Dictionary Domain (`domains/dictionary/`)
 

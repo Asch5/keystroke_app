@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 
 interface WordData {
   wordText: string;
@@ -20,6 +21,7 @@ interface UseWriteBySoundStateProps {
 
 /**
  * Custom hook for managing Write by Sound game state
+ * Uses AudioService for proper URL handling and proxy support
  */
 export function useWriteBySoundState({
   word,
@@ -41,7 +43,6 @@ export function useWriteBySoundState({
   const [showHint, setShowHint] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
   const targetWord = word.wordText.toLowerCase().trim();
 
   // Character validation states
@@ -66,7 +67,7 @@ export function useWriteBySoundState({
 
   // Create handleAudioPlay with useCallback to avoid dependency issues
   const handleAudioPlay = useCallback(
-    (isInitial = false) => {
+    async (isInitial = false) => {
       if (!word.audioUrl || isPlaying) return;
 
       if (!isInitial) {
@@ -74,26 +75,35 @@ export function useWriteBySoundState({
         setReplayCount((prev) => prev + 1);
       }
 
-      setIsPlaying(true);
+      try {
+        console.log('🎵 Write by Sound: Playing audio via AudioService:', {
+          audioUrl: word.audioUrl,
+          isInitial,
+          replayCount: isInitial ? 0 : replayCount + 1,
+        });
 
-      // Create new audio instance for each play
-      const audio = new Audio(word.audioUrl);
+        setIsPlaying(true);
+        await AudioService.playAudioFromDatabase(word.audioUrl);
 
-      audio.onloadstart = () => setIsPlaying(true);
-      audio.oncanplaythrough = () => {
-        audio.play().catch(console.error);
-      };
-      audio.onended = () => setIsPlaying(false);
-      audio.onerror = () => {
-        console.error('Audio failed to load');
+        if (onAudioPlay) {
+          onAudioPlay(word.wordText, word.audioUrl);
+        }
+
+        console.log('🎵 Write by Sound: Audio playback successful');
+
+        // Monitor for audio end
+        const checkAudioEnd = () => {
+          if (!AudioService.isPlaying()) {
+            setIsPlaying(false);
+          } else {
+            requestAnimationFrame(checkAudioEnd);
+          }
+        };
+        requestAnimationFrame(checkAudioEnd);
+      } catch (error) {
+        console.error('🎵 Write by Sound: Audio playback failed:', error);
         setIsPlaying(false);
-      };
-
-      // Cleanup
-      audioRef.current = audio;
-
-      if (onAudioPlay) {
-        onAudioPlay(word.wordText, word.audioUrl);
+        // AudioService already shows toast error, no need to duplicate
       }
     },
     [
@@ -200,7 +210,6 @@ export function useWriteBySoundState({
 
     // Refs
     inputRef,
-    audioRef,
 
     // Handlers
     handleSubmit,

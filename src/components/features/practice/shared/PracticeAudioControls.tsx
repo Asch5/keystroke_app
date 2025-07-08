@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Volume2, VolumeX, Play, Pause, RotateCcw, Waves } from 'lucide-react';
 import { cn } from '@/core/shared/utils/common/cn';
 import { toast } from 'sonner';
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 
 type AudioType = 'word' | 'success' | 'error' | 'achievement';
 
@@ -27,6 +28,7 @@ interface PracticeAudioControlsProps {
 
 /**
  * Enhanced audio controls for practice games
+ * Uses AudioService for proper URL handling and proxy support
  * Supports word pronunciation, game sounds, replay limits, and volume control
  */
 export function PracticeAudioControls({
@@ -46,14 +48,13 @@ export function PracticeAudioControls({
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(80);
   const [replayCount, setReplayCount] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
   const [hasAutoPlayed, setHasAutoPlayed] = useState(false);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const handlePlay = useCallback(async () => {
-    if (!audioRef.current || !audioUrl) return;
+    if (!audioUrl) {
+      console.warn('🎵 Audio playback failed: No audio URL provided');
+      return;
+    }
 
     // Check replay limit for write-by-sound game
     if (maxReplays && replayCount >= maxReplays) {
@@ -62,83 +63,70 @@ export function PracticeAudioControls({
     }
 
     try {
-      await audioRef.current.play();
+      console.log('🎵 Playing audio via AudioService:', { audioUrl });
+
       setIsPlaying(true);
+      await AudioService.playAudioFromDatabase(audioUrl);
 
       // Increment replay count
       const newCount = replayCount + 1;
       setReplayCount(newCount);
       onReplayCountChange?.(newCount);
       onPlay?.();
+
+      console.log('🎵 Audio playback started successfully via AudioService');
     } catch (error) {
-      console.error('Failed to play audio:', error);
-      toast.error('Failed to play audio');
+      console.error('🎵 AudioService playback failed:', {
+        error,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        audioUrl,
+      });
+
+      setIsPlaying(false);
+
+      // The AudioService already provides user-friendly error messages
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to play audio';
+      toast.error(errorMessage);
     }
   }, [audioUrl, maxReplays, replayCount, onReplayCountChange, onPlay]);
 
   const handlePause = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      onPause?.();
-    }
+    console.log('🎵 Stopping audio via AudioService');
+    AudioService.stopCurrentAudio();
+    setIsPlaying(false);
+    onPause?.();
   }, [onPause]);
 
-  // Initialize audio element
+  // Monitor AudioService state for UI updates
   useEffect(() => {
-    if (audioUrl) {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+    if (!audioUrl) return;
 
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      // Set up event listeners
-      const handleLoadedMetadata = () => {
-        setDuration(audio.duration);
-      };
-
-      const handleTimeUpdate = () => {
-        setCurrentTime(audio.currentTime);
-      };
-
-      const handleEnded = () => {
+    const checkAudioState = () => {
+      const isServicePlaying = AudioService.isPlaying();
+      if (!isServicePlaying && isPlaying) {
+        // Audio ended naturally
         setIsPlaying(false);
-        setCurrentTime(0);
         onPause?.();
-      };
-
-      const handleError = (e: Event) => {
-        console.error('Audio error:', e);
-        toast.error('Failed to load audio');
-        setIsPlaying(false);
-      };
-
-      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.addEventListener('timeupdate', handleTimeUpdate);
-      audio.addEventListener('ended', handleEnded);
-      audio.addEventListener('error', handleError);
-
-      // Set volume
-      audio.volume = volume / 100;
-
-      // Auto-play if enabled
-      if (autoPlay && !hasAutoPlayed) {
-        setHasAutoPlayed(true);
-        handlePlay();
       }
+    };
 
-      return () => {
-        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-        audio.removeEventListener('timeupdate', handleTimeUpdate);
-        audio.removeEventListener('ended', handleEnded);
-        audio.removeEventListener('error', handleError);
-        audio.pause();
-      };
+    // Check audio state periodically
+    const interval = setInterval(checkAudioState, 100);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [audioUrl, isPlaying, onPause]);
+
+  // Auto-play if enabled
+  useEffect(() => {
+    if (autoPlay && !hasAutoPlayed && audioUrl) {
+      setHasAutoPlayed(true);
+      console.log('🎵 Auto-playing audio');
+      handlePlay();
     }
-  }, [audioUrl, volume, autoPlay, hasAutoPlayed, handlePlay, onPause]);
+  }, [autoPlay, hasAutoPlayed, audioUrl, handlePlay]);
 
   // Reset auto-play flag when audio URL changes
   useEffect(() => {
@@ -147,12 +135,10 @@ export function PracticeAudioControls({
   }, [audioUrl]);
 
   const handleVolumeChange = (newVolume: number[]) => {
-    // Ensure volumeValue is not undefined by providing a default value
+    // Note: AudioService doesn't currently support volume control
+    // This is kept for UI consistency but doesn't affect playback
     const volumeValue = newVolume[0] ?? volume;
     setVolume(volumeValue);
-    if (audioRef.current) {
-      audioRef.current.volume = volumeValue / 100;
-    }
   };
 
   const getAudioTypeIcon = () => {
@@ -179,13 +165,6 @@ export function PracticeAudioControls({
       default:
         return 'text-muted-foreground';
     }
-  };
-
-  const formatTime = (time: number) => {
-    if (!isFinite(time)) return '0:00';
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   if (!audioUrl) {
@@ -227,20 +206,8 @@ export function PracticeAudioControls({
             </span>
           </div>
         ) : (
-          <div className="space-y-1">
-            <div className="h-1 bg-muted rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary transition-all duration-200"
-                style={{
-                  width:
-                    duration > 0 ? `${(currentTime / duration) * 100}%` : '0%',
-                }}
-              />
-            </div>
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
-            </div>
+          <div className="text-sm text-muted-foreground">
+            Audio ready for playback.
           </div>
         )}
       </div>

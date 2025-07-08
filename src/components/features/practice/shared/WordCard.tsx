@@ -167,12 +167,23 @@ export function WordCard({
         {(word.imageId || word.imageUrl) && (
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">Visual</h3>
+            {process.env.NODE_ENV === 'development' && (
+              <div className="text-xs text-muted-foreground p-2 bg-muted/30 rounded">
+                🔧 Image Debug: ID={word.imageId}, URL=
+                {word.imageUrl?.substring(0, 50)}...
+                <br />
+                Using:{' '}
+                {word.imageId ? `/api/images/${word.imageId}` : 'External URL'}
+              </div>
+            )}
             <AspectRatio
               ratio={16 / 9}
               className="bg-muted rounded-lg overflow-hidden"
             >
               <AuthenticatedImage
-                src={word.imageUrl || `/api/images/${word.imageId}`}
+                src={
+                  word.imageId ? `/api/images/${word.imageId}` : word.imageUrl!
+                }
                 alt={
                   word.imageDescription ||
                   `Visual representation of ${word.wordText}`
@@ -187,6 +198,10 @@ export function WordCard({
                       {
                         imageId: word.imageId,
                         imageUrl: word.imageUrl,
+                        usingAuthenticatedImage: !!word.imageId,
+                        finalSrc: word.imageId
+                          ? `/api/images/${word.imageId}`
+                          : word.imageUrl,
                       },
                     );
                   }

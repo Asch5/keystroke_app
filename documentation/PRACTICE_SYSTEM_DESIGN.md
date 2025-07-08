@@ -4,6 +4,280 @@
 
 The Keystroke App practice system is designed to help users learn vocabulary through a variety of interactive exercises. The system has been comprehensively refactored to provide both a unified practice experience and a legacy typing practice mode, with extensive modularization following Cursor Rules (components under 400 lines).
 
+## 🚀 **Recent Major Improvements (2024)**
+
+### **Vocabulary Practice Structure Revamp**
+
+**Implementation Date**: December 2024
+
+The vocabulary practice system has undergone a complete restructuring to align with the "Typing Practice (Legacy)" model, providing users with a comprehensive settings page before starting practice sessions.
+
+#### **Key Features:**
+
+- **Practice Mode Selection**: 4 distinct modes (Learn New, Continue Learning, Refresh Vocabulary, Mix Mode)
+- **List Integration**: Support for user's whole dictionary, custom user lists, and inherited public lists
+- **Comprehensive Settings**: Difficulty levels, word counts, exercise type selection
+- **Smart Routing**: URL parameters for list selection and practice mode preservation
+- **Modular Architecture**: Components following Cursor Rules (under 400 lines each)
+
+#### **Practice Modes:**
+
+1. **Learn New Words** - `notStarted` status words only
+2. **Continue Learning** - `inProgress/difficult` status words
+3. **Refresh Vocabulary** - `needsReview/learned` status words
+4. **Mix Mode** - All statuses in smart learning order
+
+### **Audio Playback System Unification**
+
+**Implementation Date**: December 2024
+**Fixed Issue**: "Failed to play audio" errors in practice games
+
+#### **Problem Solved:**
+
+Practice components were using direct `new Audio()` API calls, which caused:
+
+- ❌ External URL access issues (CORS errors)
+- ❌ Vercel Blob Storage authentication problems
+- ❌ Inconsistent error handling across components
+- ❌ No proxy support for external audio sources
+
+#### **Solution Implemented:**
+
+**Unified AudioService Integration** across all practice components:
+
+```typescript
+// ❌ OLD: Direct Audio API (caused failures)
+const audio = new Audio(audioUrl);
+await audio.play(); // Often failed with network/CORS errors
+
+// ✅ NEW: AudioService (handles all edge cases)
+await AudioService.playAudioFromDatabase(audioUrl);
+```
+
+#### **Components Updated:**
+
+1. **PracticeAudioControls.tsx** - Switched from direct Audio API to AudioService
+2. **useWriteBySoundState.ts** - Updated Write by Sound game audio handling
+3. **Enhanced Error Handling** - User-friendly error messages for different failure types
+
+#### **AudioService Benefits:**
+
+- ✅ **URL Proxy Detection**: Automatically handles external URLs (static.ordnet.dk)
+- ✅ **Vercel Blob Storage**: Direct support for blob.vercel-storage.com URLs
+- ✅ **Intelligent Routing**: Same-origin vs external URL detection
+- ✅ **Comprehensive Error Handling**: NotAllowedError, NetworkError, DecodeError, etc.
+- ✅ **Consistent API**: Single method for all audio playback needs
+
+#### **Error Message Examples:**
+
+- "Audio playback blocked by browser. Please enable autoplay or click to play manually."
+- "Network error while loading audio file. Please check your internet connection."
+- "Audio format not supported by your browser."
+- "Audio file is corrupted or invalid format."
+
+### **Web Speech API Complete Removal**
+
+**Implementation Date**: December 2024
+**Compliance**: Strict adherence to user requirement "NEVER use Web Speech API fallback"
+
+#### **Removed Components:**
+
+- ❌ `playAudioWithFallback()` method from AudioService
+- ❌ `playTextToSpeech()` method from AudioService
+- ❌ Web Speech API fallback logic in useTypingAudioPlayback
+- ❌ Browser TTS fallback in all practice components
+
+#### **User Notification System:**
+
+Instead of TTS fallback, users now receive clear notifications:
+
+- 🔇 "No audio available for this word" in WordCard
+- Clear visual indicators when audio is missing
+- No silent fallbacks to browser TTS
+
+### **Comprehensive Image Authentication Architecture**
+
+**Implementation Date**: Ongoing
+**Status**: ✅ **FULLY WORKING**
+
+#### **Image Display Priority System:**
+
+```typescript
+// WordCard.tsx - Correct implementation
+<AuthenticatedImage
+  src={word.imageId ? `/api/images/${word.imageId}` : word.imageUrl!}
+  alt={word.imageDescription || `Visual representation of ${word.wordText}`}
+  fill
+  className="object-cover"
+/>
+```
+
+#### **Authentication Approach:**
+
+1. **Database Images**: `/api/images/{id}` with authentication
+2. **External Images**: Direct URLs (Pexels) with fallback handling
+3. **Error Handling**: Graceful degradation with user notifications
+
+### **Vocabulary Practice Settings System Enhancement**
+
+**NEW: Comprehensive Settings Management** (December 2024)
+
+The vocabulary practice system now includes a full-featured settings interface similar to typing practice:
+
+#### **VocabularyPracticeContent.tsx** (249 lines)
+
+- Practice mode selection with word count and difficulty display
+- Integrated settings dialog access
+- List selection for targeted vocabulary practice
+- Real-time practice session creation
+
+#### **VocabularyPracticeSettings Components**:
+
+- `ExerciseTypeSettings.tsx` (239 lines) - Individual exercise type toggles
+- `VocabularySessionConfigurationSettings.tsx` (175 lines) - Session parameters
+- `VocabularyTimeSettings.tsx` (73 lines) - Time limit configuration
+- `VocabularyAudioSettings.tsx` (132 lines) - Audio and sound preferences
+- `VocabularyBehaviorSettings.tsx` (261 lines) - Behavior and display options
+
+#### **Settings Categories Available**:
+
+**Exercise Type Control**:
+
+- Remember Translation (Level 0-1)
+- Choose Right Word (Level 2)
+- Make Up Word (Level 3)
+- Write by Definition (Level 4)
+- Write by Sound (Level 5)
+
+**Session Configuration**:
+
+- Words count (5-50 words per session)
+- Difficulty level (1-5 scale)
+- Show word card first (introduction mode)
+- Auto-advance settings
+
+**Audio & Sound**:
+
+- Auto-play on word card display
+- Auto-play on game start
+- Game sound effects with volume control
+- Audio quality preferences
+
+**Visual & Behavior**:
+
+- Definition images display
+- Phonetic pronunciation
+- Part of speech badges
+- Learning status indicators
+- Progress bar visibility
+- Pause on incorrect answers
+- Show correct answers on mistakes
+
+### **Technical Architecture Improvements**
+
+#### **Enhanced Practice Actions**
+
+**Server Actions with Audio/Image Fixes**:
+
+- `createVocabularyPracticeSession()` - Mode-specific word selection with proper audio/image data
+- `selectVocabularyPracticeWords()` - Enhanced database queries including junction tables
+- `createEnhancedPracticeSession()` - Unified practice session creation with media support
+
+**Practice Mode Configuration**:
+
+```typescript
+const PRACTICE_MODES = {
+  'learn-new': { statuses: ['notStarted'], name: 'Learn New Words' },
+  'continue-learning': {
+    statuses: ['inProgress', 'difficult'],
+    name: 'Continue Learning',
+  },
+  'refresh-vocabulary': {
+    statuses: ['needsReview', 'learned'],
+    name: 'Refresh Vocabulary',
+  },
+  'mix-mode': {
+    statuses: ['notStarted', 'inProgress', 'difficult', 'needsReview'],
+    name: 'Mix Mode',
+  },
+};
+```
+
+#### **WordCard Component Enhancement**
+
+**Universal WordCard Features**:
+
+- ✅ **Audio Support**: Database audio files with manual play button
+- ✅ **Image Display**: Authenticated images with proper fallback handling
+- ✅ **No TTS Fallback**: Clear messaging when audio unavailable
+- ✅ **Development Debugging**: Visual debug information in development mode
+- ✅ **Responsive Design**: Mobile-first layout with proper touch targets
+
+**Enhanced Error Handling**:
+
+```typescript
+// WordCard.tsx - Enhanced debugging and error handling
+{process.env.NODE_ENV === 'development' && (
+  <div className="text-xs text-muted-foreground p-2 bg-muted/30 rounded">
+    🔧 Image Debug: ID={word.imageId}, URL={word.imageUrl?.substring(0, 50)}...
+    <br />
+    Using: {word.imageId ? `/api/images/${word.imageId}` : 'External URL'}
+  </div>
+)}
+```
+
+### **User Experience Improvements**
+
+#### **Streamlined Practice Flow**
+
+1. **Practice Selection** - Choose vocabulary practice from main practice page
+2. **Mode Selection** - Select learning mode based on current needs
+3. **Settings Configuration** - Comprehensive settings with live preview
+4. **List Selection** - Choose vocabulary source (whole dictionary, custom lists, public lists)
+5. **Practice Execution** - Enhanced practice session with proper media support
+
+#### **Settings Persistence & Sync**
+
+- **Database Integration**: Settings stored in `User.settings.practice.vocabulary` JSON field
+- **Real-time Sync**: Changes persist across devices and browser sessions
+- **Redux Integration**: Immediate UI updates with background database sync
+- **Export/Import**: Complete settings backup and restore functionality
+
+### **Performance & Quality Improvements**
+
+#### **Component Modularization Achievements**
+
+Following Cursor Rules for component size and responsibility:
+
+| Component                      | Original Lines | Refactored Lines | Reduction | Status      |
+| ------------------------------ | -------------- | ---------------- | --------- | ----------- |
+| **VocabularyPracticeContent**  | 0 (new)        | 249              | N/A       | ✅ Complete |
+| **VocabularyPracticeSettings** | 0 (new)        | ~900 total       | N/A       | ✅ Modular  |
+| **WordCard Component**         | 204            | 223 (+debug)     | Enhanced  | ✅ Improved |
+| **Practice Actions**           | Enhanced       | Enhanced         | Better    | ✅ Fixed    |
+
+#### **Audio/Image System Reliability**
+
+- **Database Audio Priority**: Real audio files from blob storage (primary source)
+- **No Cost Overruns**: Completely removed Google Cloud TTS fallback to prevent unexpected costs
+- **Image Authentication**: Proper handling of both database images and external URLs
+- **Error Recovery**: Graceful fallback with clear user messaging
+
+### **Future Enhancements Roadmap**
+
+#### **Immediate Priorities**
+
+1. **Complete Testing**: Add comprehensive test coverage for vocabulary practice components
+2. **Performance Optimization**: React.memo and optimization patterns for larger components
+3. **Mobile Enhancement**: Touch interaction improvements and mobile-specific UI
+
+#### **Planned Features**
+
+1. **Advanced Analytics**: Detailed learning progress tracking and insights
+2. **Spaced Repetition Enhancement**: More sophisticated SRS algorithm with performance-based intervals
+3. **Social Features**: Shared practice sessions and collaborative learning
+4. **Offline Support**: Practice sessions available without internet connection
+
 ## Practice Types
 
 The system includes the following exercise types with progressive learning levels:

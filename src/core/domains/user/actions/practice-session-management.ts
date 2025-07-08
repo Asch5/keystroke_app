@@ -371,7 +371,7 @@ async function selectPracticeWords(
     }
   }
 
-  // Get words with all necessary data
+  // Get words with all necessary data including audio
   const userWords = await prisma.userDictionary.findMany({
     where: whereClause,
     include: {
@@ -382,11 +382,25 @@ async function selectPracticeWords(
               wordDetails: {
                 include: {
                   word: true,
+                  // Include audio from WordDetailsAudio junction table
+                  audioLinks: {
+                    include: {
+                      audio: true,
+                    },
+                    take: 1, // Get the first audio file
+                  },
                 },
               },
             },
           },
           image: true,
+          // Include audio from DefinitionAudio junction table
+          audioLinks: {
+            include: {
+              audio: true,
+            },
+            take: 1, // Get the first audio file
+          },
           translationLinks: {
             where: {
               translation: {
@@ -437,6 +451,17 @@ async function selectPracticeWords(
     const oneWordLink = userWord.definition.oneWordLinks?.[0];
     const oneWordTranslation = oneWordLink?.word?.word || '';
 
+    // Get audio URL from definition audio or word details audio
+    let audioUrl = '';
+    const definitionAudio = userWord.definition.audioLinks?.[0]?.audio;
+    const wordDetailsAudio = wordDetail?.audioLinks?.[0]?.audio;
+
+    if (definitionAudio?.url) {
+      audioUrl = definitionAudio.url;
+    } else if (wordDetailsAudio?.url) {
+      audioUrl = wordDetailsAudio.url;
+    }
+
     return {
       userDictionaryId: userWord.id,
       wordText: word?.word || '',
@@ -454,7 +479,7 @@ async function selectPracticeWords(
       imageDescription: userWord.definition.image?.description || undefined,
       partOfSpeech: wordDetail?.partOfSpeech || undefined,
       phonetic: wordDetail?.word?.phoneticGeneral || undefined,
-      audioUrl: '', // Will be populated by audio service if available
+      audioUrl: audioUrl || undefined, // Now properly populated from database
     };
   });
 

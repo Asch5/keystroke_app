@@ -16,8 +16,42 @@ import {
   CreatePracticeSessionRequest,
 } from '@/core/domains/user/actions/practice-actions';
 import { createUnifiedPracticeSession } from '@/core/domains/user/actions/practice-unified';
+import { createVocabularyPracticeSession } from '@/core/domains/user/actions/vocabulary-practice-actions';
 import { UnifiedPracticeSession } from '@/core/domains/user/actions/practice-types';
-import { LanguageCode } from '@/core/types';
+import { LanguageCode, LearningStatus } from '@/core/types';
+import PracticeDebugger from '@/core/infrastructure/monitoring/practiceDebugger';
+import '@/core/infrastructure/monitoring/debugConsole'; // Initialize debug console
+
+/**
+ * Convert practice mode to learning statuses
+ */
+function getPracticeModeStatuses(mode: string | null): LearningStatus[] {
+  switch (mode) {
+    case 'learn-new':
+      return [LearningStatus.notStarted];
+    case 'continue-learning':
+      return [LearningStatus.inProgress, LearningStatus.difficult];
+    case 'refresh-vocabulary':
+      return [LearningStatus.needsReview, LearningStatus.learned];
+    case 'mix-mode':
+      return [
+        LearningStatus.notStarted,
+        LearningStatus.inProgress,
+        LearningStatus.difficult,
+        LearningStatus.needsReview,
+        LearningStatus.learned,
+      ];
+    default:
+      // Default to mix mode if no mode specified
+      return [
+        LearningStatus.notStarted,
+        LearningStatus.inProgress,
+        LearningStatus.difficult,
+        LearningStatus.needsReview,
+        LearningStatus.learned,
+      ];
+  }
+}
 
 /**
  * Enhanced Practice Page Content Component
@@ -39,6 +73,7 @@ export function EnhancedPracticePageContent() {
 
   // Get parameters from URL
   const practiceType = searchParams.get('type') as PracticeType;
+  const practiceMode = searchParams.get('mode');
   const userListId = searchParams.get('userListId');
   const listId = searchParams.get('listId');
 
@@ -100,8 +135,13 @@ export function EnhancedPracticePageContent() {
       if (settings.enableWriteBySound)
         enabledExerciseTypes.push('write-by-sound');
 
+      // Get learning statuses based on practice mode
+      const practiceModeStatuses = getPracticeModeStatuses(practiceMode);
+
       console.log('🎯 Practice Session Creation Debug:', {
         sessionPracticeType,
+        practiceMode,
+        practiceModeStatuses,
         enabledExerciseTypes,
         difficultyLevel: settings.difficultyLevel,
         wordsCount: settings.wordsCount,
@@ -126,46 +166,88 @@ export function EnhancedPracticePageContent() {
           ? { ...baseRequest, enabledExerciseTypes }
           : baseRequest;
 
-      // Use unified practice system if no specific type provided
+      // Use vocabulary practice system if practice mode is specified, otherwise use unified practice
       const result =
         sessionPracticeType === 'unified-practice'
-          ? await createUnifiedPracticeSession(request.userId, {
-              practiceType: request.practiceType,
-              wordsToStudy: request.wordsCount || 20,
-              difficulty: request.difficultyLevel,
-              targetLanguageCode: 'da' as LanguageCode,
-              timeLimit: undefined,
-              listId: request.listId || undefined,
-              userListId: request.userListId || undefined,
-              settings: {
-                autoPlayAudio: settings.autoPlayAudioOnWordCard,
-                enableGameSounds: settings.enableGameSounds,
-                showHints: true,
-                allowSkipping: true,
-              },
-              enabledExerciseTypes,
-            })
+          ? practiceMode
+            ? await createVocabularyPracticeSession(
+                request.userId,
+                {
+                  practiceType: request.practiceType,
+                  wordsToStudy: request.wordsCount || 20,
+                  difficulty: request.difficultyLevel,
+                  targetLanguageCode: 'da' as LanguageCode,
+                  timeLimit: undefined,
+                  listId: request.listId || undefined,
+                  userListId: request.userListId || undefined,
+                  settings: {
+                    autoPlayAudio: settings.autoPlayAudioOnWordCard,
+                    enableGameSounds: settings.enableGameSounds,
+                    showHints: true,
+                    allowSkipping: true,
+                  },
+                  enabledExerciseTypes,
+                },
+                practiceMode,
+              )
+            : await createUnifiedPracticeSession(request.userId, {
+                practiceType: request.practiceType,
+                wordsToStudy: request.wordsCount || 20,
+                difficulty: request.difficultyLevel,
+                targetLanguageCode: 'da' as LanguageCode,
+                timeLimit: undefined,
+                listId: request.listId || undefined,
+                userListId: request.userListId || undefined,
+                settings: {
+                  autoPlayAudio: settings.autoPlayAudioOnWordCard,
+                  enableGameSounds: settings.enableGameSounds,
+                  showHints: true,
+                  allowSkipping: true,
+                },
+                enabledExerciseTypes,
+              })
           : await createEnhancedPracticeSession(request);
 
-      console.log('📋 Practice Session Result:', {
+      const sessionDebugData = {
         success: result.success,
         hasSession: !!result.session,
-        sessionWordsCount: result.session?.words?.length,
-        firstWordData: result.session?.words?.[0]
-          ? {
-              wordText: result.session.words[0].wordText,
-              hasAudio: !!result.session.words[0].audioUrl,
-              hasImage: !!(
-                result.session.words[0].imageId ||
-                result.session.words[0].imageUrl
-              ),
-              definition: result.session.words[0].definition,
-            }
-          : null,
-      });
+        ...(result.session?.words?.length !== undefined && {
+          sessionWordsCount: result.session.words.length,
+        }),
+        ...(result.session?.words?.[0] && {
+          firstWordData: {
+            wordText: result.session.words[0].wordText,
+            hasAudio: !!result.session.words[0].audioUrl,
+            hasImage: !!(
+              result.session.words[0].imageId ||
+              result.session.words[0].imageUrl
+            ),
+            definition: result.session.words[0].definition,
+          },
+        }),
+      };
+
+      console.log('📋 Practice Session Result:', sessionDebugData);
 
       if (result.success && result.session) {
         setSession(result.session);
+
+        // Initialize debugging session
+        await PracticeDebugger.initializeSession({
+          sessionType: sessionPracticeType,
+          practiceMode,
+          practiceModeStatuses: getPracticeModeStatuses(practiceMode),
+          enabledExerciseTypes,
+          settings: {
+            difficultyLevel: settings.difficultyLevel,
+            wordsCount: settings.wordsCount,
+            autoPlayAudio: settings.autoPlayAudioOnWordCard,
+            showImages: settings.showDefinitionImages,
+          },
+          sessionResult: sessionDebugData,
+        }).catch((error) =>
+          console.error('Failed to initialize debug session:', error),
+        );
       } else {
         throw new Error(result.error || 'Failed to create practice session');
       }
@@ -179,7 +261,15 @@ export function EnhancedPracticePageContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [user, practiceType, userListId, listId, settings, settingsLoaded]);
+  }, [
+    user,
+    practiceType,
+    practiceMode,
+    userListId,
+    listId,
+    settings,
+    settingsLoaded,
+  ]);
 
   // Initialize session on component mount
   useEffect(() => {
@@ -189,7 +279,7 @@ export function EnhancedPracticePageContent() {
   }, [user, initializePracticeSession, settingsLoaded]);
 
   const handleWordComplete = (
-    wordId: string,
+    userDictionaryId: string,
     userInput: string,
     isCorrect: boolean,
     attempts: number,
@@ -198,12 +288,21 @@ export function EnhancedPracticePageContent() {
     // TODO: Implement word completion logic
     // This will include updating learning progress and determining next exercise type
     console.log('Word completed:', {
-      wordId,
+      userDictionaryId,
       userInput,
       isCorrect,
       attempts,
       practiceType,
     });
+
+    // Log to organized debugging system
+    PracticeDebugger.logWordCompletion({
+      userDictionaryId,
+      userInput,
+      isCorrect,
+      attempts,
+      practiceType,
+    }).catch((error) => console.error('Failed to log word completion:', error));
   };
 
   const handleSessionComplete = () => {

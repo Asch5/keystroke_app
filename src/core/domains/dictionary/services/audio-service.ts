@@ -1,6 +1,7 @@
 /**
  * Audio Service for playing database audio files
  * Improved error handling with Promise-based approach
+ * NO Web Speech API fallback - only plays actual audio files from database
  */
 
 export class AudioService {
@@ -140,85 +141,19 @@ export class AudioService {
   }
 
   /**
-   * Plays audio with a fallback to Web Speech API if no URL is provided
-   * @param audioUrl - Optional audio URL from database
-   * @param text - Text to speak if no audio URL
-   * @param language - Language code for speech synthesis
-   */
-  static async playAudioWithFallback(
-    audioUrl: string | undefined,
-    text: string,
-    language: string = 'da-DK',
-  ): Promise<void> {
-    if (audioUrl) {
-      try {
-        await this.playAudioFromDatabase(audioUrl);
-        return;
-      } catch (error) {
-        console.warn('⚠️ Database audio failed, falling back to TTS:', error);
-      }
-    }
-
-    // Fallback to Web Speech API
-    return this.playTextToSpeech(text, language);
-  }
-
-  /**
-   * Plays text using Web Speech API (fallback)
-   * @param text - Text to speak
-   * @param language - Language code
-   */
-  static async playTextToSpeech(
-    text: string,
-    language: string = 'da-DK',
-  ): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!('speechSynthesis' in window)) {
-        reject(new Error('Speech synthesis not supported in this browser'));
-        return;
-      }
-
-      // Stop any currently playing audio first
-      this.stopCurrentAudio();
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = language;
-      utterance.rate = 0.8; // Slightly slower for learning
-      utterance.pitch = 1.0;
-
-      utterance.onend = () => {
-        console.log('🔊 Text-to-speech completed');
-        resolve();
-      };
-
-      utterance.onerror = (event) => {
-        reject(new Error(`Speech synthesis failed: ${event.error}`));
-      };
-
-      speechSynthesis.speak(utterance);
-      console.log('🗣️ Text-to-speech started for:', text);
-    });
-  }
-
-  /**
    * Stops any currently playing audio
    */
   static stopCurrentAudio(): void {
     if (this.currentAudio) {
-      console.log('⏹️ Stopping current audio');
       this.currentAudio.pause();
       this.currentAudio.currentTime = 0;
       this.currentAudio = null;
-    }
-
-    // Also stop speech synthesis if active
-    if ('speechSynthesis' in window && speechSynthesis.speaking) {
-      speechSynthesis.cancel();
+      console.log('⏹️ Audio stopped');
     }
   }
 
   /**
-   * Check if audio is currently playing
+   * Checks if audio is currently playing
    */
   static isPlaying(): boolean {
     return this.currentAudio !== null && !this.currentAudio.paused;

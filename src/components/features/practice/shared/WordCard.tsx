@@ -110,6 +110,7 @@ export function WordCard({
                 onClick={handlePlayAudio}
                 disabled={isPlayingAudio}
                 className="h-8 w-8 p-0 shrink-0"
+                title={`Play pronunciation of ${word.wordText}`}
                 aria-label={`Play pronunciation of ${word.wordText}`}
               >
                 {isPlayingAudio ? (
@@ -179,8 +180,26 @@ export function WordCard({
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                onImageError={() => {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.warn(
+                      `🖼️ Image failed to load for word: ${word.wordText}`,
+                      {
+                        imageId: word.imageId,
+                        imageUrl: word.imageUrl,
+                      },
+                    );
+                  }
+                }}
               />
             </AspectRatio>
+          </div>
+        )}
+
+        {/* Audio Unavailable Notice */}
+        {!word.audioUrl && (
+          <div className="text-sm text-muted-foreground text-center p-2 bg-muted/30 rounded-lg">
+            🔇 No audio available for this word
           </div>
         )}
 

@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Comprehensive AI-powered typing test and analysis tool with a full featured dictionary and word search. Were deep elaborated dictionaries with a deep analysis of the words and their meanings.",
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbo",
     "dev:webpack": "next dev",
     "build": "next build",
     "start": "next start",

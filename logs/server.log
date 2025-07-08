@@ -1,637 +1,91 @@
-[2025-07-07T12:55:01.405Z] [info] Initializing server services...
-[2025-07-07T12:55:01.348Z] [info] Initializing server services...
-[2025-07-07T12:55:01.607Z] [info] Initializing server services...
-[2025-07-07T12:55:01.669Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T12:55:01.669Z] [info] Server services initialized successfully
-[2025-07-07T12:55:01.736Z] [info] Server services initialized successfully
-[2025-07-07T12:55:01.736Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T12:55:02.011Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T12:55:02.012Z] [info] Server services initialized successfully
-[2025-07-07T12:55:07.751Z] [info] Initializing server services...
-[2025-07-07T12:55:08.114Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T12:55:08.115Z] [info] Server services initialized successfully
-[2025-07-07T12:55:07.697Z] [info] Initializing server services...
-[2025-07-07T12:55:08.266Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T12:55:08.266Z] [info] Server services initialized successfully
-[2025-07-07T12:55:26.567Z] [info] Initializing server services...
-[2025-07-07T12:55:27.843Z] [info] Server services initialized successfully
-[2025-07-07T12:55:27.843Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T12:55:30.956Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T12:55:31.114Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T12:55:31.114Z"}
-[2025-07-07T12:55:32.174Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T12:55:32.200Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T12:55:32.886Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T12:55:35.147Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T12:55:35.148Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T12:55:35.531Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T12:55:35.533Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T12:55:36.550Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T12:55:36.552Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T12:55:36.554Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T12:55:36.555Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T12:55:36.557Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T12:55:36.560Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T12:55:36.562Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T12:55:38.511Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T12:55:38.958Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T12:55:40.181Z] [info] Practice session created: 2a85aea3-a120-4ca4-8c70-810a74919bd7 Context: {"sessionId":"2a85aea3-a120-4ca4-8c70-810a74919bd7","wordsCount":1,"targetWords":1}
-[2025-07-07T12:55:40.181Z] [info] Unified practice session created: 2a85aea3-a120-4ca4-8c70-810a74919bd7 Context: {"sessionId":"2a85aea3-a120-4ca4-8c70-810a74919bd7","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T12:55:40.199Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T12:55:40.243Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T12:55:40.631Z] [info] Practice session created: 460a2c3b-1de6-41a5-8021-acc78d322843 Context: {"sessionId":"460a2c3b-1de6-41a5-8021-acc78d322843","wordsCount":1,"targetWords":1}
-[2025-07-07T12:55:40.631Z] [info] Unified practice session created: 460a2c3b-1de6-41a5-8021-acc78d322843 Context: {"sessionId":"460a2c3b-1de6-41a5-8021-acc78d322843","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T12:57:01.727Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T12:57:01.729Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T12:57:01.822Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T12:57:01.826Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T12:57:02.404Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T12:57:02.405Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T12:57:02.406Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T12:57:02.408Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T12:57:02.409Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T12:57:02.410Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T12:57:02.411Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T12:57:05.551Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T12:57:05.639Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T12:57:06.091Z] [info] Unified practice session created: 0248460e-488f-43bc-9639-e8a045129d07 Context: {"sessionId":"0248460e-488f-43bc-9639-e8a045129d07","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T12:57:06.090Z] [info] Practice session created: 0248460e-488f-43bc-9639-e8a045129d07 Context: {"sessionId":"0248460e-488f-43bc-9639-e8a045129d07","wordsCount":1,"targetWords":1}
-[2025-07-07T12:57:06.105Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T12:57:06.149Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T12:57:06.536Z] [info] Practice session created: 43411b8b-d7c4-4d7c-af0b-65140140a982 Context: {"sessionId":"43411b8b-d7c4-4d7c-af0b-65140140a982","wordsCount":1,"targetWords":1}
-[2025-07-07T12:57:06.536Z] [info] Unified practice session created: 43411b8b-d7c4-4d7c-af0b-65140140a982 Context: {"sessionId":"43411b8b-d7c4-4d7c-af0b-65140140a982","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T13:04:19.556Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T13:04:19.558Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T13:04:20.709Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T13:04:20.711Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T13:04:21.888Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T13:04:21.905Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T13:04:21.930Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T13:04:21.945Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T13:04:21.947Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T13:04:21.958Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T13:04:21.962Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T13:04:22.648Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T13:04:22.699Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T13:04:22.791Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T13:04:22.796Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T13:04:23.342Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T13:04:23.350Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T13:04:23.362Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T13:04:23.382Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T13:04:23.414Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T13:04:23.430Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T13:04:23.432Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T13:09:05.396Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:09:05.928Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:09:07.402Z] [info] Practice session created: c55a8e40-a1e6-4882-86d1-5651be57a13a Context: {"sessionId":"c55a8e40-a1e6-4882-86d1-5651be57a13a","wordsCount":1,"targetWords":1}
-[2025-07-07T13:09:07.405Z] [info] Unified practice session created: c55a8e40-a1e6-4882-86d1-5651be57a13a Context: {"sessionId":"c55a8e40-a1e6-4882-86d1-5651be57a13a","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T13:09:07.607Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:09:07.651Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:09:08.111Z] [info] Practice session created: 6a07d42b-1cbb-4c20-b2ef-f733edc98b15 Context: {"sessionId":"6a07d42b-1cbb-4c20-b2ef-f733edc98b15","wordsCount":1,"targetWords":1}
-[2025-07-07T13:09:08.112Z] [info] Unified practice session created: 6a07d42b-1cbb-4c20-b2ef-f733edc98b15 Context: {"sessionId":"6a07d42b-1cbb-4c20-b2ef-f733edc98b15","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T13:09:08.295Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:09:08.333Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:09:08.801Z] [info] Unified practice session created: 586136f2-f5f6-464b-9bc2-c81739720f0f Context: {"sessionId":"586136f2-f5f6-464b-9bc2-c81739720f0f","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T13:09:08.800Z] [info] Practice session created: 586136f2-f5f6-464b-9bc2-c81739720f0f Context: {"sessionId":"586136f2-f5f6-464b-9bc2-c81739720f0f","wordsCount":1,"targetWords":1}
-[2025-07-07T13:10:10.420Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T13:10:10.421Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T13:10:10.993Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T13:10:10.995Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T13:10:12.078Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T13:10:12.081Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T13:10:12.083Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T13:10:12.086Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T13:10:12.092Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T13:10:12.095Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T13:10:12.103Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T13:10:12.325Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T13:10:12.327Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T13:10:12.393Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T13:10:12.395Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T13:10:12.927Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T13:10:12.928Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T13:10:12.929Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T13:10:12.930Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T13:10:12.931Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T13:10:12.931Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T13:10:12.932Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T13:11:10.539Z] [info] Initializing server services...
-[2025-07-07T13:11:11.026Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T13:11:11.026Z] [info] Server services initialized successfully
-[2025-07-07T13:11:10.922Z] [info] Initializing server services...
-[2025-07-07T13:11:11.238Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T13:11:11.238Z] [info] Server services initialized successfully
-[2025-07-07T13:11:11.032Z] [info] Initializing server services...
-[2025-07-07T13:11:11.399Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T13:11:11.399Z] [info] Server services initialized successfully
-[2025-07-07T13:11:17.774Z] [info] Initializing server services...
-[2025-07-07T13:11:17.992Z] [info] Initializing server services...
-[2025-07-07T13:11:18.284Z] [info] Server services initialized successfully
-[2025-07-07T13:11:18.284Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T13:11:18.305Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T13:11:18.305Z] [info] Server services initialized successfully
-[2025-07-07T13:11:40.929Z] [info] Initializing server services...
-[2025-07-07T13:11:41.858Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T13:11:41.858Z] [info] Server services initialized successfully
-[2025-07-07T13:12:04.636Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T13:12:04.648Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T13:12:04.725Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T13:12:04.725Z"}
-[2025-07-07T13:12:05.157Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T13:12:05.159Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T13:12:06.196Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T13:12:06.198Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T13:12:06.199Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T13:12:06.199Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T13:12:06.200Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T13:12:06.201Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T13:12:06.202Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T13:12:25.281Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:12:25.795Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:12:27.172Z] [info] Unified practice session created: 8c4596f6-45d7-4895-8b3a-989d29521975 Context: {"sessionId":"8c4596f6-45d7-4895-8b3a-989d29521975","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T13:12:27.169Z] [info] Practice session created: 8c4596f6-45d7-4895-8b3a-989d29521975 Context: {"sessionId":"8c4596f6-45d7-4895-8b3a-989d29521975","wordsCount":1,"targetWords":1}
-[2025-07-07T13:12:27.189Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:12:27.247Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T13:12:27.755Z] [info] Practice session created: 0e159b39-5f5d-43dd-bb9c-d701608f2ff3 Context: {"sessionId":"0e159b39-5f5d-43dd-bb9c-d701608f2ff3","wordsCount":1,"targetWords":1}
-[2025-07-07T13:12:27.755Z] [info] Unified practice session created: 0e159b39-5f5d-43dd-bb9c-d701608f2ff3 Context: {"sessionId":"0e159b39-5f5d-43dd-bb9c-d701608f2ff3","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:08:15.263Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T15:08:15.281Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T15:08:16.467Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T15:08:16.470Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T15:08:17.652Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T15:08:17.655Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T15:08:17.656Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T15:08:17.660Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T15:08:17.661Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T15:08:17.663Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T15:08:17.664Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T15:09:14.992Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:09:15.441Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:09:16.738Z] [info] Unified practice session created: 8ae36961-a958-40df-a4c6-277c90d316a6 Context: {"sessionId":"8ae36961-a958-40df-a4c6-277c90d316a6","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:09:16.737Z] [info] Practice session created: 8ae36961-a958-40df-a4c6-277c90d316a6 Context: {"sessionId":"8ae36961-a958-40df-a4c6-277c90d316a6","wordsCount":1,"targetWords":1}
-[2025-07-07T15:09:16.754Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:09:16.802Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:09:17.197Z] [info] Practice session created: 9d3373dd-3dfa-40d0-b677-bbbd70aaab70 Context: {"sessionId":"9d3373dd-3dfa-40d0-b677-bbbd70aaab70","wordsCount":1,"targetWords":1}
-[2025-07-07T15:09:17.197Z] [info] Unified practice session created: 9d3373dd-3dfa-40d0-b677-bbbd70aaab70 Context: {"sessionId":"9d3373dd-3dfa-40d0-b677-bbbd70aaab70","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:13:53.231Z] [info] Initializing server services...
-[2025-07-07T15:13:53.222Z] [info] Initializing server services...
-[2025-07-07T15:13:53.339Z] [info] Server services initialized successfully
-[2025-07-07T15:13:53.338Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:13:53.295Z] [info] Initializing server services...
-[2025-07-07T15:13:53.440Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:13:53.440Z] [info] Server services initialized successfully
-[2025-07-07T15:13:53.741Z] [info] Server services initialized successfully
-[2025-07-07T15:13:53.741Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:14:01.305Z] [info] Initializing server services...
-[2025-07-07T15:14:01.677Z] [info] Server services initialized successfully
-[2025-07-07T15:14:01.677Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:14:01.285Z] [info] Initializing server services...
-[2025-07-07T15:14:01.937Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:14:01.937Z] [info] Server services initialized successfully
-[2025-07-07T15:14:20.850Z] [info] Initializing server services...
-[2025-07-07T15:14:21.868Z] [info] Server services initialized successfully
-[2025-07-07T15:14:21.868Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:14:34.783Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T15:14:34.911Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T15:14:34.931Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T15:14:34.931Z"}
-[2025-07-07T15:14:35.328Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T15:14:35.330Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T15:14:36.131Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T15:14:36.133Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T15:14:36.134Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T15:14:36.135Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T15:14:36.136Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T15:14:36.138Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T15:14:36.138Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T15:14:37.475Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:14:37.864Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:14:39.102Z] [info] Practice session created: 86b46fce-783e-488e-88fe-73ba83f5ad17 Context: {"sessionId":"86b46fce-783e-488e-88fe-73ba83f5ad17","wordsCount":1,"targetWords":1}
-[2025-07-07T15:14:39.104Z] [info] Unified practice session created: 86b46fce-783e-488e-88fe-73ba83f5ad17 Context: {"sessionId":"86b46fce-783e-488e-88fe-73ba83f5ad17","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:14:39.128Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:14:39.170Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:14:39.645Z] [info] Unified practice session created: 17d05c62-4137-454a-86eb-8e59923bbe6a Context: {"sessionId":"17d05c62-4137-454a-86eb-8e59923bbe6a","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:14:39.645Z] [info] Practice session created: 17d05c62-4137-454a-86eb-8e59923bbe6a Context: {"sessionId":"17d05c62-4137-454a-86eb-8e59923bbe6a","wordsCount":1,"targetWords":1}
-[2025-07-07T15:15:37.684Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T15:15:37.686Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T15:15:37.789Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T15:15:37.791Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T15:15:38.222Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T15:15:38.224Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T15:15:38.225Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T15:15:38.227Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T15:15:38.228Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T15:15:38.230Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T15:15:38.231Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T15:15:59.351Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:15:59.428Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:16:00.080Z] [info] Practice session created: dd00ba2f-3208-46db-b937-4150eff54ea2 Context: {"sessionId":"dd00ba2f-3208-46db-b937-4150eff54ea2","wordsCount":1,"targetWords":1}
-[2025-07-07T15:16:00.083Z] [info] Unified practice session created: dd00ba2f-3208-46db-b937-4150eff54ea2 Context: {"sessionId":"dd00ba2f-3208-46db-b937-4150eff54ea2","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:16:00.106Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:16:00.155Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:16:00.705Z] [info] Practice session created: 23ffe499-b9e3-495e-ab6b-30d905af6b27 Context: {"sessionId":"23ffe499-b9e3-495e-ab6b-30d905af6b27","wordsCount":1,"targetWords":1}
-[2025-07-07T15:16:00.705Z] [info] Unified practice session created: 23ffe499-b9e3-495e-ab6b-30d905af6b27 Context: {"sessionId":"23ffe499-b9e3-495e-ab6b-30d905af6b27","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:44:14.524Z] [info] Initializing server services...
-[2025-07-07T15:44:14.639Z] [info] Initializing server services...
-[2025-07-07T15:44:14.736Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:44:14.736Z] [info] Server services initialized successfully
-[2025-07-07T15:44:14.658Z] [info] Initializing server services...
-[2025-07-07T15:44:14.861Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:44:14.862Z] [info] Server services initialized successfully
-[2025-07-07T15:44:15.206Z] [info] Server services initialized successfully
-[2025-07-07T15:44:15.206Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:44:22.188Z] [info] Initializing server services...
-[2025-07-07T15:44:22.282Z] [info] Server services initialized successfully
-[2025-07-07T15:44:22.281Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:44:21.687Z] [info] Initializing server services...
-[2025-07-07T15:44:22.771Z] [info] Server services initialized successfully
-[2025-07-07T15:44:22.771Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:44:47.127Z] [info] Initializing server services...
-[2025-07-07T15:44:48.622Z] [info] Server services initialized successfully
-[2025-07-07T15:44:48.622Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T15:44:52.213Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T15:44:52.215Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T15:44:52.235Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T15:44:52.235Z"}
-[2025-07-07T15:44:52.697Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T15:44:52.698Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T15:44:53.730Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T15:44:53.731Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T15:44:53.732Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T15:44:53.733Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T15:44:53.734Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T15:44:53.735Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T15:44:53.736Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T15:46:21.468Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:46:21.871Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:46:23.203Z] [info] Unified practice session created: 41c57240-f4b5-434e-9a3f-d859e074a33e Context: {"sessionId":"41c57240-f4b5-434e-9a3f-d859e074a33e","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:46:23.200Z] [info] Practice session created: 41c57240-f4b5-434e-9a3f-d859e074a33e Context: {"sessionId":"41c57240-f4b5-434e-9a3f-d859e074a33e","wordsCount":1,"targetWords":1}
-[2025-07-07T15:46:23.235Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:46:23.279Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:46:24.388Z] [info] Practice session created: b400b3c2-e9a8-4574-b0b4-1b810e570df6 Context: {"sessionId":"b400b3c2-e9a8-4574-b0b4-1b810e570df6","wordsCount":25,"targetWords":15}
-[2025-07-07T15:46:24.389Z] [info] Unified practice session created: b400b3c2-e9a8-4574-b0b4-1b810e570df6 Context: {"sessionId":"b400b3c2-e9a8-4574-b0b4-1b810e570df6","wordsCount":15,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T15:46:46.573Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T15:46:46.575Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T15:46:46.687Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T15:46:46.688Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T15:46:47.130Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T15:46:47.133Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T15:46:47.134Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T15:46:47.135Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T15:46:47.136Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T15:46:47.137Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T15:46:47.138Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T15:47:26.796Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:47:26.879Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:47:27.384Z] [info] Practice session created: 949ce019-6b9c-4398-a130-62d010c70e4f Context: {"sessionId":"949ce019-6b9c-4398-a130-62d010c70e4f","wordsCount":1,"targetWords":1}
-[2025-07-07T15:47:27.384Z] [info] Unified practice session created: 949ce019-6b9c-4398-a130-62d010c70e4f Context: {"sessionId":"949ce019-6b9c-4398-a130-62d010c70e4f","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:47:27.403Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:47:27.443Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:47:27.975Z] [info] Unified practice session created: c7368073-5fe8-45f8-9d6c-de23847c2211 Context: {"sessionId":"c7368073-5fe8-45f8-9d6c-de23847c2211","wordsCount":15,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T15:47:27.974Z] [info] Practice session created: c7368073-5fe8-45f8-9d6c-de23847c2211 Context: {"sessionId":"c7368073-5fe8-45f8-9d6c-de23847c2211","wordsCount":25,"targetWords":15}
-[2025-07-07T15:54:22.639Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T15:54:22.639Z"}
-[2025-07-07T15:56:48.105Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T15:56:48.105Z"}
-[2025-07-07T15:56:48.384Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T15:56:49.657Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T15:56:49.686Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T15:56:50.372Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T15:56:50.418Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T15:56:50.428Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T15:56:50.828Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T15:56:50.830Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T15:56:51.711Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T15:56:51.713Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T15:56:51.714Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T15:56:51.715Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T15:56:51.717Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T15:56:51.718Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T15:56:51.719Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T15:56:52.579Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:56:52.942Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:56:54.293Z] [info] Unified practice session created: 43171342-8a9a-4016-9b44-193a96263f37 Context: {"sessionId":"43171342-8a9a-4016-9b44-193a96263f37","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T15:56:54.292Z] [info] Practice session created: 43171342-8a9a-4016-9b44-193a96263f37 Context: {"sessionId":"43171342-8a9a-4016-9b44-193a96263f37","wordsCount":1,"targetWords":1}
-[2025-07-07T15:56:54.308Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:56:54.348Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":15,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T15:56:55.328Z] [info] Practice session created: 436c955f-c855-4ede-9643-61bda553dd55 Context: {"sessionId":"436c955f-c855-4ede-9643-61bda553dd55","wordsCount":25,"targetWords":15}
-[2025-07-07T15:56:55.328Z] [info] Unified practice session created: 436c955f-c855-4ede-9643-61bda553dd55 Context: {"sessionId":"436c955f-c855-4ede-9643-61bda553dd55","wordsCount":15,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T16:10:01.474Z] [info] Initializing server services...
-[2025-07-07T16:10:01.776Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:10:01.776Z] [info] Server services initialized successfully
-[2025-07-07T16:10:01.544Z] [info] Initializing server services...
-[2025-07-07T16:10:01.748Z] [info] Initializing server services...
-[2025-07-07T16:10:02.007Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:10:02.007Z] [info] Server services initialized successfully
-[2025-07-07T16:10:02.190Z] [info] Server services initialized successfully
-[2025-07-07T16:10:02.190Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:10:08.730Z] [info] Initializing server services...
-[2025-07-07T16:10:09.402Z] [info] Server services initialized successfully
-[2025-07-07T16:10:09.401Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:10:08.965Z] [info] Initializing server services...
-[2025-07-07T16:10:09.625Z] [info] Server services initialized successfully
-[2025-07-07T16:10:09.625Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:10:39.568Z] [info] Initializing server services...
-[2025-07-07T16:10:40.467Z] [info] Server services initialized successfully
-[2025-07-07T16:10:40.467Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:10:49.248Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:10:49.248Z"}
-[2025-07-07T16:10:54.716Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:10:54.716Z"}
-[2025-07-07T16:10:54.982Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:10:56.216Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:10:56.238Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:10:57.001Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:20:43.506Z] [info] Initializing server services...
-[2025-07-07T16:20:43.607Z] [info] Initializing server services...
-[2025-07-07T16:20:43.561Z] [info] Initializing server services...
-[2025-07-07T16:20:43.670Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:20:43.671Z] [info] Server services initialized successfully
-[2025-07-07T16:20:43.863Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:20:43.863Z] [info] Server services initialized successfully
-[2025-07-07T16:20:43.818Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:20:43.818Z] [info] Server services initialized successfully
-[2025-07-07T16:20:48.804Z] [info] Initializing server services...
-[2025-07-07T16:20:49.402Z] [info] Server services initialized successfully
-[2025-07-07T16:20:49.402Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:20:49.039Z] [info] Initializing server services...
-[2025-07-07T16:20:49.597Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:20:49.597Z] [info] Server services initialized successfully
-[2025-07-07T16:21:09.582Z] [info] Initializing server services...
-[2025-07-07T16:21:10.397Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:21:10.397Z] [info] Server services initialized successfully
-[2025-07-07T16:21:20.194Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:21:20.241Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:21:20.241Z"}
-[2025-07-07T16:21:21.378Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:21:21.418Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:21:22.178Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:21:33.724Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:21:33.724Z"}
-[2025-07-07T16:29:57.584Z] [info] Initializing server services...
-[2025-07-07T16:29:57.728Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:29:57.729Z] [info] Server services initialized successfully
-[2025-07-07T16:29:57.694Z] [info] Initializing server services...
-[2025-07-07T16:29:57.757Z] [info] Initializing server services...
-[2025-07-07T16:29:58.026Z] [info] Server services initialized successfully
-[2025-07-07T16:29:58.026Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:29:58.075Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:29:58.075Z] [info] Server services initialized successfully
-[2025-07-07T16:30:03.749Z] [info] Initializing server services...
-[2025-07-07T16:30:04.339Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:30:04.339Z] [info] Server services initialized successfully
-[2025-07-07T16:30:03.987Z] [info] Initializing server services...
-[2025-07-07T16:30:04.553Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:30:04.553Z] [info] Server services initialized successfully
-[2025-07-07T16:30:24.200Z] [info] Initializing server services...
-[2025-07-07T16:30:25.277Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T16:30:25.277Z] [info] Server services initialized successfully
-[2025-07-07T16:30:26.593Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:30:26.584Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:30:26.584Z"}
-[2025-07-07T16:30:27.915Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:30:27.942Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:30:28.649Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:33:17.711Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:33:17.710Z"}
-[2025-07-07T16:33:38.875Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:33:39.278Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:33:39.305Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:33:39.422Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:34:35.757Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:34:35.898Z] [info] Settings loaded successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","hasCustomSettings":true,"hasStudyPreferences":true}
-[2025-07-07T16:34:36.091Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:34:36.117Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:34:36.242Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:34:38.014Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:34:38.016Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T16:34:38.427Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T16:34:38.429Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T16:34:39.293Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T16:34:39.295Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T16:34:39.297Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T16:34:39.298Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T16:34:39.300Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T16:34:39.302Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T16:34:39.303Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T16:34:50.352Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T16:34:50.737Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T16:34:52.036Z] [info] Unified practice session created: ed275803-036b-46a4-8a7d-41a9aa46dcf5 Context: {"sessionId":"ed275803-036b-46a4-8a7d-41a9aa46dcf5","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T16:34:52.034Z] [info] Practice session created: ed275803-036b-46a4-8a7d-41a9aa46dcf5 Context: {"sessionId":"ed275803-036b-46a4-8a7d-41a9aa46dcf5","wordsCount":1,"targetWords":1}
-[2025-07-07T16:36:13.393Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:36:13.395Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T16:36:13.480Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T16:36:13.480Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T16:36:13.896Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T16:36:13.897Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T16:36:13.899Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T16:36:13.900Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T16:36:13.900Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T16:36:13.901Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T16:36:13.902Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T16:36:19.162Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T16:36:19.246Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T16:36:19.774Z] [info] Unified practice session created: 673c39d2-ae22-434e-9b4c-b9253ebab829 Context: {"sessionId":"673c39d2-ae22-434e-9b4c-b9253ebab829","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T16:36:19.773Z] [info] Practice session created: 673c39d2-ae22-434e-9b4c-b9253ebab829 Context: {"sessionId":"673c39d2-ae22-434e-9b4c-b9253ebab829","wordsCount":1,"targetWords":1}
-[2025-07-07T16:36:24.223Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:36:24.224Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T16:36:24.274Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T16:36:24.275Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T16:36:24.676Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T16:36:24.677Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T16:36:24.678Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T16:36:24.679Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T16:36:24.680Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T16:36:24.682Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T16:36:24.684Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T16:36:32.473Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T16:36:32.538Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T16:36:33.526Z] [info] Practice session created: 144b84c1-c1aa-4ba0-b8dd-c7e1044c95ef Context: {"sessionId":"144b84c1-c1aa-4ba0-b8dd-c7e1044c95ef","wordsCount":20,"targetWords":10}
-[2025-07-07T16:36:33.526Z] [info] Unified practice session created: 144b84c1-c1aa-4ba0-b8dd-c7e1044c95ef Context: {"sessionId":"144b84c1-c1aa-4ba0-b8dd-c7e1044c95ef","wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T16:36:54.080Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:36:54.080Z"}
-[2025-07-07T16:36:54.353Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:36:54.355Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T16:36:54.445Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T16:36:54.448Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T16:36:54.880Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T16:36:54.882Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T16:36:54.883Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T16:36:54.884Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T16:36:54.886Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T16:36:54.887Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T16:36:54.888Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T16:36:57.914Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T16:36:58.000Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T16:36:58.565Z] [info] Unified practice session created: fa40ed8f-5e56-411c-9ac5-165781a9acd2 Context: {"sessionId":"fa40ed8f-5e56-411c-9ac5-165781a9acd2","wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T16:36:58.564Z] [info] Practice session created: fa40ed8f-5e56-411c-9ac5-165781a9acd2 Context: {"sessionId":"fa40ed8f-5e56-411c-9ac5-165781a9acd2","wordsCount":20,"targetWords":10}
-[2025-07-07T16:56:02.834Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:56:02.833Z"}
-[2025-07-07T16:56:02.933Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:56:02.933Z"}
-[2025-07-07T16:56:31.352Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T16:56:31.352Z"}
-[2025-07-07T16:56:35.591Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:56:37.039Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:56:38.082Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:56:39.050Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:56:40.720Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:56:41.466Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T16:56:42.060Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T16:56:42.217Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:00:46.602Z] [info] Initializing server services...
-[2025-07-07T17:00:46.630Z] [info] Initializing server services...
-[2025-07-07T17:00:46.742Z] [info] Initializing server services...
-[2025-07-07T17:00:46.838Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:00:46.838Z] [info] Server services initialized successfully
-[2025-07-07T17:00:47.065Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:00:47.066Z] [info] Server services initialized successfully
-[2025-07-07T17:00:47.404Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:00:47.404Z] [info] Server services initialized successfully
-[2025-07-07T17:00:54.955Z] [info] Initializing server services...
-[2025-07-07T17:00:55.463Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:00:55.463Z] [info] Server services initialized successfully
-[2025-07-07T17:00:54.623Z] [info] Initializing server services...
-[2025-07-07T17:00:55.677Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:00:55.678Z] [info] Server services initialized successfully
-[2025-07-07T17:01:19.909Z] [info] Initializing server services...
-[2025-07-07T17:01:21.065Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:01:21.065Z] [info] Server services initialized successfully
-[2025-07-07T17:01:24.337Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T17:01:24.337Z"}
-[2025-07-07T17:01:24.399Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:01:24.459Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T17:01:24.830Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T17:01:24.832Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T17:01:25.717Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T17:01:25.719Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T17:01:25.720Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T17:01:25.721Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T17:01:25.723Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T17:01:25.724Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T17:01:25.726Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T17:01:29.546Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:01:30.048Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:01:31.718Z] [info] Unified practice session created: b1619ed5-c122-445d-bb2d-6f5c9a67b061 Context: {"sessionId":"b1619ed5-c122-445d-bb2d-6f5c9a67b061","wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T17:01:31.717Z] [info] Practice session created: b1619ed5-c122-445d-bb2d-6f5c9a67b061 Context: {"sessionId":"b1619ed5-c122-445d-bb2d-6f5c9a67b061","wordsCount":20,"targetWords":10}
-[2025-07-07T17:07:27.565Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:07:27.567Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T17:07:28.610Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T17:07:28.613Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T17:07:29.601Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T17:07:29.605Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T17:07:29.607Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T17:07:29.608Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T17:07:29.609Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T17:07:29.611Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T17:07:29.612Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T17:14:53.646Z] [info] Initializing server services...
-[2025-07-07T17:14:53.750Z] [info] Initializing server services...
-[2025-07-07T17:14:53.829Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:14:53.829Z] [info] Server services initialized successfully
-[2025-07-07T17:14:53.979Z] [info] Initializing server services...
-[2025-07-07T17:14:54.100Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:14:54.100Z] [info] Server services initialized successfully
-[2025-07-07T17:14:54.358Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:14:54.358Z] [info] Server services initialized successfully
-[2025-07-07T17:15:00.156Z] [info] Initializing server services...
-[2025-07-07T17:15:00.237Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:15:00.237Z] [info] Server services initialized successfully
-[2025-07-07T17:14:59.976Z] [info] Initializing server services...
-[2025-07-07T17:15:00.957Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:15:00.957Z] [info] Server services initialized successfully
-[2025-07-07T17:15:25.805Z] [info] Initializing server services...
-[2025-07-07T17:15:26.730Z] [info] Server services initialized successfully
-[2025-07-07T17:15:26.729Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-07T17:15:29.016Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T17:15:29.016Z"}
-[2025-07-07T17:15:29.188Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:15:29.250Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T17:15:29.654Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T17:15:29.656Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T17:15:30.655Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T17:15:30.657Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T17:15:30.659Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T17:15:30.660Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T17:15:30.661Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T17:15:30.663Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T17:15:30.664Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T17:15:48.544Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:15:48.948Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:15:50.576Z] [info] Practice session created: 61c70f84-7fb8-433d-b17e-8cd49d052e22 Context: {"sessionId":"61c70f84-7fb8-433d-b17e-8cd49d052e22","wordsCount":20,"targetWords":10}
-[2025-07-07T17:15:50.578Z] [info] Unified practice session created: 61c70f84-7fb8-433d-b17e-8cd49d052e22 Context: {"sessionId":"61c70f84-7fb8-433d-b17e-8cd49d052e22","wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T17:15:59.600Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T17:16:00.668Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:16:20.004Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:16:20.005Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T17:16:20.089Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T17:16:20.090Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T17:16:20.487Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T17:16:20.488Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T17:16:20.488Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T17:16:20.489Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T17:16:20.490Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T17:16:20.491Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T17:16:20.492Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T17:16:58.402Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T17:16:58.402Z"}
-[2025-07-07T17:16:58.538Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:16:58.539Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T17:16:58.639Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T17:16:58.641Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T17:16:59.202Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T17:16:59.204Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T17:16:59.206Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T17:16:59.207Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T17:16:59.210Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T17:16:59.212Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T17:16:59.214Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T17:17:01.642Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:17:01.721Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":3,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:17:02.651Z] [info] Practice session created: 373f07b8-499a-4284-8a47-b4b2f7734a42 Context: {"sessionId":"373f07b8-499a-4284-8a47-b4b2f7734a42","wordsCount":1,"targetWords":1}
-[2025-07-07T17:17:02.652Z] [info] Unified practice session created: 373f07b8-499a-4284-8a47-b4b2f7734a42 Context: {"sessionId":"373f07b8-499a-4284-8a47-b4b2f7734a42","wordsCount":1,"exerciseTypes":["make-up-word"]}
-[2025-07-07T17:17:07.894Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:17:07.895Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-07T17:17:07.940Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-07T17:17:07.941Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-07T17:17:08.315Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-07T17:17:08.317Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-07T17:17:08.318Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-07T17:17:08.319Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-07T17:17:08.321Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-07T17:17:08.323Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-07T17:17:08.324Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
-[2025-07-07T17:17:18.561Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:17:18.649Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:17:19.249Z] [info] Practice session created: edf6cc91-bee6-42e7-831b-ad3ef93edaac Context: {"sessionId":"edf6cc91-bee6-42e7-831b-ad3ef93edaac","wordsCount":20,"targetWords":10}
-[2025-07-07T17:17:19.250Z] [info] Unified practice session created: edf6cc91-bee6-42e7-831b-ad3ef93edaac Context: {"sessionId":"edf6cc91-bee6-42e7-831b-ad3ef93edaac","wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T17:17:46.113Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T17:17:46.113Z"}
-[2025-07-07T17:17:46.250Z] [info] Creating unified practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:17:46.333Z] [info] Creating practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]}}
-[2025-07-07T17:17:46.969Z] [info] Practice session created: c850e4d1-c8a1-44ff-b2cf-ce1f7d3c24d5 Context: {"sessionId":"c850e4d1-c8a1-44ff-b2cf-ce1f7d3c24d5","wordsCount":20,"targetWords":10}
-[2025-07-07T17:17:46.970Z] [info] Unified practice session created: c850e4d1-c8a1-44ff-b2cf-ce1f7d3c24d5 Context: {"sessionId":"c850e4d1-c8a1-44ff-b2cf-ce1f7d3c24d5","wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
-[2025-07-07T17:18:38.797Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T17:18:38.797Z"}
-[2025-07-07T17:18:41.536Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-07T17:18:41.536Z"}
-[2025-07-07T17:18:50.229Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T17:18:51.589Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:18:52.009Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T17:18:52.730Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:18:53.295Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T17:18:53.943Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-07T17:18:54.549Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
-[2025-07-07T17:18:54.727Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-08T11:18:01.148Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T11:18:01.148Z"}
-[2025-07-08T11:18:11.902Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T11:18:11.902Z"}
-[2025-07-08T11:18:29.539Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T11:18:29.539Z"}
-[2025-07-08T11:19:29.239Z] [info] Initializing server services...
-[2025-07-08T11:19:29.462Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-08T11:19:29.462Z] [info] Server services initialized successfully
-[2025-07-08T11:19:29.402Z] [info] Initializing server services...
-[2025-07-08T11:19:29.367Z] [info] Initializing server services...
-[2025-07-08T11:19:29.791Z] [info] Server services initialized successfully
-[2025-07-08T11:19:29.791Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-08T11:19:29.680Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-08T11:19:29.680Z] [info] Server services initialized successfully
-[2025-07-08T11:19:36.015Z] [info] Initializing server services...
-[2025-07-08T11:19:36.124Z] [info] Server services initialized successfully
-[2025-07-08T11:19:36.123Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-08T11:19:35.968Z] [info] Initializing server services...
-[2025-07-08T11:19:37.233Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-08T11:19:37.233Z] [info] Server services initialized successfully
-[2025-07-08T11:20:01.234Z] [info] Initializing server services...
-[2025-07-08T11:20:02.055Z] [info] Server services initialized successfully
-[2025-07-08T11:20:02.055Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
-[2025-07-08T11:23:53.556Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T11:23:53.556Z"}
-[2025-07-08T11:25:56.831Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
-[2025-07-08T11:25:56.832Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
-[2025-07-08T11:25:57.243Z] [info] getUserLists - Basic query found: 1 records
-[2025-07-08T11:25:57.245Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
-[2025-07-08T11:25:58.281Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
-[2025-07-08T11:25:58.283Z] [info] getUserLists - Existing Lists found: 1
-[2025-07-08T11:25:58.284Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
-[2025-07-08T11:25:58.286Z] [info] getUserLists - Found 1 raw user lists
-[2025-07-08T11:25:58.288Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
-[2025-07-08T11:25:58.290Z] [info] getUserLists - Returning 1 processed user lists
-[2025-07-08T11:25:58.291Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-08T13:12:08.711Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T13:12:08.711Z"}
+[2025-07-08T13:12:13.457Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-08T13:12:14.822Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-08T13:12:15.339Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-08T13:12:16.180Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-08T13:12:19.622Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-08T13:12:22.607Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-08T13:12:22.854Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-08T13:12:22.963Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-08T13:12:40.691Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-08T13:12:41.006Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-08T13:12:41.163Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-08T13:12:41.190Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-08T13:12:42.110Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-08T13:12:42.111Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-08T13:12:42.113Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-08T13:12:42.116Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-08T13:12:42.117Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-08T13:12:42.119Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-08T13:12:42.125Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-08T13:12:42.283Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-08T13:12:42.284Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-08T13:12:42.354Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-08T13:12:42.355Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-08T13:12:42.817Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-08T13:12:42.819Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-08T13:12:42.821Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-08T13:12:42.823Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-08T13:12:42.825Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-08T13:12:42.826Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-08T13:12:42.827Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-08T13:13:15.165Z] [info] Creating vocabulary practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]},"practiceMode":"learn-new"}
+[2025-07-08T13:13:16.773Z] [info] Vocabulary practice session created: 3e65fb31-822f-4fb0-ae93-c3fb8c73952f Context: {"sessionId":"3e65fb31-822f-4fb0-ae93-c3fb8c73952f","practiceMode":"learn-new","learningStatuses":["notStarted"],"wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
+[2025-07-08T13:13:16.889Z] [info] Creating vocabulary practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]},"practiceMode":"learn-new"}
+[2025-07-08T13:13:17.423Z] [info] Vocabulary practice session created: a4afa9a2-6e16-430b-bac7-3b5c0ea55686 Context: {"sessionId":"a4afa9a2-6e16-430b-bac7-3b5c0ea55686","practiceMode":"learn-new","learningStatuses":["notStarted"],"wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}
+[2025-07-08T13:19:27.385Z] [info] 🖼️ Image API: Requesting image ID 320 Context: {"imageId":"320","parsedId":320}
+[2025-07-08T13:19:27.383Z] [info] 🖼️ Image API: Requesting image ID 317 Context: {"imageId":"317","parsedId":317}
+[2025-07-08T13:19:27.384Z] [info] 🖼️ Image API: Requesting image ID 318 Context: {"imageId":"318","parsedId":318}
+[2025-07-08T13:19:27.385Z] [info] 🖼️ Image API: Requesting image ID 324 Context: {"imageId":"324","parsedId":324}
+[2025-07-08T13:19:27.386Z] [info] 🖼️ Image API: Requesting image ID 321 Context: {"imageId":"321","parsedId":321}
+[2025-07-08T13:19:27.384Z] [info] 🖼️ Image API: Requesting image ID 319 Context: {"imageId":"319","parsedId":319}
+[2025-07-08T13:19:27.552Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg Context: {"imageId":317,"imageUrl":"https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg"}
+[2025-07-08T13:19:27.608Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/5128180/pexels-photo-5128180.jpeg Context: {"imageId":321,"imageUrl":"https://images.pexels.com/photos/5128180/pexels-photo-5128180.jpeg"}
+[2025-07-08T13:19:27.824Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/19131441/pexels-photo-19131441.jpeg Context: {"imageId":319,"imageUrl":"https://images.pexels.com/photos/19131441/pexels-photo-19131441.jpeg"}
+[2025-07-08T13:19:27.830Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/4046791/pexels-photo-4046791.jpeg Context: {"imageId":320,"imageUrl":"https://images.pexels.com/photos/4046791/pexels-photo-4046791.jpeg"}
+[2025-07-08T13:19:27.866Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/32749359/pexels-photo-32749359.jpeg Context: {"imageId":324,"imageUrl":"https://images.pexels.com/photos/32749359/pexels-photo-32749359.jpeg"}
+[2025-07-08T13:19:27.871Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/7679542/pexels-photo-7679542.jpeg Context: {"imageId":318,"imageUrl":"https://images.pexels.com/photos/7679542/pexels-photo-7679542.jpeg"}
+[2025-07-08T13:19:27.909Z] [info] ✅ Image API: Successfully served image 317 in 526ms Context: {"imageId":317,"contentType":"image/jpeg","size":2156438,"duration":526}
+[2025-07-08T13:19:28.089Z] [info] 🖼️ Image API: Requesting image ID 322 Context: {"imageId":"322","parsedId":322}
+[2025-07-08T13:19:28.132Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/8327879/pexels-photo-8327879.jpeg Context: {"imageId":322,"imageUrl":"https://images.pexels.com/photos/8327879/pexels-photo-8327879.jpeg"}
+[2025-07-08T13:19:29.018Z] [info] ✅ Image API: Successfully served image 321 in 1635ms Context: {"imageId":321,"contentType":"image/jpeg","size":1835257,"duration":1635}
+[2025-07-08T13:19:29.281Z] [info] ✅ Image API: Successfully served image 319 in 1898ms Context: {"imageId":319,"contentType":"image/jpeg","size":1626475,"duration":1898}
+[2025-07-08T13:19:32.052Z] [info] ✅ Image API: Successfully served image 324 in 4669ms Context: {"imageId":324,"contentType":"image/jpeg","size":7565128,"duration":4669}
+[2025-07-08T13:19:33.429Z] [info] ✅ Image API: Successfully served image 320 in 6046ms Context: {"imageId":320,"contentType":"image/jpeg","size":5504416,"duration":6046}
+[2025-07-08T13:19:34.617Z] [info] ✅ Image API: Successfully served image 322 in 6528ms Context: {"imageId":322,"contentType":"image/jpeg","size":1693771,"duration":6528}
+[2025-07-08T13:19:35.970Z] [info] ✅ Image API: Successfully served image 318 in 8588ms Context: {"imageId":318,"contentType":"image/jpeg","size":1263257,"duration":8588}
+[2025-07-08T13:19:36.588Z] [info] 🖼️ Image API: Requesting image ID 58 Context: {"imageId":"58","parsedId":58}
+[2025-07-08T13:19:36.641Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/5634771/pexels-photo-5634771.jpeg Context: {"imageId":58,"imageUrl":"https://images.pexels.com/photos/5634771/pexels-photo-5634771.jpeg"}
+[2025-07-08T13:19:39.778Z] [info] ✅ Image API: Successfully served image 58 in 3190ms Context: {"imageId":58,"contentType":"image/jpeg","size":1974554,"duration":3190}
+[2025-07-08T13:31:19.901Z] [info] Initializing server services...
+[2025-07-08T13:31:20.010Z] [info] Initializing server services...
+[2025-07-08T13:31:20.102Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T13:31:20.102Z] [info] Server services initialized successfully
+[2025-07-08T13:31:20.265Z] [info] Server services initialized successfully
+[2025-07-08T13:31:20.265Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T13:31:20.228Z] [info] Initializing server services...
+[2025-07-08T13:31:20.644Z] [info] Server services initialized successfully
+[2025-07-08T13:31:20.644Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T13:31:25.937Z] [info] Initializing server services...
+[2025-07-08T13:31:26.159Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T13:31:26.159Z] [info] Server services initialized successfully
+[2025-07-08T13:31:26.209Z] [info] Initializing server services...
+[2025-07-08T13:31:26.585Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T13:31:26.585Z] [info] Server services initialized successfully
+[2025-07-08T13:31:58.268Z] [info] Initializing server services...
+[2025-07-08T13:31:59.157Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T13:31:59.157Z] [info] Server services initialized successfully
+[2025-07-08T13:32:03.519Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T13:32:03.519Z"}
+[2025-07-08T13:32:12.023Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-08T13:32:12.024Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-08T13:32:12.575Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-08T13:32:12.577Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-08T13:32:13.518Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-08T13:32:13.519Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-08T13:32:13.520Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-08T13:32:13.522Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-08T13:32:13.523Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-08T13:32:13.524Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-08T13:32:13.525Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-08T13:32:17.100Z] [info] Creating vocabulary practice session for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"config":{"practiceType":"unified-practice","wordsToStudy":10,"difficulty":1,"targetLanguageCode":"da","settings":{"autoPlayAudio":true,"enableGameSounds":true,"showHints":true,"allowSkipping":true},"enabledExerciseTypes":["remember-translation","choose-right-word","make-up-word","write-by-definition","write-by-sound"]},"practiceMode":"learn-new"}
+[2025-07-08T13:32:18.892Z] [info] Vocabulary practice session created: 4899ad75-6fda-4765-a32c-519265085b9d Context: {"sessionId":"4899ad75-6fda-4765-a32c-519265085b9d","practiceMode":"learn-new","learningStatuses":["notStarted"],"wordsCount":10,"exerciseTypes":["remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation","remember-translation"]}

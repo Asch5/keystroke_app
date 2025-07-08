@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { WordCard } from './shared';
 import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
 import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import PracticeDebugger from '@/core/infrastructure/monitoring/practiceDebugger';
 
 interface PracticeWordCardRendererProps {
   currentWord: PracticeWord;
@@ -28,40 +29,22 @@ export function PracticeWordCardRenderer({
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
   // Ensure settings have proper defaults (temporary fix for initialization issues)
-  const safeSettings = {
-    ...settings,
-    showDefinitionImages: settings.showDefinitionImages ?? true,
-    showPhoneticPronunciation: settings.showPhoneticPronunciation ?? true,
-    showPartOfSpeech: settings.showPartOfSpeech ?? true,
-    autoPlayAudioOnWordCard: settings.autoPlayAudioOnWordCard ?? true,
-  };
+  const safeSettings = useMemo(
+    () => ({
+      ...settings,
+      showDefinitionImages: settings.showDefinitionImages ?? true,
+      showPhoneticPronunciation: settings.showPhoneticPronunciation ?? true,
+      showPartOfSpeech: settings.showPartOfSpeech ?? true,
+      autoPlayAudioOnWordCard: settings.autoPlayAudioOnWordCard ?? true,
+    }),
+    [settings],
+  );
 
-  // Debug logging for current word and settings
+  // Organized debugging using PracticeDebugger
   useEffect(() => {
     if (!currentWord) return;
 
-    console.log('🃏 WordCard Debug - Current Word:', {
-      wordText: currentWord.wordText,
-      definition: currentWord.definition,
-      audioUrl: currentWord.audioUrl,
-      imageId: currentWord.imageId,
-      imageUrl: currentWord.imageUrl,
-      phonetic: currentWord.phonetic,
-      partOfSpeech: currentWord.partOfSpeech,
-      imageDescription: currentWord.imageDescription,
-    });
-
-    console.log('🃏 WordCard Debug - Settings:', {
-      showDefinitionImages: safeSettings.showDefinitionImages,
-      showPhoneticPronunciation: safeSettings.showPhoneticPronunciation,
-      showPartOfSpeech: safeSettings.showPartOfSpeech,
-      autoPlayAudioOnWordCard: safeSettings.autoPlayAudioOnWordCard,
-      originalSettings: settings,
-      safeSettings: safeSettings,
-    });
-
-    // Debug the conditional rendering logic
-    console.log('🎯 WordCard Debug - Conditional Logic:', {
+    const conditionalLogic = {
       shouldShowPhonetic:
         safeSettings.showPhoneticPronunciation && !!currentWord.phonetic,
       shouldShowPartOfSpeech:
@@ -70,41 +53,73 @@ export function PracticeWordCardRenderer({
       shouldShowImage:
         safeSettings.showDefinitionImages &&
         (!!currentWord.imageId || !!currentWord.imageUrl),
-    });
+      imageData: {
+        hasImageId: !!currentWord.imageId,
+        hasImageUrl: !!currentWord.imageUrl,
+        ...(currentWord.imageId && { imageId: currentWord.imageId }),
+        ...(currentWord.imageUrl && { imageUrl: currentWord.imageUrl }),
+      },
+      audioData: {
+        hasAudioUrl: !!currentWord.audioUrl,
+        ...(currentWord.audioUrl && { audioUrl: currentWord.audioUrl }),
+      },
+    };
+
+    // Use organized debugging system
+    PracticeDebugger.logWordCardDebug({
+      currentWord,
+      settings: safeSettings,
+      conditionalLogic,
+      finalProps: {},
+    }).catch((error) => console.error('Debug logging failed:', error));
+
+    // Keep minimal console logs for immediate debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🃏 WordCard Quick Debug:', {
+        word: currentWord.wordText,
+        hasAudio: !!currentWord.audioUrl,
+        hasImage: !!currentWord.imageId || !!currentWord.imageUrl,
+        shouldShowImage: conditionalLogic.shouldShowImage,
+      });
+    }
   }, [currentWord, settings, safeSettings]);
 
   // Create word card props
-  const wordCardProps = currentWord
-    ? {
-        wordText: currentWord.wordText,
-        definition: currentWord.definition,
-        oneWordTranslation: currentWord.oneWordTranslation || '',
-        // Only include phonetic if setting is enabled AND data exists
-        ...(safeSettings.showPhoneticPronunciation &&
-          currentWord.phonetic && {
-            phonetic: currentWord.phonetic,
-          }),
-        // Only include part of speech if setting is enabled AND data exists
-        ...(safeSettings.showPartOfSpeech &&
-          currentWord.partOfSpeech && {
-            partOfSpeech: currentWord.partOfSpeech,
-          }),
-        learningStatus: currentWord.learningStatus,
-        // Always include audio if available
-        ...(currentWord.audioUrl && {
-          audioUrl: currentWord.audioUrl,
-        }),
-        // Only include image if setting is enabled AND data exists
-        ...(safeSettings.showDefinitionImages &&
-          (currentWord.imageId || currentWord.imageUrl) && {
-            ...(currentWord.imageId && { imageId: currentWord.imageId }),
-            ...(currentWord.imageUrl && { imageUrl: currentWord.imageUrl }),
-            ...(currentWord.imageDescription && {
-              imageDescription: currentWord.imageDescription,
+  const wordCardProps = useMemo(
+    () =>
+      currentWord
+        ? {
+            wordText: currentWord.wordText,
+            definition: currentWord.definition,
+            oneWordTranslation: currentWord.oneWordTranslation || '',
+            // Only include phonetic if setting is enabled AND data exists
+            ...(safeSettings.showPhoneticPronunciation &&
+              currentWord.phonetic && {
+                phonetic: currentWord.phonetic,
+              }),
+            // Only include part of speech if setting is enabled AND data exists
+            ...(safeSettings.showPartOfSpeech &&
+              currentWord.partOfSpeech && {
+                partOfSpeech: currentWord.partOfSpeech,
+              }),
+            learningStatus: currentWord.learningStatus,
+            // Always include audio if available
+            ...(currentWord.audioUrl && {
+              audioUrl: currentWord.audioUrl,
             }),
-          }),
-      }
-    : null;
+            // Only include image if setting is enabled AND data exists
+            ...(safeSettings.showDefinitionImages &&
+              (currentWord.imageId || currentWord.imageUrl) && {
+                ...(currentWord.imageId && { imageId: currentWord.imageId }),
+                ...(currentWord.imageUrl && { imageUrl: currentWord.imageUrl }),
+                ...(currentWord.imageDescription && {
+                  imageDescription: currentWord.imageDescription,
+                }),
+              }),
+          }
+        : null,
+    [currentWord, safeSettings],
+  );
 
   // Debug log final props being passed to WordCard
   useEffect(() => {

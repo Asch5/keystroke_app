@@ -185,6 +185,27 @@ export function AuthenticatedImage({
     );
   }
 
+  // For external URLs (like Pexels), use img tag to avoid potential Next.js optimization issues
+  const isExternalUrl = src.startsWith('http://') || src.startsWith('https://');
+
+  if (isExternalUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt}
+        className={cn('w-full h-full object-cover', className)}
+        onLoad={handleLoad}
+        onError={handleError}
+        style={
+          !fill && width && height
+            ? { width: `${width}px`, height: `${height}px` }
+            : undefined
+        }
+      />
+    );
+  }
+
   // For non-authenticated images, use Next.js Image with optimization
   return (
     <Image

@@ -6,7 +6,7 @@ import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 
 /**
  * Custom hook for audio playback in typing practice
- * Follows the established pattern from other audio hooks in the app
+ * NO Web Speech API fallback - only plays actual audio files from database
  */
 export function useTypingAudioPlayback() {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -27,9 +27,9 @@ export function useTypingAudioPlayback() {
       // Check if audio is available in database
       if (!audioUrl) {
         console.warn('⚠️ No audio URL provided for word:', word);
-        toast.error('🔇 No audio available for this word', {
-          description: 'Audio will be added to the database soon',
-          duration: 3000,
+        toast.info('🔇 No audio available for this word', {
+          description: 'Audio will be added to the database when available',
+          duration: 2000,
         });
         return;
       }
@@ -41,7 +41,7 @@ export function useTypingAudioPlayback() {
         await AudioService.playAudioFromDatabase(audioUrl);
         console.log('✅ Audio playback successful for word:', word);
 
-        // Add visual feedback without additional toast spam
+        // Add visual feedback
         console.log(
           '🎯 Audio played for',
           isCorrect ? 'correct' : 'incorrect',
@@ -54,23 +54,11 @@ export function useTypingAudioPlayback() {
           error,
         );
 
-        // Try to provide a fallback using browser's speech synthesis
-        try {
-          console.log('🗣️ Attempting TTS fallback for word:', word);
-          await AudioService.playTextToSpeech(word, 'da-DK');
-          console.log('✅ TTS fallback successful');
-
-          toast.info('🗣️ Using text-to-speech for audio', {
-            description: 'Database audio not available',
-            duration: 2000,
-          });
-        } catch (ttsError) {
-          console.error('❌ TTS fallback also failed:', ttsError);
-          toast.error('🔇 Could not play audio', {
-            description: 'Both database audio and text-to-speech failed',
-            duration: 3000,
-          });
-        }
+        // NO FALLBACK - only notify user that audio is not available
+        toast.error('🔇 Could not play audio', {
+          description: 'Audio file not available or failed to load',
+          duration: 3000,
+        });
       } finally {
         // Add a small delay to ensure audio has time to start before clearing the flag
         setTimeout(() => {
@@ -86,7 +74,7 @@ export function useTypingAudioPlayback() {
    */
   const stopAudio = useCallback(async () => {
     try {
-      await AudioService.stopCurrentAudio();
+      AudioService.stopCurrentAudio();
       setIsPlayingAudio(false);
     } catch (error) {
       console.error('Error stopping audio:', error);

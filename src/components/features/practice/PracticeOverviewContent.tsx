@@ -119,9 +119,8 @@ export function PracticeOverviewContent() {
       // Legacy typing practice
       router.push(`/dashboard/practice/typing?${params.toString()}`);
     } else if (practiceType === 'unified-practice') {
-      // Unified practice system - route to enhanced practice without type parameter
-      // This will trigger the unified practice mode in EnhancedPracticeContent
-      router.push(`/dashboard/practice/enhanced?${params.toString()}`);
+      // Vocabulary practice - route to new vocabulary practice page with mode selection
+      router.push(`/dashboard/practice/vocabulary?${params.toString()}`);
     } else {
       // Other practice types (shouldn't happen with current setup)
       params.set('type', practiceType);

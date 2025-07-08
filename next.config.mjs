@@ -6,17 +6,6 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable Turbopack for development (stable in Next.js 15+)
-  turbopack: {
-    // Turbopack configuration for faster development builds
-    resolveAlias: {
-      // Add any custom path aliases here if needed
-    },
-    rules: {
-      // Add any custom Turbopack rules here if needed
-    },
-  },
-
   // Ignore TypeScript errors in build
   typescript: {
     ignoreBuildErrors: true,

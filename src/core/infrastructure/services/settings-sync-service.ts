@@ -7,6 +7,7 @@ import {
   selectUIPreferences,
   selectLearningPreferences,
   selectTypingPracticeSettings,
+  selectVocabularyPracticeSettings,
   selectDictionaryFilters,
   selectAdminDictionaryFilters,
 } from '@/core/state/features/settingsSlice';
@@ -111,6 +112,7 @@ export class SettingsSyncService {
       const ui = selectUIPreferences(state);
       const learning = selectLearningPreferences(state);
       const typingPractice = selectTypingPracticeSettings(state);
+      const vocabularyPractice = selectVocabularyPracticeSettings(state);
       const dictionaryFilters = selectDictionaryFilters(state);
       const adminDictionaryFilters = selectAdminDictionaryFilters(state);
 
@@ -129,6 +131,7 @@ export class SettingsSyncService {
           learning,
           practice: {
             typing: typingPractice,
+            vocabulary: vocabularyPractice,
           },
         },
       };
@@ -271,6 +274,7 @@ export class SettingsSyncService {
       learning: selectLearningPreferences(state),
       practice: {
         typing: selectTypingPracticeSettings(state),
+        vocabulary: selectVocabularyPracticeSettings(state),
       },
       filters: {
         dictionary: selectDictionaryFilters(state),

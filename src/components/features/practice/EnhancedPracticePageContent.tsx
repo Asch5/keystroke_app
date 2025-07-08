@@ -42,6 +42,32 @@ export function EnhancedPracticePageContent() {
   const userListId = searchParams.get('userListId');
   const listId = searchParams.get('listId');
 
+  // Debug logging for settings
+  useEffect(() => {
+    console.log('🔧 Settings Loading Debug:', {
+      settingsLoaded,
+      hasSettings: !!settings,
+      settingsKeys: settings ? Object.keys(settings) : [],
+    });
+
+    if (settingsLoaded) {
+      console.log('🔧 Vocabulary Practice Settings Debug:', {
+        autoPlayAudioOnWordCard: settings.autoPlayAudioOnWordCard,
+        showDefinitionImages: settings.showDefinitionImages,
+        showPhoneticPronunciation: settings.showPhoneticPronunciation,
+        showPartOfSpeech: settings.showPartOfSpeech,
+        enableGameSounds: settings.enableGameSounds,
+        gameSoundVolume: settings.gameSoundVolume,
+        showProgressBar: settings.showProgressBar,
+        allSettings: settings,
+      });
+    } else {
+      console.log(
+        '⚠️ Settings not loaded yet, using defaults or undefined values',
+      );
+    }
+  }, [settings, settingsLoaded]);
+
   /**
    * Determine practice type for unified system
    * This is where the word progression algorithm will be implemented
@@ -73,6 +99,15 @@ export function EnhancedPracticePageContent() {
         enabledExerciseTypes.push('write-by-definition');
       if (settings.enableWriteBySound)
         enabledExerciseTypes.push('write-by-sound');
+
+      console.log('🎯 Practice Session Creation Debug:', {
+        sessionPracticeType,
+        enabledExerciseTypes,
+        difficultyLevel: settings.difficultyLevel,
+        wordsCount: settings.wordsCount,
+        autoPlayAudio: settings.autoPlayAudioOnWordCard,
+        showImages: settings.showDefinitionImages,
+      });
 
       const baseRequest: CreatePracticeSessionRequest & {
         practiceType: PracticeType;
@@ -111,6 +146,23 @@ export function EnhancedPracticePageContent() {
               enabledExerciseTypes,
             })
           : await createEnhancedPracticeSession(request);
+
+      console.log('📋 Practice Session Result:', {
+        success: result.success,
+        hasSession: !!result.session,
+        sessionWordsCount: result.session?.words?.length,
+        firstWordData: result.session?.words?.[0]
+          ? {
+              wordText: result.session.words[0].wordText,
+              hasAudio: !!result.session.words[0].audioUrl,
+              hasImage: !!(
+                result.session.words[0].imageId ||
+                result.session.words[0].imageUrl
+              ),
+              definition: result.session.words[0].definition,
+            }
+          : null,
+      });
 
       if (result.success && result.session) {
         setSession(result.session);

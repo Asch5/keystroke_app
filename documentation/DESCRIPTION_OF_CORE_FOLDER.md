@@ -1422,3 +1422,5 @@ The implementation successfully follows the design document's specifications:
 5. **Analytics**: Add analytics tracking to measure usage patterns across practice types
 
 The implementation successfully delivers the comprehensive 5-practice-type system as specified in the design document, with all components properly organized and integrated.
+
+!!!IMPORTANT: NEVER use type ANY.

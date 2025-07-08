@@ -702,3 +702,5 @@ interface SettingsArchitecture {
 - **Browser Support**: Page visibility and beforeunload event handling
 - **Error Recovery**: Automatic retry with detailed error reporting
 - **Export Format**: JSON with metadata and version information
+
+!!!IMPORTANT: NEVER use type ANY.

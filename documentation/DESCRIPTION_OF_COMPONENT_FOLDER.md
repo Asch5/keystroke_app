@@ -832,3 +832,5 @@ The practice system supports multiple types of vocabulary practice exercises:
 - `TypingPracticeContent.tsx` - Original typing practice orchestrator (192 lines)
 - `TypingWordInput.tsx` - Character input interface (493 lines)
 - `TypingPracticeSettings.tsx` - Settings management (487 lines)
+
+!!!IMPORTANT: NEVER use type ANY.

@@ -220,3 +220,28 @@
 [2025-07-08T16:23:40.089Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
 [2025-07-08T16:23:40.104Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
 [2025-07-08T16:23:40.800Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-08T17:52:33.564Z] [info] Initializing server services...
+[2025-07-08T17:52:33.800Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T17:52:33.800Z] [info] Server services initialized successfully
+[2025-07-08T17:52:34.257Z] [info] Initializing server services...
+[2025-07-08T17:52:34.774Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T17:52:34.774Z] [info] Server services initialized successfully
+[2025-07-08T17:52:34.170Z] [info] Initializing server services...
+[2025-07-08T17:52:35.125Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T17:52:35.175Z] [info] Server services initialized successfully
+[2025-07-08T17:52:42.732Z] [info] Initializing server services...
+[2025-07-08T17:52:43.338Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T17:52:43.338Z] [info] Server services initialized successfully
+[2025-07-08T17:52:43.039Z] [info] Initializing server services...
+[2025-07-08T17:52:43.630Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T17:52:43.631Z] [info] Server services initialized successfully
+[2025-07-08T17:53:04.972Z] [info] Initializing server services...
+[2025-07-08T17:53:05.755Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T17:53:05.755Z] [info] Server services initialized successfully
+[2025-07-08T17:53:13.959Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T17:53:13.959Z"}
+[2025-07-08T17:54:31.162Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-08T17:54:32.970Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-08T17:55:11.826Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-08T17:55:12.695Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-08T17:55:20.316Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-08T17:55:20.728Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}

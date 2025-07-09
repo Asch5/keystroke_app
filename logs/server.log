@@ -245,3 +245,138 @@
 [2025-07-08T17:55:12.695Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
 [2025-07-08T17:55:20.316Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
 [2025-07-08T17:55:20.728Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-08T19:23:42.205Z] [info] Initializing server services...
+[2025-07-08T19:23:42.118Z] [info] Initializing server services...
+[2025-07-08T19:23:42.304Z] [info] Initializing server services...
+[2025-07-08T19:23:42.390Z] [info] Server services initialized successfully
+[2025-07-08T19:23:42.388Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:23:42.470Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:23:42.470Z] [info] Server services initialized successfully
+[2025-07-08T19:23:42.743Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:23:42.743Z] [info] Server services initialized successfully
+[2025-07-08T19:23:49.668Z] [info] Initializing server services...
+[2025-07-08T19:23:50.281Z] [info] Server services initialized successfully
+[2025-07-08T19:23:50.281Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:23:49.857Z] [info] Initializing server services...
+[2025-07-08T19:23:50.631Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:23:50.631Z] [info] Server services initialized successfully
+[2025-07-08T19:24:19.256Z] [info] Initializing server services...
+[2025-07-08T19:24:23.093Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:24:23.094Z] [info] Server services initialized successfully
+[2025-07-08T19:24:27.946Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T19:24:27.946Z"}
+[2025-07-08T19:25:56.093Z] [info] 🖼️ Image API: Requesting image ID 24 Context: {"imageId":"24","parsedId":24}
+[2025-07-08T19:25:56.100Z] [info] 🖼️ Image API: Requesting image ID 22 Context: {"imageId":"22","parsedId":22}
+[2025-07-08T19:25:56.082Z] [info] 🖼️ Image API: Requesting image ID 20 Context: {"imageId":"20","parsedId":20}
+[2025-07-08T19:25:56.105Z] [info] 🖼️ Image API: Requesting image ID 23 Context: {"imageId":"23","parsedId":23}
+[2025-07-08T19:25:56.112Z] [info] 🖼️ Image API: Requesting image ID 26 Context: {"imageId":"26","parsedId":26}
+[2025-07-08T19:25:56.129Z] [info] 🖼️ Image API: Requesting image ID 28 Context: {"imageId":"28","parsedId":28}
+[2025-07-08T19:25:58.504Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/3865677/pexels-photo-3865677.jpeg Context: {"imageId":24,"imageUrl":"https://images.pexels.com/photos/3865677/pexels-photo-3865677.jpeg"}
+[2025-07-08T19:25:58.650Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/32697050/pexels-photo-32697050.jpeg Context: {"imageId":28,"imageUrl":"https://images.pexels.com/photos/32697050/pexels-photo-32697050.jpeg"}
+[2025-07-08T19:25:59.065Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/6975471/pexels-photo-6975471.jpeg Context: {"imageId":23,"imageUrl":"https://images.pexels.com/photos/6975471/pexels-photo-6975471.jpeg"}
+[2025-07-08T19:25:59.071Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/5909813/pexels-photo-5909813.jpeg Context: {"imageId":26,"imageUrl":"https://images.pexels.com/photos/5909813/pexels-photo-5909813.jpeg"}
+[2025-07-08T19:25:59.106Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/8386126/pexels-photo-8386126.jpeg Context: {"imageId":22,"imageUrl":"https://images.pexels.com/photos/8386126/pexels-photo-8386126.jpeg"}
+[2025-07-08T19:25:59.125Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/6778616/pexels-photo-6778616.jpeg Context: {"imageId":20,"imageUrl":"https://images.pexels.com/photos/6778616/pexels-photo-6778616.jpeg"}
+[2025-07-08T19:25:59.708Z] [info] ✅ Image API: Successfully served image 23 in 3603ms Context: {"imageId":23,"contentType":"image/jpeg","size":386929,"duration":3603}
+[2025-07-08T19:25:59.756Z] [info] 🖼️ Image API: Requesting image ID 29 Context: {"imageId":"29","parsedId":29}
+[2025-07-08T19:25:59.887Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/4753926/pexels-photo-4753926.jpeg Context: {"imageId":29,"imageUrl":"https://images.pexels.com/photos/4753926/pexels-photo-4753926.jpeg"}
+[2025-07-08T19:26:00.377Z] [info] ✅ Image API: Successfully served image 28 in 4247ms Context: {"imageId":28,"contentType":"image/jpeg","size":1553156,"duration":4247}
+[2025-07-08T19:26:00.451Z] [info] ✅ Image API: Successfully served image 24 in 4358ms Context: {"imageId":24,"contentType":"image/jpeg","size":3120334,"duration":4358}
+[2025-07-08T19:26:00.487Z] [info] 🖼️ Image API: Requesting image ID 25 Context: {"imageId":"25","parsedId":25}
+[2025-07-08T19:26:00.530Z] [info] 🖼️ Image API: Requesting image ID 27 Context: {"imageId":"27","parsedId":27}
+[2025-07-08T19:26:00.547Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/32690463/pexels-photo-32690463.jpeg Context: {"imageId":25,"imageUrl":"https://images.pexels.com/photos/32690463/pexels-photo-32690463.jpeg"}
+[2025-07-08T19:26:00.603Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/9498381/pexels-photo-9498381.jpeg Context: {"imageId":27,"imageUrl":"https://images.pexels.com/photos/9498381/pexels-photo-9498381.jpeg"}
+[2025-07-08T19:26:00.783Z] [info] ✅ Image API: Successfully served image 26 in 4671ms Context: {"imageId":26,"contentType":"image/jpeg","size":1910188,"duration":4671}
+[2025-07-08T19:26:00.841Z] [info] 🖼️ Image API: Requesting image ID 31 Context: {"imageId":"31","parsedId":31}
+[2025-07-08T19:26:00.917Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/3831612/pexels-photo-3831612.jpeg Context: {"imageId":31,"imageUrl":"https://images.pexels.com/photos/3831612/pexels-photo-3831612.jpeg"}
+[2025-07-08T19:26:00.923Z] [info] ✅ Image API: Successfully served image 20 in 4841ms Context: {"imageId":20,"contentType":"image/jpeg","size":1184738,"duration":4841}
+[2025-07-08T19:26:00.994Z] [info] 🖼️ Image API: Requesting image ID 33 Context: {"imageId":"33","parsedId":33}
+[2025-07-08T19:26:01.032Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/8985964/pexels-photo-8985964.jpeg Context: {"imageId":33,"imageUrl":"https://images.pexels.com/photos/8985964/pexels-photo-8985964.jpeg"}
+[2025-07-08T19:26:01.173Z] [info] ✅ Image API: Successfully served image 29 in 1417ms Context: {"imageId":29,"contentType":"image/jpeg","size":1394558,"duration":1417}
+[2025-07-08T19:26:01.338Z] [info] 🖼️ Image API: Requesting image ID 30 Context: {"imageId":"30","parsedId":30}
+[2025-07-08T19:26:01.395Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/7015909/pexels-photo-7015909.jpeg Context: {"imageId":30,"imageUrl":"https://images.pexels.com/photos/7015909/pexels-photo-7015909.jpeg"}
+[2025-07-08T19:26:01.387Z] [info] ✅ Image API: Successfully served image 22 in 5287ms Context: {"imageId":22,"contentType":"image/jpeg","size":2855086,"duration":5287}
+[2025-07-08T19:26:01.477Z] [info] 🖼️ Image API: Requesting image ID 32 Context: {"imageId":"32","parsedId":32}
+[2025-07-08T19:26:01.534Z] [info] 📍 Image API: Found image in database, fetching from: https://images.pexels.com/photos/32713105/pexels-photo-32713105.jpeg Context: {"imageId":32,"imageUrl":"https://images.pexels.com/photos/32713105/pexels-photo-32713105.jpeg"}
+[2025-07-08T19:26:02.112Z] [info] ✅ Image API: Successfully served image 33 in 1118ms Context: {"imageId":33,"contentType":"image/jpeg","size":2663949,"duration":1118}
+[2025-07-08T19:26:02.098Z] [info] ✅ Image API: Successfully served image 25 in 1611ms Context: {"imageId":25,"contentType":"image/jpeg","size":1165595,"duration":1611}
+[2025-07-08T19:26:02.127Z] [info] ✅ Image API: Successfully served image 31 in 1286ms Context: {"imageId":31,"contentType":"image/jpeg","size":667391,"duration":1286}
+[2025-07-08T19:26:02.310Z] [info] ✅ Image API: Successfully served image 30 in 972ms Context: {"imageId":30,"contentType":"image/jpeg","size":916168,"duration":972}
+[2025-07-08T19:26:03.106Z] [info] ✅ Image API: Successfully served image 27 in 2576ms Context: {"imageId":27,"contentType":"image/jpeg","size":2363762,"duration":2576}
+[2025-07-08T19:26:03.385Z] [info] ✅ Image API: Successfully served image 32 in 1907ms Context: {"imageId":32,"contentType":"image/jpeg","size":6023872,"duration":1907}
+[2025-07-08T19:35:51.941Z] [info] Initializing server services...
+[2025-07-08T19:35:51.934Z] [info] Initializing server services...
+[2025-07-08T19:35:51.829Z] [info] Initializing server services...
+[2025-07-08T19:35:52.168Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:35:52.168Z] [info] Server services initialized successfully
+[2025-07-08T19:35:52.204Z] [info] Server services initialized successfully
+[2025-07-08T19:35:52.204Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:35:52.158Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:35:52.158Z] [info] Server services initialized successfully
+[2025-07-08T19:35:58.729Z] [info] Initializing server services...
+[2025-07-08T19:35:58.998Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:35:58.998Z] [info] Server services initialized successfully
+[2025-07-08T19:35:58.714Z] [info] Initializing server services...
+[2025-07-08T19:35:59.358Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:35:59.358Z] [info] Server services initialized successfully
+[2025-07-08T19:36:22.878Z] [info] Initializing server services...
+[2025-07-08T19:36:26.333Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-08T19:36:26.333Z] [info] Server services initialized successfully
+[2025-07-08T19:36:31.465Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-08T19:36:31.465Z"}
+[2025-07-09T12:48:25.967Z] [info] Initializing server services...
+[2025-07-09T12:48:25.956Z] [info] Initializing server services...
+[2025-07-09T12:48:26.105Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T12:48:26.105Z] [info] Server services initialized successfully
+[2025-07-09T12:48:26.141Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T12:48:26.141Z] [info] Server services initialized successfully
+[2025-07-09T12:48:26.072Z] [info] Initializing server services...
+[2025-07-09T12:48:26.485Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T12:48:26.485Z] [info] Server services initialized successfully
+[2025-07-09T12:48:32.201Z] [info] Initializing server services...
+[2025-07-09T12:48:32.560Z] [info] Server services initialized successfully
+[2025-07-09T12:48:32.560Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T12:48:32.132Z] [info] Initializing server services...
+[2025-07-09T12:48:33.007Z] [info] Server services initialized successfully
+[2025-07-09T12:48:33.007Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T12:49:13.570Z] [info] Initializing server services...
+[2025-07-09T12:49:14.591Z] [info] Server services initialized successfully
+[2025-07-09T12:49:14.590Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T12:49:16.703Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T12:49:18.210Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T13:54:35.379Z] [info] Initializing server services...
+[2025-07-09T13:54:35.282Z] [info] Initializing server services...
+[2025-07-09T13:54:35.442Z] [info] Initializing server services...
+[2025-07-09T13:54:35.479Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T13:54:35.479Z] [info] Server services initialized successfully
+[2025-07-09T13:54:35.512Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T13:54:35.512Z] [info] Server services initialized successfully
+[2025-07-09T13:54:35.837Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T13:54:35.837Z] [info] Server services initialized successfully
+[2025-07-09T13:54:41.231Z] [info] Initializing server services...
+[2025-07-09T13:54:41.746Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T13:54:41.746Z] [info] Server services initialized successfully
+[2025-07-09T13:54:41.346Z] [info] Initializing server services...
+[2025-07-09T13:54:42.006Z] [info] Server services initialized successfully
+[2025-07-09T13:54:42.006Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T13:55:30.237Z] [info] Initializing server services...
+[2025-07-09T13:55:31.450Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T13:55:31.450Z] [info] Server services initialized successfully
+[2025-07-09T13:55:33.015Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T13:55:34.262Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T13:55:34.283Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T13:55:34.943Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T13:55:37.757Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T13:55:38.263Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T13:55:38.544Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T13:55:40.208Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-09T13:57:52.008Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T13:57:52.009Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-09T13:57:52.409Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-09T13:57:52.413Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-09T13:57:53.296Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-09T13:57:53.298Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-09T13:57:53.299Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-09T13:57:53.300Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-09T13:57:53.301Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-09T13:57:53.303Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-09T13:57:53.304Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-09T14:00:28.094Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-09T14:00:28.094Z"}

@@ -773,286 +773,201 @@ Types: `TranslationData`, `DefinitionDisplayData`
 
 ## User Domain (`domains/user/`)
 
-### User Settings Actions (`actions/user-settings-actions.ts`)
-
-- `updateUserProfile(prevState, formData)` - Update user profile information (name, email, languages, profile picture)
-- `updateUserLearningSettings(prevState, formData)` - Update learning preferences (goals, notifications, session settings)
-- `updateAppSettings(prevState, formData)` - Update application settings (theme, language, notifications)
-- `getUserSettings()` - Get user's complete settings
-- `deleteUserAccount(prevState, formData)` - Soft delete user account
-
-**Settings Management Features:**
-
-- **Profile Management**: Name, email, profile picture upload with Vercel Blob storage
-- **Language Configuration**: Base and target language selection from 12 supported languages
-- **Learning Preferences**: Daily goals (1-100 words), difficulty levels (1-5), session duration (5-120 min)
-- **Audio & Sound**: Sound effects, auto-play audio, audio quality preferences
-- **Notifications**: Learning reminders, progress notifications, review intervals (1-30 days)
-- **Theme & Appearance**: Light/dark/system theme, interface language
-- **Privacy Controls**: Account deletion with confirmation, data export (planned)
-
-### Session Management Actions
-
-- `createLearningSession(userId, data)`
-- `updateLearningSession(sessionId, data)`
-- `addSessionItem(sessionId, data)`
-- `getSessionStats(userId)`
-- `getSessionHistory(userId, page, pageSize, filters?)`
-- `getCurrentSession(userId)`
-
-### User Statistics
-
-- `calculateUserStats(user)`
-- `calculateLearningProgress(user)`
-
-### Settings Types (`types/user-settings.ts`)
-
-- `CompleteUserSettings` - Combined user and settings interface
-- `UserProfileUpdateData`, `LearningSettingsUpdateData`, `AppSettingsUpdateData` - Update data types
-- `LanguageOption`, `DifficultyOption`, `ThemeOption` - UI option types
-- `NotificationSettings`, `LearningReminderSettings` - Detailed settings structures
-- `UserLearningPreferences` - Learning style and preference types
-
-### Settings Constants (`utils/settings-constants.ts`)
-
-- `LANGUAGE_OPTIONS` - 12 supported languages with flags and native names
-- `DIFFICULTY_OPTIONS` - 5 difficulty levels with descriptions
-- `SESSION_DURATION_OPTIONS` - Session duration choices (5 min - 2 hours)
-- `REVIEW_INTERVAL_OPTIONS` - Review frequency options (daily to monthly)
-- `THEME_OPTIONS` - Theme choices with descriptions
-- `DEFAULT_USER_SETTINGS` - Default values for new users
-- Helper functions: `getLanguageByCode()`, `getDifficultyByValue()`, etc.
-
-### User Statistics Actions (`actions/user-stats-actions.ts`)
-
-- `getUserStatistics(userId)` - Get comprehensive user statistics including learning progress, session analytics, mistake analysis, achievements, daily progress, and language proficiency
-- `getLearningAnalytics(userId, days?)` - Get detailed learning analytics for charts and analysis including daily progress, mistake patterns, learning behaviors, and vocabulary growth
-- `calculateStreak(userId)` - Calculate current and longest learning streaks
-- `calculateImprovementRate(sessions)` - Calculate improvement rate based on recent performance
-- `calculateGoalAchievementRate(sessions, dailyGoal)` - Calculate goal achievement percentage
-- `estimateProficiencyLevel(vocabularySize, averageMasteryScore)` - Estimate user's language proficiency level
-
-**Statistics Features:**
-
-- **Learning Progress**: Total vocabulary, words learned/in-progress/needing review, mastery scores, learning streaks
-- **Session Analytics**: Total sessions, study time, accuracy rates, performance trends, activity patterns
-- **Mistake Analysis**: Error tracking, improvement rates, difficult words identification, mistake type distribution
-- **Achievement System**: Points, badges, recent achievements, gamification elements
-- **Daily Goals**: Progress tracking, goal achievement rates, weekly/monthly summaries
-- **Language Proficiency**: Estimated level based on vocabulary size and performance metrics
-- **Visual Analytics**: Charts for progress tracking, vocabulary growth, weekly activity distribution
-
-Types: `UserStatistics`, `LearningAnalytics`, `ProficiencyLevel`
-
-### User Dictionary Actions (`actions/user-dictionary-actions.ts`)
-
-- `getUserDictionary(userId, filters?)` - Get user's dictionary words with comprehensive filtering, sorting, search, and pagination
-- `updateWordLearningStatus(userId, userDictionaryId, learningStatus, additionalData?)` - Update learning status for a word in user's dictionary
-- `toggleWordFavorite(userId, userDictionaryId)` - Add/remove word from favorites
-- `updateUserWordCustomData(userId, userDictionaryId, customData)` - Update user's custom word data (notes, tags, custom definitions)
-- `removeWordFromUserDictionary(userId, userDictionaryId)` - Remove word from user's dictionary (soft delete)
-- `getUserDictionaryStats(userId)` - Get user dictionary statistics and status breakdown
-
-**Dictionary Management Features:**
-
-- **Comprehensive Filtering**: Learning status, part of speech, difficulty level, favorites, modified words, review status
-- **Advanced Search**: Search across words, definitions, custom notes, and translations
-- **Flexible Sorting**: Sort by word, progress, mastery score, last reviewed date, creation date
-- **Pagination**: Efficient pagination with configurable page sizes
-- **Learning Progress**: Track learning status, progress percentage, mastery scores, review counts
-- **Customization**: Custom definitions, notes, tags, difficulty levels, phonetic transcriptions
-- **Favorites System**: Mark important words for quick access
-- **Review Management**: SRS-based review scheduling and tracking
-
-Types: `UserDictionaryItem`, `UserDictionaryFilters`, `UserDictionaryResponse`
-
-### Dictionary Display Utilities (`utils/dictionary-display-utils.ts`)
-
-- `getDisplayDefinition(word, userNativeLanguage)` - Get the best definition to display for a user based on their native language
-- `shouldShowTranslations(userNativeLanguage, targetLanguageCode)` - Check if a user should see translations based on their language settings
-
-**Display Logic:**
-
-- **Translation-Aware Display**: Automatically shows translations when user's native language differs from target language
-- **Fallback Support**: Returns original definition when translations aren't available
-- **Flexible Interface**: Works with any word object that has definition and translations
-- **User Experience**: Improves comprehension by showing definitions in user's native language
-
-Types: `WordWithTranslations`
-
-### Practice Actions (`actions/practice-actions.ts`)
-
-- `createTypingPracticeSession(request)` - Create a new typing practice session with intelligent word selection and **authenticated image URL generation**
-- `validateTypingInput({sessionId, userDictionaryId, userInput, responseTime})` - Validate user typing input with accuracy calculation and learning progress updates
-- `completePracticeSession(sessionId)` - Complete practice session with achievements detection and summary generation
-- `getPracticeSessionProgress(sessionId)` - Get live practice session progress and statistics
-
-Types: `CreatePracticeSessionRequest`, `PracticeWord`, `DifficultyConfig`, `TypingValidationResult`, `PracticeSessionSummary`
-
-**🖼️ Image URL Construction Fix**:
-
-- **Fixed Image Display**: Updated `createTypingPracticeSession()` to generate proper authenticated image URLs using `/api/images/{id}` format instead of direct external URLs
-- **Authentication Support**: Images now properly utilize the authenticated image proxy system for secure access
-- **Consistent Handling**: Ensures all practice session images use the same URL pattern as other app components
-
-**Practice System Features:**
-
-- **Intelligent Word Selection**: Prioritizes words needing review based on learning status (notStarted, inProgress, difficult) and time since last review
-- **Adaptive Difficulty**: 5 difficulty levels affecting session parameters (word count, time limits, typo tolerance)
-- **Real-Time Validation**: Character-by-character accuracy calculation with configurable typo tolerance
-- **Spaced Repetition Integration**: Updates SRS intervals and next review dates based on performance
-- **Achievement System**: Automatic detection of achievements (Perfect Score, Excellence, Quick Learner, Speed Demon)
-- **Progress Tracking**: Updates learning status, mastery scores, and review counts in user dictionary
-- **Performance Analytics**: Tracks response times, accuracy, and learning patterns
-- **Session Management**: Complete lifecycle from creation to completion with detailed summaries
-
-### Learning Metrics Configuration (`utils/learning-metrics.ts`)
-
-- `LearningMetricsCalculator` - Class with methods for accuracy calculation, mastery scoring, learning status determination, and typing validation
-- `LEARNING_METRICS` - Core learning thresholds (min correct attempts: 3, accuracy threshold: 80%, mastery score: 85%)
-- `PRACTICE_SESSION_CONFIG` - Session parameters per difficulty level (words per session: 10, time limit: 30s)
-- `TYPING_PRACTICE_METRICS` - Typing-specific metrics (typo tolerance: 10%, speed thresholds, partial credit system)
-- `DIFFICULTY_ADJUSTMENT` - 5 difficulty levels with adaptive triggers for progression
-
-**Key Algorithms:**
-
-- **Character-Level Accuracy**: Precise typing validation with character-by-character comparison
-- **Spaced Repetition**: Calculates next review dates based on performance and current SRS level
-- **Mastery Scoring**: Complex scoring system considering accuracy, speed, and difficulty
-- **Adaptive Difficulty**: Automatic difficulty adjustment based on sustained performance
-- **Learning Status Progression**: Smart progression from notStarted → inProgress → learned based on multiple success criteria
-
-### Legacy User Actions
-
-- `getUsers(page, limit, searchQuery?, sortBy?, sortOrder?)`
-- `getUserDetails(userId)`
-- `getUserByEmail(email)`
-- `updateUserStatus(userId, status)`
-- `deleteUser(userId)`
-
-### Types
-
-- `UserWithStats`, `UserWithStatsAndMeta`, `UserStats`
-- `UserLearningSession`, `UserSessionItem`
-- `SessionState`, `SessionStatsResponse`
-- `CreateSessionRequest`, `UpdateSessionRequest`
-
-### 🚀 **Enhanced Learning Progress Tracking** (`utils/difficulty-assessment.ts`)
-
-**NEW: Comprehensive Multi-Factor Difficulty Assessment System**
-
-- `DifficultyAssessment.calculateDifficultyScore(userId, userDictionaryId)` - Calculate comprehensive difficulty score using both user performance and linguistic metrics
-- `DifficultyAssessment.calculateBatchDifficultyScores(userId, userDictionaryIds[])` - Batch difficulty calculation for efficient processing
-- `DifficultyAssessment.getIntelligentWordSelection(userId, targetWords, options)` - Smart word selection for practice sessions
-- `LearningProgressTracker.updateLearningProgress(userId, learningUnitId, practiceType, result)` - Universal progress tracking across practice types
-- `LearningProgressTracker.trackSkip(userId, learningUnitId, practiceType)` - Track skip behavior for difficulty assessment
-
-**Key Features:**
-
-- **Multi-Factor Assessment**: Combines user performance metrics (mistake rate, correct streak, SRS level, response time, skip rate) with linguistic metrics (word rarity, phonetic irregularity, polysemy, word length)
-- **Dynamic Difficulty**: User-centric difficulty scores that adapt based on individual learning patterns
-- **Universal Learning Units**: Extensible architecture supporting any type of learning content (words, phrases, grammar, pronunciation)
-- **Intelligent Word Selection**: Strategic word distribution (hard/medium/easy) for optimal learning sessions
-- **Comprehensive Analytics**: Detailed difficulty progression tracking and learning pattern analysis
-
-### Practice Session Management (`utils/practice-session-manager.ts`)
-
-**NEW: Advanced Practice Session Orchestration with Adaptive Difficulty**
-
-- `PracticeSessionManager.createSession(options)` - Create intelligent practice sessions with difficulty-based word selection
-- `PracticeSessionManager.processAttempt(sessionId, attempt)` - Process attempts with adaptive feedback and difficulty adjustment
-- `PracticeSessionManager.completeSession(session)` - Generate comprehensive session summaries with learning analytics
-- `PracticeSessionManager.pauseSession()` / `resumeSession()` / `abandonSession()` - Full session lifecycle management
-
-**Supported Practice Types:**
-
-- **Typing Practice**: Character-by-character accuracy with typo tolerance
-- **Flashcards**: Multiple acceptable answers with semantic matching
-- **Pronunciation**: Speech recognition confidence scoring
-- **Quiz**: Multiple choice and text input with flexible evaluation
-- **Games**: Extensible framework for gamified learning
-
-**Adaptive Features:**
-
-- **Real-time Difficulty Adjustment**: Automatically adjusts word difficulty based on performance patterns
-- **Mistake Pattern Analysis**: Tracks and categorizes different types of learning mistakes
-- **Response Time Analytics**: Monitors cognitive load through timing analysis
-- **Session Recommendations**: AI-powered suggestions for optimal next learning activities
-
-### Enhanced Practice Actions (`actions/enhanced-practice-actions.ts`)
-
-**NEW: Server Actions with AI-Powered Word Selection and Difficulty Optimization**
-
-- `createIntelligentPracticeSession(request)` - Create practice sessions with AI-powered word selection and difficulty optimization
-- `processIntelligentAttempt(request)` - Process learning attempts with comprehensive feedback and adaptive adjustment
-- `completeIntelligentSession(sessionId)` - Complete sessions with detailed analytics and learning progression insights
-- `getWordDifficultyAssessment(userId, userDictionaryId)` - Get individual word difficulty assessments
-- `getBatchDifficultyAssessments(userId, userDictionaryIds[])` - Batch difficulty analysis for vocabulary management
-
-**Advanced Features:**
-
-- **Practice Type Specialization**: Customized evaluation logic for each practice mode
-- **Confidence-Based Learning**: Uses assessment confidence levels to determine review scheduling
-- **Adaptive Feedback Generation**: Context-aware encouragement and explanations
-- **Learning Achievement Tracking**: Automatic detection and celebration of learning milestones
-
-### Configuration and Metrics
-
-**Difficulty Assessment Configuration** (`DIFFICULTY_ASSESSMENT_CONFIG`):
-
-- **Performance Weights**: Mistake rate (25%), correct streak (20%), SRS level (15%), learning status (15%), response time (10%), skip rate (10%), recency/frequency (5%)
-- **Linguistic Weights**: Word rarity (30%), phonetic irregularity (20%), polysemy (15%), word length (15%), semantic abstraction (10%), relational complexity (10%)
-- **Dynamic Weight Adjustment**: New users start with 100% linguistic weighting, transitioning to 70% performance / 30% linguistic as data accumulates
-
-**Practice Configurations** (`PRACTICE_CONFIGS`):
-
-- **Typing**: 10 words, 10min, adaptive difficulty, skipping enabled
-- **Flashcards**: 15 words, 15min, adaptive difficulty, no skipping
-- **Pronunciation**: 8 words, 8min, fixed difficulty, skipping enabled
-- **Quiz**: 20 words, 20min, fixed difficulty, no skipping
-
-## Database Schema Enhancements
-
-### UserDictionary Model Updates
-
-**NEW FIELD**: `skipCount INT DEFAULT 0` - Tracks behavioral skip patterns for difficulty assessment
-
-**Enhanced Analytics Fields**:
-
-- `skipCount`: Number of times user has skipped this word during practice
-- `srsLevel`: Enhanced spaced repetition system with 6 levels (0-5)
-- `masteryScore`: Composite mastery calculation (0-100) incorporating multiple factors
-- `nextSrsReview`: Intelligent review scheduling based on performance patterns
-
-### Learning Unit Architecture
-
-**Universal Learning Interface**: All practice types now work with standardized `LearningUnit` objects:
-
-```typescript
-interface LearningUnit {
-  id: string;
-  type: 'word' | 'phrase' | 'grammar' | 'pronunciation';
-  content: {
-    primary: string; // Main content to learn
-    secondary?: string; // Additional context
-    metadata: Record<string, any>; // Type-specific data
-  };
-  difficulty: DifficultyScore;
-  userProgress: {
-    attempts: number;
-    successes: number;
-    lastAttempt: Date | null;
-    nextReview: Date | null;
-  };
-}
+The user domain handles all user-related functionality including authentication, preferences, learning progress, and performance analytics.
+
+### Actions (`src/core/domains/user/actions/`)
+
+This directory contains server actions that handle user-related operations:
+
+#### Core User Management
+
+1. **session-actions.ts**
+   - User session management and authentication state
+   - Session creation, validation, and termination
+   - User context and authorization handling
+
+2. **user-settings-actions.ts**
+   - User preference management (UI settings, notifications, etc.)
+   - Settings persistence and synchronization
+   - Configuration validation and defaults
+
+3. **user-stats-actions.ts**
+   - Aggregate user learning statistics and analytics
+   - Progress tracking across all learning activities
+   - Performance summaries and achievement tracking
+
+#### Dictionary & Performance Analytics
+
+4. **user-dictionary-actions.ts**
+   - CRUD operations for user's personal vocabulary
+   - Word relationship management and categorization
+   - Dictionary synchronization and backup operations
+
+5. **dictionary-performance-actions.ts**
+   - Comprehensive dictionary-wide performance analytics
+   - Aggregate learning metrics across all vocabulary
+   - Performance trends and comparative analysis
+   - Study habit insights and learning efficiency metrics
+
+6. **enhanced-word-analytics.ts** ✨
+   - **NEW**: Advanced individual word performance analysis
+   - 25+ performance metrics across 8 analytical categories
+   - AI-powered insights and predictive learning analytics
+   - **Key Features**:
+     - Session performance tracking (response times, attempt patterns)
+     - Learning progression analysis (mastery velocity, SRS effectiveness)
+     - Detailed mistake analytics (error patterns, recovery analysis)
+     - Comparative performance benchmarking
+     - Visual learning indicators and modality analysis
+     - Contextual performance patterns (time, session position)
+     - Predictive analytics (retention forecasting, mastery timelines)
+     - Smart insights engine with automated recommendations
+
+7. **simple-word-analytics.ts** ✨
+   - **NEW**: Simplified individual word analytics for immediate deployment
+   - Demo data generation with realistic performance patterns
+   - Compatible interfaces with enhanced analytics system
+   - Production-ready fallback implementation
+   - **Key Features**:
+     - Streamlined metric calculation without complex database queries
+     - Realistic performance simulation based on word properties
+     - Immediate testing capability with generated demo data
+     - Type-safe interfaces matching enhanced system architecture
+
+#### Practice System Integration
+
+8. **practice-actions.ts**
+   - Core vocabulary practice session management
+   - Exercise generation and validation
+   - Real-time performance tracking during practice
+
+9. **enhanced-practice-actions.ts**
+   - Advanced practice features and adaptive learning
+   - Dynamic difficulty adjustment based on performance
+   - Personalized practice recommendations
+
+10. **practice-session-management.ts**
+    - Session lifecycle management (start, pause, resume, complete)
+    - Session data persistence and recovery
+    - Performance metric collection during sessions
+
+11. **practice-progress-tracking.ts**
+    - Detailed progress tracking throughout practice sessions
+    - Real-time analytics and performance monitoring
+    - Learning curve analysis and optimization insights
+
+12. **practice-word-difficulty.ts**
+    - Individual word difficulty assessment and adjustment
+    - Adaptive difficulty scaling based on user performance
+    - Difficulty calibration across different vocabulary sets
+
+#### Specialized Actions
+
+13. **settings-sync-actions.ts**
+    - Cross-device settings synchronization
+    - Cloud backup and restore functionality
+    - Conflict resolution for concurrent updates
+
+14. **study-preferences-actions.ts**
+    - Learning preference management (SRS intervals, practice modes)
+    - Personalization settings and adaptive learning parameters
+    - Study schedule optimization and reminder management
+
+### Enhanced Individual Word Analytics Architecture
+
+#### Data Processing Pipeline
+
+```
+Raw Learning Data → Analytics Engine → Metrics Calculation → UI Visualization
+     ↓                    ↓                   ↓                  ↓
+UserSessionItem    →  Performance     →   25+ Metrics    →   8 Tab Interface
+LearningMistake    →  Analysis        →   AI Insights    →   Visual Components
+UserDictionary     →  Pattern         →   Predictions    →   Interactive Charts
+                      Recognition
 ```
 
-This architecture enables:
+#### Metric Categories Implementation
 
-- **Cross-Practice Compatibility**: Same word can be practiced in typing, flashcards, pronunciation, etc.
-- **Unified Progress Tracking**: Consistent metrics across all learning modalities
-- **Extensible Content Types**: Easy addition of new learning content beyond words
-- **Intelligent Scheduling**: Unified review system optimizing across all practice types
+1. **Session Performance Analytics** (`enhanced-word-analytics.ts:340-420`)
+   - Response time analysis (fastest, slowest, median, consistency)
+   - Attempt pattern tracking (success rates, recovery analysis)
+   - Context performance (time-of-day, session position effects)
+
+2. **Learning Progression Tracking** (`enhanced-word-analytics.ts:480-560`)
+   - Mastery development velocity and stability analysis
+   - SRS effectiveness and interval optimization
+   - Learning phase identification and time-to-mastery prediction
+
+3. **Detailed Mistake Analytics** (`enhanced-word-analytics.ts:620-700`)
+   - Error classification by type, time, and session context
+   - Recovery pattern analysis and correction effectiveness
+   - Recurring mistake identification and intervention recommendations
+
+4. **Comparative Performance Analysis** (`enhanced-word-analytics.ts:760-820`)
+   - Personal benchmark tracking and performance indexing
+   - Efficiency metrics and learning optimization indicators
+   - Difficulty percentile ranking and comparative analysis
+
+5. **Predictive Analytics Engine** (`enhanced-word-analytics.ts:880-960`)
+   - Retention forecasting using forgetting curve models
+   - Learning trajectory prediction and mastery timeline estimation
+   - Adaptive recommendation generation with confidence scoring
+
+#### Smart Insights Implementation
+
+The AI-powered insights system (`enhanced-word-analytics.ts:1000-1100`) provides:
+
+- **Automated Pattern Recognition**: Identifies learning patterns and bottlenecks
+- **Confidence Scoring**: Reliability metrics for all predictions and recommendations
+- **Actionable Recommendations**: Specific, implementable suggestions for improvement
+- **Personalized Optimization**: Tailored advice based on individual learning patterns
+
+#### Demo Data Generation
+
+The simplified analytics system (`simple-word-analytics.ts:200-400`) includes:
+
+- **Realistic Simulation**: Performance patterns based on actual learning research
+- **Varied Skill Levels**: Different proficiency representations for comprehensive testing
+- **Temporal Variations**: Time-based performance fluctuations for realistic analytics
+- **Immediate Deployment**: Production-ready system without complex database dependencies
+
+### Integration Points
+
+#### With Practice System
+
+- Real-time data collection during vocabulary exercises
+- Performance metric updates integrated into practice workflows
+- Analytics-driven adaptive difficulty and recommendation systems
+
+#### With Dictionary Management
+
+- Individual word performance accessible from dictionary interface
+- Enhanced difficulty analysis replacing basic metrics
+- Seamless integration with existing vocabulary management workflows
+
+#### With Performance Dashboard
+
+- Individual metrics complement aggregate performance analytics
+- Drill-down capability from summary to detailed word-level insights
+- Consistent design language and user experience patterns
+
+### Technical Implementation Notes
+
+#### Performance Optimization
+
+- **Lazy Loading**: Analytics calculated on-demand to minimize initial load times
+- **Caching Strategy**: Results cached for 24-hour periods with intelligent invalidation
+- **Background Processing**: Heavy calculations optimized for non-blocking execution
+- **Demo Mode**: Immediate functionality with simulated data for testing and development
+
+#### Type Safety & Error Handling
+
+- **Comprehensive Interfaces**: Full TypeScript coverage with 8 major metric interfaces
+- **Runtime Validation**: Type guards and error boundaries for graceful degradation
+- **Null Safety**: Comprehensive undefined/null handling throughout analytics pipeline
+- **Graceful Fallbacks**: Simplified metrics when enhanced analytics unavailable
+
+This enhanced individual word analytics system represents a significant advancement in personalized vocabulary learning, providing users with unprecedented insights into their learning patterns while maintaining the robust architecture and performance characteristics of the existing platform.
 
 ## Translation Domain (`domains/translation/`)
 

@@ -20,6 +20,12 @@ export { PublicListPreviewDialog } from './PublicListPreviewDialog';
 
 export { WordTable } from './WordTable';
 export { WordDifficultyDialog } from './WordDifficultyDialog';
+export { EnhancedWordDifficultyDialog } from './EnhancedWordDifficultyDialog';
+
+// Performance & Analytics Components
+export { DictionaryPerformanceSection } from './DictionaryPerformanceSection';
+export * from './performance';
+export * from './word-analytics';
 
 // Hooks
 export { useAudioPlayback } from './hooks/useAudioPlayback';

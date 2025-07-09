@@ -36,6 +36,7 @@ import {
   VolumeX,
   FileText,
   Brain,
+  Activity,
 } from 'lucide-react';
 import { LearningStatus, LanguageCode } from '@/core/types';
 import { cn } from '@/core/shared/utils/common/cn';
@@ -45,6 +46,7 @@ import {
 } from '@/core/domains/user/utils/dictionary-display-utils';
 import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
 import { WordDifficultyDialog } from './WordDifficultyDialog';
+import { EnhancedWordDifficultyDialog } from './EnhancedWordDifficultyDialog';
 import { useState } from 'react';
 
 interface WordTableProps {
@@ -90,6 +92,15 @@ export function WordTable({
     word: null,
   });
 
+  // State for performance analytics dialog
+  const [performanceDialog, setPerformanceDialog] = useState<{
+    isOpen: boolean;
+    word: UserDictionaryItem | null;
+  }>({
+    isOpen: false,
+    word: null,
+  });
+
   const handleOpenDifficultyDialog = (word: UserDictionaryItem) => {
     setDifficultyDialog({
       isOpen: true,
@@ -99,6 +110,20 @@ export function WordTable({
 
   const handleCloseDifficultyDialog = () => {
     setDifficultyDialog({
+      isOpen: false,
+      word: null,
+    });
+  };
+
+  const handleOpenPerformanceDialog = (word: UserDictionaryItem) => {
+    setPerformanceDialog({
+      isOpen: true,
+      word,
+    });
+  };
+
+  const handleClosePerformanceDialog = () => {
+    setPerformanceDialog({
       isOpen: false,
       word: null,
     });
@@ -359,6 +384,12 @@ export function WordTable({
                       <Brain className="h-4 w-4 mr-2" />
                       View Difficulty Analysis
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleOpenPerformanceDialog(word)}
+                    >
+                      <Activity className="h-4 w-4 mr-2" />
+                      Performance
+                    </DropdownMenuItem>
 
                     {/* Dynamic Learning Status Actions */}
                     {word.learningStatus === LearningStatus.learned ? (
@@ -421,6 +452,12 @@ export function WordTable({
         isOpen={difficultyDialog.isOpen}
         onClose={handleCloseDifficultyDialog}
         word={difficultyDialog.word}
+      />
+      {/* Performance Analytics Dialog */}
+      <EnhancedWordDifficultyDialog
+        isOpen={performanceDialog.isOpen}
+        onClose={handleClosePerformanceDialog}
+        word={performanceDialog.word}
       />
     </>
   );

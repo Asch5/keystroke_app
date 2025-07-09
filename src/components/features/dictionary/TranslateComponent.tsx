@@ -167,7 +167,7 @@ export default function TranslateComponent() {
                 onChange={(e) => setText(e.target.value)}
                 required
               />
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-content-secondary">
                 Enter a word or phrase to translate and get detailed information
               </p>
             </div>
@@ -239,11 +239,11 @@ export default function TranslateComponent() {
       </Card>
 
       {error && (
-        <Card className="mb-8 border-red-300">
-          <CardHeader className="bg-red-50">
-            <CardTitle className="text-red-600">Error</CardTitle>
+        <Card className="mb-8 border-error-border">
+          <CardHeader className="bg-error-subtle">
+            <CardTitle className="text-error-foreground">Error</CardTitle>
           </CardHeader>
-          <CardContent className="text-red-600 pt-4">
+          <CardContent className="text-error-foreground pt-4">
             <p>{error}</p>
           </CardContent>
         </Card>
@@ -273,7 +273,7 @@ export default function TranslateComponent() {
                     <h3 className="text-lg font-medium mb-2">Original</h3>
                     <p className="text-xl">{result.word}</p>
                     {result.wordTranscription && (
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-content-secondary mt-1">
                         /{result.wordTranscription}/
                       </p>
                     )}
@@ -282,7 +282,7 @@ export default function TranslateComponent() {
                     <h3 className="text-lg font-medium mb-2">Translation</h3>
                     <p className="text-xl">{result.translation}</p>
                     {result.translationTranscription && (
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-content-secondary mt-1">
                         /{result.translationTranscription}/
                       </p>
                     )}
@@ -323,7 +323,7 @@ export default function TranslateComponent() {
                                             {translation.synonyms &&
                                               translation.synonyms.length >
                                                 0 && (
-                                                <span className="text-gray-500 ml-2">
+                                                <span className="text-content-secondary ml-2">
                                                   (Synonyms:{' '}
                                                   {translation.synonyms.join(
                                                     ', ',
@@ -345,7 +345,7 @@ export default function TranslateComponent() {
                     )}
                   </Accordion>
                 ) : (
-                  <p className="text-gray-500">
+                  <p className="text-content-secondary">
                     No detailed translations available
                   </p>
                 )}
@@ -378,14 +378,14 @@ export default function TranslateComponent() {
                                             {def.definition}
                                           </div>
                                           {def.example && (
-                                            <div className="text-gray-600 text-sm ml-2 italic">
+                                            <div className="text-content-secondary text-sm ml-2 italic">
                                               Example: {def.example}
                                             </div>
                                           )}
                                           {def.synonyms &&
                                             Object.keys(def.synonyms).length >
                                               0 && (
-                                              <div className="text-gray-600 text-sm ml-2">
+                                              <div className="text-content-secondary text-sm ml-2">
                                                 <span className="font-medium">
                                                   Synonyms:{' '}
                                                 </span>
@@ -425,7 +425,9 @@ export default function TranslateComponent() {
                     )}
                   </Accordion>
                 ) : (
-                  <p className="text-gray-500">No definitions available</p>
+                  <p className="text-content-secondary">
+                    No definitions available
+                  </p>
                 )}
               </TabsContent>
 
@@ -437,12 +439,14 @@ export default function TranslateComponent() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-gray-500">No examples available</p>
+                  <p className="text-content-secondary">
+                    No examples available
+                  </p>
                 )}
               </TabsContent>
 
               <TabsContent value="raw">
-                <div className="bg-gray-100 p-4 rounded-md">
+                <div className="bg-content-subtle p-4 rounded-md">
                   <pre className="whitespace-pre-wrap text-sm overflow-auto max-h-[500px]">
                     {JSON.stringify(result, null, 2)}
                   </pre>

@@ -208,7 +208,7 @@ export function WordDetailsDefinitions({
                           {def.isInShortDef && (
                             <Badge
                               variant="default"
-                              className="bg-amber-500 text-white text-xs"
+                              className="bg-warning-subtle text-warning-foreground text-xs"
                             >
                               Main Definition
                             </Badge>
@@ -221,7 +221,7 @@ export function WordDetailsDefinitions({
                           {isInDictionary && (
                             <Badge
                               variant="secondary"
-                              className="bg-green-100 text-green-800 text-xs"
+                              className="bg-success-subtle text-success-foreground text-xs"
                             >
                               <Check className="h-3 w-3 mr-1" />
                               In Dictionary

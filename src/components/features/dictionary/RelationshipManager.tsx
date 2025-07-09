@@ -370,7 +370,7 @@ export function RelationshipManager({
 
           {/* Add Relationship Dialog */}
           {showAddRelationship && (
-            <Card className="border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20">
+            <Card className="border-info-border bg-info-subtle">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm flex items-center justify-between">
                   <span>Add New Relationship</span>
@@ -434,7 +434,7 @@ export function RelationshipManager({
                     {searchResults.map((word) => (
                       <Card
                         key={word.wordId}
-                        className="border border-gray-200"
+                        className="border border-content-border"
                       >
                         <CardContent className="p-3">
                           <div className="space-y-2">
@@ -475,7 +475,7 @@ export function RelationshipManager({
                                   {word.wordDetails.map((detail) => (
                                     <div
                                       key={detail.id}
-                                      className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs"
+                                      className="flex items-center justify-between p-2 bg-content-soft rounded text-xs"
                                     >
                                       <div>
                                         <span className="font-medium">

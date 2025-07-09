@@ -181,7 +181,7 @@ export function renderTextWithEmphasis(text: string): React.ReactNode {
               return <React.Fragment key={index}>{part}</React.Fragment>;
             } else {
               return (
-                <em className="font-bold text-red-500" key={index}>
+                <em className="font-bold text-error-foreground" key={index}>
                   {part.content}
                 </em>
               );

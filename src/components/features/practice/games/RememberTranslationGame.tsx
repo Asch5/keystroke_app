@@ -173,7 +173,9 @@ export function RememberTranslationGame({
               <div
                 className={cn(
                   'flex items-center justify-center gap-2 text-lg font-semibold',
-                  userRemembered ? 'text-green-600' : 'text-blue-600',
+                  userRemembered
+                    ? 'text-success-foreground'
+                    : 'text-info-foreground',
                 )}
               >
                 {userRemembered ? (

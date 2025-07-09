@@ -187,7 +187,7 @@ export function ImageControls({
               <Card>
                 <CardContent className="pt-4">
                   <div className="flex items-center space-x-2">
-                    <ImageIcon className="h-4 w-4 text-blue-600" />
+                    <ImageIcon className="h-4 w-4 text-info-foreground" />
                     <div>
                       <p className="text-2xl font-bold">
                         {imageStats.totalImages}
@@ -203,7 +203,7 @@ export function ImageControls({
               <Card>
                 <CardContent className="pt-4">
                   <div className="flex items-center space-x-2">
-                    <Activity className="h-4 w-4 text-green-600" />
+                    <Activity className="h-4 w-4 text-success-foreground" />
                     <div>
                       <p className="text-2xl font-bold">
                         {imageStats.definitionsWithImages}
@@ -219,7 +219,7 @@ export function ImageControls({
               <Card>
                 <CardContent className="pt-4">
                   <div className="flex items-center space-x-2">
-                    <Info className="h-4 w-4 text-orange-600" />
+                    <Info className="h-4 w-4 text-warning-foreground" />
                     <div>
                       <p className="text-2xl font-bold">
                         {imageStats.definitionsWithoutImages}
@@ -235,7 +235,7 @@ export function ImageControls({
               <Card>
                 <CardContent className="pt-4">
                   <div className="flex items-center space-x-2">
-                    <Zap className="h-4 w-4 text-purple-600" />
+                    <Zap className="h-4 w-4 text-accent-foreground" />
                     <div>
                       <p className="text-2xl font-bold">
                         {imageStats.recentlyGenerated}
@@ -288,8 +288,8 @@ export function ImageControls({
                 </p>
               </div>
 
-              <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <p className="text-sm text-blue-700 dark:text-blue-300">
+              <div className="p-3 bg-info-subtle rounded-lg">
+                <p className="text-sm text-info-foreground">
                   <Info className="h-4 w-4 inline mr-1" />
                   Images are sourced from Pexels and automatically selected
                   based on word definitions and translations.

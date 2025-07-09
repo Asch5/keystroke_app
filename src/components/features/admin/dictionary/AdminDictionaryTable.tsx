@@ -282,8 +282,8 @@ export function AdminDictionaryTable({
                   <span
                     className={`text-xs px-1 py-0.5 rounded ${
                       isVercelBlob
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-success-subtle text-success-foreground'
+                        : 'bg-content-soft text-content-secondary'
                     }`}
                   >
                     {isVercelBlob ? 'Blob' : 'B64'}
@@ -303,7 +303,7 @@ export function AdminDictionaryTable({
                 variant="ghost"
                 size="sm"
                 onClick={() => onDeleteAudio(wordDetail.wordId)}
-                className="h-8 w-8 p-0 text-red-600 hover:text-red-800"
+                className="h-8 w-8 p-0 text-error-foreground hover:text-error"
               >
                 <Trash2 className="h-3 w-3" />
               </Button>
@@ -327,7 +327,7 @@ export function AdminDictionaryTable({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-help text-green-600 font-medium">
+                <span className="cursor-help text-success-foreground font-medium">
                   ✓
                 </span>
               </TooltipTrigger>

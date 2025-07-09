@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { LanguageCode } from '@/core/types';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 import {
   Dialog,
   DialogContent,
@@ -68,13 +68,13 @@ const difficultyDisplayNames = {
   proficient: 'Proficient',
 } as const;
 
-const difficultyColors = {
-  beginner: 'bg-green-100 text-green-800',
-  elementary: 'bg-blue-100 text-blue-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-orange-100 text-orange-800',
-  proficient: 'bg-red-100 text-red-800',
-} as const;
+const difficultyColors: Record<DifficultyLevel, string> = {
+  beginner: 'bg-success-subtle text-success-foreground',
+  elementary: 'bg-info-subtle text-info-foreground',
+  intermediate: 'bg-warning-subtle text-warning-foreground',
+  advanced: 'bg-warning text-warning-foreground',
+  proficient: 'bg-error-subtle text-error-foreground',
+};
 
 export function PublicListPreviewDialog({
   list,

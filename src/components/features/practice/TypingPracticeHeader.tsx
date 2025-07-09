@@ -68,19 +68,19 @@ export function TypingPracticeHeader({
               </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+              <div className="text-2xl font-bold text-success-foreground">
                 {sessionState.correctAnswers}
               </div>
               <div className="text-sm text-muted-foreground">Correct</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+              <div className="text-2xl font-bold text-error-foreground">
                 {sessionState.incorrectAnswers}
               </div>
               <div className="text-sm text-muted-foreground">Incorrect</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <div className="text-2xl font-bold text-info-foreground">
                 {sessionState.score}
               </div>
               <div className="text-sm text-muted-foreground">Score</div>

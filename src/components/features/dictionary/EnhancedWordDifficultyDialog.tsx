@@ -56,6 +56,97 @@ interface EnhancedWordDifficultyDialogProps {
   word: UserDictionaryItem | null;
 }
 
+// Utility functions for semantic color mapping
+const getStatusIconColor = (status: LearningStatus) => {
+  switch (status) {
+    case LearningStatus.learned:
+      return 'text-success-foreground';
+    case LearningStatus.inProgress:
+      return 'text-info-foreground';
+    case LearningStatus.needsReview:
+      return 'text-warning-foreground';
+    case LearningStatus.difficult:
+      return 'text-error-foreground';
+    case LearningStatus.notStarted:
+      return 'text-content-secondary';
+    default:
+      return 'text-content-secondary';
+  }
+};
+
+const getPerformanceColor = (
+  type: 'success' | 'info' | 'warning' | 'error' | 'modern',
+) => {
+  switch (type) {
+    case 'success':
+      return 'text-success-foreground';
+    case 'info':
+      return 'text-info-foreground';
+    case 'warning':
+      return 'text-warning-foreground';
+    case 'error':
+      return 'text-error-foreground';
+    case 'modern':
+      return 'text-modern-slate-foreground';
+    default:
+      return 'text-foreground';
+  }
+};
+
+const getLearningModalityColor = (type: 'textual' | 'visual' | 'auditory') => {
+  switch (type) {
+    case 'textual':
+      return {
+        bg: 'bg-info-subtle',
+        text: 'text-info-foreground',
+        icon: 'text-info-foreground',
+      };
+    case 'visual':
+      return {
+        bg: 'bg-success-subtle',
+        text: 'text-success-foreground',
+        icon: 'text-success-foreground',
+      };
+    case 'auditory':
+      return {
+        bg: 'bg-modern-slate-subtle',
+        text: 'text-modern-slate-foreground',
+        icon: 'text-modern-slate-foreground',
+      };
+    default:
+      return {
+        bg: 'bg-content-subtle',
+        text: 'text-foreground',
+        icon: 'text-foreground',
+      };
+  }
+};
+
+const getSessionPositionColor = (position: 'early' | 'middle' | 'late') => {
+  switch (position) {
+    case 'early':
+      return {
+        bg: 'bg-info-subtle',
+        text: 'text-info-foreground',
+      };
+    case 'middle':
+      return {
+        bg: 'bg-warning-subtle',
+        text: 'text-warning-foreground',
+      };
+    case 'late':
+      return {
+        bg: 'bg-error-subtle',
+        text: 'text-error-foreground',
+      };
+    default:
+      return {
+        bg: 'bg-content-subtle',
+        text: 'text-foreground',
+      };
+  }
+};
+
 export function EnhancedWordDifficultyDialog({
   isOpen,
   onClose,
@@ -99,17 +190,23 @@ export function EnhancedWordDifficultyDialog({
   const getStatusIcon = (status: LearningStatus) => {
     switch (status) {
       case LearningStatus.learned:
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return (
+          <CheckCircle className={`h-4 w-4 ${getStatusIconColor(status)}`} />
+        );
       case LearningStatus.inProgress:
-        return <Activity className="h-4 w-4 text-blue-500" />;
+        return <Activity className={`h-4 w-4 ${getStatusIconColor(status)}`} />;
       case LearningStatus.needsReview:
-        return <RotateCcw className="h-4 w-4 text-yellow-500" />;
+        return (
+          <RotateCcw className={`h-4 w-4 ${getStatusIconColor(status)}`} />
+        );
       case LearningStatus.difficult:
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return (
+          <AlertTriangle className={`h-4 w-4 ${getStatusIconColor(status)}`} />
+        );
       case LearningStatus.notStarted:
-        return <XCircle className="h-4 w-4 text-gray-500" />;
+        return <XCircle className={`h-4 w-4 ${getStatusIconColor(status)}`} />;
       default:
-        return <Activity className="h-4 w-4 text-gray-500" />;
+        return <Activity className={`h-4 w-4 ${getStatusIconColor(status)}`} />;
     }
   };
 
@@ -138,8 +235,8 @@ export function EnhancedWordDifficultyDialog({
 
         {error && (
           <div className="text-center py-12">
-            <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <p className="text-red-600 mb-4">{error}</p>
+            <AlertTriangle className="h-12 w-12 text-error-foreground mx-auto mb-4" />
+            <p className="text-error-foreground mb-4">{error}</p>
             <Button
               onClick={fetchWordAnalytics}
               variant="outline"
@@ -214,7 +311,9 @@ export function EnhancedWordDifficultyDialog({
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div
+                      className={`text-2xl font-bold ${getPerformanceColor('success')}`}
+                    >
                       {analytics.basicMetrics.totalAttempts > 0
                         ? (
                             (analytics.basicMetrics.correctAttempts /
@@ -238,7 +337,9 @@ export function EnhancedWordDifficultyDialog({
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div
+                      className={`text-2xl font-bold ${getPerformanceColor('info')}`}
+                    >
                       {(
                         analytics.basicMetrics.averageResponseTime / 1000
                       ).toFixed(1)}
@@ -262,7 +363,9 @@ export function EnhancedWordDifficultyDialog({
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
-                      <div className="text-lg font-bold text-blue-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('info')}`}
+                      >
                         {analytics.basicMetrics.currentStreak}
                       </div>
                       <div className="text-sm text-muted-foreground">
@@ -270,7 +373,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-orange-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('warning')}`}
+                      >
                         {analytics.basicMetrics.mistakeCount}
                       </div>
                       <div className="text-sm text-muted-foreground">
@@ -278,7 +383,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-red-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('error')}`}
+                      >
                         {analytics.basicMetrics.skipCount}
                       </div>
                       <div className="text-sm text-muted-foreground">
@@ -286,7 +393,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-purple-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('modern')}`}
+                      >
                         {analytics.progressionMetrics.lastUsedRecency}
                       </div>
                       <div className="text-sm text-muted-foreground">
@@ -307,8 +416,12 @@ export function EnhancedWordDifficultyDialog({
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                      <FileText className="h-6 w-6 text-blue-600 mx-auto mb-2" />
+                    <div
+                      className={`text-center p-4 ${getLearningModalityColor('textual').bg} rounded-lg`}
+                    >
+                      <FileText
+                        className={`h-6 w-6 ${getLearningModalityColor('textual').icon} mx-auto mb-2`}
+                      />
                       <div className="text-lg font-bold">
                         {(
                           analytics.visualLearning.modalityEffectiveness
@@ -320,8 +433,12 @@ export function EnhancedWordDifficultyDialog({
                         Text Learning
                       </div>
                     </div>
-                    <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                      <Eye className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                    <div
+                      className={`text-center p-4 ${getLearningModalityColor('visual').bg} rounded-lg`}
+                    >
+                      <Eye
+                        className={`h-6 w-6 ${getLearningModalityColor('visual').icon} mx-auto mb-2`}
+                      />
                       <div className="text-lg font-bold">
                         {(
                           analytics.visualLearning.modalityEffectiveness
@@ -333,8 +450,12 @@ export function EnhancedWordDifficultyDialog({
                         Visual Learning
                       </div>
                     </div>
-                    <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                      <Volume2 className="h-6 w-6 text-purple-600 mx-auto mb-2" />
+                    <div
+                      className={`text-center p-4 ${getLearningModalityColor('auditory').bg} rounded-lg`}
+                    >
+                      <Volume2
+                        className={`h-6 w-6 ${getLearningModalityColor('auditory').icon} mx-auto mb-2`}
+                      />
                       <div className="text-lg font-bold">
                         {(
                           analytics.visualLearning.modalityEffectiveness
@@ -369,7 +490,9 @@ export function EnhancedWordDifficultyDialog({
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
-                      <div className="text-lg font-bold text-green-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('success')}`}
+                      >
                         {analytics.sessionPerformance.fastestResponseTime.toFixed(
                           0,
                         )}
@@ -380,7 +503,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-blue-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('info')}`}
+                      >
                         {analytics.sessionPerformance.medianResponseTime.toFixed(
                           0,
                         )}
@@ -391,7 +516,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-orange-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('warning')}`}
+                      >
                         {analytics.sessionPerformance.slowestResponseTime.toFixed(
                           0,
                         )}
@@ -402,7 +529,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-purple-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('modern')}`}
+                      >
                         {analytics.sessionPerformance.responseTimeConsistency.toFixed(
                           0,
                         )}
@@ -421,8 +550,12 @@ export function EnhancedWordDifficultyDialog({
                       Attempt Pattern Analysis
                     </h4>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                        <div className="text-lg font-bold text-green-600">
+                      <div
+                        className={`text-center p-3 ${getPerformanceColor('success')} bg-success-subtle rounded-lg`}
+                      >
+                        <div
+                          className={`text-lg font-bold ${getPerformanceColor('success')}`}
+                        >
                           {analytics.sessionPerformance.firstAttemptSuccessRate.toFixed(
                             1,
                           )}
@@ -432,8 +565,12 @@ export function EnhancedWordDifficultyDialog({
                           First Attempt Success
                         </div>
                       </div>
-                      <div className="text-center p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                        <div className="text-lg font-bold text-blue-600">
+                      <div
+                        className={`text-center p-3 ${getPerformanceColor('info')} bg-info-subtle rounded-lg`}
+                      >
+                        <div
+                          className={`text-lg font-bold ${getPerformanceColor('info')}`}
+                        >
                           {analytics.sessionPerformance.multipleAttemptSuccessRate.toFixed(
                             1,
                           )}
@@ -443,8 +580,12 @@ export function EnhancedWordDifficultyDialog({
                           Recovery Success Rate
                         </div>
                       </div>
-                      <div className="text-center p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-                        <div className="text-lg font-bold text-orange-600">
+                      <div
+                        className={`text-center p-3 ${getPerformanceColor('warning')} bg-warning-subtle rounded-lg`}
+                      >
+                        <div
+                          className={`text-lg font-bold ${getPerformanceColor('warning')}`}
+                        >
                           {analytics.sessionPerformance.averageAttemptsPerSession.toFixed(
                             1,
                           )}
@@ -475,8 +616,12 @@ export function EnhancedWordDifficultyDialog({
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">
+                      <div
+                        className={`text-center p-4 ${getSessionPositionColor('early').bg} rounded-lg`}
+                      >
+                        <div
+                          className={`text-2xl font-bold ${getSessionPositionColor('early').text}`}
+                        >
                           {analytics.sessionPerformance.sessionPositionEffect.early.toFixed(
                             1,
                           )}
@@ -486,8 +631,12 @@ export function EnhancedWordDifficultyDialog({
                           Early Session
                         </div>
                       </div>
-                      <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
-                        <div className="text-2xl font-bold text-yellow-600">
+                      <div
+                        className={`text-center p-4 ${getSessionPositionColor('middle').bg} rounded-lg`}
+                      >
+                        <div
+                          className={`text-2xl font-bold ${getSessionPositionColor('middle').text}`}
+                        >
                           {analytics.sessionPerformance.sessionPositionEffect.middle.toFixed(
                             1,
                           )}
@@ -497,8 +646,12 @@ export function EnhancedWordDifficultyDialog({
                           Middle Session
                         </div>
                       </div>
-                      <div className="text-center p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
-                        <div className="text-2xl font-bold text-red-600">
+                      <div
+                        className={`text-center p-4 ${getSessionPositionColor('late').bg} rounded-lg`}
+                      >
+                        <div
+                          className={`text-2xl font-bold ${getSessionPositionColor('late').text}`}
+                        >
                           {analytics.sessionPerformance.sessionPositionEffect.late.toFixed(
                             1,
                           )}
@@ -564,7 +717,7 @@ export function EnhancedWordDifficultyDialog({
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                    <div className="p-4 bg-info-subtle rounded-lg">
                       <h4 className="font-medium mb-2">Best Time of Day</h4>
                       <div className="text-lg font-bold">
                         {analytics.contextualMetrics.timeOfDayOptimal.hour
@@ -579,7 +732,7 @@ export function EnhancedWordDifficultyDialog({
                         % accuracy
                       </div>
                     </div>
-                    <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                    <div className="p-4 bg-success-subtle rounded-lg">
                       <h4 className="font-medium mb-2">
                         Optimal Session Length
                       </h4>
@@ -607,7 +760,9 @@ export function EnhancedWordDifficultyDialog({
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
-                      <div className="text-lg font-bold text-blue-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('info')}`}
+                      >
                         {analytics.progressionMetrics.masteryVelocity.toFixed(
                           2,
                         )}
@@ -617,7 +772,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-green-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('success')}`}
+                      >
                         {analytics.progressionMetrics.masteryStabilityIndex.toFixed(
                           0,
                         )}
@@ -628,7 +785,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-orange-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('warning')}`}
+                      >
                         {analytics.progressionMetrics.retentionStrength.toFixed(
                           0,
                         )}
@@ -639,7 +798,9 @@ export function EnhancedWordDifficultyDialog({
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-bold text-purple-600">
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('modern')}`}
+                      >
                         {analytics.progressionMetrics.timeToFirstCorrect}
                       </div>
                       <div className="text-sm text-muted-foreground">
@@ -653,8 +814,12 @@ export function EnhancedWordDifficultyDialog({
                   <div>
                     <h4 className="font-semibold mb-3">SRS Effectiveness</h4>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                        <div className="text-lg font-bold text-blue-600">
+                      <div
+                        className={`text-center p-3 ${getPerformanceColor('info')} bg-info-subtle rounded-lg`}
+                      >
+                        <div
+                          className={`text-lg font-bold ${getPerformanceColor('info')}`}
+                        >
                           {analytics.progressionMetrics.srsIntervalOptimality.toFixed(
                             0,
                           )}
@@ -664,8 +829,12 @@ export function EnhancedWordDifficultyDialog({
                           Interval Optimality
                         </div>
                       </div>
-                      <div className="text-center p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                        <div className="text-lg font-bold text-green-600">
+                      <div
+                        className={`text-center p-3 ${getPerformanceColor('success')} bg-success-subtle rounded-lg`}
+                      >
+                        <div
+                          className={`text-lg font-bold ${getPerformanceColor('success')}`}
+                        >
                           {analytics.progressionMetrics.srsSuccessRate.toFixed(
                             0,
                           )}
@@ -675,8 +844,12 @@ export function EnhancedWordDifficultyDialog({
                           SRS Success Rate
                         </div>
                       </div>
-                      <div className="text-center p-3 bg-red-50 dark:bg-red-950/20 rounded-lg">
-                        <div className="text-lg font-bold text-red-600">
+                      <div
+                        className={`text-center p-3 ${getPerformanceColor('error')} bg-error-subtle rounded-lg`}
+                      >
+                        <div
+                          className={`text-lg font-bold ${getPerformanceColor('error')}`}
+                        >
                           {analytics.progressionMetrics.srsRegressionCount}
                         </div>
                         <div className="text-sm text-muted-foreground">
@@ -708,8 +881,12 @@ export function EnhancedWordDifficultyDialog({
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                      <div className="text-lg font-bold text-blue-600">
+                    <div
+                      className={`text-center p-4 ${getPerformanceColor('info')} bg-info-subtle rounded-lg`}
+                    >
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('info')}`}
+                      >
                         {analytics.comparativeMetrics.personalAverageComparison
                           .responseTime > 0
                           ? '+'
@@ -723,8 +900,12 @@ export function EnhancedWordDifficultyDialog({
                         vs Personal Average (Time)
                       </div>
                     </div>
-                    <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                      <div className="text-lg font-bold text-green-600">
+                    <div
+                      className={`text-center p-4 ${getPerformanceColor('success')} bg-success-subtle rounded-lg`}
+                    >
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('success')}`}
+                      >
                         {analytics.comparativeMetrics.personalAverageComparison
                           .accuracy > 0
                           ? '+'
@@ -738,8 +919,12 @@ export function EnhancedWordDifficultyDialog({
                         vs Personal Average (Accuracy)
                       </div>
                     </div>
-                    <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                      <div className="text-lg font-bold text-purple-600">
+                    <div
+                      className={`text-center p-4 ${getPerformanceColor('modern')} bg-modern-slate-subtle rounded-lg`}
+                    >
+                      <div
+                        className={`text-lg font-bold ${getPerformanceColor('modern')}`}
+                      >
                         {analytics.comparativeMetrics.difficultyPercentile.toFixed(
                           0,
                         )}
@@ -756,7 +941,9 @@ export function EnhancedWordDifficultyDialog({
                   <div>
                     <h4 className="font-semibold mb-3">Learning Efficiency</h4>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                      <div
+                        className={`p-4 ${getPerformanceColor('warning')} bg-warning-subtle rounded-lg`}
+                      >
                         <h5 className="font-medium mb-2">Efficiency Index</h5>
                         <div className="text-lg font-bold">
                           {analytics.comparativeMetrics.learningEfficiencyIndex.toFixed(
@@ -764,7 +951,9 @@ export function EnhancedWordDifficultyDialog({
                           )}
                         </div>
                       </div>
-                      <div className="p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
+                      <div
+                        className={`p-4 ${getPerformanceColor('warning')} bg-warning-subtle rounded-lg`}
+                      >
                         <h5 className="font-medium mb-2">Predicted Mastery</h5>
                         <div className="text-lg font-bold">
                           {analytics.comparativeMetrics.predictedTimeToMastery}{' '}

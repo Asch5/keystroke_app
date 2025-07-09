@@ -164,9 +164,9 @@ export function useWriteByDefinitionState({
     if (!hasSubmitted) return '';
 
     if (isCorrect) {
-      return 'border-green-500 bg-green-50 text-green-700';
+      return 'border-success-border bg-success-subtle text-success-foreground';
     } else {
-      return 'border-red-500 bg-red-50 text-red-700';
+      return 'border-error-border bg-error-subtle text-error-foreground';
     }
   }, [hasSubmitted, isCorrect]);
 
@@ -180,9 +180,9 @@ export function useWriteByDefinitionState({
       const state = characterStates[index];
       switch (state) {
         case 'correct':
-          return 'bg-green-100 text-green-700';
+          return 'bg-success-subtle text-success-foreground';
         case 'incorrect':
-          return 'bg-red-100 text-red-700';
+          return 'bg-error-subtle text-error-foreground';
         default:
           return '';
       }

@@ -57,11 +57,14 @@ const difficultyDisplayNames: Record<DifficultyLevel, string> = {
 };
 
 const difficultyColors: Record<DifficultyLevel, string> = {
-  beginner: 'bg-green-100 text-green-800',
-  elementary: 'bg-blue-100 text-blue-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-orange-100 text-orange-800',
-  proficient: 'bg-red-100 text-red-800',
+  beginner: 'bg-difficulty-beginner-subtle text-difficulty-beginner-foreground',
+  elementary:
+    'bg-difficulty-elementary-subtle text-difficulty-elementary-foreground',
+  intermediate:
+    'bg-difficulty-intermediate-subtle text-difficulty-intermediate-foreground',
+  advanced: 'bg-difficulty-advanced-subtle text-difficulty-advanced-foreground',
+  proficient:
+    'bg-difficulty-proficient-subtle text-difficulty-proficient-foreground',
 };
 
 export function AddToListDialog({

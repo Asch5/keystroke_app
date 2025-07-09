@@ -68,11 +68,14 @@ const difficultyDisplayNames: Record<DifficultyLevel, string> = {
 };
 
 const difficultyColors: Record<DifficultyLevel, string> = {
-  beginner: 'bg-green-100 text-green-800',
-  elementary: 'bg-blue-100 text-blue-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-orange-100 text-orange-800',
-  proficient: 'bg-red-100 text-red-800',
+  beginner: 'bg-difficulty-beginner-subtle text-difficulty-beginner-foreground',
+  elementary:
+    'bg-difficulty-elementary-subtle text-difficulty-elementary-foreground',
+  intermediate:
+    'bg-difficulty-intermediate-subtle text-difficulty-intermediate-foreground',
+  advanced: 'bg-difficulty-advanced-subtle text-difficulty-advanced-foreground',
+  proficient:
+    'bg-difficulty-proficient-subtle text-difficulty-proficient-foreground',
 };
 
 export default function ListDetailsPage() {
@@ -194,7 +197,7 @@ export default function ListDetailsPage() {
               {list.coverImageUrl && (
                 <div>
                   <h4 className="font-medium mb-2">Cover Image</h4>
-                  <div className="w-full h-48 relative bg-gray-100 rounded-lg overflow-hidden">
+                  <div className="w-full h-48 relative bg-content-soft rounded-lg overflow-hidden">
                     <Image
                       src={list.coverImageUrl}
                       alt={`${list.name} cover`}
@@ -279,12 +282,15 @@ export default function ListDetailsPage() {
                 <h4 className="font-medium mb-2">Visibility</h4>
                 <div className="flex items-center">
                   {list.isPublic ? (
-                    <Badge variant="outline" className="text-green-600">
+                    <Badge
+                      variant="outline"
+                      className="text-success-foreground"
+                    >
                       <Globe className="h-3 w-3 mr-1" />
                       Public
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-gray-600">
+                    <Badge variant="outline" className="text-content-secondary">
                       <Lock className="h-3 w-3 mr-1" />
                       Private
                     </Badge>

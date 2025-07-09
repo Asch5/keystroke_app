@@ -33,11 +33,19 @@ interface DictionaryPerformanceSectionProps {
 function getTrendIndicator(trend: 'improving' | 'stable' | 'declining') {
   switch (trend) {
     case 'improving':
-      return { icon: TrendingUp, color: 'text-green-600', label: 'Improving' };
+      return {
+        icon: TrendingUp,
+        color: 'text-success-foreground',
+        label: 'Improving',
+      };
     case 'declining':
-      return { icon: TrendingDown, color: 'text-red-600', label: 'Declining' };
+      return {
+        icon: TrendingDown,
+        color: 'text-error-foreground',
+        label: 'Declining',
+      };
     default:
-      return { icon: Target, color: 'text-gray-600', label: 'Stable' };
+      return { icon: Target, color: 'text-content-secondary', label: 'Stable' };
   }
 }
 
@@ -105,7 +113,7 @@ export const DictionaryPerformanceSection =
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-blue-600" />
+                <Activity className="h-5 w-5 text-info-foreground" />
                 <CardTitle>Performance Analytics</CardTitle>
               </div>
               <Badge variant="outline" className="flex items-center gap-1">

@@ -38,7 +38,7 @@ export const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
-          <Flame className="h-4 w-4 text-orange-500" />
+          <Flame className="h-4 w-4 text-warning-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
@@ -48,7 +48,7 @@ export const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({
             Best: {statistics.learningProgress.longestStreak} days
           </p>
           <div className="flex items-center mt-2">
-            <Flame className="h-3 w-3 text-orange-500 mr-1" />
+            <Flame className="h-3 w-3 text-warning-foreground mr-1" />
             <span className="text-xs">
               {statistics.sessionStatistics.streakDays} day streak
             </span>
@@ -61,7 +61,7 @@ export const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({
           <CardTitle className="text-sm font-medium">
             Average Accuracy
           </CardTitle>
-          <Target className="h-4 w-4 text-green-500" />
+          <Target className="h-4 w-4 text-success-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
@@ -80,7 +80,7 @@ export const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Study Time</CardTitle>
-          <Clock className="h-4 w-4 text-blue-500" />
+          <Clock className="h-4 w-4 text-info-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
@@ -91,7 +91,7 @@ export const StatisticsOverview: React.FC<StatisticsOverviewProps> = ({
             min/session
           </p>
           <div className="flex items-center mt-2">
-            <Calendar className="h-3 w-3 text-blue-500 mr-1" />
+            <Calendar className="h-3 w-3 text-info-foreground mr-1" />
             <span className="text-xs">
               {statistics.sessionStatistics.totalSessions} sessions
             </span>

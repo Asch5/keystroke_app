@@ -80,7 +80,7 @@ export const SessionAnalyticsTab: React.FC<SessionAnalyticsTabProps> = ({
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-2xl font-bold text-info-foreground">
                 {Math.round(statistics.sessionStatistics.totalStudyTime / 60)}h{' '}
                 {statistics.sessionStatistics.totalStudyTime % 60}m
               </div>
@@ -110,7 +110,7 @@ export const SessionAnalyticsTab: React.FC<SessionAnalyticsTabProps> = ({
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-success-foreground">
                 {statistics.sessionStatistics.averageAccuracy.toFixed(1)}%
               </div>
               <div className="text-sm text-muted-foreground">
@@ -118,7 +118,7 @@ export const SessionAnalyticsTab: React.FC<SessionAnalyticsTabProps> = ({
               </div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-purple-600">
+              <div className="text-lg font-semibold text-modern-slate-foreground">
                 {statistics.sessionStatistics.bestScore}%
               </div>
               <div className="text-xs text-muted-foreground">Best Score</div>

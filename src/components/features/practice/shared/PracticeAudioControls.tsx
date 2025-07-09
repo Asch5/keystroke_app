@@ -157,11 +157,11 @@ export function PracticeAudioControls({
   const getAudioTypeColor = () => {
     switch (audioType) {
       case 'success':
-        return 'text-green-600 dark:text-green-400';
+        return 'text-success-foreground';
       case 'error':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-error-foreground';
       case 'achievement':
-        return 'text-yellow-600 dark:text-yellow-400';
+        return 'text-warning-foreground';
       default:
         return 'text-muted-foreground';
     }
@@ -219,7 +219,7 @@ export function PracticeAudioControls({
           className={cn(
             'text-xs',
             replayCount >= maxReplays
-              ? 'text-red-600 dark:text-red-400'
+              ? 'text-error-foreground'
               : 'text-muted-foreground',
           )}
         >

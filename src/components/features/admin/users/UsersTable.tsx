@@ -25,8 +25,8 @@ export function UsersTable({
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table className="w-full text-sm text-left text-content-secondary">
+        <thead className="text-xs text-content-secondary uppercase bg-content-soft">
           <tr>
             <th scope="col" className="p-4">
               <input
@@ -36,7 +36,7 @@ export function UsersTable({
                     e.target.checked ? users.map((u) => u.id) : [],
                   );
                 }}
-                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-600"
+                className="w-4 h-4 text-primary rounded focus:ring-primary"
               />
             </th>
             <th
@@ -71,7 +71,7 @@ export function UsersTable({
           {users.map((user) => (
             <tr
               key={user.id}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              className="bg-background border-b border-content-border"
             >
               <td className="w-4 p-4">
                 <input
@@ -84,10 +84,10 @@ export function UsersTable({
                         : prev.filter((id) => id !== user.id),
                     );
                   }}
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-blue-600"
+                  className="w-4 h-4 text-primary rounded focus:ring-primary"
                 />
               </td>
-              <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+              <td className="px-6 py-4 font-medium text-foreground">
                 {user.name}
               </td>
               <td className="px-6 py-4">{user.email}</td>
@@ -95,19 +95,19 @@ export function UsersTable({
                 <span
                   className={`px-2 py-1 rounded-full text-xs ${
                     user.status === 'active'
-                      ? 'bg-green-100 text-green-800'
+                      ? 'bg-success-subtle text-success-foreground'
                       : user.status === 'inactive'
-                        ? 'bg-gray-100 text-gray-800'
-                        : 'bg-red-100 text-red-800'
+                        ? 'bg-content-soft text-content-secondary'
+                        : 'bg-error-subtle text-error-foreground'
                   }`}
                 >
                   {user.status}
                 </span>
               </td>
               <td className="px-6 py-4">
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="w-full bg-content-soft rounded-full h-2.5">
                   <div
-                    className="bg-blue-600 h-2.5 rounded-full"
+                    className="bg-primary h-2.5 rounded-full"
                     style={{
                       width: `${user.stats.averageProgress * 100}%`,
                     }}
@@ -129,7 +129,7 @@ export function UsersTable({
                   onClick={() =>
                     router.push(`/dashboard/admin/users/${user.id}`)
                   }
-                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3"
+                  className="font-medium text-primary hover:underline mr-3"
                 >
                   View
                 </button>
@@ -137,7 +137,7 @@ export function UsersTable({
                   onClick={() => {
                     /* Handle edit */
                   }}
-                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  className="font-medium text-primary hover:underline"
                 >
                   Edit
                 </button>

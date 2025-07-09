@@ -47,7 +47,7 @@ export function TypingResultFeedback({
                     className={cn(
                       'px-1 py-0.5 rounded',
                       lastResult.mistakes.some((m) => m.position === index)
-                        ? 'bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30'
+                        ? 'bg-error-subtle text-error-foreground border border-error-border'
                         : 'text-muted-foreground',
                     )}
                   >
@@ -58,7 +58,7 @@ export function TypingResultFeedback({
             </div>
             <div>
               <p className="text-muted-foreground mb-1">Correct word:</p>
-              <div className="font-mono text-lg text-green-600 dark:text-green-400">
+              <div className="font-mono text-lg text-success-foreground">
                 {lastResult.correctWord}
               </div>
             </div>

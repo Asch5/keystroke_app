@@ -392,7 +392,7 @@ export function DeepSeekWordExtractionDialog({
       <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-blue-600" />
+            <Zap className="h-5 w-5 text-info-foreground" />
             DeepSeek Word Extraction
           </DialogTitle>
           <DialogDescription>
@@ -442,7 +442,7 @@ export function DeepSeekWordExtractionDialog({
                                   prev.filter((l) => l !== lang),
                                 )
                               }
-                              className="ml-1 hover:text-red-500"
+                              className="ml-1 hover:text-error-foreground"
                             >
                               <X className="h-3 w-3" />
                             </button>
@@ -517,7 +517,7 @@ export function DeepSeekWordExtractionDialog({
                   <p className="text-xs text-muted-foreground">
                     When enabled, only processes definitions marked as
                     &ldquo;most important&rdquo; in the database.{' '}
-                    <span className="text-blue-600 font-medium">
+                    <span className="text-info-foreground font-medium">
                       Definitions will reload automatically when toggled.
                     </span>
                   </p>
@@ -580,12 +580,12 @@ export function DeepSeekWordExtractionDialog({
                   </span>
                   <div className="flex items-center gap-2">
                     {isLoadingDefinitions && (
-                      <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                      <Loader2 className="h-4 w-4 animate-spin text-info-foreground" />
                     )}
                     {onlyShortDefinitions && (
                       <Badge
                         variant="secondary"
-                        className="text-xs bg-blue-50 text-blue-700 border-blue-200"
+                        className="text-xs bg-info-subtle text-info-foreground border-info-border"
                       >
                         Short Definitions Only
                       </Badge>
@@ -666,7 +666,7 @@ export function DeepSeekWordExtractionDialog({
                                 (definition, index) => (
                                   <div
                                     key={definition.id}
-                                    className="flex items-start gap-3 p-2 rounded border-l-2 border-l-transparent hover:border-l-blue-200 hover:bg-gray-50"
+                                    className="flex items-start gap-3 p-2 rounded border-l-2 border-l-transparent hover:border-l-info-border hover:bg-content-subtle"
                                   >
                                     <Checkbox
                                       checked={definition.selected}
@@ -678,15 +678,15 @@ export function DeepSeekWordExtractionDialog({
                                       }
                                     />
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-sm text-gray-700 leading-relaxed">
-                                        <span className="font-medium text-gray-500 mr-2">
+                                      <p className="text-sm text-content-secondary leading-relaxed">
+                                        <span className="font-medium text-content-tertiary mr-2">
                                           {index + 1}.
                                         </span>
                                         {definition.definition}
                                         {definition.isInShortDef && (
                                           <Badge
                                             variant="outline"
-                                            className="ml-2 text-xs bg-blue-50 text-blue-700 border-blue-200"
+                                            className="ml-2 text-xs bg-info-subtle text-info-foreground border-info-border"
                                           >
                                             Short Def
                                           </Badge>
@@ -735,7 +735,7 @@ export function DeepSeekWordExtractionDialog({
                     {processingState.results.error?.includes(
                       'Insufficient balance',
                     ) && (
-                      <div className="mt-2 p-2 bg-red-50 rounded text-sm">
+                      <div className="mt-2 p-2 bg-error-subtle rounded text-sm">
                         <p>
                           <strong>How to fix:</strong>
                         </p>
@@ -746,7 +746,7 @@ export function DeepSeekWordExtractionDialog({
                               href="https://platform.deepseek.com"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 underline"
+                              className="text-primary underline"
                             >
                               platform.deepseek.com
                             </a>
@@ -759,7 +759,7 @@ export function DeepSeekWordExtractionDialog({
                     {processingState.results.error?.includes(
                       'DEEPSEEK_API_KEY not configured',
                     ) && (
-                      <div className="mt-2 p-2 bg-red-50 rounded text-sm">
+                      <div className="mt-2 p-2 bg-error-subtle rounded text-sm">
                         <p>
                           <strong>How to fix:</strong>
                         </p>
@@ -770,7 +770,7 @@ export function DeepSeekWordExtractionDialog({
                               href="https://platform.deepseek.com"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-blue-600 underline"
+                              className="text-primary underline"
                             >
                               platform.deepseek.com
                             </a>
@@ -813,9 +813,9 @@ export function DeepSeekWordExtractionDialog({
                 <CardHeader>
                   <CardTitle className="text-sm flex items-center gap-2">
                     {processingState.results.success ? (
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="h-4 w-4 text-success-foreground" />
                     ) : (
-                      <XCircle className="h-4 w-4 text-red-600" />
+                      <XCircle className="h-4 w-4 text-error-foreground" />
                     )}
                     Extraction Results
                   </CardTitle>
@@ -826,7 +826,7 @@ export function DeepSeekWordExtractionDialog({
                     <div className="space-y-4">
                       <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
-                          <div className="text-2xl font-bold text-green-600">
+                          <div className="text-2xl font-bold text-success-foreground">
                             {processingState.results.data.successCount}
                           </div>
                           <div className="text-sm text-muted-foreground">
@@ -834,7 +834,7 @@ export function DeepSeekWordExtractionDialog({
                           </div>
                         </div>
                         <div>
-                          <div className="text-2xl font-bold text-red-600">
+                          <div className="text-2xl font-bold text-error-foreground">
                             {processingState.results.data.failureCount}
                           </div>
                           <div className="text-sm text-muted-foreground">
@@ -842,7 +842,7 @@ export function DeepSeekWordExtractionDialog({
                           </div>
                         </div>
                         <div>
-                          <div className="text-2xl font-bold text-blue-600">
+                          <div className="text-2xl font-bold text-primary">
                             ${processingState.results.data.totalCost.toFixed(4)}
                           </div>
                           <div className="text-sm text-muted-foreground">
@@ -875,12 +875,12 @@ export function DeepSeekWordExtractionDialog({
                                     <div className="flex items-center gap-2">
                                       <Badge
                                         variant="default"
-                                        className="bg-green-100 text-green-800"
+                                        className="bg-success-subtle text-success-foreground"
                                       >
                                         &ldquo;{result.word}&rdquo;
                                       </Badge>
                                       {result.connected && (
-                                        <CheckCircle className="h-4 w-4 text-green-600" />
+                                        <CheckCircle className="h-4 w-4 text-success-foreground" />
                                       )}
                                     </div>
                                   ) : (

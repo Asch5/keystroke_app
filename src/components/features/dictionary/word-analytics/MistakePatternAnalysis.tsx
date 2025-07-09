@@ -30,15 +30,17 @@ interface MistakePatternAnalysisProps {
 export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
   ({ errorAnalytics, wordText }) => {
     const getTrendIcon = (rate: number) => {
-      if (rate > 0) return <TrendingUp className="h-4 w-4 text-green-500" />;
-      if (rate < 0) return <TrendingDown className="h-4 w-4 text-red-500" />;
-      return <Target className="h-4 w-4 text-gray-500" />;
+      if (rate > 0)
+        return <TrendingUp className="h-4 w-4 text-success-foreground" />;
+      if (rate < 0)
+        return <TrendingDown className="h-4 w-4 text-error-foreground" />;
+      return <Target className="h-4 w-4 text-content-secondary" />;
     };
 
     const getTrendColor = (rate: number) => {
-      if (rate > 0) return 'text-green-600';
-      if (rate < 0) return 'text-red-600';
-      return 'text-gray-600';
+      if (rate > 0) return 'text-success-foreground';
+      if (rate < 0) return 'text-error-foreground';
+      return 'text-content-secondary';
     };
 
     return (
@@ -47,7 +49,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              <AlertTriangle className="h-5 w-5 text-warning-foreground" />
               Mistake Pattern Analysis
             </CardTitle>
             <CardDescription>
@@ -58,7 +60,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">
+                <div className="text-2xl font-bold text-warning-foreground">
                   {errorAnalytics.mistakesByTimeOfDay
                     ? Object.values(errorAnalytics.mistakesByTimeOfDay).reduce(
                         (a, b) => a + b,
@@ -71,7 +73,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="text-2xl font-bold text-info-foreground">
                   {errorAnalytics.recoveryTimeAfterMistake.toFixed(1)}s
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -92,7 +94,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="text-2xl font-bold text-modern-slate-foreground">
                   {errorAnalytics.mistakeRecurrencePattern.length}
                 </div>
                 <div className="text-xs text-muted-foreground">Error Types</div>
@@ -106,7 +108,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-blue-600" />
+                <Clock className="h-5 w-5 text-info-foreground" />
                 Mistakes by Time of Day
               </CardTitle>
               <CardDescription>
@@ -144,7 +146,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-green-600" />
+              <BarChart3 className="h-5 w-5 text-success-foreground" />
               Session Position Effect
             </CardTitle>
             <CardDescription>
@@ -153,8 +155,8 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">
+              <div className="text-center p-4 bg-info-subtle rounded-lg">
+                <div className="text-2xl font-bold text-info-foreground">
                   {errorAnalytics.mistakesBySessionPosition.early}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -164,8 +166,8 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
                   First third of practice
                 </div>
               </div>
-              <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
-                <div className="text-2xl font-bold text-yellow-600">
+              <div className="text-center p-4 bg-warning-subtle rounded-lg">
+                <div className="text-2xl font-bold text-warning-foreground">
                   {errorAnalytics.mistakesBySessionPosition.middle}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -175,8 +177,8 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
                   Second third of practice
                 </div>
               </div>
-              <div className="text-center p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
-                <div className="text-2xl font-bold text-red-600">
+              <div className="text-center p-4 bg-error-subtle rounded-lg">
+                <div className="text-2xl font-bold text-error-foreground">
                   {errorAnalytics.mistakesBySessionPosition.late}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -195,7 +197,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <RefreshCw className="h-5 w-5 text-purple-600" />
+                <RefreshCw className="h-5 w-5 text-modern-slate-foreground" />
                 Recurring Mistake Patterns
               </CardTitle>
               <CardDescription>
@@ -236,7 +238,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-green-600" />
+              <Target className="h-5 w-5 text-success-foreground" />
               Error Recovery Analysis
             </CardTitle>
             <CardDescription>
@@ -246,7 +248,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
           <CardContent>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-lg font-bold text-green-600">
+                <div className="text-lg font-bold text-success-foreground">
                   {errorAnalytics.errorCorrection.selfCorrected}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -257,7 +259,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-bold text-blue-600">
+                <div className="text-lg font-bold text-info-foreground">
                   {errorAnalytics.errorCorrection.hintRequired}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -268,7 +270,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-bold text-orange-600">
+                <div className="text-lg font-bold text-warning-foreground">
                   {errorAnalytics.errorCorrection.skipped}
                 </div>
                 <div className="text-sm text-muted-foreground">Skipped</div>
@@ -285,7 +287,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
+                <AlertTriangle className="h-5 w-5 text-error-foreground" />
                 Common Misspellings
               </CardTitle>
               <CardDescription>
@@ -297,7 +299,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
                 {errorAnalytics.commonMisspellings.map((spelling, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-950/20 rounded"
+                    className="flex items-center justify-between p-2 bg-error-subtle rounded"
                   >
                     <span className="font-mono text-sm font-medium">
                       {spelling.incorrect}
@@ -317,7 +319,7 @@ export const MistakePatternAnalysis = React.memo<MistakePatternAnalysisProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-purple-600" />
+                <Calendar className="h-5 w-5 text-modern-slate-foreground" />
                 Error Pattern Evolution
               </CardTitle>
               <CardDescription>

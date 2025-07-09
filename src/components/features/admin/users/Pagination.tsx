@@ -29,8 +29,8 @@ export function Pagination({ total, pages, current }: PaginationProps) {
           onClick={() => handlePageChange(i + 1)}
           className={`px-3 py-2 rounded ${
             current === i + 1
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-content-soft hover:bg-content-border'
           }`}
         >
           {i + 1}

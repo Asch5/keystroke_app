@@ -49,9 +49,9 @@ export function DangerZoneForm() {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Warning Message */}
-        <Alert className="border-yellow-200 bg-yellow-50">
-          <AlertTriangle className="h-4 w-4 text-yellow-600" />
-          <AlertDescription className="text-yellow-800">
+        <Alert className="border-warning-border bg-warning-subtle">
+          <AlertTriangle className="h-4 w-4 text-warning-foreground" />
+          <AlertDescription className="text-warning-foreground">
             These actions are permanent and cannot be undone. Please proceed
             with caution.
           </AlertDescription>

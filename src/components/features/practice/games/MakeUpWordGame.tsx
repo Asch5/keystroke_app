@@ -216,14 +216,14 @@ export function MakeUpWordGame({
     if (!showFeedback) return '';
 
     if (isCorrect) {
-      return 'bg-green-100 border-green-500 text-green-700';
+      return 'bg-success-subtle border-success-border text-success-foreground';
     }
 
     if (wrongPositions.includes(index)) {
-      return 'bg-red-100 border-red-500 text-red-700 animate-pulse';
+      return 'bg-error-subtle border-error-border text-error-foreground animate-pulse';
     }
 
-    return 'bg-green-100 border-green-500 text-green-700';
+    return 'bg-success-subtle border-success-border text-success-foreground';
   };
 
   // Enhanced character display with repetitive character handling
@@ -350,7 +350,7 @@ export function MakeUpWordGame({
               : 'Click characters in the correct order to build the word'}
           </p>
           {attempts > 0 && attempts < maxAttempts && (
-            <p className="text-sm text-orange-600">
+            <p className="text-sm text-warning-foreground">
               Wrong selection! {maxAttempts - attempts} attempts remaining
             </p>
           )}
@@ -426,7 +426,7 @@ export function MakeUpWordGame({
             <div
               className={cn(
                 'flex items-center justify-center gap-2 text-lg font-semibold',
-                isCorrect ? 'text-green-600' : 'text-red-600',
+                isCorrect ? 'text-success-foreground' : 'text-error-foreground',
               )}
             >
               {isCorrect ? (

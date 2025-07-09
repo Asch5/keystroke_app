@@ -39,11 +39,11 @@ interface DictionaryOverviewProps {
  * Maps learning status types to their corresponding visual indicators
  */
 const STATUS_COLORS: Record<LearningStatus, string> = {
-  [LearningStatus.learned]: 'bg-green-500',
-  [LearningStatus.inProgress]: 'bg-blue-500',
-  [LearningStatus.needsReview]: 'bg-yellow-500',
-  [LearningStatus.difficult]: 'bg-red-500',
-  [LearningStatus.notStarted]: 'bg-gray-500',
+  [LearningStatus.learned]: 'bg-success-foreground',
+  [LearningStatus.inProgress]: 'bg-info-foreground',
+  [LearningStatus.needsReview]: 'bg-warning-foreground',
+  [LearningStatus.difficult]: 'bg-error-foreground',
+  [LearningStatus.notStarted]: 'bg-content-tertiary',
 } as const;
 
 /**
@@ -66,7 +66,7 @@ const STATUS_LABELS: Record<LearningStatus, string> = {
  * @returns {string} CSS class for the status color
  */
 const getStatusColor = (status: LearningStatus): string => {
-  return STATUS_COLORS[status] || 'bg-gray-500';
+  return STATUS_COLORS[status] || 'bg-content-tertiary';
 };
 
 /**
@@ -205,7 +205,7 @@ export async function DictionaryOverview({ userId }: DictionaryOverviewProps) {
             </CardHeader>
             <CardContent>
               <div
-                className="text-2xl font-bold text-green-600"
+                className="text-2xl font-bold text-success-foreground"
                 aria-label={`${learnedCount} learned words`}
               >
                 {learnedCount}
@@ -228,7 +228,7 @@ export async function DictionaryOverview({ userId }: DictionaryOverviewProps) {
             </CardHeader>
             <CardContent>
               <div
-                className="text-2xl font-bold text-yellow-600"
+                className="text-2xl font-bold text-warning-foreground"
                 aria-label={`${stats.favoriteWords} favorite words`}
               >
                 {stats.favoriteWords}
@@ -251,7 +251,7 @@ export async function DictionaryOverview({ userId }: DictionaryOverviewProps) {
             </CardHeader>
             <CardContent>
               <div
-                className="text-2xl font-bold text-orange-600"
+                className="text-2xl font-bold text-warning-foreground"
                 aria-label={`${stats.wordsNeedingReview} words need review`}
               >
                 {stats.wordsNeedingReview}

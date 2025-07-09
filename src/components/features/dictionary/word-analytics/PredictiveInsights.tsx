@@ -34,28 +34,28 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
     const getRiskColor = (risk: string) => {
       switch (risk) {
         case 'low':
-          return 'bg-green-500 text-white';
+          return 'bg-success-foreground text-white';
         case 'medium':
-          return 'bg-yellow-500 text-black';
+          return 'bg-warning-foreground text-black';
         case 'high':
-          return 'bg-red-500 text-white';
+          return 'bg-error-foreground text-white';
         default:
-          return 'bg-gray-500 text-white';
+          return 'bg-content-secondary text-white';
       }
     };
 
     const getInsightIcon = (type: string) => {
       switch (type) {
         case 'improvement':
-          return <TrendingUp className="h-4 w-4 text-green-500" />;
+          return <TrendingUp className="h-4 w-4 text-success-foreground" />;
         case 'concern':
-          return <AlertTriangle className="h-4 w-4 text-red-500" />;
+          return <AlertTriangle className="h-4 w-4 text-error-foreground" />;
         case 'achievement':
-          return <Award className="h-4 w-4 text-yellow-500" />;
+          return <Award className="h-4 w-4 text-warning-foreground" />;
         case 'recommendation':
-          return <Lightbulb className="h-4 w-4 text-blue-500" />;
+          return <Lightbulb className="h-4 w-4 text-info-foreground" />;
         default:
-          return <Brain className="h-4 w-4 text-gray-500" />;
+          return <Brain className="h-4 w-4 text-content-secondary" />;
       }
     };
 
@@ -78,7 +78,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5 text-purple-600" />
+              <Brain className="h-5 w-5 text-modern-slate-foreground" />
               Retention Predictions
             </CardTitle>
             <CardDescription>
@@ -88,7 +88,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+              <div className="text-center p-4 bg-modern-slate-subtle rounded-lg">
                 <Badge className={getRiskColor(predictions.retentionRisk)}>
                   {predictions.retentionRisk.toUpperCase()} RISK
                 </Badge>
@@ -96,16 +96,16 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
                   Forgetting Risk
                 </div>
               </div>
-              <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                <div className="text-lg font-bold text-blue-600">
+              <div className="text-center p-4 bg-info-subtle rounded-lg">
+                <div className="text-lg font-bold text-info-foreground">
                   {formatDistanceToNow(predictions.nextReviewOptimalTiming)}
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Optimal Review Time
                 </div>
               </div>
-              <div className="text-center p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-                <div className="text-lg font-bold text-orange-600">
+              <div className="text-center p-4 bg-warning-subtle rounded-lg">
+                <div className="text-lg font-bold text-warning-foreground">
                   {predictions.plateauRisk.toFixed(0)}%
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -152,7 +152,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-green-600" />
+              <Target className="h-5 w-5 text-success-foreground" />
               Mastery Timeline Estimates
             </CardTitle>
             <CardDescription>
@@ -161,8 +161,8 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
-                <div className="text-2xl font-bold text-red-600">
+              <div className="text-center p-4 bg-error-subtle rounded-lg">
+                <div className="text-2xl font-bold text-error-foreground">
                   {predictions.masteryTimelineEstimate.conservative}
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -170,15 +170,15 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
                 </div>
                 <div className="text-xs text-muted-foreground">days</div>
               </div>
-              <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">
+              <div className="text-center p-4 bg-info-subtle rounded-lg">
+                <div className="text-2xl font-bold text-info-foreground">
                   {predictions.masteryTimelineEstimate.realistic}
                 </div>
                 <div className="text-sm text-muted-foreground">Realistic</div>
                 <div className="text-xs text-muted-foreground">days</div>
               </div>
-              <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">
+              <div className="text-center p-4 bg-success-subtle rounded-lg">
+                <div className="text-2xl font-bold text-success-foreground">
                   {predictions.masteryTimelineEstimate.optimistic}
                 </div>
                 <div className="text-sm text-muted-foreground">Optimistic</div>
@@ -192,7 +192,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-orange-600" />
+              <Zap className="h-5 w-5 text-warning-foreground" />
               AI-Powered Recommendations
             </CardTitle>
             <CardDescription>
@@ -201,7 +201,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+              <div className="p-4 bg-info-subtle rounded-lg">
                 <h4 className="font-medium flex items-center gap-2 mb-2">
                   <Target className="h-4 w-4" />
                   Next Best Exercise
@@ -213,7 +213,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
                   Recommended based on your current performance pattern
                 </p>
               </div>
-              <div className="p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+              <div className="p-4 bg-warning-subtle rounded-lg">
                 <h4 className="font-medium flex items-center gap-2 mb-2">
                   <Clock className="h-4 w-4" />
                   Practice Intensity
@@ -238,7 +238,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
             </div>
 
             {predictions.difficultyAdjustmentNeeded !== 0 && (
-              <div className="p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
+              <div className="p-3 bg-warning-subtle rounded-lg">
                 <h4 className="font-medium mb-2">Difficulty Adjustment</h4>
                 <p className="text-sm">
                   {predictions.difficultyAdjustmentNeeded > 0
@@ -255,7 +255,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+                <TrendingUp className="h-5 w-5 text-success-foreground" />
                 Breakthrough Strategies
               </CardTitle>
               <CardDescription>
@@ -268,9 +268,9 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
                   (recommendation, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-2 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg"
+                      className="flex items-start gap-2 p-3 bg-success-subtle rounded-lg"
                     >
-                      <Lightbulb className="h-4 w-4 mt-0.5 text-green-600 flex-shrink-0" />
+                      <Lightbulb className="h-4 w-4 mt-0.5 text-success-foreground flex-shrink-0" />
                       <p className="text-sm">{recommendation}</p>
                     </div>
                   ),
@@ -285,7 +285,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5 text-blue-600" />
+                <Brain className="h-5 w-5 text-info-foreground" />
                 Smart Insights
               </CardTitle>
               <CardDescription>
@@ -313,7 +313,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
                         {insight.description}
                       </p>
                       {insight.actionable && insight.suggestedAction && (
-                        <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-950/20 rounded text-xs">
+                        <div className="mt-2 p-2 bg-info-subtle rounded text-xs">
                           <strong>Suggested Action:</strong>{' '}
                           {insight.suggestedAction}
                         </div>
@@ -331,7 +331,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-yellow-600" />
+                <Lightbulb className="h-5 w-5 text-warning-foreground" />
                 Personalized Action Plan
               </CardTitle>
               <CardDescription>

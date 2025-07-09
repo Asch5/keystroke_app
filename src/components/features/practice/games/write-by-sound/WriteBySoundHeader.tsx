@@ -29,14 +29,14 @@ export function WriteBySoundHeader({ maxReplays }: WriteBySoundHeaderProps) {
       </div>
 
       {/* Instructions */}
-      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <div className="flex items-center gap-2 text-blue-700 mb-2">
+      <div className="p-4 bg-info-subtle border border-info-border rounded-lg">
+        <div className="flex items-center gap-2 text-info-foreground mb-2">
           <Headphones className="h-4 w-4" />
           <span className="font-medium">
             Listen carefully and type what you hear
           </span>
         </div>
-        <p className="text-sm text-blue-600">
+        <p className="text-sm text-info-foreground">
           You can replay the audio up to {maxReplays} times. Use your keyboard
           or the replay button below.
         </p>

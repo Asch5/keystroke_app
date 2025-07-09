@@ -32,7 +32,7 @@ export const MistakesAnalysisTab = React.memo<MistakesAnalysisTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
+                <AlertTriangle className="h-5 w-5 text-error-foreground" />
                 Mistake Overview
               </CardTitle>
               <CardDescription>
@@ -114,7 +114,7 @@ export const MistakesAnalysisTab = React.memo<MistakesAnalysisTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-orange-600" />
+                <AlertTriangle className="h-5 w-5 text-warning-foreground" />
                 Most Problematic Words
               </CardTitle>
               <CardDescription>
@@ -160,7 +160,7 @@ export const MistakesAnalysisTab = React.memo<MistakesAnalysisTabProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-blue-600" />
+              <BarChart3 className="h-5 w-5 text-info-foreground" />
               Mistake Types Breakdown
             </CardTitle>
             <CardDescription>
@@ -197,7 +197,7 @@ export const MistakesAnalysisTab = React.memo<MistakesAnalysisTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
+                <AlertTriangle className="h-5 w-5 text-error-foreground" />
                 Word Needing Most Attention
               </CardTitle>
               <CardDescription>
@@ -205,7 +205,7 @@ export const MistakesAnalysisTab = React.memo<MistakesAnalysisTabProps>(
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
+              <div className="flex items-center justify-between p-4 bg-error-subtle rounded-lg">
                 <div>
                   <div className="font-bold text-lg">
                     {mistakeAnalysis.highestMistakeWord.wordText}

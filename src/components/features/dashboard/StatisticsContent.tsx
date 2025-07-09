@@ -98,7 +98,7 @@ const StatisticsContent = memo(function StatisticsContent({
 
   if (error || !statistics) {
     return (
-      <div className="text-center py-8 text-red-500">
+      <div className="text-center py-8 text-error-foreground">
         Error: {error || 'No statistics available'}
       </div>
     );

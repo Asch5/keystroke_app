@@ -30,30 +30,30 @@ export const PerformanceTimeline = React.memo<PerformanceTimelineProps>(
     const getMilestoneIcon = (event: string) => {
       switch (event) {
         case 'first_attempt':
-          return <Activity className="h-4 w-4 text-blue-500" />;
+          return <Activity className="h-4 w-4 text-info-foreground" />;
         case 'first_correct':
-          return <CheckCircle className="h-4 w-4 text-green-500" />;
+          return <CheckCircle className="h-4 w-4 text-success-foreground" />;
         case 'streak_milestone':
-          return <Star className="h-4 w-4 text-yellow-500" />;
+          return <Star className="h-4 w-4 text-warning-foreground" />;
         case 'mastery_level':
-          return <Target className="h-4 w-4 text-purple-500" />;
+          return <Target className="h-4 w-4 text-modern-slate-foreground" />;
         default:
-          return <Clock className="h-4 w-4 text-gray-500" />;
+          return <Clock className="h-4 w-4 text-content-secondary" />;
       }
     };
 
     const getMilestoneColor = (event: string) => {
       switch (event) {
         case 'first_attempt':
-          return 'border-blue-500 bg-blue-50 dark:bg-blue-950/20';
+          return 'border-info-border bg-info-subtle';
         case 'first_correct':
-          return 'border-green-500 bg-green-50 dark:bg-green-950/20';
+          return 'border-success-border bg-success-subtle';
         case 'streak_milestone':
-          return 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20';
+          return 'border-warning-border bg-warning-subtle';
         case 'mastery_level':
-          return 'border-purple-500 bg-purple-50 dark:bg-purple-950/20';
+          return 'border-modern-slate-border bg-modern-slate-subtle';
         default:
-          return 'border-gray-500 bg-gray-50 dark:bg-gray-950/20';
+          return 'border-content-border bg-content-subtle';
       }
     };
 
@@ -61,7 +61,7 @@ export const PerformanceTimeline = React.memo<PerformanceTimelineProps>(
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-blue-600" />
+            <Calendar className="h-5 w-5 text-info-foreground" />
             Learning Journey Timeline
           </CardTitle>
           <CardDescription>
@@ -175,7 +175,7 @@ export const PerformanceTimeline = React.memo<PerformanceTimelineProps>(
                 {timeline.predictions.map((prediction, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-950/20 rounded"
+                    className="flex items-center justify-between p-2 bg-info-subtle rounded"
                   >
                     <span className="text-sm">
                       {formatDistanceToNow(prediction.date)}

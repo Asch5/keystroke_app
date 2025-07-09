@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { geistSans, geistMono } from '@/components/ui/fonts';
 import './globals.css';
 import {
   ThemeProvider,
@@ -21,18 +20,20 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
   width: 'device-width',
   initialScale: 1,
 };
 
 /**
  * Root layout for the application.
- * Sets up the HTML structure, global styles, fonts, and context providers.
+ * Sets up the HTML structure, global styles, modern font system, and context providers.
  * Includes Vercel Speed Insights for comprehensive performance monitoring.
+ *
+ * FONT SYSTEM 2025:
+ * - Uses modern system font stacks for zero loading time
+ * - Semantic font classification for language learning
+ * - Responsive typography with fluid scaling
+ * - Optimized for readability and accessibility
  *
  * @param {Readonly<{ children: React.ReactNode }>} props - Props for the component.
  * @param {React.ReactNode} props.children - The child components to render within the layout.
@@ -45,9 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background font-sans`}
-      >
+      <body className="antialiased min-h-screen bg-background font-interface">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

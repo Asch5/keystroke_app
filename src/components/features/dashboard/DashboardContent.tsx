@@ -94,7 +94,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
   if (error || !statistics) {
     return (
       <div className="text-center py-8">
-        <div className="text-red-500 mb-4">
+        <div className="text-error-foreground mb-4">
           Error: {error || 'No statistics available'}
         </div>
         <Button onClick={() => window.location.reload()} variant="outline">
@@ -145,7 +145,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
             <CardTitle className="text-sm font-medium">
               Learning Streak
             </CardTitle>
-            <Flame className="h-4 w-4 text-orange-500" />
+            <Flame className="h-4 w-4 text-warning-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -155,7 +155,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
               Best: {statistics.learningProgress.longestStreak} days
             </p>
             <div className="flex items-center mt-2">
-              <Flame className="h-3 w-3 text-orange-500 mr-1" />
+              <Flame className="h-3 w-3 text-warning-foreground mr-1" />
               <span className="text-xs">Keep it going!</span>
             </div>
           </CardContent>
@@ -166,7 +166,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
             <CardTitle className="text-sm font-medium">
               Today&apos;s Progress
             </CardTitle>
-            <Target className="h-4 w-4 text-green-500" />
+            <Target className="h-4 w-4 text-success-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -176,7 +176,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
             <p className="text-xs text-muted-foreground">Words learned today</p>
             <Progress value={progressPercentage} className="mt-2" />
             {isGoalMet && (
-              <div className="flex items-center mt-1 text-green-600 text-xs">
+              <div className="flex items-center mt-1 text-success-foreground text-xs">
                 <Award className="h-3 w-3 mr-1" />
                 Goal achieved!
               </div>
@@ -187,7 +187,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Study Time</CardTitle>
-            <Clock className="h-4 w-4 text-blue-500" />
+            <Clock className="h-4 w-4 text-info-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -197,7 +197,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
               {statistics.sessionStatistics.totalSessions} sessions total
             </p>
             <div className="flex items-center mt-2">
-              <Calendar className="h-3 w-3 text-blue-500 mr-1" />
+              <Calendar className="h-3 w-3 text-info-foreground mr-1" />
               <span className="text-xs">
                 {statistics.sessionStatistics.recentSessionsCount} this week
               </span>
@@ -362,10 +362,10 @@ export function DashboardContent({ userId }: DashboardContentProps) {
                 {sessionStats.recentSessions.slice(0, 3).map((session) => (
                   <div
                     key={session.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+                    className="flex items-center justify-between p-3 rounded-lg bg-content-soft"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full" />
+                      <div className="w-2 h-2 bg-success rounded-full" />
                       <div>
                         <div className="text-sm font-medium">
                           {session.wordsStudied} words studied
@@ -420,7 +420,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Award className="h-5 w-5 text-yellow-500" />
+            <Award className="h-5 w-5 text-modern-warm-foreground" />
             Recent Achievements
           </CardTitle>
           <Button asChild variant="ghost" size="sm">
@@ -440,7 +440,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
                     key={index}
                     className="flex items-center gap-3 p-3 rounded-lg border"
                   >
-                    <Award className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                    <Award className="h-5 w-5 text-modern-warm-foreground flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-sm truncate">
                         {achievement.name}

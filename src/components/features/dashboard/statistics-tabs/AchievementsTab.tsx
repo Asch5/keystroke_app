@@ -17,13 +17,13 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-yellow-500" />
+              <Trophy className="h-5 w-5 text-warning-foreground" />
               Achievement Overview
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <div className="text-3xl font-bold text-yellow-600">
+              <div className="text-3xl font-bold text-warning-foreground">
                 {statistics.achievements.totalAchievements}
               </div>
               <div className="text-sm text-muted-foreground">
@@ -32,7 +32,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
             </div>
 
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
+              <div className="text-2xl font-bold text-modern-sage-foreground">
                 {statistics.achievements.totalPoints.toLocaleString()}
               </div>
               <div className="text-sm text-muted-foreground">Total Points</div>
@@ -43,7 +43,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Star className="h-5 w-5 text-yellow-500" />
+              <Star className="h-5 w-5 text-warning-foreground" />
               Recent Achievements
             </CardTitle>
           </CardHeader>
@@ -55,7 +55,7 @@ export const AchievementsTab: React.FC<AchievementsTabProps> = ({
                     key={index}
                     className="flex items-center gap-3 p-2 rounded-lg bg-muted/50"
                   >
-                    <Award className="h-5 w-5 text-yellow-500" />
+                    <Award className="h-5 w-5 text-warning-foreground" />
                     <div className="flex-1">
                       <div className="font-medium text-sm">
                         {achievement.name}

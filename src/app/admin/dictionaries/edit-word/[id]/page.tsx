@@ -69,7 +69,7 @@ export default function EditWordDetailPage() {
       <div className="container mx-auto py-8">
         <Card>
           <CardHeader>
-            <CardTitle className="text-red-600">
+            <CardTitle className="text-error-foreground">
               Error Loading WordDetail
             </CardTitle>
           </CardHeader>
@@ -80,7 +80,7 @@ export default function EditWordDetailPage() {
             <div className="mt-4">
               <a
                 href="/admin/dictionaries"
-                className="text-blue-600 hover:underline"
+                className="text-info-foreground hover:underline"
               >
                 ← Back to Dictionary
               </a>

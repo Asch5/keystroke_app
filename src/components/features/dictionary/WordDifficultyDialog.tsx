@@ -111,17 +111,17 @@ export function WordDifficultyDialog({
   const getDifficultyColor = (classification: string) => {
     switch (classification) {
       case 'very_easy':
-        return 'bg-green-500 text-white';
+        return 'bg-success text-success-foreground';
       case 'easy':
-        return 'bg-green-400 text-white';
+        return 'bg-success-subtle text-success-foreground';
       case 'medium':
-        return 'bg-yellow-500 text-black';
+        return 'bg-warning text-warning-foreground';
       case 'hard':
-        return 'bg-orange-500 text-white';
+        return 'bg-warning-subtle text-warning-foreground';
       case 'very_hard':
-        return 'bg-red-500 text-white';
+        return 'bg-error text-error-foreground';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -132,17 +132,17 @@ export function WordDifficultyDialog({
   const getStatusIcon = (status: LearningStatus) => {
     switch (status) {
       case LearningStatus.learned:
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-success-foreground" />;
       case LearningStatus.inProgress:
-        return <Activity className="h-4 w-4 text-blue-500" />;
+        return <Activity className="h-4 w-4 text-info-foreground" />;
       case LearningStatus.needsReview:
-        return <RotateCcw className="h-4 w-4 text-yellow-500" />;
+        return <RotateCcw className="h-4 w-4 text-warning-foreground" />;
       case LearningStatus.difficult:
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+        return <AlertTriangle className="h-4 w-4 text-error-foreground" />;
       case LearningStatus.notStarted:
-        return <XCircle className="h-4 w-4 text-gray-500" />;
+        return <XCircle className="h-4 w-4 text-muted-foreground" />;
       default:
-        return <Activity className="h-4 w-4 text-gray-500" />;
+        return <Activity className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -171,8 +171,8 @@ export function WordDifficultyDialog({
 
         {error && (
           <div className="text-center py-8">
-            <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-2" />
-            <p className="text-red-600">{error}</p>
+            <AlertTriangle className="h-8 w-8 text-error-foreground mx-auto mb-2" />
+            <p className="text-error-foreground">{error}</p>
             <Button
               onClick={fetchDifficultyAnalysis}
               variant="outline"
@@ -567,7 +567,7 @@ export function WordDifficultyDialog({
                           key={index}
                           className="flex items-start gap-2 p-3 bg-muted rounded-lg"
                         >
-                          <Lightbulb className="h-4 w-4 mt-0.5 text-blue-500 flex-shrink-0" />
+                          <Lightbulb className="h-4 w-4 mt-0.5 text-info-foreground flex-shrink-0" />
                           <p className="text-sm">{recommendation}</p>
                         </div>
                       ))}

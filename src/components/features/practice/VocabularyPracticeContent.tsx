@@ -43,7 +43,7 @@ const PRACTICE_MODES: PracticeMode[] = [
       'Practice words you haven&apos;t started learning yet. Perfect for expanding your vocabulary with fresh content.',
     shortDescription: 'New words only',
     icon: <BookOpen className="h-5 w-5" />,
-    color: 'bg-blue-500',
+    color: 'bg-info',
     includeWordStatuses: [LearningStatus.notStarted],
   },
   {
@@ -53,7 +53,7 @@ const PRACTICE_MODES: PracticeMode[] = [
       'Practice words you&apos;ve started but haven&apos;t mastered yet. Focus on words in progress and difficult ones.',
     shortDescription: 'In-progress words',
     icon: <Target className="h-5 w-5" />,
-    color: 'bg-orange-500',
+    color: 'bg-warning',
     includeWordStatuses: [LearningStatus.inProgress, LearningStatus.difficult],
   },
   {
@@ -63,7 +63,7 @@ const PRACTICE_MODES: PracticeMode[] = [
       'Review words that need refreshing or have been learned but require periodic practice.',
     shortDescription: 'Review words',
     icon: <RotateCcw className="h-5 w-5" />,
-    color: 'bg-green-500',
+    color: 'bg-success',
     includeWordStatuses: [LearningStatus.needsReview, LearningStatus.learned],
   },
   {
@@ -73,7 +73,7 @@ const PRACTICE_MODES: PracticeMode[] = [
       'Practice all types of words in a smart order: new words, in-progress, and review words for comprehensive learning.',
     shortDescription: 'All word types',
     icon: <Shuffle className="h-5 w-5" />,
-    color: 'bg-purple-500',
+    color: 'bg-accent',
     includeWordStatuses: [
       LearningStatus.notStarted,
       LearningStatus.inProgress,

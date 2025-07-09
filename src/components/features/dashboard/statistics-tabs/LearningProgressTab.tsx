@@ -54,7 +54,7 @@ export const LearningProgressTab: React.FC<LearningProgressTabProps> = ({
                     statistics.learningProgress.totalWords) *
                   100
                 }
-                className="bg-yellow-100"
+                className="bg-status-in-progress-subtle"
               />
             </div>
 
@@ -69,7 +69,7 @@ export const LearningProgressTab: React.FC<LearningProgressTabProps> = ({
                     statistics.learningProgress.totalWords) *
                   100
                 }
-                className="bg-orange-100"
+                className="bg-status-needs-review-subtle"
               />
             </div>
 
@@ -84,7 +84,7 @@ export const LearningProgressTab: React.FC<LearningProgressTabProps> = ({
                     statistics.learningProgress.totalWords) *
                   100
                 }
-                className="bg-red-100"
+                className="bg-status-difficult-subtle"
               />
             </div>
           </CardContent>
@@ -99,7 +99,7 @@ export const LearningProgressTab: React.FC<LearningProgressTabProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">
+              <div className="text-3xl font-bold text-success-foreground">
                 {statistics.learningProgress.averageMasteryScore.toFixed(0)}
               </div>
               <div className="text-sm text-muted-foreground">
@@ -109,7 +109,7 @@ export const LearningProgressTab: React.FC<LearningProgressTabProps> = ({
 
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
-                <div className="text-xl font-semibold text-orange-500">
+                <div className="text-xl font-semibold text-warning-foreground">
                   {statistics.learningProgress.currentStreak}
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -117,7 +117,7 @@ export const LearningProgressTab: React.FC<LearningProgressTabProps> = ({
                 </div>
               </div>
               <div>
-                <div className="text-xl font-semibold text-purple-500">
+                <div className="text-xl font-semibold text-modern-slate-foreground">
                   {statistics.learningProgress.longestStreak}
                 </div>
                 <div className="text-xs text-muted-foreground">Best Streak</div>

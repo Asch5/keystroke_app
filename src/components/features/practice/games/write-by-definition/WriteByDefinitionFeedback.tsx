@@ -36,14 +36,14 @@ export function WriteByDefinitionFeedback({
       className={cn(
         'p-4 rounded-lg text-center',
         isCorrect
-          ? 'bg-green-50 border border-green-200'
-          : 'bg-red-50 border border-red-200',
+          ? 'bg-success-subtle border border-success-border'
+          : 'bg-error-subtle border border-error-border',
       )}
     >
       <div
         className={cn(
           'flex items-center justify-center gap-2 text-lg font-medium mb-2',
-          isCorrect ? 'text-green-700' : 'text-red-700',
+          isCorrect ? 'text-success-foreground' : 'text-error-foreground',
         )}
       >
         {isCorrect ? (

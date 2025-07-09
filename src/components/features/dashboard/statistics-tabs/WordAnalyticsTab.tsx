@@ -35,7 +35,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-green-600" />
+              <Target className="h-5 w-5 text-success-foreground" />
               Top Performing Words
             </CardTitle>
           </CardHeader>
@@ -76,7 +76,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              <AlertTriangle className="h-5 w-5 text-warning-foreground" />
               Words Needing Attention
             </CardTitle>
           </CardHeader>
@@ -117,7 +117,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5 text-purple-600" />
+              <Brain className="h-5 w-5 text-modern-slate-foreground" />
               Learning Patterns
             </CardTitle>
           </CardHeader>
@@ -170,7 +170,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-blue-600" />
+              <Clock className="h-5 w-5 text-info-foreground" />
               Study Habits & Analytics
             </CardTitle>
             <CardDescription>
@@ -185,32 +185,32 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
                 Study Patterns
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                  <div className="text-lg font-bold text-blue-600">
+                <div className="text-center p-3 bg-info-subtle rounded-lg">
+                  <div className="text-lg font-bold text-info-foreground">
                     {performanceMetrics.studyHabits.studyStreak}
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Current Streak
                   </div>
                 </div>
-                <div className="text-center p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                  <div className="text-lg font-bold text-green-600">
+                <div className="text-center p-3 bg-success-subtle rounded-lg">
+                  <div className="text-lg font-bold text-success-foreground">
                     {performanceMetrics.studyHabits.averageStudyTime.toFixed(1)}
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Avg Minutes/Day
                   </div>
                 </div>
-                <div className="text-center p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
-                  <div className="text-lg font-bold text-purple-600">
+                <div className="text-center p-3 bg-modern-slate-subtle rounded-lg">
+                  <div className="text-lg font-bold text-modern-slate-foreground">
                     {performanceMetrics.studyHabits.preferredStudyTime}:00
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Preferred Hour
                   </div>
                 </div>
-                <div className="text-center p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-                  <div className="text-lg font-bold text-orange-600">
+                <div className="text-center p-3 bg-warning-subtle rounded-lg">
+                  <div className="text-lg font-bold text-warning-foreground">
                     {(
                       performanceMetrics.studyHabits.studyConsistency * 100
                     ).toFixed(0)}
@@ -279,14 +279,14 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-blue-600" />
+              <BarChart3 className="h-5 w-5 text-info-foreground" />
               Detailed Performance Scores
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="text-2xl font-bold text-info-foreground">
                   {performanceMetrics.performanceScores.overallPerformanceScore.toFixed(
                     1,
                   )}
@@ -303,7 +303,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
                 />
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-success-foreground">
                   {performanceMetrics.performanceScores.responseTimeScore.toFixed(
                     1,
                   )}
@@ -319,7 +319,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
                 />
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="text-2xl font-bold text-modern-slate-foreground">
                   {performanceMetrics.performanceScores.streakConsistencyScore.toFixed(
                     1,
                   )}
@@ -334,7 +334,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
                 />
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">
+                <div className="text-2xl font-bold text-warning-foreground">
                   {performanceMetrics.performanceScores.improvementTrendScore.toFixed(
                     1,
                   )}

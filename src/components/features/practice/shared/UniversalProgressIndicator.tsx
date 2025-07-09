@@ -69,19 +69,19 @@ export function UniversalProgressIndicator({
   const getPracticeTypeColor = (type: PracticeType): string => {
     switch (type) {
       case 'typing':
-        return 'bg-blue-500/20 text-blue-600 dark:text-blue-400';
+        return 'bg-practice-typing-subtle text-practice-typing-foreground';
       case 'choose-right-word':
-        return 'bg-green-500/20 text-green-600 dark:text-green-400';
+        return 'bg-practice-multiple-choice-subtle text-practice-multiple-choice-foreground';
       case 'make-up-word':
-        return 'bg-purple-500/20 text-purple-600 dark:text-purple-400';
+        return 'bg-practice-multiple-choice-subtle text-practice-multiple-choice-foreground';
       case 'remember-translation':
-        return 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400';
+        return 'bg-practice-flashcard-subtle text-practice-flashcard-foreground';
       case 'write-by-definition':
-        return 'bg-orange-500/20 text-orange-600 dark:text-orange-400';
+        return 'bg-practice-audio-subtle text-practice-audio-foreground';
       case 'write-by-sound':
-        return 'bg-pink-500/20 text-pink-600 dark:text-pink-400';
+        return 'bg-practice-audio-subtle text-practice-audio-foreground';
       default:
-        return 'bg-gray-500/20 text-gray-600 dark:text-gray-400';
+        return 'bg-content-soft text-content-secondary';
     }
   };
 
@@ -111,9 +111,9 @@ export function UniversalProgressIndicator({
   };
 
   const getAccuracyColor = (accuracy: number): string => {
-    if (accuracy >= 90) return 'text-green-600 dark:text-green-400';
-    if (accuracy >= 70) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-red-600 dark:text-red-400';
+    if (accuracy >= 90) return 'text-success-foreground';
+    if (accuracy >= 70) return 'text-warning-foreground';
+    return 'text-error-foreground';
   };
 
   return (
@@ -173,10 +173,10 @@ export function UniversalProgressIndicator({
                 </div>
 
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <span className="text-green-600 dark:text-green-400">
+                  <span className="text-success-foreground">
                     ✓ {correctAnswers}
                   </span>
-                  <span className="text-red-600 dark:text-red-400">
+                  <span className="text-error-foreground">
                     ✗ {incorrectAnswers}
                   </span>
                 </div>

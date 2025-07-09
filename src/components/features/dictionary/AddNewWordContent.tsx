@@ -457,7 +457,7 @@ export function AddNewWordContent({
                                   )
                                 }
                                 disabled={isPending}
-                                className="text-red-600 border-red-200 hover:bg-red-50"
+                                className="text-error-foreground border-error-border hover:bg-error-subtle"
                               >
                                 {isPending ? (
                                   <Loader2 className="h-4 w-4 animate-spin" />

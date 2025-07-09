@@ -42,7 +42,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Zap className="h-4 w-4 text-orange-500" />
+                <Zap className="h-4 w-4 text-warning-foreground" />
                 Learning Velocity
               </CardTitle>
             </CardHeader>
@@ -59,7 +59,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Target className="h-4 w-4 text-blue-500" />
+                <Target className="h-4 w-4 text-info-foreground" />
                 Practice Accuracy
               </CardTitle>
             </CardHeader>
@@ -76,7 +76,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Award className="h-4 w-4 text-yellow-500" />
+                <Award className="h-4 w-4 text-warning-foreground" />
                 Study Streak
               </CardTitle>
             </CardHeader>
@@ -93,7 +93,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <Brain className="h-4 w-4 text-purple-500" />
+                <Brain className="h-4 w-4 text-modern-slate-foreground" />
                 Overall Score
               </CardTitle>
             </CardHeader>
@@ -113,7 +113,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+                <TrendingUp className="h-5 w-5 text-success-foreground" />
                 Learning Progress
               </CardTitle>
               <CardDescription>
@@ -177,7 +177,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-blue-600" />
+                <BarChart3 className="h-5 w-5 text-info-foreground" />
                 Practice Statistics
               </CardTitle>
               <CardDescription>
@@ -244,7 +244,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4 text-blue-500" />
+                <BookOpen className="h-4 w-4 text-info-foreground" />
                 <div>
                   <div className="text-lg font-bold">
                     {vocabularyManagement.wordsAddedThisWeek}
@@ -260,7 +260,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-orange-500" />
+                <Clock className="h-4 w-4 text-warning-foreground" />
                 <div>
                   <div className="text-lg font-bold">
                     {formatTime(studyHabits.averageStudyTime * 60)}
@@ -276,7 +276,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Target className="h-4 w-4 text-green-500" />
+                <Target className="h-4 w-4 text-success-foreground" />
                 <div>
                   <div className="text-lg font-bold">
                     {reviewSystem.wordsNeedingReview}
@@ -292,7 +292,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Award className="h-4 w-4 text-yellow-500" />
+                <Award className="h-4 w-4 text-warning-foreground" />
                 <div>
                   <div className="text-lg font-bold">
                     {studyHabits.longestStreak}
@@ -308,7 +308,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Brain className="h-4 w-4 text-purple-500" />
+                <Brain className="h-4 w-4 text-modern-slate-foreground" />
                 <div>
                   <div className="text-lg font-bold">
                     {reviewSystem.averageSrsLevel.toFixed(1)}
@@ -324,7 +324,7 @@ export const PerformanceOverviewTab = React.memo<PerformanceOverviewTabProps>(
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-indigo-500" />
+                <BarChart3 className="h-4 w-4 text-info-foreground" />
                 <div>
                   <div className="text-lg font-bold">
                     {formatPercentage(studyHabits.studyConsistency)}

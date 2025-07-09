@@ -53,7 +53,7 @@ export function TypingAudioButton({
         {sessionState.currentWord.audioUrl ? (
           <Volume2
             className={cn(
-              'h-4 w-4 text-blue-600',
+              'h-4 w-4 text-info-foreground',
               isPlayingAudio && 'animate-pulse',
             )}
           />

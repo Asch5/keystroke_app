@@ -26,7 +26,7 @@ export const LearningEfficiencyTab = React.memo<LearningEfficiencyTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+                <TrendingUp className="h-5 w-5 text-success-foreground" />
                 Learning Progress
               </CardTitle>
               <CardDescription>
@@ -101,7 +101,7 @@ export const LearningEfficiencyTab = React.memo<LearningEfficiencyTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-blue-600" />
+                <Target className="h-5 w-5 text-info-foreground" />
                 Learning Effectiveness
               </CardTitle>
               <CardDescription>
@@ -157,7 +157,7 @@ export const LearningEfficiencyTab = React.memo<LearningEfficiencyTabProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-orange-500" />
+              <Zap className="h-5 w-5 text-warning-foreground" />
               Learning Efficiency Insights
             </CardTitle>
             <CardDescription>
@@ -166,9 +166,9 @@ export const LearningEfficiencyTab = React.memo<LearningEfficiencyTabProps>(
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-3">
-              <div className="text-center p-4 bg-green-50 dark:bg-green-950/20 rounded-lg">
-                <BookOpen className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-green-600">
+              <div className="text-center p-4 bg-success-subtle rounded-lg">
+                <BookOpen className="h-8 w-8 text-success-foreground mx-auto mb-2" />
+                <div className="text-2xl font-bold text-success-foreground">
                   {learningEfficiency.retentionRate >= 80
                     ? 'Excellent'
                     : learningEfficiency.retentionRate >= 60
@@ -180,9 +180,9 @@ export const LearningEfficiencyTab = React.memo<LearningEfficiencyTabProps>(
                 </div>
               </div>
 
-              <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                <Clock className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-blue-600">
+              <div className="text-center p-4 bg-info-subtle rounded-lg">
+                <Clock className="h-8 w-8 text-info-foreground mx-auto mb-2" />
+                <div className="text-2xl font-bold text-info-foreground">
                   {learningEfficiency.averageTimeToMaster <= 7
                     ? 'Fast'
                     : learningEfficiency.averageTimeToMaster <= 14
@@ -194,9 +194,9 @@ export const LearningEfficiencyTab = React.memo<LearningEfficiencyTabProps>(
                 </div>
               </div>
 
-              <div className="text-center p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
-                <TrendingUp className="h-8 w-8 text-orange-600 mx-auto mb-2" />
-                <div className="text-2xl font-bold text-orange-600">
+              <div className="text-center p-4 bg-warning-subtle rounded-lg">
+                <TrendingUp className="h-8 w-8 text-warning-foreground mx-auto mb-2" />
+                <div className="text-2xl font-bold text-warning-foreground">
                   {learningEfficiency.learningVelocity >= 5
                     ? 'High'
                     : learningEfficiency.learningVelocity >= 2
@@ -216,25 +216,25 @@ export const LearningEfficiencyTab = React.memo<LearningEfficiencyTabProps>(
               </h4>
               <div className="space-y-2 text-sm">
                 {learningEfficiency.retentionRate < 70 && (
-                  <p className="text-orange-600">
+                  <p className="text-warning-foreground">
                     • Consider increasing review frequency to improve retention
                   </p>
                 )}
                 {learningEfficiency.averageTimeToMaster > 14 && (
-                  <p className="text-blue-600">
+                  <p className="text-info-foreground">
                     • Try shorter, more frequent study sessions for faster
                     mastery
                   </p>
                 )}
                 {learningEfficiency.learningVelocity < 2 && (
-                  <p className="text-purple-600">
+                  <p className="text-modern-slate-foreground">
                     • Gradually increase daily word targets to boost learning
                     velocity
                   </p>
                 )}
                 {learningEfficiency.retentionRate >= 80 &&
                   learningEfficiency.averageTimeToMaster <= 7 && (
-                    <p className="text-green-600">
+                    <p className="text-success-foreground">
                       • Excellent learning efficiency! Consider challenging
                       yourself with more advanced vocabulary
                     </p>

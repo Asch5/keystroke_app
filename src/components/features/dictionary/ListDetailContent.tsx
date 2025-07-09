@@ -304,15 +304,31 @@ export function ListDetailContent({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'learned':
-        return 'bg-green-500 text-white';
+        return 'bg-status-learned-subtle text-status-learned-foreground';
       case 'inProgress':
-        return 'bg-blue-500 text-white';
+        return 'bg-status-in-progress-subtle text-status-in-progress-foreground';
       case 'needsReview':
-        return 'bg-yellow-500 text-black';
+        return 'bg-status-needs-review-subtle text-status-needs-review-foreground';
       case 'difficult':
-        return 'bg-red-500 text-white';
+        return 'bg-status-difficult-subtle text-status-difficult-foreground';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-status-not-started-subtle text-status-not-started-foreground';
+    }
+  };
+
+  // Utility function for icon colors
+  const getIconColor = (type: 'info' | 'success' | 'modern' | 'warning') => {
+    switch (type) {
+      case 'info':
+        return 'text-info-foreground';
+      case 'success':
+        return 'text-success-foreground';
+      case 'modern':
+        return 'text-modern-slate-foreground';
+      case 'warning':
+        return 'text-warning-foreground';
+      default:
+        return 'text-foreground';
     }
   };
 
@@ -320,11 +336,14 @@ export function ListDetailContent({
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
+          <div className="h-8 w-32 bg-content-border rounded animate-pulse" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 bg-gray-200 rounded animate-pulse" />
+            <div
+              key={i}
+              className="h-24 bg-content-border rounded animate-pulse"
+            />
           ))}
         </div>
       </div>
@@ -334,8 +353,8 @@ export function ListDetailContent({
   if (!listInfo) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-xl font-medium text-gray-900">List not found</h2>
-        <p className="text-gray-500 mt-2">
+        <h2 className="text-xl font-medium text-foreground">List not found</h2>
+        <p className="text-content-secondary mt-2">
           This list may have been deleted or you may not have access to it.
         </p>
         <Button
@@ -370,7 +389,7 @@ export function ListDetailContent({
           <div>
             <h1 className="text-2xl font-bold">{listInfo.displayName}</h1>
             {listInfo.displayDescription && (
-              <p className="text-gray-600 mt-1">
+              <p className="text-content-secondary mt-1">
                 {listInfo.displayDescription}
               </p>
             )}
@@ -392,9 +411,11 @@ export function ListDetailContent({
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <BookOpen className="h-5 w-5 text-blue-500" />
+              <BookOpen className={`h-5 w-5 ${getIconColor('info')}`} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Total Words</p>
+                <p className="text-sm font-medium text-content-secondary">
+                  Total Words
+                </p>
                 <p className="text-2xl font-bold">{listInfo.wordCount}</p>
               </div>
             </div>
@@ -404,9 +425,11 @@ export function ListDetailContent({
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <Target className="h-5 w-5 text-green-500" />
+              <Target className={`h-5 w-5 ${getIconColor('success')}`} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Learned</p>
+                <p className="text-sm font-medium text-content-secondary">
+                  Learned
+                </p>
                 <p className="text-2xl font-bold">
                   {listInfo.learnedWordCount}
                 </p>
@@ -418,9 +441,11 @@ export function ListDetailContent({
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <TrendingUp className="h-5 w-5 text-purple-500" />
+              <TrendingUp className={`h-5 w-5 ${getIconColor('modern')}`} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Progress</p>
+                <p className="text-sm font-medium text-content-secondary">
+                  Progress
+                </p>
                 <p className="text-2xl font-bold">
                   {progressPercentage.toFixed(0)}%
                 </p>
@@ -432,9 +457,11 @@ export function ListDetailContent({
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <Users className="h-5 w-5 text-orange-500" />
+              <Users className={`h-5 w-5 ${getIconColor('warning')}`} />
               <div>
-                <p className="text-sm font-medium text-gray-500">Remaining</p>
+                <p className="text-sm font-medium text-content-secondary">
+                  Remaining
+                </p>
                 <p className="text-2xl font-bold">
                   {listInfo.wordCount - listInfo.learnedWordCount}
                 </p>
@@ -456,7 +483,7 @@ export function ListDetailContent({
               <span>{progressPercentage.toFixed(1)}%</span>
             </div>
             <Progress value={progressPercentage} className="h-2" />
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className="flex justify-between text-xs text-content-secondary">
               <span>{listInfo.learnedWordCount} learned</span>
               <span>
                 {listInfo.wordCount - listInfo.learnedWordCount} remaining
@@ -471,7 +498,7 @@ export function ListDetailContent({
         <CardContent className="pt-6">
           <div className="flex items-center space-x-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-content-tertiary h-4 w-4" />
               <Input
                 placeholder="Search words in this list..."
                 value={searchTerm}
@@ -491,13 +518,13 @@ export function ListDetailContent({
         <CardContent>
           {filteredWords.length === 0 ? (
             <div className="text-center py-12">
-              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <BookOpen className="h-12 w-12 text-content-tertiary mx-auto mb-4" />
               {searchTerm ? (
                 <>
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-lg font-medium text-foreground">
                     No words found
                   </h3>
-                  <p className="text-gray-500 mt-2">
+                  <p className="text-content-secondary mt-2">
                     No words match your search &quot;{searchTerm}&quot;
                   </p>
                   <Button
@@ -510,10 +537,10 @@ export function ListDetailContent({
                 </>
               ) : (
                 <>
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-lg font-medium text-foreground">
                     No words yet
                   </h3>
-                  <p className="text-gray-500 mt-2">
+                  <p className="text-content-secondary mt-2">
                     Start building your vocabulary by adding words to this list
                   </p>
                   <div className="flex gap-2 mt-4">
@@ -613,7 +640,7 @@ export function ListDetailContent({
                             {word.audioUrl ? (
                               <Volume2
                                 className={cn(
-                                  'h-3 w-3 text-blue-600',
+                                  `h-3 w-3 ${getIconColor('info')}`,
                                   isPlayingAudio &&
                                     playingWordId === word.userDictionaryId &&
                                     'animate-pulse',
@@ -669,7 +696,7 @@ export function ListDetailContent({
                       <TableCell>
                         <div className="flex items-center space-x-2">
                           <div className="text-sm">{word.masteryScore}%</div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-content-secondary">
                             ({word.reviewCount} reviews)
                           </div>
                         </div>
@@ -693,7 +720,7 @@ export function ListDetailContent({
                                   userDictionaryId: word.userDictionaryId,
                                 })
                               }
-                              className="text-red-600"
+                              className="text-error-foreground"
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
                               Remove from List
@@ -737,7 +764,7 @@ export function ListDetailContent({
             <AlertDialogAction
               onClick={handleRemoveFromList}
               disabled={isPending}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-error hover:bg-error/90"
             >
               {isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

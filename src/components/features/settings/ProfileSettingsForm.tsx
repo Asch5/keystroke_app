@@ -191,7 +191,7 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
 
             {/* Show processing result */}
             {!isProcessingImage && imageProcessingProgress && processedFile && (
-              <div className="flex items-center gap-2 text-sm text-green-600">
+              <div className="flex items-center gap-2 text-sm text-success-foreground">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>{imageProcessingProgress}</span>
               </div>
@@ -325,18 +325,20 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
             <Alert
               className={
                 state.success
-                  ? 'border-green-200 bg-green-50'
-                  : 'border-destructive bg-destructive/10'
+                  ? 'border-success-border bg-success-subtle'
+                  : 'border-error-border bg-error-subtle'
               }
             >
               {state.success ? (
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-success-foreground" />
               ) : (
-                <AlertCircle className="h-4 w-4 text-destructive" />
+                <AlertCircle className="h-4 w-4 text-error-foreground" />
               )}
               <AlertDescription
                 className={
-                  state.success ? 'text-green-800' : 'text-destructive'
+                  state.success
+                    ? 'text-success-foreground'
+                    : 'text-error-foreground'
                 }
               >
                 {state.message}

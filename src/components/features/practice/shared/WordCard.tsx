@@ -68,15 +68,15 @@ export function WordCard({
   const getLearningStatusColor = (status: LearningStatus) => {
     switch (status) {
       case LearningStatus.learned:
-        return 'bg-green-500/20 text-green-600 dark:text-green-400';
+        return 'bg-status-learned-subtle text-status-learned-foreground';
       case LearningStatus.inProgress:
-        return 'bg-blue-500/20 text-blue-600 dark:text-blue-400';
+        return 'bg-status-in-progress-subtle text-status-in-progress-foreground';
       case LearningStatus.difficult:
-        return 'bg-red-500/20 text-red-600 dark:text-red-400';
+        return 'bg-status-difficult-subtle text-status-difficult-foreground';
       case LearningStatus.needsReview:
-        return 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400';
+        return 'bg-status-needs-review-subtle text-status-needs-review-foreground';
       default:
-        return 'bg-gray-500/20 text-gray-600 dark:text-gray-400';
+        return 'bg-status-not-started-subtle text-status-not-started-foreground';
     }
   };
 

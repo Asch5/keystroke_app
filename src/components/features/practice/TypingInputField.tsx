@@ -50,9 +50,9 @@ export const TypingInputField = forwardRef<
                   'focus:border-primary focus:ring-2 focus:ring-primary/20',
                   showResult
                     ? sessionState.userInput[index] === word[index]
-                      ? 'bg-green-500/20 border-green-500 text-green-600 dark:text-green-400'
+                      ? 'bg-success-subtle border-success-border text-success-foreground'
                       : sessionState.userInput[index]
-                        ? 'bg-red-500/20 border-red-500 text-red-600 dark:text-red-400'
+                        ? 'bg-error-subtle border-error-border text-error-foreground'
                         : 'bg-muted border-muted-foreground/30'
                     : index === sessionState.userInput.length
                       ? 'border-primary ring-2 ring-primary/20' // Active slot

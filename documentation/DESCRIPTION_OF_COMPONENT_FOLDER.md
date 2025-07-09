@@ -913,3 +913,213 @@ LearningMistake → Pattern Analysis → Insights Generation
 UserDictionary → Progress Tracking → Timeline Visualization
 Database Queries → Caching Layer → Real-time Updates
 ```
+
+## 🎨 **CRITICAL: 2025 Design System Guidelines**
+
+### **Font System 2025 - Zero Loading Time Typography**
+
+**All components use the modern system font architecture for optimal performance:**
+
+- **⚡ Zero Font Loading**: Complete elimination of font loading delays using system fonts
+- **🎯 Semantic Typography**: Purpose-driven font classification (interface, heading, body, code, reading, display)
+- **📚 Language Learning Optimized**: Specialized fonts for foreign words, phonetic notation, definitions, and translations
+- **🌍 Universal Compatibility**: Perfect rendering across all platforms (macOS, Windows, Android, iOS, Linux)
+- **♿ Enhanced Accessibility**: Optimized readability and screen reader compatibility
+
+#### **Required Font Usage Patterns**
+
+```tsx
+// ✅ CORRECT - Semantic font classes
+<h1 className="font-heading text-4xl font-bold">Page Title</h1>
+<p className="font-body text-base leading-relaxed">Body content</p>
+<code className="font-code text-sm">Technical content</code>
+
+// Language learning specific
+<span className="font-foreign-word font-medium">Hej verden</span>
+<span className="font-phonetic text-muted-foreground">/hʌɪ ˈvɛɐn/</span>
+<p className="font-definition leading-relaxed">Definition text</p>
+
+// ❌ WRONG - Never import or reference external fonts
+import { Inter } from 'next/font/google'; // FORBIDDEN
+```
+
+#### **Available Font Classifications**
+
+- `font-interface` - UI elements, navigation, buttons (system-ui stack)
+- `font-heading` - Large headings and titles (Avenir/Montserrat stack)
+- `font-body` - Readable body text (Seravek/Ubuntu stack)
+- `font-code` - Code blocks and technical content (ui-monospace stack)
+- `font-reading` - Long-form content (Charter/Cambria stack)
+- `font-display` - Friendly, rounded display text (ui-rounded stack)
+- `font-foreign-word` - Foreign language words (serif stack for recognition)
+- `font-phonetic` - Phonetic notation (monospace for consistency)
+- `font-definition` - Word definitions (humanist for comprehension)
+- `font-translation` - Translation text (clear readable stack)
+
+### **Zero Tolerance for Hard-Coded Colors**
+
+**NEVER use arbitrary color values like `text-red-500`, `bg-blue-600`, `border-green-200`, etc. in any component.**
+
+All components MUST use the semantic color token system defined in `globals.css` and `tailwind.config.ts`.
+
+### **Mandatory Semantic Token Usage**
+
+```tsx
+// ❌ WRONG - Hard-coded colors
+<div className="text-red-500 bg-red-50 border-red-200">Error message</div>
+<Badge className="bg-green-100 text-green-800">Success</Badge>
+
+// ✅ CORRECT - Semantic tokens
+<div className="text-error-foreground bg-error-subtle border-error-border">Error message</div>
+<Badge className="bg-success-subtle text-success-foreground">Success</Badge>
+```
+
+### **Complete Color Token Categories**
+
+#### **Status & Feedback Colors**
+
+- `success` - Green system for positive actions and validation
+- `error` - Red system for errors and validation failures
+- `warning` - Amber system for warnings and cautions
+- `info` - Blue system for information and neutral messages
+
+#### **Difficulty Level Colors**
+
+- `difficulty-beginner` - Green for beginner level words
+- `difficulty-elementary` - Blue for elementary level words
+- `difficulty-intermediate` - Amber for intermediate level words
+- `difficulty-advanced` - Orange for advanced level words
+- `difficulty-proficient` - Red for proficient level words
+
+#### **Practice Game Colors**
+
+- `practice-typing` - Blue for typing exercises
+- `practice-multiple-choice` - Orange for multiple choice games
+- `practice-flashcard` - Green for flashcard reviews
+- `practice-audio` - Purple for audio-based practice
+
+#### **Learning Status Colors**
+
+- `status-not-started` - Gray for unstarted words
+- `status-in-progress` - Blue for words being learned
+- `status-learned` - Green for mastered words
+- `status-needs-review` - Amber for words needing review
+- `status-difficult` - Red for challenging words
+
+#### **Content Colors**
+
+- `content-subtle` - Very light backgrounds
+- `content-soft` - Card and container backgrounds
+- `content-border` - Border colors for containers
+- `content-secondary` - Secondary text content
+- `content-tertiary` - Tertiary text content
+
+### **Token Variants**
+
+Each color category has consistent variants:
+
+- `DEFAULT` - Main color (use sparingly)
+- `subtle` - Light background variant
+- `border` - Border color variant
+- `foreground` - Text color variant
+
+### **AI Agent Decision Matrix**
+
+| Situation                | Use This Token | Example                                                             |
+| ------------------------ | -------------- | ------------------------------------------------------------------- |
+| Form validation errors   | `error`        | `text-error-foreground bg-error-subtle`                             |
+| Success messages         | `success`      | `text-success-foreground bg-success-subtle`                         |
+| Warning alerts           | `warning`      | `text-warning-foreground bg-warning-subtle`                         |
+| Information banners      | `info`         | `text-info-foreground bg-info-subtle`                               |
+| Word difficulty badges   | `difficulty-*` | `bg-difficulty-beginner-subtle text-difficulty-beginner-foreground` |
+| Practice game indicators | `practice-*`   | `bg-practice-typing-subtle text-practice-typing-foreground`         |
+| Learning progress status | `status-*`     | `bg-status-learned-subtle text-status-learned-foreground`           |
+| General content          | `content-*`    | `text-content-secondary bg-content-subtle`                          |
+
+### **Dark Mode Guarantee**
+
+All semantic tokens automatically work in dark mode. **Never use `dark:` variants when using semantic tokens.**
+
+```tsx
+// ❌ WRONG - Manual dark mode handling
+<div className="text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/20">
+
+// ✅ CORRECT - Automatic dark mode
+<div className="text-success-foreground bg-success-subtle">
+```
+
+### **Component Examples**
+
+#### **Form Validation**
+
+```tsx
+<Input className={cn('border-input', error && 'border-error-border')} />;
+{
+  error && <p className="text-error-foreground text-sm">{error}</p>;
+}
+```
+
+#### **Difficulty Badges**
+
+```tsx
+const getDifficultyStyles = (level: DifficultyLevel) => {
+  const styles = {
+    beginner:
+      'bg-difficulty-beginner-subtle text-difficulty-beginner-foreground',
+    elementary:
+      'bg-difficulty-elementary-subtle text-difficulty-elementary-foreground',
+    intermediate:
+      'bg-difficulty-intermediate-subtle text-difficulty-intermediate-foreground',
+    advanced:
+      'bg-difficulty-advanced-subtle text-difficulty-advanced-foreground',
+    proficient:
+      'bg-difficulty-proficient-subtle text-difficulty-proficient-foreground',
+  };
+  return styles[level];
+};
+```
+
+#### **Status Indicators**
+
+```tsx
+const getStatusStyles = (status: LearningStatus) => {
+  const styles = {
+    notStarted:
+      'bg-status-not-started-subtle text-status-not-started-foreground',
+    inProgress:
+      'bg-status-in-progress-subtle text-status-in-progress-foreground',
+    learned: 'bg-status-learned-subtle text-status-learned-foreground',
+    needsReview:
+      'bg-status-needs-review-subtle text-status-needs-review-foreground',
+    difficult: 'bg-status-difficult-subtle text-status-difficult-foreground',
+  };
+  return styles[status];
+};
+```
+
+### **Enforcement & Migration**
+
+#### **Code Review Requirements**
+
+- [ ] No hard-coded color classes (`text-*-500`, `bg-*-100`, etc.)
+- [ ] All colors use semantic tokens
+- [ ] No manual `dark:` variants for colors
+- [ ] Colors match the component's semantic purpose
+
+#### **Migration Pattern**
+
+1. **Identify** semantic purpose (error, success, difficulty, etc.)
+2. **Replace** hard-coded colors with appropriate semantic tokens
+3. **Test** in both light and dark mode
+4. **Remove** any `dark:` color variants
+
+#### **Benefits**
+
+✅ **Perfect Dark Mode**: Every color automatically adapts  
+✅ **Consistent Design**: Unified color language across all components  
+✅ **Easy Theming**: Change tokens to rebrand instantly  
+✅ **Agent-Friendly**: Clear rules prevent AI confusion  
+✅ **Maintainable**: Single source of truth for colors  
+✅ **Accessible**: Proper contrast ratios built-in
+
+**📖 See `documentation/AGENT_STYLING_RULES.md` for complete styling guidelines and examples.**

@@ -132,15 +132,15 @@ export function WordTable({
   const getStatusColor = (status: LearningStatus) => {
     switch (status) {
       case LearningStatus.learned:
-        return 'bg-green-500 text-white';
+        return 'bg-success text-success-foreground';
       case LearningStatus.inProgress:
-        return 'bg-blue-500 text-white';
+        return 'bg-info text-info-foreground';
       case LearningStatus.needsReview:
-        return 'bg-yellow-500 text-black';
+        return 'bg-warning text-warning-foreground';
       case LearningStatus.difficult:
-        return 'bg-red-500 text-white';
+        return 'bg-error text-error-foreground';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -187,10 +187,10 @@ export function WordTable({
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{word.word}</span>
                       {word.isFavorite && (
-                        <Star className="h-3 w-3 text-yellow-500 fill-current" />
+                        <Star className="h-3 w-3 text-warning-foreground fill-current" />
                       )}
                       {word.isModified && (
-                        <Edit className="h-3 w-3 text-blue-500" />
+                        <Edit className="h-3 w-3 text-info-foreground" />
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground">
@@ -218,7 +218,7 @@ export function WordTable({
                     {word.audioUrl ? (
                       <Volume2
                         className={cn(
-                          'h-3 w-3 text-blue-600',
+                          'h-3 w-3 text-info-foreground',
                           isPlayingAudio &&
                             playingWordId === word.id &&
                             'animate-pulse',
@@ -434,7 +434,7 @@ export function WordTable({
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => onRemoveWord(word.id, word.word)}
-                      className="text-red-600"
+                      className="text-error-foreground"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Remove from Dictionary

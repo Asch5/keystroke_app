@@ -211,18 +211,18 @@ export function AppSettingsForm({ appSettings }: AppSettingsFormProps) {
             <Alert
               className={
                 state.success
-                  ? 'border-green-200 bg-green-50'
+                  ? 'border-success-border bg-success-subtle'
                   : 'border-destructive bg-destructive/10'
               }
             >
               {state.success ? (
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-success-foreground" />
               ) : (
                 <AlertCircle className="h-4 w-4 text-destructive" />
               )}
               <AlertDescription
                 className={
-                  state.success ? 'text-green-800' : 'text-destructive'
+                  state.success ? 'text-success-foreground' : 'text-destructive'
                 }
               >
                 {state.message}

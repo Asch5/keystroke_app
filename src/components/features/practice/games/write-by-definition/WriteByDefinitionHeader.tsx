@@ -89,12 +89,12 @@ export function WriteByDefinitionHeader({
 
         {/* Hint Display */}
         {showHint && (
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
-            <div className="flex items-center gap-2 text-blue-700">
+          <div className="p-3 bg-info-subtle border border-info-border rounded-lg text-sm">
+            <div className="flex items-center gap-2 text-info-foreground">
               <Eye className="h-3 w-3" />
               <span className="font-medium">Hint:</span>
             </div>
-            <div className="mt-1 text-blue-600">
+            <div className="mt-1 text-info-foreground">
               The word has {targetWord.length} letters
               {word.phonetic && <span className="ml-2">({word.phonetic})</span>}
             </div>

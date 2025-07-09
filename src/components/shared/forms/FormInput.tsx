@@ -26,7 +26,7 @@ export function FormInput({
   return (
     <div className="space-y-2">
       <label htmlFor={id} className="block text-sm font-medium text-foreground">
-        {label} {required && <span className="text-red-500">*</span>}
+        {label} {required && <span className="text-error-foreground">*</span>}
       </label>
       <div className="relative">
         <input
@@ -36,15 +36,15 @@ export function FormInput({
           placeholder={placeholder}
           required={required}
           defaultValue={defaultValue}
-          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-            error ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-border ${
+            error ? 'border-error-border' : 'border-input-border'
           } bg-background`}
         />
         {type === 'password' && (
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground"
           >
             {showPassword ? (
               <svg
@@ -85,7 +85,7 @@ export function FormInput({
           </button>
         )}
       </div>
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm text-error-foreground">{error}</p>}
     </div>
   );
 }

@@ -5,6 +5,72 @@
 @layer base {
   :root {
     --radius: 0.625rem;
+
+    /* ================================
+     * 2025 MODERN TYPOGRAPHY SYSTEM
+     * ================================ */
+
+    /* SYSTEM FONT STACKS */
+    --font-interface:
+      system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+    --font-heading:
+      Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+    --font-body:
+      Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans',
+      source-sans-pro, sans-serif;
+    --font-code:
+      ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas,
+      'DejaVu Sans Mono', monospace;
+    --font-reading: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
+    --font-display:
+      ui-rounded, 'Hiragino Maru Gothic ProN', Quicksand, Comfortaa, Manjari,
+      'Arial Rounded MT Bold', Calibri, source-sans-pro, sans-serif;
+
+    /* SEMANTIC FONT PURPOSES */
+    --font-foreign-word: var(--font-reading);
+    --font-phonetic: var(--font-code);
+    --font-definition: var(--font-body);
+    --font-translation: var(--font-body);
+
+    /* FONT WEIGHTS */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --font-weight-black: 900;
+
+    /* RESPONSIVE FONT SIZES */
+    --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+    --font-size-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+    --font-size-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+    --font-size-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+    --font-size-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+    --font-size-2xl: clamp(1.5rem, 1.3rem + 1vw, 1.875rem);
+    --font-size-3xl: clamp(1.875rem, 1.6rem + 1.375vw, 2.25rem);
+    --font-size-4xl: clamp(2.25rem, 1.9rem + 1.75vw, 3rem);
+    --font-size-5xl: clamp(3rem, 2.5rem + 2.5vw, 4rem);
+
+    /* LINE HEIGHTS */
+    --line-height-tight: 1.25;
+    --line-height-snug: 1.375;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.625;
+    --line-height-loose: 1.75;
+    --line-height-reading: 1.7;
+
+    /* LETTER SPACING */
+    --letter-spacing-tight: -0.025em;
+    --letter-spacing-normal: 0em;
+    --letter-spacing-wide: 0.025em;
+    --letter-spacing-wider: 0.05em;
+    --letter-spacing-widest: 0.1em;
+
+    /* ================================
+     * SHADCN/UI BASE TOKENS (EXISTING)
+     * ================================ */
     --background: oklch(1 0 0);
     --foreground: oklch(0.147 0.004 49.25);
     --card: oklch(1 0 0);
@@ -37,9 +103,134 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     --sidebar-background: 0 0% 98%;
+
+    /* ================================
+     * ENHANCED SEMANTIC COLOR TOKENS SYSTEM (2025 OPTIMIZED)
+     * ================================ */
+
+    /* STATUS & FEEDBACK COLORS - Enhanced for better contrast */
+    --semantic-success: oklch(
+      0.68 0.14 145
+    ); /* Optimized green - better contrast */
+    --semantic-success-subtle: oklch(
+      0.96 0.02 145
+    ); /* Enhanced subtle background */
+    --semantic-success-border: oklch(
+      0.82 0.08 145
+    ); /* Better border visibility */
+    --semantic-success-foreground: oklch(
+      0.32 0.12 145
+    ); /* Enhanced dark green text */
+
+    --semantic-warning: oklch(0.72 0.13 80); /* Optimized amber - less harsh */
+    --semantic-warning-subtle: oklch(0.97 0.02 80); /* Enhanced background */
+    --semantic-warning-border: oklch(0.85 0.07 80); /* Better border */
+    --semantic-warning-foreground: oklch(0.38 0.11 80); /* Enhanced text */
+
+    --semantic-error: oklch(0.62 0.18 25); /* Refined red - less aggressive */
+    --semantic-error-subtle: oklch(0.96 0.03 25); /* Enhanced background */
+    --semantic-error-border: oklch(0.82 0.1 25); /* Better border */
+    --semantic-error-foreground: oklch(0.35 0.14 25); /* Enhanced text */
+
+    --semantic-info: oklch(0.62 0.13 220); /* Optimized blue */
+    --semantic-info-subtle: oklch(0.96 0.02 220); /* Enhanced background */
+    --semantic-info-border: oklch(0.82 0.07 220); /* Better border */
+    --semantic-info-foreground: oklch(0.32 0.11 220); /* Enhanced text */
+
+    /* 2025 TREND COLORS - Teal family (trending color of 2025) */
+    --teal-primary: oklch(0.65 0.12 180); /* Modern teal */
+    --teal-subtle: oklch(0.96 0.02 180); /* Teal background */
+    --teal-border: oklch(0.82 0.06 180); /* Teal border */
+    --teal-foreground: oklch(0.32 0.1 180); /* Teal text */
+
+    /* DIFFICULTY LEVEL COLORS - Enhanced for 2025 */
+    --difficulty-beginner: oklch(0.68 0.12 145); /* Softer green */
+    --difficulty-beginner-subtle: oklch(0.96 0.02 145);
+    --difficulty-beginner-foreground: oklch(0.32 0.1 145);
+
+    --difficulty-elementary: oklch(0.65 0.12 180); /* Teal (2025 trending) */
+    --difficulty-elementary-subtle: oklch(0.96 0.02 180);
+    --difficulty-elementary-foreground: oklch(0.32 0.1 180);
+
+    --difficulty-intermediate: oklch(0.72 0.12 80); /* Refined amber */
+    --difficulty-intermediate-subtle: oklch(0.97 0.02 80);
+    --difficulty-intermediate-foreground: oklch(0.38 0.1 80);
+
+    --difficulty-advanced: oklch(0.68 0.13 35); /* Sophisticated orange */
+    --difficulty-advanced-subtle: oklch(0.96 0.02 35);
+    --difficulty-advanced-foreground: oklch(0.35 0.11 35);
+
+    --difficulty-proficient: oklch(0.62 0.16 25); /* Refined red */
+    --difficulty-proficient-subtle: oklch(0.96 0.03 25);
+    --difficulty-proficient-foreground: oklch(0.35 0.13 25);
+
+    /* PRACTICE GAME COLORS - 2025 Enhanced */
+    --practice-typing: oklch(0.62 0.12 220); /* Deep blue */
+    --practice-typing-subtle: oklch(0.96 0.02 220);
+    --practice-typing-foreground: oklch(0.32 0.1 220);
+
+    --practice-multiple-choice: oklch(0.68 0.12 35); /* Sophisticated orange */
+    --practice-multiple-choice-subtle: oklch(0.96 0.02 35);
+    --practice-multiple-choice-foreground: oklch(0.35 0.1 35);
+
+    --practice-flashcard: oklch(0.68 0.11 145); /* Refined green */
+    --practice-flashcard-subtle: oklch(0.96 0.02 145);
+    --practice-flashcard-foreground: oklch(0.32 0.09 145);
+
+    --practice-audio: oklch(0.62 0.12 290); /* Deep purple */
+    --practice-audio-subtle: oklch(0.96 0.02 290);
+    --practice-audio-foreground: oklch(0.32 0.1 290);
+
+    /* LEARNING STATUS COLORS - Enhanced */
+    --status-not-started: oklch(0.68 0.03 0); /* Warm gray */
+    --status-not-started-subtle: oklch(0.96 0.01 0);
+    --status-not-started-foreground: oklch(0.35 0.02 0);
+
+    --status-in-progress: oklch(0.65 0.12 180); /* Teal (trending) */
+    --status-in-progress-subtle: oklch(0.96 0.02 180);
+    --status-in-progress-foreground: oklch(0.32 0.1 180);
+
+    --status-learned: oklch(0.68 0.11 145); /* Sophisticated green */
+    --status-learned-subtle: oklch(0.96 0.02 145);
+    --status-learned-foreground: oklch(0.32 0.09 145);
+
+    --status-needs-review: oklch(0.72 0.11 80); /* Refined amber */
+    --status-needs-review-subtle: oklch(0.97 0.02 80);
+    --status-needs-review-foreground: oklch(0.38 0.09 80);
+
+    --status-difficult: oklch(0.62 0.15 25); /* Sophisticated red */
+    --status-difficult-subtle: oklch(0.96 0.03 25);
+    --status-difficult-foreground: oklch(0.35 0.12 25);
+
+    /* ENHANCED NEUTRAL GRAYS - Better hierarchy */
+    --content-subtle: oklch(0.98 0.001 0); /* Ultra-light backgrounds */
+    --content-soft: oklch(0.94 0.003 0); /* Card backgrounds */
+    --content-border: oklch(0.87 0.005 0); /* Defined borders */
+    --content-secondary: oklch(
+      0.58 0.015 0
+    ); /* Secondary text - better contrast */
+    --content-tertiary: oklch(
+      0.42 0.02 0
+    ); /* Tertiary text - enhanced readability */
+
+    /* 2025 MODERN ACCENT COLORS */
+    --modern-sage: oklch(0.72 0.08 140); /* Trending sage green */
+    --modern-sage-subtle: oklch(0.96 0.02 140);
+    --modern-sage-foreground: oklch(0.35 0.06 140);
+
+    --modern-slate: oklch(0.65 0.04 240); /* Contemporary slate */
+    --modern-slate-subtle: oklch(0.96 0.01 240);
+    --modern-slate-foreground: oklch(0.32 0.03 240);
+
+    --modern-warm: oklch(0.75 0.06 50); /* Warm accent */
+    --modern-warm-subtle: oklch(0.97 0.01 50);
+    --modern-warm-foreground: oklch(0.4 0.05 50);
   }
 
   .dark {
+    /* ================================
+     * SHADCN/UI DARK TOKENS (EXISTING)
+     * ================================ */
     --background: oklch(0.147 0.004 49.25);
     --foreground: oklch(0.985 0.001 106.423);
     --card: oklch(0.216 0.006 56.043);
@@ -72,30 +263,270 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     --sidebar-background: 240 5.9% 10%;
+
+    /* ================================
+     * ENHANCED DARK MODE TOKENS (2025 OPTIMIZED)
+     * ================================ */
+
+    /* STATUS & FEEDBACK COLORS (DARK) - Optimized for dark mode readability */
+    --semantic-success: oklch(0.58 0.11 145); /* Refined dark mode green */
+    --semantic-success-subtle: oklch(
+      0.18 0.04 145
+    ); /* Better dark background */
+    --semantic-success-border: oklch(0.28 0.07 145); /* Enhanced border */
+    --semantic-success-foreground: oklch(0.78 0.12 145); /* Better light text */
+
+    --semantic-warning: oklch(0.65 0.11 80); /* Optimized dark amber */
+    --semantic-warning-subtle: oklch(0.18 0.03 80); /* Enhanced background */
+    --semantic-warning-border: oklch(0.28 0.06 80); /* Better border */
+    --semantic-warning-foreground: oklch(
+      0.82 0.12 80
+    ); /* Enhanced light text */
+
+    --semantic-error: oklch(0.58 0.15 25); /* Refined dark red */
+    --semantic-error-subtle: oklch(0.18 0.05 25); /* Better background */
+    --semantic-error-border: oklch(0.28 0.09 25); /* Enhanced border */
+    --semantic-error-foreground: oklch(0.78 0.16 25); /* Better light text */
+
+    --semantic-info: oklch(0.58 0.11 220); /* Optimized dark blue */
+    --semantic-info-subtle: oklch(0.18 0.03 220); /* Enhanced background */
+    --semantic-info-border: oklch(0.28 0.06 220); /* Better border */
+    --semantic-info-foreground: oklch(0.78 0.12 220); /* Enhanced light text */
+
+    /* 2025 TREND COLORS (DARK) - Teal family */
+    --teal-primary: oklch(0.58 0.1 180); /* Dark mode teal */
+    --teal-subtle: oklch(0.18 0.03 180); /* Dark teal background */
+    --teal-border: oklch(0.28 0.05 180); /* Dark teal border */
+    --teal-foreground: oklch(0.78 0.11 180); /* Light teal text */
+
+    /* DIFFICULTY LEVELS (DARK) - Enhanced for dark mode */
+    --difficulty-beginner: oklch(0.58 0.1 145);
+    --difficulty-beginner-subtle: oklch(0.18 0.03 145);
+    --difficulty-beginner-foreground: oklch(0.78 0.11 145);
+
+    --difficulty-elementary: oklch(0.58 0.1 180); /* Teal for dark mode */
+    --difficulty-elementary-subtle: oklch(0.18 0.03 180);
+    --difficulty-elementary-foreground: oklch(0.78 0.11 180);
+
+    --difficulty-intermediate: oklch(0.65 0.1 80);
+    --difficulty-intermediate-subtle: oklch(0.18 0.02 80);
+    --difficulty-intermediate-foreground: oklch(0.82 0.11 80);
+
+    --difficulty-advanced: oklch(0.62 0.11 35);
+    --difficulty-advanced-subtle: oklch(0.18 0.03 35);
+    --difficulty-advanced-foreground: oklch(0.78 0.12 35);
+
+    --difficulty-proficient: oklch(0.58 0.13 25);
+    --difficulty-proficient-subtle: oklch(0.18 0.04 25);
+    --difficulty-proficient-foreground: oklch(0.78 0.15 25);
+
+    /* PRACTICE GAMES (DARK) - Enhanced */
+    --practice-typing: oklch(0.58 0.1 220);
+    --practice-typing-subtle: oklch(0.18 0.03 220);
+    --practice-typing-foreground: oklch(0.78 0.11 220);
+
+    --practice-multiple-choice: oklch(0.62 0.1 35);
+    --practice-multiple-choice-subtle: oklch(0.18 0.03 35);
+    --practice-multiple-choice-foreground: oklch(0.78 0.11 35);
+
+    --practice-flashcard: oklch(0.58 0.09 145);
+    --practice-flashcard-subtle: oklch(0.18 0.03 145);
+    --practice-flashcard-foreground: oklch(0.78 0.1 145);
+
+    --practice-audio: oklch(0.58 0.1 290);
+    --practice-audio-subtle: oklch(0.18 0.03 290);
+    --practice-audio-foreground: oklch(0.78 0.11 290);
+
+    /* LEARNING STATUS (DARK) - Enhanced */
+    --status-not-started: oklch(0.62 0.02 0);
+    --status-not-started-subtle: oklch(0.18 0.01 0);
+    --status-not-started-foreground: oklch(0.75 0.02 0);
+
+    --status-in-progress: oklch(0.58 0.1 180); /* Teal */
+    --status-in-progress-subtle: oklch(0.18 0.03 180);
+    --status-in-progress-foreground: oklch(0.78 0.11 180);
+
+    --status-learned: oklch(0.58 0.09 145);
+    --status-learned-subtle: oklch(0.18 0.03 145);
+    --status-learned-foreground: oklch(0.78 0.1 145);
+
+    --status-needs-review: oklch(0.65 0.09 80);
+    --status-needs-review-subtle: oklch(0.18 0.02 80);
+    --status-needs-review-foreground: oklch(0.82 0.1 80);
+
+    --status-difficult: oklch(0.58 0.12 25);
+    --status-difficult-subtle: oklch(0.18 0.04 25);
+    --status-difficult-foreground: oklch(0.78 0.13 25);
+
+    /* ENHANCED DARK GRAYS - Better hierarchy */
+    --content-subtle: oklch(0.22 0.002 0); /* Dark backgrounds */
+    --content-soft: oklch(0.26 0.003 0); /* Card backgrounds */
+    --content-border: oklch(0.32 0.004 0); /* Visible borders */
+    --content-secondary: oklch(0.65 0.01 0); /* Secondary text */
+    --content-tertiary: oklch(0.75 0.008 0); /* Tertiary text */
+
+    /* 2025 MODERN ACCENTS (DARK) */
+    --modern-sage: oklch(0.62 0.06 140);
+    --modern-sage-subtle: oklch(0.18 0.02 140);
+    --modern-sage-foreground: oklch(0.78 0.07 140);
+
+    --modern-slate: oklch(0.58 0.03 240);
+    --modern-slate-subtle: oklch(0.18 0.01 240);
+    --modern-slate-foreground: oklch(0.75 0.03 240);
+
+    --modern-warm: oklch(0.68 0.05 50);
+    --modern-warm-subtle: oklch(0.18 0.01 50);
+    --modern-warm-foreground: oklch(0.78 0.06 50);
   }
 }
 
+/* ================================
+ * TYPOGRAPHY BASE STYLES
+ * ================================ */
 @layer base {
   * {
     @apply border-border;
   }
+
+  html {
+    /* Smooth font rendering on all platforms */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Optimal text rendering */
+    text-rendering: optimizeLegibility;
+
+    /* Better font feature settings */
+    font-feature-settings:
+      'kern' 1,
+      /* Kerning */ 'liga' 1,
+      /* Standard ligatures */ 'clig' 1,
+      /* Contextual ligatures */ 'calt' 1,
+      /* Contextual alternates */ 'case' 1,
+      /* Case-sensitive forms */ 'ss01' 1; /* Stylistic set 1 */
+  }
+
   body {
     @apply bg-background text-foreground;
-  }
-}
 
-@layer utilities {
-  /* Custom animations for landing page */
+    /* Primary interface font for body */
+    font-family: var(--font-interface);
+    font-weight: var(--font-weight-normal);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+
+    /* Enhanced text rendering for better readability */
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+
+    /* Support for international text */
+    unicode-bidi: embed;
+
+    /* Optimize for language learning app */
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* SEMANTIC HTML ELEMENT TYPOGRAPHY */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--foreground);
+  }
+
+  h1 {
+    font-size: var(--font-size-5xl);
+  }
+  h2 {
+    font-size: var(--font-size-4xl);
+  }
+  h3 {
+    font-size: var(--font-size-3xl);
+  }
+  h4 {
+    font-size: var(--font-size-2xl);
+  }
+  h5 {
+    font-size: var(--font-size-xl);
+  }
+  h6 {
+    font-size: var(--font-size-lg);
+  }
+
+  p {
+    font-family: var(--font-body);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: 1rem;
+  }
+
+  /* CODE AND PREFORMATTED TEXT */
+  code,
+  kbd,
+  samp {
+    font-family: var(--font-code);
+    font-size: 0.875em;
+    font-weight: var(--font-weight-medium);
+  }
+
+  pre {
+    font-family: var(--font-code);
+    line-height: var(--line-height-snug);
+    overflow-x: auto;
+  }
+
+  /* READING CONTENT */
+  article,
+  .reading-content {
+    font-family: var(--font-reading);
+    line-height: var(--line-height-reading);
+  }
+
+  /* LANGUAGE LEARNING SPECIFIC ELEMENTS */
+  .foreign-word {
+    font-family: var(--font-foreign-word);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .phonetic {
+    font-family: var(--font-phonetic);
+    font-weight: var(--font-weight-normal);
+    color: var(--muted-foreground);
+  }
+
+  .definition {
+    font-family: var(--font-definition);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* BUTTON AND UI ELEMENT TYPOGRAPHY */
+  button,
+  input,
+  select,
+  textarea {
+    font-family: var(--font-interface);
+  }
+
+  /* ENHANCED ANIMATIONS AND EFFECTS */
   .animate-in {
+    animation-duration: 0.5s;
     animation-fill-mode: both;
   }
 
   .fade-in {
-    animation: fade-in 0.5s ease-out;
+    animation-name: fade-in;
   }
 
   .slide-in-from-bottom-4 {
-    animation: slide-in-from-bottom-4 0.5s ease-out;
+    animation-name: slide-in-from-bottom-4;
   }
 
   @keyframes fade-in {
@@ -109,62 +540,81 @@
 
   @keyframes slide-in-from-bottom-4 {
     from {
-      opacity: 0;
       transform: translateY(1rem);
+      opacity: 0;
     }
     to {
-      opacity: 1;
       transform: translateY(0);
+      opacity: 1;
     }
   }
 
-  /* Enhanced hover effects */
+  /* ENHANCED HOVER EFFECTS */
   .hover-lift {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .hover-lift:hover {
-    transform: translateY(-0.25rem);
+    transform: translateY(-2px);
     box-shadow:
-      0 20px 25px -5px rgb(0 0 0 / 0.1),
-      0 8px 10px -6px rgb(0 0 0 / 0.1);
+      0 4px 12px oklch(0 0 0 / 0.1),
+      0 2px 4px oklch(0 0 0 / 0.06);
   }
 
-  /* Gradient text utilities */
+  /* ENHANCED GRADIENT TEXT */
   .gradient-text {
     background: linear-gradient(
       135deg,
-      hsl(var(--primary)),
-      hsl(var(--primary)) 70%
+      var(--teal-primary) 0%,
+      var(--semantic-info) 50%,
+      var(--modern-sage) 100%
     );
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
   }
 
-  /* Glass morphism effect */
+  @keyframes gradient-shift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* ENHANCED GLASS EFFECT */
   .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: oklch(1 0 0 / 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid oklch(1 0 0 / 0.1);
   }
 
-  /* Custom scrollbar */
+  .dark .glass {
+    background: oklch(0.2 0.01 0 / 0.8);
+    border: 1px solid oklch(1 0 0 / 0.05);
+  }
+
+  /* ENHANCED SCROLLBAR */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--content-subtle);
+    border-radius: 4px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 3px;
+    background: var(--content-border);
+    border-radius: 4px;
+    transition: background 0.2s ease;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground));
+    background: var(--content-secondary);
   }
 }

@@ -88,7 +88,7 @@ export function PracticeGameRenderer({
   if (!practiceConfigs[effectivePracticeType]) {
     console.error(`Unknown practice type: ${effectivePracticeType}`);
     return (
-      <div className="text-center p-8 text-red-500">
+      <div className="text-center p-8 text-error-foreground">
         Unknown practice type: {effectivePracticeType}
       </div>
     );
@@ -160,7 +160,7 @@ export function PracticeGameRenderer({
     default:
       console.error(`Unknown practice type: ${effectivePracticeType}`);
       return (
-        <div className="text-center p-8 text-red-500">
+        <div className="text-center p-8 text-error-foreground">
           Unknown practice type: {effectivePracticeType}
         </div>
       );

@@ -316,7 +316,7 @@ export function TTSControls({
                       <span className="text-muted-foreground">
                         Free Quota Remaining:
                       </span>
-                      <p className="font-medium text-green-600">
+                      <p className="font-medium text-success-foreground">
                         {qualityInfo.remaining.toLocaleString()} chars
                       </p>
                     </div>
@@ -402,7 +402,7 @@ export function TTSControls({
                     <span className="text-muted-foreground">
                       Standard Quota:
                     </span>
-                    <p className="font-medium text-green-600">
+                    <p className="font-medium text-success-foreground">
                       {ttsStats.remainingFreeQuota.standard?.toLocaleString() ||
                         0}{' '}
                       remaining

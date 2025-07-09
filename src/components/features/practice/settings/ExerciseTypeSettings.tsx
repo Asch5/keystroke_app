@@ -53,8 +53,7 @@ export function ExerciseTypeSettings({
       icon: <Brain className="h-4 w-4" />,
       difficulty: 1,
       enabled: settings.enableRememberTranslation ?? true,
-      color:
-        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      color: 'bg-practice-flashcard-subtle text-practice-flashcard-foreground',
     },
     {
       key: 'enableChooseRightWord' as keyof VocabularyPracticeSettings,
@@ -63,7 +62,7 @@ export function ExerciseTypeSettings({
       icon: <Target className="h-4 w-4" />,
       difficulty: 2,
       enabled: settings.enableChooseRightWord ?? true,
-      color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      color: 'bg-practice-typing-subtle text-practice-typing-foreground',
     },
     {
       key: 'enableMakeUpWord' as keyof VocabularyPracticeSettings,
@@ -73,7 +72,7 @@ export function ExerciseTypeSettings({
       difficulty: 3,
       enabled: settings.enableMakeUpWord ?? true,
       color:
-        'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+        'bg-practice-multiple-choice-subtle text-practice-multiple-choice-foreground',
       hasSettings: true,
     },
     {
@@ -83,8 +82,7 @@ export function ExerciseTypeSettings({
       icon: <Keyboard className="h-4 w-4" />,
       difficulty: 4,
       enabled: settings.enableWriteByDefinition ?? true,
-      color:
-        'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      color: 'bg-practice-audio-subtle text-practice-audio-foreground',
     },
     {
       key: 'enableWriteBySound' as keyof VocabularyPracticeSettings,
@@ -93,7 +91,7 @@ export function ExerciseTypeSettings({
       icon: <Volume2 className="h-4 w-4" />,
       difficulty: 5,
       enabled: settings.enableWriteBySound ?? true,
-      color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      color: 'bg-error-subtle text-error-foreground',
     },
   ];
 

@@ -104,11 +104,14 @@ const difficultyDisplayNames: Record<DifficultyLevel, string> = {
 };
 
 const difficultyColors: Record<DifficultyLevel, string> = {
-  beginner: 'bg-green-100 text-green-800',
-  elementary: 'bg-blue-100 text-blue-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-orange-100 text-orange-800',
-  proficient: 'bg-red-100 text-red-800',
+  beginner: 'bg-difficulty-beginner-subtle text-difficulty-beginner-foreground',
+  elementary:
+    'bg-difficulty-elementary-subtle text-difficulty-elementary-foreground',
+  intermediate:
+    'bg-difficulty-intermediate-subtle text-difficulty-intermediate-foreground',
+  advanced: 'bg-difficulty-advanced-subtle text-difficulty-advanced-foreground',
+  proficient:
+    'bg-difficulty-proficient-subtle text-difficulty-proficient-foreground',
 };
 
 export default function ListsManagementPage() {
@@ -354,7 +357,7 @@ export default function ListsManagementPage() {
             <div className="space-y-2">
               <Label>Search</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-content-tertiary" />
                 <Input
                   placeholder="Search lists..."
                   value={filters.search}
@@ -634,7 +637,7 @@ export default function ListsManagementPage() {
                       </TableCell>
                       <TableCell>
                         {list.coverImageUrl ? (
-                          <div className="w-12 h-12 relative bg-gray-100 rounded overflow-hidden">
+                          <div className="w-12 h-12 relative bg-content-soft rounded overflow-hidden">
                             <Image
                               src={list.coverImageUrl}
                               alt={`${list.name} cover`}
@@ -644,8 +647,8 @@ export default function ListsManagementPage() {
                             />
                           </div>
                         ) : (
-                          <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                            <List className="h-6 w-6 text-gray-400" />
+                          <div className="w-12 h-12 bg-content-soft rounded flex items-center justify-center">
+                            <List className="h-6 w-6 text-content-tertiary" />
                           </div>
                         )}
                       </TableCell>
@@ -706,12 +709,18 @@ export default function ListsManagementPage() {
                       <TableCell>
                         <div className="flex items-center">
                           {list.isPublic ? (
-                            <Badge variant="outline" className="text-green-600">
+                            <Badge
+                              variant="outline"
+                              className="text-success-foreground"
+                            >
                               <Globe className="h-3 w-3 mr-1" />
                               Public
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="text-gray-600">
+                            <Badge
+                              variant="outline"
+                              className="text-content-secondary"
+                            >
                               <Lock className="h-3 w-3 mr-1" />
                               Private
                             </Badge>
@@ -769,7 +778,7 @@ export default function ListsManagementPage() {
                             {list.deletedAt ? (
                               <DropdownMenuItem
                                 onClick={() => handleRestoreList(list.id)}
-                                className="text-green-600"
+                                className="text-success-foreground"
                               >
                                 <RotateCcw className="mr-2 h-4 w-4" />
                                 Restore

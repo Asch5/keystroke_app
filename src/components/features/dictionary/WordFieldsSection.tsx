@@ -28,15 +28,15 @@ const WordFieldsSection = memo(function WordFieldsSection({
   return (
     <>
       {/* Warning Section */}
-      <Card className="mb-6 border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950">
+      <Card className="mb-6 border-warning-border bg-warning-subtle">
         <CardContent className="p-4">
           <div className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <AlertTriangle className="h-5 w-5 text-warning-foreground" />
             <div>
-              <h3 className="font-medium text-amber-800 dark:text-amber-200">
+              <h3 className="font-medium text-warning-foreground">
                 Important Note
               </h3>
-              <p className="text-sm text-amber-700 dark:text-amber-300">
+              <p className="text-sm text-warning-foreground">
                 Fields in this section are shared across all WordDetails for
                 this word. Changes here will affect other variants of the same
                 word.

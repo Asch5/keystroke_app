@@ -36,35 +36,35 @@ export function PracticeSessionSummary({
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardContent className="p-8 text-center space-y-6">
-        <div className="flex items-center justify-center gap-2 text-2xl font-bold text-green-600">
+        <div className="flex items-center justify-center gap-2 text-2xl font-bold text-success-foreground">
           <Trophy className="h-8 w-8" />
           Session Complete!
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="p-4 bg-success-subtle rounded-lg">
+            <div className="text-2xl font-bold text-success-foreground">
               {sessionProgress.correctAnswers}
             </div>
-            <div className="text-sm text-green-700">Correct</div>
+            <div className="text-sm text-success-foreground">Correct</div>
           </div>
-          <div className="p-4 bg-red-50 rounded-lg">
-            <div className="text-2xl font-bold text-red-600">
+          <div className="p-4 bg-error-subtle rounded-lg">
+            <div className="text-2xl font-bold text-error-foreground">
               {sessionProgress.incorrectAnswers}
             </div>
-            <div className="text-sm text-red-700">Incorrect</div>
+            <div className="text-sm text-error-foreground">Incorrect</div>
           </div>
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="p-4 bg-info-subtle rounded-lg">
+            <div className="text-2xl font-bold text-info-foreground">
               {accuracy.toFixed(1)}%
             </div>
-            <div className="text-sm text-blue-700">Accuracy</div>
+            <div className="text-sm text-info-foreground">Accuracy</div>
           </div>
-          <div className="p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">
+          <div className="p-4 bg-practice-audio-subtle rounded-lg">
+            <div className="text-2xl font-bold text-practice-audio-foreground">
               {sessionProgress.currentScore}
             </div>
-            <div className="text-sm text-purple-700">Score</div>
+            <div className="text-sm text-practice-audio-foreground">Score</div>
           </div>
         </div>
 

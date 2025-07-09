@@ -35,17 +35,17 @@ interface VocabularyListSelectorProps {
 const getDifficultyColor = (difficulty: string) => {
   switch (difficulty) {
     case 'beginner':
-      return 'bg-green-500/20 text-green-600 dark:text-green-400';
+      return 'bg-difficulty-beginner-subtle text-difficulty-beginner-foreground';
     case 'elementary':
-      return 'bg-blue-500/20 text-blue-600 dark:text-blue-400';
+      return 'bg-difficulty-elementary-subtle text-difficulty-elementary-foreground';
     case 'intermediate':
-      return 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400';
+      return 'bg-difficulty-intermediate-subtle text-difficulty-intermediate-foreground';
     case 'advanced':
-      return 'bg-orange-500/20 text-orange-600 dark:text-orange-400';
+      return 'bg-difficulty-advanced-subtle text-difficulty-advanced-foreground';
     case 'proficient':
-      return 'bg-red-500/20 text-red-600 dark:text-red-400';
+      return 'bg-difficulty-proficient-subtle text-difficulty-proficient-foreground';
     default:
-      return 'bg-gray-500/20 text-gray-600 dark:text-gray-400';
+      return 'bg-content-subtle text-content-secondary';
   }
 };
 

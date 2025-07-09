@@ -176,7 +176,7 @@ export function ImageSelector({
                         className="relative group cursor-pointer"
                         onClick={() => handleImageSelect(image)}
                       >
-                        <div className="aspect-square relative bg-gray-100 rounded-lg overflow-hidden hover:ring-2 hover:ring-blue-500 transition-all">
+                        <div className="aspect-square relative bg-content-soft rounded-lg overflow-hidden hover:ring-2 hover:ring-info-border transition-all">
                           <Image
                             src={image.sizes.medium || image.url}
                             alt={image.alt || 'Search result'}
@@ -194,7 +194,7 @@ export function ImageSelector({
                           </div>
                         </div>
                         {image.photographer && (
-                          <p className="text-xs text-gray-500 mt-1 truncate">
+                          <p className="text-xs text-content-tertiary mt-1 truncate">
                             by {image.photographer}
                           </p>
                         )}
@@ -209,7 +209,7 @@ export function ImageSelector({
                 searchResults.length === 0 &&
                 !isLoading &&
                 !error && (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-content-secondary">
                     <p>No images found. Try a different search term.</p>
                   </div>
                 )}
@@ -218,7 +218,7 @@ export function ImageSelector({
         </Dialog>
 
         {/* Manual URL Input */}
-        <span className="text-sm text-gray-500">or</span>
+        <span className="text-sm text-content-secondary">or</span>
         <Label htmlFor="manual-url" className="text-sm">
           Paste URL directly
         </Label>
@@ -228,7 +228,7 @@ export function ImageSelector({
       {selectedImageUrl && (
         <div className="mt-3">
           <Label className="text-sm font-medium">Selected Cover Image:</Label>
-          <div className="mt-2 relative w-full h-32 bg-gray-100 rounded-lg overflow-hidden">
+          <div className="mt-2 relative w-full h-32 bg-content-subtle rounded-lg overflow-hidden">
             <Image
               src={selectedImageUrl}
               alt="Selected cover image"

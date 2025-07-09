@@ -26,7 +26,7 @@ export const PerformanceScoresTab = React.memo<PerformanceScoresTabProps>(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5 text-blue-600" />
+              <Activity className="h-5 w-5 text-info-foreground" />
               Performance Scores (70% weight)
             </CardTitle>
             <CardDescription>
@@ -174,10 +174,10 @@ export const PerformanceScoresTab = React.memo<PerformanceScoresTabProps>(
                 <span
                   className={`${
                     performanceScores.overallPerformanceScore >= 7
-                      ? 'text-green-600'
+                      ? 'text-success-foreground'
                       : performanceScores.overallPerformanceScore >= 5
-                        ? 'text-yellow-600'
-                        : 'text-red-600'
+                        ? 'text-warning-foreground'
+                        : 'text-error-foreground'
                   }`}
                 >
                   {performanceScores.overallPerformanceScore.toFixed(1)}/10
@@ -189,15 +189,15 @@ export const PerformanceScoresTab = React.memo<PerformanceScoresTabProps>(
               />
               <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
                 <div className="text-center">
-                  <div className="w-3 h-3 bg-red-500 rounded-full mx-auto mb-1"></div>
+                  <div className="w-3 h-3 bg-error-foreground rounded-full mx-auto mb-1"></div>
                   0-4: Needs Work
                 </div>
                 <div className="text-center">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full mx-auto mb-1"></div>
+                  <div className="w-3 h-3 bg-warning-foreground rounded-full mx-auto mb-1"></div>
                   5-6: Good Progress
                 </div>
                 <div className="text-center">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mx-auto mb-1"></div>
+                  <div className="w-3 h-3 bg-success-foreground rounded-full mx-auto mb-1"></div>
                   7-10: Excellent
                 </div>
               </div>
@@ -210,7 +210,7 @@ export const PerformanceScoresTab = React.memo<PerformanceScoresTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-yellow-500" />
+                <Star className="h-5 w-5 text-warning-foreground" />
                 Top Performing Words
               </CardTitle>
               <CardDescription>
@@ -249,7 +249,7 @@ export const PerformanceScoresTab = React.memo<PerformanceScoresTabProps>(
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-500" />
+                <AlertTriangle className="h-5 w-5 text-error-foreground" />
                 Words Needing Attention
               </CardTitle>
               <CardDescription>

@@ -380,3 +380,117 @@
 [2025-07-09T13:57:53.303Z] [info] getUserLists - Returning 1 processed user lists
 [2025-07-09T13:57:53.304Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
 [2025-07-09T14:00:28.094Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-09T14:00:28.094Z"}
+[2025-07-09T14:19:49.265Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T14:19:51.052Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T14:19:51.077Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T14:19:51.449Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T14:19:57.990Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-09T14:19:57.990Z"}
+[2025-07-09T18:53:48.414Z] [info] Initializing server services...
+[2025-07-09T18:53:48.460Z] [info] Initializing server services...
+[2025-07-09T18:53:48.484Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T18:53:48.485Z] [info] Server services initialized successfully
+[2025-07-09T18:53:48.577Z] [info] Initializing server services...
+[2025-07-09T18:53:48.687Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T18:53:48.688Z] [info] Server services initialized successfully
+[2025-07-09T18:53:49.334Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T18:53:49.334Z] [info] Server services initialized successfully
+[2025-07-09T18:53:55.396Z] [info] Initializing server services...
+[2025-07-09T18:53:55.795Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T18:53:55.795Z] [info] Server services initialized successfully
+[2025-07-09T18:53:55.497Z] [info] Initializing server services...
+[2025-07-09T18:53:56.142Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T18:53:56.142Z] [info] Server services initialized successfully
+[2025-07-09T18:54:24.698Z] [info] Initializing server services...
+[2025-07-09T18:54:25.784Z] [info] Server services initialized successfully
+[2025-07-09T18:54:25.784Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-09T18:54:37.862Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-09T18:54:37.862Z"}
+[2025-07-09T18:54:55.037Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T18:54:56.411Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T18:54:56.713Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T18:54:58.312Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-09T18:58:28.745Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T18:58:29.100Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T18:58:29.121Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T18:58:29.854Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T18:58:39.784Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-09T18:58:39.784Z"}
+[2025-07-09T18:58:47.785Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T18:58:48.366Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T18:58:48.389Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T18:58:48.522Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T18:58:58.521Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T18:58:58.522Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-09T18:58:58.643Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-09T18:58:58.645Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-09T18:58:59.461Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-09T18:58:59.463Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-09T18:58:59.465Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-09T18:58:59.467Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-09T18:58:59.468Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-09T18:58:59.470Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-09T18:58:59.472Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-09T18:59:18.075Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T18:59:18.498Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T18:59:18.652Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T18:59:19.416Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-09T18:59:44.804Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T18:59:44.805Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-09T18:59:44.883Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-09T18:59:44.885Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-09T18:59:45.300Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-09T18:59:45.301Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-09T18:59:45.303Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-09T18:59:45.304Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-09T18:59:45.306Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-09T18:59:45.307Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-09T18:59:45.309Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-09T19:01:13.101Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T19:01:13.102Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-09T19:01:13.209Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-09T19:01:13.210Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-09T19:01:13.638Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-09T19:01:13.640Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-09T19:01:13.641Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-09T19:01:13.643Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-09T19:01:13.645Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-09T19:01:13.646Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-09T19:01:13.648Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-09T19:01:14.803Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T19:01:15.736Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T19:01:15.748Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T19:01:15.878Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T19:01:19.975Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T19:01:19.976Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-09T19:01:20.337Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-09T19:01:20.339Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-09T19:01:21.195Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-09T19:01:21.197Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-09T19:01:21.199Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-09T19:01:21.201Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-09T19:01:21.203Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-09T19:01:21.205Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-09T19:01:21.206Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-09T19:01:29.938Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T19:01:30.416Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T19:01:30.578Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T19:01:31.635Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-09T19:03:22.079Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-09T19:03:22.079Z"}
+[2025-07-09T19:03:25.070Z] [info] getUserLists - userId: fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T19:03:25.075Z] [info] getUserLists - whereConditions Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","deletedAt":null}
+[2025-07-09T19:03:25.169Z] [info] getUserLists - Basic query found: 1 records
+[2025-07-09T19:03:25.169Z] [info] Basic List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603"}
+[2025-07-09T19:03:25.579Z] [info] getUserLists - Referenced List IDs Context: ["6e10d7c0-8a5f-4d2d-adc8-456ef311a603"]
+[2025-07-09T19:03:25.581Z] [info] getUserLists - Existing Lists found: 1
+[2025-07-09T19:03:25.582Z] [info] Existing List: 6e10d7c0-8a5f-4d2d-adc8-456ef311a603 - The Most Frequent Danish Adjectives, 1-50
+[2025-07-09T19:03:25.584Z] [info] getUserLists - Found 1 raw user lists
+[2025-07-09T19:03:25.585Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
+[2025-07-09T19:03:25.587Z] [info] getUserLists - Returning 1 processed user lists
+[2025-07-09T19:03:25.588Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-09T19:03:27.264Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T19:03:27.782Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T19:03:27.943Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T19:03:28.688Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-09T19:03:45.773Z] [info] Settings synchronized successfully Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","settingsKeys":["ui","filters"],"studyPreferencesKeys":["learning","practice"],"timestamp":"2025-07-09T19:03:45.773Z"}
+[2025-07-09T19:04:11.718Z] [info] Fetching comprehensive statistics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T19:04:12.290Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
+[2025-07-09T19:04:12.309Z] [info] Fetching session stats for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
+[2025-07-09T19:04:12.738Z] [info] Session stats fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399

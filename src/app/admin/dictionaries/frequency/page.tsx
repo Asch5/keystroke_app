@@ -190,11 +190,11 @@ export default function FrequencyPage() {
                   <div className="text-center">
                     {!fileName ? (
                       <>
-                        <FileJsonIcon className="mx-auto h-12 w-12 text-gray-400" />
+                        <FileJsonIcon className="mx-auto h-12 w-12 text-content-tertiary" />
                         <div className="mt-4">
                           <label
                             htmlFor="file-upload"
-                            className="cursor-pointer font-medium text-blue-600 hover:text-blue-500"
+                            className="cursor-pointer font-medium text-info-foreground hover:text-info"
                           >
                             Upload a JSON file
                             <input
@@ -206,7 +206,7 @@ export default function FrequencyPage() {
                               onChange={handleFileUpload}
                             />
                           </label>
-                          <p className="mt-1 text-sm text-gray-500">
+                          <p className="mt-1 text-sm text-content-secondary">
                             Supported format:
                             combinedArrayWordsWithFrwquency.json
                           </p>
@@ -215,10 +215,10 @@ export default function FrequencyPage() {
                     ) : (
                       <div className="py-4">
                         <div className="flex items-center justify-center mb-2">
-                          <FileJsonIcon className="h-8 w-8 text-green-500 mr-2" />
+                          <FileJsonIcon className="h-8 w-8 text-success-foreground mr-2" />
                           <span className="font-medium">{fileName}</span>
                         </div>
-                        <p className="text-sm text-gray-600 mb-4">
+                        <p className="text-sm text-content-secondary mb-4">
                           {jsonData.length} words loaded successfully
                         </p>
                         <Button
@@ -234,12 +234,12 @@ export default function FrequencyPage() {
                 </div>
 
                 {jsonData.length > 0 && (
-                  <div className="bg-gray-50 p-4 rounded-md">
-                    <h3 className="text-sm font-medium text-gray-900 mb-2">
+                  <div className="bg-content-soft p-4 rounded-md">
+                    <h3 className="text-sm font-medium text-foreground mb-2">
                       Preview ({Math.min(5, jsonData.length)} of{' '}
                       {jsonData.length} words)
                     </h3>
-                    <ul className="text-xs text-gray-600 space-y-1">
+                    <ul className="text-xs text-content-secondary space-y-1">
                       {jsonData.slice(0, 5).map((item, index) => (
                         <li
                           key={index}
@@ -247,7 +247,7 @@ export default function FrequencyPage() {
                         >
                           {item.word} (rank: {item.orderIndexGeneralWord})
                           {item.isPartOfSpeech && item.partOfSpeech && (
-                            <span className="text-gray-400 ml-1">
+                            <span className="text-content-tertiary ml-1">
                               - {Object.keys(item.partOfSpeech).join(', ')}
                             </span>
                           )}
@@ -296,24 +296,30 @@ export default function FrequencyPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                    <div className="bg-gray-100 p-4 rounded-lg">
-                      <div className="text-sm text-gray-500 dark:text-black-400">
+                    <div className="bg-content-soft p-4 rounded-lg">
+                      <div className="text-sm text-content-secondary">
                         Total Words
                       </div>
                       <div className="text-2xl font-bold">{results.total}</div>
                     </div>
-                    <div className="bg-green-100 p-4 rounded-lg">
-                      <div className="text-sm text-gray-500">Added</div>
+                    <div className="bg-success-subtle p-4 rounded-lg">
+                      <div className="text-sm text-content-secondary">
+                        Added
+                      </div>
                       <div className="text-2xl font-bold">{results.added}</div>
                     </div>
-                    <div className="bg-blue-100 p-4 rounded-lg">
-                      <div className="text-sm text-gray-500">Updated</div>
+                    <div className="bg-info-subtle p-4 rounded-lg">
+                      <div className="text-sm text-content-secondary">
+                        Updated
+                      </div>
                       <div className="text-2xl font-bold">
                         {results.updated}
                       </div>
                     </div>
-                    <div className="bg-yellow-100 p-4 rounded-lg">
-                      <div className="text-sm text-gray-500">Skipped</div>
+                    <div className="bg-warning-subtle p-4 rounded-lg">
+                      <div className="text-sm text-content-secondary">
+                        Skipped
+                      </div>
                       <div className="text-2xl font-bold">
                         {results.skipped}
                       </div>
@@ -336,7 +342,7 @@ export default function FrequencyPage() {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-gray-500">
+                  <p className="text-content-secondary">
                     No import results to show. Import some words first.
                   </p>
                 </div>

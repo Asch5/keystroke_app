@@ -90,11 +90,11 @@ export function ChooseRightWordGame({
     if (!showFeedback) return null;
 
     if (index === correctIndex) {
-      return <CheckCircle className="h-4 w-4 text-green-600" />;
+      return <CheckCircle className="h-4 w-4 text-success-foreground" />;
     }
 
     if (index === selectedIndex && index !== correctIndex) {
-      return <XCircle className="h-4 w-4 text-red-600" />;
+      return <XCircle className="h-4 w-4 text-error-foreground" />;
     }
 
     return null;
@@ -160,11 +160,11 @@ export function ChooseRightWordGame({
                 'justify-between h-auto p-4 text-left transition-all duration-200',
                 showFeedback &&
                   index === correctIndex &&
-                  'ring-2 ring-green-500',
+                  'ring-2 ring-success-border',
                 showFeedback &&
                   index === selectedIndex &&
                   index !== correctIndex &&
-                  'ring-2 ring-red-500',
+                  'ring-2 ring-error-border',
               )}
             >
               <span className="text-lg font-medium">{option}</span>
@@ -179,7 +179,7 @@ export function ChooseRightWordGame({
             <div
               className={cn(
                 'flex items-center justify-center gap-2 text-lg font-semibold',
-                isCorrect ? 'text-green-600' : 'text-red-600',
+                isCorrect ? 'text-success-foreground' : 'text-error-foreground',
               )}
             >
               {isCorrect ? (

@@ -40,13 +40,13 @@ export function TypingSessionSummary({
             <div className="text-sm text-muted-foreground">Words Practiced</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-2xl font-bold text-success-foreground">
               {wordResults.filter((r) => r.isCorrect).length}
             </div>
             <div className="text-sm text-muted-foreground">Correct</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <div className="text-2xl font-bold text-info-foreground">
               {accuracy}%
             </div>
             <div className="text-sm text-muted-foreground">Accuracy</div>

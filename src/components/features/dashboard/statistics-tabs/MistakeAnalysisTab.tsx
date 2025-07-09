@@ -28,7 +28,7 @@ export const MistakeAnalysisTab: React.FC<MistakeAnalysisTabProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">
+              <div className="text-2xl font-bold text-warning-foreground">
                 {statistics.mistakeAnalysis.totalMistakes}
               </div>
               <div className="text-sm text-muted-foreground">
@@ -52,8 +52,8 @@ export const MistakeAnalysisTab: React.FC<MistakeAnalysisTabProps> = ({
                 <span
                   className={`font-medium flex items-center gap-1 ${
                     statistics.mistakeAnalysis.improvementRate >= 0
-                      ? 'text-green-600'
-                      : 'text-red-600'
+                      ? 'text-success-foreground'
+                      : 'text-error-foreground'
                   }`}
                 >
                   {statistics.mistakeAnalysis.improvementRate >= 0 ? (

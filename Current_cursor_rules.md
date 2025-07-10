@@ -185,34 +185,119 @@ type ProductId = string & { readonly brand: unique symbol };
   import { PrismaClient } from '@prisma/client';
   ```
 
-## 9. Debugging and Monitoring
+## 9. Modern Logging and Observability (2025 Standards)
 
-**Rule:** Use the provided tools for logging and debugging to maintain visibility into server-side operations and enable autonomous debugging capabilities.
+**Rule:** Use the modernized logging system that follows 2025 best practices for enterprise-grade observability, performance monitoring, and autonomous debugging.
 
 **Implementation:**
 
-- **Server Logging**: For all server-side logging, you must import and use the `serverLog` function from `src/core/infrastructure/monitoring/serverLogger.ts`.
-- **Client-Side Logging**: For client-side debugging, use the `clientLog` utility from `src/core/infrastructure/monitoring/clientLogger.ts`. This utility provides:
-  - **Environment-Aware Behavior**: Automatically detects browser vs server environments and handles logging appropriately
-  - **Dual Storage**: Logs to console (both environments), file system (server-side), and localStorage (browser-side)
-  - **Log Levels**: Standardized levels (`debug`, `info`, `warn`, `error`) with optional context
-  - **Development-Only**: By default, logs are only shown in development mode. Use the `force` parameter to log in production if absolutely necessary.
-  - **Async/Sync Options**: Use async functions (`debugLog`, `infoLog`, etc.) for proper error handling or sync versions (`debugLogSync`, `infoLogSync`, etc.) for fire-and-forget logging
-  - **Avoid Raw `console.log`**: Replace all direct `console.log` calls with the appropriate utility for consistency and better control.
-- **Autonomous Debugging**: Use the `DebugReader` class from `src/core/infrastructure/monitoring/debugReader.ts` for AI-powered debugging:
-  - **Log Analysis**: `DebugReader.analyzeCurrentState()` provides comprehensive analysis of current system state
-  - **Issue Detection**: Automatic detection of authentication, database, API, performance, and UX issues
-  - **Health Monitoring**: `DebugReader.getSystemHealthReport()` provides real-time system health assessment
-  - **Pattern Recognition**: Identifies common error patterns and provides actionable recommendations
-  - **Search Capabilities**: `DebugReader.searchForIssue(query)` for targeted issue investigation
-  - **Global Access**: In development, `window.KeystrokeDebug` provides browser console access to debugging utilities
-- **Log Storage Locations**:
-  - Server logs: `logs/server.log`
-  - Client logs (server-side): `logs/client.log` (JSON format)
-  - Client logs (browser-side): `localStorage` under `keystroke_client_logs`
-- **Structured Logging**: Use structured logging with consistent log levels, timestamps, environment detection, and context preservation.
-- **Error Tracking**: Integrate with error tracking services (Sentry) for production error monitoring. Automatic capture of uncaught errors and unhandled promise rejections.
-- **Performance Monitoring**: Track Core Web Vitals and custom performance metrics with autonomous pattern detection.
+### **Primary Logging Interface**
+
+- **Modern Logger**: Use `log` from `src/core/infrastructure/monitoring/modernLogger.ts` as the primary logging interface:
+
+  ```typescript
+  import { log } from '@/core/infrastructure/monitoring/modernLogger';
+
+  // Standard logging with automatic context enrichment
+  await log.debug('Debug information', { context });
+  await log.info('Information message', { context });
+  await log.warn('Warning message', { context });
+  await log.error('Error occurred', error, { context });
+
+  // Specialized logging
+  await log.performance('Operation completed', duration, { operation, userId });
+  await log.business('User subscription created', { userId, plan });
+  await log.security('Failed login attempt', { ip, userAgent });
+  await log.request('POST', '/api/users', 201, 150, { userId, requestId });
+  ```
+
+### **Enhanced Logging Features**
+
+- **Structured Logging**: All logs automatically include structured context (userId, sessionId, traceId, timestamp, environment)
+- **Multi-Destination Routing**: Logs automatically route to appropriate destinations (console, file system, localStorage, external services)
+- **Privacy Compliance**: Automatic PII detection and redaction with configurable sensitivity levels
+- **Performance Integration**: Automatic Core Web Vitals tracking, memory leak detection, long task monitoring
+- **Environment-Aware Configuration**: Automatic configuration based on NODE_ENV with custom override support
+
+### **React Component Logging**
+
+- **Component Hooks**: Use specialized React hooks for component-aware logging:
+
+  ```typescript
+  import {
+    usePerformanceLogging,
+    useErrorBoundaryLogging,
+    useComponentLogging,
+  } from '@/hooks/useModernLogging';
+
+  function MyComponent() {
+    usePerformanceLogging('MyComponent', 16); // Auto performance monitoring
+    const logError = useErrorBoundaryLogging('MyComponent');
+    const componentLog = useComponentLogging('MyComponent');
+  }
+  ```
+
+### **Autonomous Debugging (Enhanced)**
+
+- **AI-Powered Analysis**: Enhanced `DebugReader` class with improved pattern recognition:
+
+  ```typescript
+  import { DebugReader } from '@/core/infrastructure/monitoring/debugReader';
+
+  const healthReport = await DebugReader.getSystemHealthReport();
+  const issueAnalysis = await DebugReader.analyzeCurrentState();
+  const specificIssue = await DebugReader.searchForIssue(
+    'authentication failure',
+  );
+  ```
+
+- **Global Debug Access**: In development, `window.KeystrokeDebug` provides comprehensive debugging utilities
+- **Autonomous Pattern Detection**: Automatic identification of performance bottlenecks, error patterns, and system health issues
+
+### **OpenTelemetry Integration**
+
+- **Observability Layer**: `otelLogger.ts` provides OpenTelemetry-compatible logging with trace correlation
+- **External Service Integration**: Ready-to-use integrations with Honeycomb, DataDog, New Relic, and other observability platforms
+- **Distributed Tracing**: Automatic trace ID correlation across service boundaries
+
+### **Configuration Management**
+
+- **Environment-Based Config**: `loggingConfig.ts` provides intelligent configuration based on environment:
+  - Development: Debug level, console + file output, no PII redaction
+  - Production: Warn level, external service output, full PII redaction
+  - Testing: Warn level, console only, partial redaction
+  - Staging: Info level, console + external, full redaction
+- **Runtime Configuration Updates**: Dynamic logging configuration without application restart
+
+### **Legacy System Compatibility**
+
+- **Backward Compatibility**: Existing `clientLog` and `serverLog` functions remain functional
+- **Migration Path**: Gradual migration strategy from legacy logging to modern system
+- **Automatic Console Replacement**: Optional console.log replacement for legacy code
+
+### **Storage and Persistence**
+
+- **Enhanced Storage Locations**:
+  - Server logs: `logs/server.log` (structured JSON with rotation)
+  - Client logs (server-side): `logs/client.log` (enhanced with trace correlation)
+  - Client logs (browser-side): `localStorage` under `keystroke_client_logs` (with size management)
+  - External services: OpenTelemetry OTLP, DataDog, custom endpoints
+- **Log Rotation**: Automatic log file rotation with configurable size limits and retention policies
+- **Compressed Storage**: Automatic log compression for efficient storage
+
+### **Performance and Security**
+
+- **Asynchronous by Default**: Non-blocking logging operations with batched transmission
+- **Memory Management**: Circular buffer with automatic cleanup and leak prevention
+- **Security Compliance**: GDPR, SOC 2, HIPAA-compatible logging with audit trails
+- **Zero-Trust Architecture**: Secure log transmission with encryption and authentication
+
+### **Best Practices Enforcement**
+
+- **Avoid Raw Console**: Replace all `console.log` calls with structured logging
+- **Rich Context**: Always provide meaningful context objects with user ID, session ID, and relevant metadata
+- **Error Correlation**: Use error boundaries and automatic error correlation for better debugging
+- **Performance Awareness**: Use performance logging for operations taking longer than thresholds
 
 ## 10. Communication and Proactiveness
 

@@ -256,11 +256,20 @@ AI Documentation System/
 - **Complexity Level**: Advanced
 - **Key Topics**: Performance optimization, monitoring, metrics, benchmarking
 
+**LOGGING_SYSTEM_OVERVIEW.md** - Modern Logging Architecture (2025 Standards)
+
+- **Purpose**: Comprehensive logging system with enterprise-grade observability and autonomous debugging
+- **Scope**: Modern logging patterns, structured logging, OpenTelemetry integration, privacy compliance, performance monitoring
+- **Dependencies**: DESCRIPTION_OF_CORE_FOLDER.md, DEBUGGING_SYSTEM.md
+- **AI Context**: Modern logging system for 2025 standards with autonomous debugging capabilities
+- **Complexity Level**: Intermediate-Advanced
+- **Key Topics**: Structured logging, observability, autonomous debugging, privacy compliance, performance monitoring
+
 **DEBUGGING_SYSTEM.md** - Debugging Architecture
 
 - **Purpose**: Autonomous debugging system and monitoring implementation
 - **Scope**: Debug tools, log analysis, autonomous debugging, monitoring systems
-- **Dependencies**: DESCRIPTION_OF_CORE_FOLDER.md, PERFORMANCE_IMPLEMENTATION.md
+- **Dependencies**: DESCRIPTION_OF_CORE_FOLDER.md, PERFORMANCE_IMPLEMENTATION.md, LOGGING_SYSTEM_OVERVIEW.md
 - **AI Context**: Debugging system for autonomous issue detection and resolution
 - **Complexity Level**: Advanced
 - **Key Topics**: Autonomous debugging, log analysis, monitoring, error detection

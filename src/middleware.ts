@@ -27,13 +27,25 @@ const apiPaths = [
 function enhancedMiddleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Log all API routes for debugging (console only in Edge Runtime)
+  // Log all API routes for debugging (edge runtime compatible)
   if (pathname.startsWith('/api/') && process.env.NODE_ENV === 'development') {
-    console.log('🔍 Middleware API request:', {
+    // Edge runtime compatible logging - using structured format
+    const logData = {
+      level: 'info',
+      message: 'Middleware API request',
       method: request.method,
       pathname,
       timestamp: new Date().toISOString(),
-    });
+    };
+
+    // In Edge Runtime, we can only use console but format it consistently
+    console.log(
+      `[${logData.timestamp}] [${logData.level.toUpperCase()}] ${logData.message}:`,
+      {
+        method: logData.method,
+        pathname: logData.pathname,
+      },
+    );
   }
 
   return NextResponse.next();

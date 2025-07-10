@@ -457,8 +457,7 @@ export async function getListWords(
     }
 
     // Build where conditions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const whereConditions: any = {
+    const whereConditions: Record<string, unknown> = {
       listId,
     };
 
@@ -481,8 +480,7 @@ export async function getListWords(
     }
 
     // Build orderBy conditions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let orderBy: any = {};
+    let orderBy: Record<string, unknown> = {};
 
     switch (sortBy) {
       case 'word':

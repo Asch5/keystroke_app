@@ -7,6 +7,7 @@
 import {
   infoLog,
   errorLog,
+  warnLog,
 } from '@/core/infrastructure/monitoring/clientLogger';
 
 // Performance thresholds for Core Web Vitals
@@ -89,7 +90,7 @@ export class BundleSizeMonitor {
     // Flag large resources
     if (size > 1000000) {
       // 1MB
-      console.warn('🐘 Large resource detected:', {
+      warnLog('Large resource detected', {
         name: entry.name,
         size: `${(size / 1024 / 1024).toFixed(2)}MB`,
         duration: `${duration.toFixed(0)}ms`,
@@ -100,7 +101,7 @@ export class BundleSizeMonitor {
     // Flag slow loading resources
     if (duration > 3000) {
       // 3 seconds
-      console.warn('🐌 Slow loading resource:', {
+      warnLog('Slow loading resource', {
         name: entry.name,
         duration: `${duration.toFixed(0)}ms`,
         size: size ? `${(size / 1024).toFixed(0)}KB` : 'unknown',
@@ -169,29 +170,35 @@ export class BundleSizeMonitor {
   logRecommendations(): void {
     const analysis = this.getBundleAnalysis();
 
-    console.group('📊 Bundle Performance Analysis');
-    console.log(`Total Resources: ${analysis.totalResources}`);
-    console.log(
-      `Total Size: ${(analysis.totalSize / 1024 / 1024).toFixed(2)}MB`,
-    );
+    // Log bundle performance analysis summary
+    infoLog('Bundle Performance Analysis', {
+      totalResources: analysis.totalResources,
+      totalSize: `${(analysis.totalSize / 1024 / 1024).toFixed(2)}MB`,
+      largeResourcesCount: analysis.largeResources.length,
+      slowResourcesCount: analysis.slowResources.length,
+    });
 
+    // Log large resources if any
     if (analysis.largeResources.length > 0) {
-      console.group('🐘 Large Resources (>500KB)');
-      analysis.largeResources.forEach((resource) => {
-        console.log(`${resource.name}: ${(resource.size / 1024).toFixed(0)}KB`);
+      warnLog('Large Resources Detected (>500KB)', {
+        resources: analysis.largeResources.map((resource) => ({
+          name: resource.name,
+          size: `${(resource.size / 1024).toFixed(0)}KB`,
+          duration: `${resource.duration.toFixed(0)}ms`,
+        })),
       });
-      console.groupEnd();
     }
 
+    // Log slow resources if any
     if (analysis.slowResources.length > 0) {
-      console.group('🐌 Slow Resources (>2s)');
-      analysis.slowResources.forEach((resource) => {
-        console.log(`${resource.name}: ${resource.duration.toFixed(0)}ms`);
+      warnLog('Slow Resources Detected (>2s)', {
+        resources: analysis.slowResources.map((resource) => ({
+          name: resource.name,
+          duration: `${resource.duration.toFixed(0)}ms`,
+          size: `${(resource.size / 1024).toFixed(0)}KB`,
+        })),
       });
-      console.groupEnd();
     }
-
-    console.groupEnd();
   }
 }
 
@@ -242,9 +249,11 @@ export class ComponentPerformanceTracker {
     // Warn about slow renders
     if (renderTime > 16) {
       // 16ms = 60fps threshold
-      console.warn(
-        `🐌 Slow render detected: ${componentName} took ${renderTime.toFixed(2)}ms`,
-      );
+      warnLog('Slow render detected', {
+        componentName,
+        renderTime: `${renderTime.toFixed(2)}ms`,
+        threshold: '16ms (60fps)',
+      });
     }
   }
 
@@ -289,8 +298,6 @@ export class ComponentPerformanceTracker {
   logPerformanceSummary(): void {
     const allStats = this.getAllStats();
 
-    console.group('⚡ Component Performance Summary');
-
     // Sort by average render time (slowest first)
     const sortedStats = Array.from(allStats.entries())
       .filter(([, stats]) => stats !== null)
@@ -299,17 +306,24 @@ export class ComponentPerformanceTracker {
           (b?.averageRenderTime || 0) - (a?.averageRenderTime || 0),
       );
 
-    sortedStats.forEach(([componentName, stats]) => {
-      if (stats) {
-        console.log(`${componentName}:`, {
-          avg: `${stats.averageRenderTime.toFixed(2)}ms`,
-          max: `${stats.maxRenderTime.toFixed(2)}ms`,
-          renders: stats.totalRenders,
-        });
-      }
-    });
+    const performanceData = sortedStats
+      .map(([componentName, stats]) => {
+        if (stats) {
+          return {
+            componentName,
+            averageRenderTime: `${stats.averageRenderTime.toFixed(2)}ms`,
+            maxRenderTime: `${stats.maxRenderTime.toFixed(2)}ms`,
+            totalRenders: stats.totalRenders,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
 
-    console.groupEnd();
+    infoLog('Component Performance Summary', {
+      totalComponents: performanceData.length,
+      components: performanceData,
+    });
   }
 }
 
@@ -349,7 +363,7 @@ export class MemoryUsageMonitor {
    */
   startMonitoring(): void {
     if (typeof window === 'undefined' || !performance.memory) {
-      console.warn('Memory monitoring not supported in this environment');
+      warnLog('Memory monitoring not supported in this environment');
       return;
     }
 
@@ -409,7 +423,7 @@ export class MemoryUsageMonitor {
 
     // If memory increased by more than 50MB in the last 10 measurements
     if (memoryIncrease > 50 * 1024 * 1024) {
-      console.warn('🚨 Potential memory leak detected:', {
+      warnLog('Potential memory leak detected', {
         increase: `${(memoryIncrease / 1024 / 1024).toFixed(2)}MB`,
         timeSpan: `${(timeSpan / 1000).toFixed(0)}s`,
         currentUsage: `${(newest.usedJSHeapSize / 1024 / 1024).toFixed(2)}MB`,
@@ -459,21 +473,22 @@ export function initializePerformanceMonitoring(): void {
 
   // Global performance summary function for debugging
   (window as WindowWithPerformanceSummary).performanceSummary = () => {
-    console.group('🚀 Performance Summary');
+    infoLog('Performance Summary - Starting comprehensive analysis');
 
     BundleSizeMonitor.getInstance().logRecommendations();
     ComponentPerformanceTracker.getInstance().logPerformanceSummary();
 
     const memoryStats = MemoryUsageMonitor.getInstance().getMemoryStats();
     if (memoryStats) {
-      console.log('💾 Memory Usage:', {
+      infoLog('Memory Usage Statistics', {
         current: `${memoryStats.current.toFixed(2)}MB`,
         peak: `${memoryStats.peak.toFixed(2)}MB`,
         average: `${memoryStats.average.toFixed(2)}MB`,
+        measurements: memoryStats.measurements,
       });
     }
 
-    console.groupEnd();
+    infoLog('Performance Summary - Analysis complete');
   };
 
   infoLog(

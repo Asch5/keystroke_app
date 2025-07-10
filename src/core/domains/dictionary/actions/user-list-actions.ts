@@ -426,8 +426,7 @@ export async function getAvailablePublicLists(
     const { search = '', difficulty } = filters;
 
     // Build where conditions for public lists
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const whereConditions: any = {
+    const whereConditions: Record<string, unknown> = {
       isPublic: true,
       deletedAt: null,
     };
@@ -539,8 +538,7 @@ export async function getPublicUserLists(
     const { search = '', difficulty } = filters;
 
     // Build where conditions for public user lists
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const whereConditions: any = {
+    const whereConditions: Record<string, unknown> = {
       isPublic: true,
       deletedAt: null,
       userId: { not: userId }, // Exclude current user's lists
@@ -1562,8 +1560,7 @@ export async function getUserListWords(
     }
 
     // Build where conditions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const whereConditions: any = {
+    const whereConditions: Record<string, unknown> = {
       userListId,
       userDictionary: {
         deletedAt: null,
@@ -1573,7 +1570,7 @@ export async function getUserListWords(
     // Add search condition if provided
     if (search) {
       whereConditions.userDictionary = {
-        ...whereConditions.userDictionary,
+        deletedAt: null,
         definition: {
           wordDetails: {
             some: {
@@ -1592,8 +1589,7 @@ export async function getUserListWords(
     }
 
     // Build orderBy conditions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let orderBy: any = {};
+    let orderBy: Record<string, unknown> = {};
     switch (sortBy) {
       case 'word':
         orderBy = {

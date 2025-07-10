@@ -546,3 +546,18 @@
 [2025-07-09T21:23:56.076Z] [info] List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","customName":null,"listId":"6e10d7c0-8a5f-4d2d-adc8-456ef311a603","hasOriginalList":true,"originalListName":"The Most Frequent Danish Adjectives, 1-50","userListWordsCount":5}
 [2025-07-09T21:23:56.078Z] [info] getUserLists - Returning 1 processed user lists
 [2025-07-09T21:23:56.081Z] [info] Processed List 1 Context: {"id":"e5914121-91a3-453a-9689-85b8abbb872b","displayName":"The Most Frequent Danish Adjectives, 1-50","wordCount":5,"hasOriginalList":true}
+[2025-07-10T21:12:55.355Z] [info] Initializing server services...
+[2025-07-10T21:12:55.330Z] [info] Initializing server services...
+[2025-07-10T21:12:55.418Z] [info] Initializing server services...
+[2025-07-10T21:12:55.565Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-10T21:12:55.565Z] [info] Server services initialized successfully
+[2025-07-10T21:12:55.507Z] [info] Server services initialized successfully
+[2025-07-10T21:12:55.507Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-10T21:12:55.786Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-10T21:12:55.787Z] [info] Server services initialized successfully
+[2025-07-10T21:13:05.567Z] [info] Initializing server services...
+[2025-07-10T21:13:05.642Z] [info] Server services initialized successfully
+[2025-07-10T21:13:05.642Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-10T21:13:05.862Z] [info] Initializing server services...
+[2025-07-10T21:13:06.234Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-10T21:13:06.234Z] [info] Server services initialized successfully

@@ -9,6 +9,8 @@
  * - Rate limiting compliance
  */
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+
 export interface TTSVoiceConfig {
   languageCode: string;
   name: string;
@@ -119,8 +121,9 @@ class TextToSpeechService {
   constructor() {
     this.apiKey = process.env.GOOGLE_TTS_API_KEY || '';
     if (!this.apiKey) {
-      console.warn(
-        '⚠️  GOOGLE_TTS_API_KEY not found in environment variables. TTS functionality will be disabled.',
+      serverLog(
+        'GOOGLE_TTS_API_KEY not found in environment variables. TTS functionality will be disabled.',
+        'warn',
       );
       // Don't throw error - just disable TTS functionality
     }
@@ -248,7 +251,7 @@ class TextToSpeechService {
         estimatedCost,
       };
     } catch (error) {
-      console.error('TTS Service Error:', error);
+      serverLog('TTS Service Error', 'error', { error: String(error) });
       throw error;
     }
   }
@@ -397,9 +400,11 @@ class TextToSpeechService {
         return genderMatchedVoice;
       } else {
         // Log that requested gender is not available and fallback to default
-        console.warn(
-          `Voice gender '${request.ssmlGender}' not available for language '${request.languageCode}'. Available genders: ${this.getAvailableGenders(request.languageCode).join(', ')}. Using default.`,
-        );
+        serverLog('Voice gender not available, using default', 'warn', {
+          requestedGender: request.ssmlGender,
+          languageCode: request.languageCode,
+          availableGenders: this.getAvailableGenders(request.languageCode),
+        });
       }
     }
 

@@ -4,13 +4,11 @@ import { RelationshipType } from '@/core/types';
 import type { WordFormValues } from '../index';
 
 export function useWordEditFormActions(
-  form: UseFormReturn<WordFormValues>,
   wordId: string,
-  setIsLoading: (loading: boolean) => void,
+  form: UseFormReturn<WordFormValues>,
 ) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (_values: WordFormValues) => {
-    setIsLoading(true);
     try {
       // Form submission logic would go here
       // For now, just show success message
@@ -18,8 +16,6 @@ export function useWordEditFormActions(
     } catch (error) {
       console.error('Error updating word:', error);
       toast.error('An error occurred while processing the form');
-    } finally {
-      setIsLoading(false);
     }
   };
 

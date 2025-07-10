@@ -869,3 +869,6 @@ type JsonValue =
   | { [key in string]?: JsonValue }
   | Array<JsonValue>
   | null;
+
+// Export display names for centralized access
+export * from './display-names';

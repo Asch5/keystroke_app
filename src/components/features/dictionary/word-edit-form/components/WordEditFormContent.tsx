@@ -1,20 +1,51 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Save, Loader2 } from 'lucide-react';
-// Remove invalid imports
-// import { WordEditFormProps } from '../types';
 
-// Create minimal interface for props
+// Define proper interface for component props
 interface WordEditFormContentProps {
   wordId: string;
-  wordDetails: Record<string, unknown> | null;
+  wordDetails: {
+    word: {
+      text: string;
+      phoneticGeneral?: string | null;
+      etymology?: string | null;
+    };
+    definitions?: Array<{
+      text: string;
+      partOfSpeech: string;
+      subjectStatusLabels?: string | null;
+      isPlural: boolean;
+      generalLabels?: string | null;
+      grammaticalNote?: string | null;
+      usageNote?: string | null;
+      isInShortDef: boolean;
+      examples: Array<{
+        text: string;
+        grammaticalNote?: string | null;
+        audio?: string | null;
+      }>;
+    }>;
+    audioFiles?: Array<{
+      url: string;
+      isPrimary: boolean;
+    }>;
+    relatedWords?: Record<
+      string,
+      Array<{
+        word: string;
+        phoneticGeneral?: string | null;
+        audio?: string | null;
+      }>
+    >;
+  } | null;
   isLoading: boolean;
 }
+
 import { useWordEditFormState } from '../hooks/useWordEditFormState';
 import { useWordEditFormActions } from '../hooks/useWordEditFormActions';
 import { WordBasicFields } from './WordBasicFields';
@@ -29,21 +60,22 @@ export function WordEditFormContent({
   isLoading,
 }: WordEditFormContentProps) {
   const router = useRouter();
-  const [isSaving, setIsSaving] = useState(false);
 
   // Custom hooks for state and actions
-  const { form } = useWordEditFormState(wordDetails);
+  const { form } = useWordEditFormState(wordDetails, isLoading);
   const {
     onSubmit,
     addDefinition,
+    removeDefinition,
     addExample,
+    removeExample,
     addRelatedWord,
-    addAudioFile,
-    onRemoveDefinition,
-    onRemoveExample,
     removeRelatedWord,
+    addAudioFile,
     removeAudioFile,
-  } = useWordEditFormActions(wordId, form, isSaving, setIsSaving);
+  } = useWordEditFormActions(wordId, form);
+
+  const isSaving = form.formState.isSubmitting;
 
   return (
     <Form {...form}>
@@ -68,9 +100,9 @@ export function WordEditFormContent({
               form={form}
               isLoading={isLoading}
               addDefinition={addDefinition}
+              removeDefinition={removeDefinition}
               addExample={addExample}
-              onRemoveDefinition={onRemoveDefinition}
-              onRemoveExample={onRemoveExample}
+              removeExample={removeExample}
             />
           </TabsContent>
 

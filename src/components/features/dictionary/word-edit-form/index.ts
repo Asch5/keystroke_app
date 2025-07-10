@@ -12,47 +12,43 @@
  * 4. Components import directly from @/core/types (no duplication)
  */
 
-// Export shared form type for all components
-export type WordFormValues = {
+export interface WordFormValues {
   word: string;
-  phonetic?: string;
-  etymology?: string;
+  phonetic?: string | undefined;
+  etymology?: string | undefined;
   definitions: Array<{
     text: string;
     partOfSpeech: string;
-    subjectStatusLabels?: string;
+    subjectStatusLabels?: string | undefined;
     isPlural: boolean;
-    generalLabels?: string;
-    grammaticalNote?: string;
-    usageNote?: string;
+    generalLabels?: string | undefined;
+    grammaticalNote?: string | undefined;
+    usageNote?: string | undefined;
     isInShortDef: boolean;
     examples: Array<{
       text: string;
-      grammaticalNote?: string;
-      audio?: string;
+      grammaticalNote?: string | undefined;
+      audio?: string | undefined;
     }>;
   }>;
   audioFiles: Array<{
     url: string;
     isPrimary: boolean;
   }>;
-  relatedWords?: Record<
-    string,
-    Array<{
-      word: string;
-      phonetic?: string;
-      audio?: string;
-    }>
-  >;
-};
+  relatedWords?:
+    | Record<
+        string,
+        Array<{
+          word: string;
+          phonetic?: string | undefined;
+          audio?: string | undefined;
+        }>
+      >
+    | undefined;
+}
 
-// Export refactored components (these use @/ imports internally)
-export { DefinitionsSection } from './components/DefinitionsSection';
-export { AudioFilesSection } from './components/AudioFilesSection';
-export { RelatedWordsSection } from './components/RelatedWordsSection';
-export { WordBasicFields } from './components/WordBasicFields';
-
-// Export hooks
+// Re-export all components and hooks
+export { WordEditFormContent } from './components/WordEditFormContent';
 export { useWordEditFormState } from './hooks/useWordEditFormState';
 export { useWordEditFormActions } from './hooks/useWordEditFormActions';
 

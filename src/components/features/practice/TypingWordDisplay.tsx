@@ -2,7 +2,8 @@
 
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
-import type { SessionState, TypingPracticeSettings } from './hooks';
+import type { SessionState } from './hooks';
+import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface TypingWordDisplayProps {
   sessionState: SessionState;

@@ -1,26 +1,26 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { useUser } from '@/core/shared/hooks/useUser';
+import {
+  useTypingPracticeState,
+  useTypingAudioPlayback,
+  type WordResult,
+} from './hooks';
+import { useTypingPracticeSettings } from '@/core/shared/hooks/useSettings';
 import { LearningStatus } from '@/core/types';
+import { useUser } from '@/core/shared/hooks/useUser';
 import { TypingPracticeHeader } from './TypingPracticeHeader';
 import { TypingWordInput } from './TypingWordInput';
 import { TypingSessionSummary } from './TypingSessionSummary';
 import { TypingGettingStarted } from './TypingGettingStarted';
 import { TypingPracticeSettings } from './TypingPracticeSettings';
-import {
-  useTypingPracticeState,
-  useTypingAudioPlayback,
-  useTypingPracticeSettings,
-  type WordResult,
-} from './hooks';
 
 interface TypingPracticeContentProps {
   userListId?: string;
   listId?: string;
   difficultyLevel?: number;
   wordsCount?: number;
-  includeWordStatuses?: LearningStatus[];
+  includeWordStatuses?: (keyof typeof LearningStatus)[];
 }
 
 /**

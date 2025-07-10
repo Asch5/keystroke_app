@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Clock } from 'lucide-react';
-import type { TypingPracticeSettings } from '../hooks';
+import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface TimeSettingsProps {
   settings: TypingPracticeSettings;

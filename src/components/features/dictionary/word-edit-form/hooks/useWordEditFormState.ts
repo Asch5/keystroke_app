@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import * as z from 'zod';
 import type { WordFormValues } from '../index';
 
-// Schema aligned with WordFormValues type
-const wordFormSchema: z.ZodType<WordFormValues> = z.object({
+// Schema aligned with WordFormValues type (with explicit undefined support)
+const wordFormSchema = z.object({
   word: z.string().min(1, 'Word is required'),
   phonetic: z.string().optional(),
   etymology: z.string().optional(),
@@ -90,6 +90,17 @@ function convertNullToUndefined(
   return value === null ? undefined : value;
 }
 
+// Helper function to omit undefined values for exactOptionalPropertyTypes compliance
+function omitUndefinedProperties<T extends Record<string, unknown>>(obj: T): T {
+  const result = {} as T;
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      (result as Record<string, unknown>)[key] = value;
+    }
+  }
+  return result;
+}
+
 export function useWordEditFormState(
   wordDetails: BasicWordDetails | null,
   isLoading?: boolean,
@@ -98,50 +109,58 @@ export function useWordEditFormState(
     resolver: zodResolver(wordFormSchema),
     defaultValues: {
       word: '',
-      phonetic: '',
-      etymology: '',
+      phonetic: undefined,
+      etymology: undefined,
       definitions: [],
       audioFiles: [],
-      relatedWords: {},
+      relatedWords: undefined,
     },
   });
 
   useEffect(() => {
     if (wordDetails && !isLoading) {
-      // Convert database format (null) to form format (undefined)
-      const formData: WordFormValues = {
+      // Convert database format (null) to form format (undefined), omitting undefined values
+      const formData: WordFormValues = omitUndefinedProperties({
         word: wordDetails.word.text || '',
         phonetic: convertNullToUndefined(wordDetails.word.phoneticGeneral),
         etymology: convertNullToUndefined(wordDetails.word.etymology),
-        definitions: (wordDetails.definitions || []).map((def) => ({
-          text: def.text,
-          partOfSpeech: def.partOfSpeech,
-          subjectStatusLabels: convertNullToUndefined(def.subjectStatusLabels),
-          isPlural: def.isPlural,
-          generalLabels: convertNullToUndefined(def.generalLabels),
-          grammaticalNote: convertNullToUndefined(def.grammaticalNote),
-          usageNote: convertNullToUndefined(def.usageNote),
-          isInShortDef: def.isInShortDef,
-          examples: def.examples.map((ex) => ({
-            text: ex.text,
-            grammaticalNote: convertNullToUndefined(ex.grammaticalNote),
-            audio: convertNullToUndefined(ex.audio),
-          })),
-        })),
+        definitions: (wordDetails.definitions || []).map((def) =>
+          omitUndefinedProperties({
+            text: def.text,
+            partOfSpeech: def.partOfSpeech,
+            subjectStatusLabels: convertNullToUndefined(
+              def.subjectStatusLabels,
+            ),
+            isPlural: def.isPlural,
+            generalLabels: convertNullToUndefined(def.generalLabels),
+            grammaticalNote: convertNullToUndefined(def.grammaticalNote),
+            usageNote: convertNullToUndefined(def.usageNote),
+            isInShortDef: def.isInShortDef,
+            examples: def.examples.map((ex) =>
+              omitUndefinedProperties({
+                text: ex.text,
+                grammaticalNote: convertNullToUndefined(ex.grammaticalNote),
+                audio: convertNullToUndefined(ex.audio),
+              }),
+            ),
+          }),
+        ),
         audioFiles: wordDetails.audioFiles || [],
         relatedWords: wordDetails.relatedWords
           ? Object.fromEntries(
               Object.entries(wordDetails.relatedWords).map(([key, words]) => [
                 key,
-                words.map((word) => ({
-                  word: word.word,
-                  phonetic: convertNullToUndefined(word.phoneticGeneral),
-                  audio: convertNullToUndefined(word.audio),
-                })),
+                words.map((word) =>
+                  omitUndefinedProperties({
+                    word: word.word,
+                    phonetic: convertNullToUndefined(word.phoneticGeneral),
+                    audio: convertNullToUndefined(word.audio),
+                  }),
+                ),
               ]),
             )
-          : {},
-      };
+          : undefined,
+      });
 
       form.reset(formData);
     }

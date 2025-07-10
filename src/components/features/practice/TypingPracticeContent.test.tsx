@@ -60,13 +60,17 @@ vi.mock('./hooks/useTypingAudioPlayback', () => ({
   })),
 }));
 
-vi.mock('./hooks/useTypingPracticeSettings', () => ({
+// Mock the typing practice settings hook from the correct location
+vi.mock('@/core/shared/hooks/useSettings', () => ({
   useTypingPracticeSettings: vi.fn(() => ({
     settings: {
+      wordsCount: 5,
       autoSubmitAfterCorrect: false,
-      showTimer: true,
-      enableSound: true,
+      showDefinitionImages: true,
+      playAudioOnStart: true,
+      showProgressBar: true,
     },
+    isLoaded: true,
   })),
 }));
 

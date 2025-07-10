@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { gameSoundService } from '@/core/domains/dictionary/services/game-sound-service';
-import type { SessionState, WordResult, TypingPracticeSettings } from './index';
+import type { SessionState, WordResult } from './index';
+import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface UseTypingInputStateProps {
   sessionState: SessionState;

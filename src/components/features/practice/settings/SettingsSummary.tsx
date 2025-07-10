@@ -1,6 +1,6 @@
 'use client';
 
-import type { TypingPracticeSettings } from '../hooks';
+import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface SettingsSummaryProps {
   settings: TypingPracticeSettings;

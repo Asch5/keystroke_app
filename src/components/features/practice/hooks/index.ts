@@ -1,20 +1,25 @@
-// Session Management
+// Practice hooks - centralized exports
+
+// Audio playback
+export * from './useTypingAudioPlayback';
+
+// Core typing practice state management
+export { useTypingPracticeState } from './useTypingPracticeState';
+
+// Game state management
+export { usePracticeGameState } from './usePracticeGameState';
+
+// Session management
 export { useTypingSessionManager } from './useTypingSessionManager';
 export type { SessionState } from './useTypingSessionManager';
 
-// Word Validation
+// Word validation
 export { useTypingWordValidator } from './useTypingWordValidator';
 export type { WordResult } from './useTypingWordValidator';
 
-// Input Management
+// Input management
 export { useTypingInputManager } from './useTypingInputManager';
+export { useTypingInputState } from './useTypingInputState';
 
-// Original Hook (for backward compatibility)
-export { useTypingPracticeState } from './useTypingPracticeState';
-
-export * from './useTypingPracticeState';
-export * from './useTypingAudioPlayback';
-export * from './useTypingPracticeSettings';
-export * from './usePracticeGameState';
-export * from './useTypingInputState';
-export type { TypingPracticeSettings } from './useTypingPracticeSettings';
+// Note: TypingPracticeSettings and VocabularyPracticeSettings are now available
+// from @/core/shared/hooks/useSettings with Redux + database persistence

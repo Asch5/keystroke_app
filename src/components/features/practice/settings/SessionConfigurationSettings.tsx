@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Target } from 'lucide-react';
-import type { TypingPracticeSettings } from '../hooks';
+import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface SessionConfigurationSettingsProps {
   settings: TypingPracticeSettings;

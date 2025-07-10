@@ -1,5 +1,56 @@
 # Keystroke App - Root Structure Reference
 
+## Document Metadata
+
+```yaml
+title: 'Keystroke App - Root Structure Reference'
+purpose: 'Comprehensive guide to project structure, development workflows, dual testing architecture, and core system organization'
+scope: 'Complete project overview, folder structure, commands, testing patterns, backup systems, logging architecture, and development workflows'
+target_audience:
+  ['AI Agents', 'Full-Stack Developers', 'DevOps Engineers', 'New Team Members']
+complexity_level: 'Beginner-Intermediate'
+estimated_reading_time: '18 minutes'
+last_updated: '2025-01-17'
+version: '3.2.0'
+dependencies:
+  - 'AGENT.md'
+related_files:
+  - '@package.json'
+  - '@tests/package.json'
+  - '@vitest.config.ts'
+  - '@next.config.mjs'
+  - '@prisma/schema.prisma'
+ai_context: 'Essential foundation for understanding project organization, development workflows, and system architecture'
+semantic_keywords:
+  [
+    'project structure',
+    'development workflows',
+    'dual testing architecture',
+    'backup systems',
+    'logging architecture',
+    'database migrations',
+    'build optimization',
+    'environment configuration',
+  ]
+```
+
+## Executive Summary
+
+**Purpose Statement**: This document provides a comprehensive guide to the project structure, development workflows, and core system organization for the Keystroke App.
+
+**Key Outcomes**: After reading this document, you will understand:
+
+- Complete project structure and folder organization
+- Dual testing architecture (co-located vs separate server tests)
+- Development commands and workflow patterns
+- Database backup and migration systems
+- Logging and autonomous debugging architecture
+- Audio/TTS system organization and image authentication patterns
+
+**Prerequisites**: Basic understanding of:
+
+- @AGENT.md - Project overview and technology stack
+
 ## Structure
 
 ```

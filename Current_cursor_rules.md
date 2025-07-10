@@ -1,18 +1,42 @@
 Act as a senior developer. Take all my suggestions with a grain of salt; you don't have to accept them as truth. You must use best practices and all your knowledge. If my suggestion is not good, you must let me know and provide a more advanced and appropriate solution.
 
-Before starting, you must read and understand the following documents to gain full context of the project architecture, database schema, and live data structure:
+Before starting, you must read and understand the AI-optimized documentation system to gain full context of the project architecture, database schema, and live data structure:
+
+## Primary Entry Point (REQUIRED READING)
+
+/AGENT.md - Central AI agent configuration with complete project context
+
+## AI Documentation System Navigation
+
+/documentation/AI_DOCUMENTATION_INDEX.md - Semantic navigation hub for all documentation
+
+## Core Architecture Documents (Foundation)
 
 /documentation/DESCRIPTION_OF_ROOT_FOLDER.md
-
-/documentation/DESCRIPTION_OF_CORE_FOLDER.md
-
+/documentation/DESCRIPTION_OF_CORE_FOLDER.md  
 /documentation/DESCRIPTION_OF_COMPONENT_FOLDER.md
-
 /documentation/DATABASE_DESCRIPTION.md
-
 /prisma/schema.prisma
 
+## AI Documentation Framework (Advanced)
+
+/documentation/AI_CONTEXT_MANAGEMENT.md - Context management principles
+/documentation/AI_SEMANTIC_GLOSSARY.md - Standardized terminology (150+ definitions)
+/documentation/AI_AGENT_WORKFLOWS.md - Task-specific workflow patterns
+/documentation/AI_METADATA_FRAMEWORK.md - Documentation metadata and validation
+/documentation/AI_VALIDATION_SYSTEM.md - Quality assurance framework
+/documentation/AI_SYSTEM_OVERVIEW.md - Complete system implementation overview
+
+## Live Data Structure
+
 The latest database backup file to understand the live data structure. To do this, find the folder with the most recent date in tests/danishDicitonary/backupProcess/backups/ and read the backup.json file within it and the metadata.json file. IMPORTANT: to be sure that backup.json is the latest, you can run the command "pnpm backup:db" from /tests folder an get the latest backup.json file.
+
+## Navigation Strategy for AI Agents
+
+1. **Start with AGENT.md** for complete project foundation
+2. **Use AI_DOCUMENTATION_INDEX.md** to identify relevant documents for your specific task
+3. **Follow dependency chains** as specified in document metadata
+4. **Reference AI_SEMANTIC_GLOSSARY.md** for consistent terminology
 
 ## 1. Code Quality and Best Practices
 
@@ -67,27 +91,35 @@ The latest database backup file to understand the live data structure. To do thi
 - **Cache Invalidation**: Implement intelligent cache invalidation strategies using tags and selective updates.
 - **State Persistence**: Use Redux Persist selectively - only persist critical user preferences, not entire application state.
 
-## 5. Code BufferFolder and Comments
+## 5. Code Documentation and AI-Optimized Documentation System
 
-**Rule:** All non-obvious code must be documented to explain its purpose, logic, and usage.
+**Rule:** All non-obvious code must be documented following the AI-optimized documentation standards to explain its purpose, logic, and usage.
 
 **Implementation:**
 
 - JSDoc: Add JSDoc for all functions, components, and hooks (@param, @returns, @example).
 - Inline Comments: Use inline comments (//) to explain complex logic or workarounds.
-- **Architecture Decision Records (ADRs)**: Document significant architectural decisions in /docs/adr/.
-- **API BufferFolder**: Maintain OpenAPI/Swagger specs for all API endpoints.
-- **Component Stories**: Document component usage with Storybook examples.
+- **AI Documentation Standards**: Follow AI_DOCUMENT_TEMPLATE.md for creating new documentation
+- **Metadata Requirements**: Include complete metadata using AI_METADATA_FRAMEWORK.md standards
+- **Terminology Consistency**: Use AI_SEMANTIC_GLOSSARY.md for consistent terminology across all documentation
+- **Documentation Updates**: When making architectural changes, update relevant documentation files and their metadata
+- **Quality Validation**: Ensure all documentation passes AI_VALIDATION_SYSTEM.md requirements
+- **Context Completeness**: Provide complete context within document boundaries as per AI_CONTEXT_MANAGEMENT.md principles
 
-## 6. Project Structure and BufferFolder Integrity
+## 6. Project Structure and AI Documentation Integrity
 
-**Rule:** Maintain the integrity of the project's structure and its bufferfolder. Any change to the structure must be reflected in the corresponding bufferfolder file.
+**Rule:** Maintain the integrity of the project's structure and its AI-optimized documentation system. Any change to the structure must be reflected in the corresponding documentation files following AI documentation standards.
 
 **Implementation:**
 
-- Core Folder: Adhere to DESCRIPTION_OF_CORE_FOLDER.md and update it after any change in src/core/.
-- Component Folder: Adhere to DESCRIPTION_OF_COMPONENT_FOLDER.md and update it after any change in src/components/.
-- Root Folder: Adhere to DESCRIPTION_OF_ROOT_FOLDER.md and update it after any significant change in the root directory.
+- **AI Documentation System**: Follow the AI documentation architecture as outlined in AI_SYSTEM_OVERVIEW.md
+- Core Folder: Adhere to DESCRIPTION_OF_CORE_FOLDER.md and update it after any change in src/core/ using AI documentation standards
+- Component Folder: Adhere to DESCRIPTION_OF_COMPONENT_FOLDER.md and update it after any change in src/components/ using AI documentation standards
+- Root Folder: Adhere to DESCRIPTION_OF_ROOT_FOLDER.md and update it after any significant change in the root directory
+- **Documentation Creation**: Use AI_DOCUMENT_TEMPLATE.md for creating new documentation files
+- **Metadata Management**: Apply AI_METADATA_FRAMEWORK.md standards to all documentation updates
+- **Cross-Reference Updates**: Update AI_DOCUMENTATION_INDEX.md when adding or modifying documentation
+- **Terminology Consistency**: Ensure all updates follow AI_SEMANTIC_GLOSSARY.md terminology standards
 - **Hybrid Architecture**: The project uses different organizational patterns for different layers:
   - `src/components/`: Organized by **feature** (feature-based organization)
   - `src/core/`: Organized by **domain** (domain-driven design principles)
@@ -403,7 +435,49 @@ const formattedPrice = new Intl.NumberFormat(locale, {
 }).format(price);
 ```
 
-## 23. Advanced Development Experience
+## 23. AI Documentation System Workflow
+
+**Rule:** Follow the AI documentation system for autonomous operation and maintain documentation quality standards.
+
+**Implementation:**
+
+- **Autonomous Operation**: The AI documentation system enables autonomous development without explicit instructions:
+  - **Automatic Context Assembly**: Agent automatically reads AGENT.md and relevant documentation based on task context
+  - **Semantic Navigation**: Uses AI_DOCUMENTATION_INDEX.md to identify relevant documents for specific tasks
+  - **Dependency Resolution**: Follows document dependency chains automatically for complete understanding
+  - **Terminology Consistency**: Automatically uses AI_SEMANTIC_GLOSSARY.md for consistent terminology
+
+- **Documentation Update Triggers**: AI agents automatically understand when to update documentation:
+  - **Structural Changes**: Changes to src/core/ → Update DESCRIPTION_OF_CORE_FOLDER.md
+  - **Component Changes**: Changes to src/components/ → Update DESCRIPTION_OF_COMPONENT_FOLDER.md
+  - **New Features**: Major feature additions → Create new documentation using AI_DOCUMENT_TEMPLATE.md
+  - **Architectural Decisions**: Significant changes → Update relevant architecture documentation
+  - **API Changes**: Database or API modifications → Update DATABASE_DESCRIPTION.md and related docs
+
+- **Quality Assurance Integration**:
+  - **Metadata Validation**: Automatically apply AI_METADATA_FRAMEWORK.md standards
+  - **Cross-Reference Updates**: Update AI_DOCUMENTATION_INDEX.md when adding new documentation
+  - **Validation Compliance**: Ensure all updates pass AI_VALIDATION_SYSTEM.md requirements
+  - **Context Completeness**: Follow AI_CONTEXT_MANAGEMENT.md principles for complete context provision
+
+- **Workflow Patterns**: Use AI_AGENT_WORKFLOWS.md patterns for:
+  - Component development workflow
+  - Database operation workflow
+  - Feature implementation workflow
+  - Debugging and troubleshooting workflow
+  - Performance optimization workflow
+
+```typescript
+// AI Documentation System Integration Example
+// Agent automatically identifies documentation needs based on code changes
+if (changesAffect('src/core/')) {
+  // Automatically update DESCRIPTION_OF_CORE_FOLDER.md
+  // Apply AI documentation standards and metadata
+  // Validate against AI_VALIDATION_SYSTEM.md requirements
+}
+```
+
+## 24. Advanced Development Experience
 
 **Rule:** Optimize the development workflow for maximum productivity and consistency.
 
@@ -412,7 +486,7 @@ const formattedPrice = new Intl.NumberFormat(locale, {
 - **Hot Module Replacement**: Configure HMR to preserve state during development.
 - **Development Debugging**: Set up comprehensive debugging configurations for VS Code/IDE.
 - **Code Generation**: Create templates and snippets for common patterns.
-- **Developer Onboarding**: Maintain comprehensive setup bufferfolder and scripts.
+- **Developer Onboarding**: Maintain comprehensive setup documentation and scripts.
 - **IDE Integration**: Configure IDE settings for consistent code formatting and linting.
 - **Development Environment Parity**: Ensure development environment closely matches production.
 
@@ -436,7 +510,14 @@ Before considering any feature complete, verify:
 - [ ] **Security**: All inputs validated, authorization checked
 - [ ] **Error Handling**: Graceful error handling with user feedback
 - [ ] **Testing**: Unit and integration tests written and passing (component tests co-located, server tests in /tests folder)
-- [ ] **BufferFolder**: Code documented, DESCRIPTION_OF_ROOT_FOLDER.md, DESCRIPTION_OF_CORE_FOLDER.md, DESCRIPTION_OF_COMPONENT_FOLDER.md updated if necessary
+- [ ] **AI Documentation**: Code documented following AI documentation standards:
+  - [ ] **Structure Documentation**: DESCRIPTION_OF_ROOT_FOLDER.md, DESCRIPTION_OF_CORE_FOLDER.md, DESCRIPTION_OF_COMPONENT_FOLDER.md updated if necessary
+  - [ ] **AI Documentation Standards**: New documentation follows AI_DOCUMENT_TEMPLATE.md structure
+  - [ ] **Metadata Compliance**: All documentation includes proper metadata per AI_METADATA_FRAMEWORK.md
+  - [ ] **Terminology Consistency**: Uses AI_SEMANTIC_GLOSSARY.md terminology standards
+  - [ ] **Cross-Reference Updates**: AI_DOCUMENTATION_INDEX.md updated if new documentation added
+  - [ ] **Context Completeness**: Documentation provides complete context per AI_CONTEXT_MANAGEMENT.md
+  - [ ] **Quality Validation**: Documentation passes AI_VALIDATION_SYSTEM.md requirements
 - [ ] **Type Safety**: No TypeScript errors, comprehensive typing
 - [ ] **Bundle Impact**: Bundle size impact analyzed and acceptable
 - [ ] **Browser Compatibility**: Tested in supported browsers

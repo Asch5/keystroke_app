@@ -1,5 +1,66 @@
 # Keystroke App Practice System Design
 
+## Document Metadata
+
+```yaml
+title: 'Keystroke App Practice System Design'
+purpose: 'Comprehensive design specification for vocabulary learning practice system with multiple exercise types and adaptive learning algorithms'
+scope: 'Complete practice system architecture, learning algorithms, exercise types, user progress tracking, audio integration, and modular component design'
+target_audience:
+  [
+    'AI Agents',
+    'Full-Stack Developers',
+    'Educational Software Developers',
+    'Learning System Architects',
+  ]
+complexity_level: 'Advanced'
+estimated_reading_time: '35 minutes'
+last_updated: '2025-01-17'
+version: '4.0.0'
+dependencies:
+  - 'AGENT.md'
+  - 'DATABASE_DESCRIPTION.md'
+  - 'DESCRIPTION_OF_CORE_FOLDER.md'
+  - 'DESCRIPTION_OF_COMPONENT_FOLDER.md'
+related_files:
+  - '@src/components/features/practice/'
+  - '@src/core/domains/user/actions/practice-actions.ts'
+  - '@src/app/(dashboard)/dashboard/practice/'
+ai_context: 'Critical for understanding learning algorithms, practice session management, exercise type implementation, and user progress tracking'
+semantic_keywords:
+  [
+    'practice system',
+    'vocabulary learning',
+    'exercise types',
+    'learning algorithms',
+    'spaced repetition',
+    'user progress',
+    'audio integration',
+    'adaptive learning',
+    'session management',
+  ]
+```
+
+## Executive Summary
+
+**Purpose Statement**: This document provides comprehensive design specification for the vocabulary learning practice system, featuring multiple exercise types, adaptive learning algorithms, and modular architecture.
+
+**Key Outcomes**: After reading this document, you will understand:
+
+- Complete practice system architecture and learning algorithms
+- Multiple exercise types and adaptive difficulty progression
+- User progress tracking and spaced repetition system implementation
+- Audio integration and media playback architecture
+- Modular component design following performance optimization patterns
+- Session management and user experience design principles
+
+**Prerequisites**: Complete understanding of:
+
+- @AGENT.md - Project foundation and technology stack
+- @DATABASE_DESCRIPTION.md - User progress and learning data models
+- @DESCRIPTION_OF_CORE_FOLDER.md - Business logic and domain architecture
+- @DESCRIPTION_OF_COMPONENT_FOLDER.md - Component organization and testing patterns
+
 ## Overview
 
 The Keystroke App practice system is designed to help users learn vocabulary through a variety of interactive exercises. The system has been comprehensively refactored to provide both a unified practice experience and a legacy typing practice mode, with extensive modularization following Cursor Rules (components under 400 lines).

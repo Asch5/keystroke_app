@@ -1,5 +1,65 @@
 # Components Folder Structure
 
+## Document Metadata
+
+```yaml
+title: 'Components Folder Structure'
+purpose: 'Comprehensive guide to feature-based component organization, UI patterns, and React architecture in the Keystroke App'
+scope: 'Complete component architecture, feature organization, UI components, testing patterns, performance optimization, and component design patterns'
+target_audience:
+  [
+    'AI Agents',
+    'Frontend Developers',
+    'UI/UX Developers',
+    'Full-Stack Developers',
+  ]
+complexity_level: 'Intermediate'
+estimated_reading_time: '20 minutes'
+last_updated: '2025-01-17'
+version: '2.5.0'
+dependencies:
+  - 'AGENT.md'
+  - 'DESIGN_SYSTEM.md'
+  - 'AGENT_STYLING_RULES.md'
+  - 'DESCRIPTION_OF_CORE_FOLDER.md'
+related_files:
+  - '@src/components/'
+  - '@src/components/ui/'
+  - '@src/components/features/'
+  - '@components.json'
+ai_context: 'Essential for understanding component architecture, feature organization, UI patterns, and React development standards'
+semantic_keywords:
+  [
+    'component architecture',
+    'feature-based organization',
+    'React components',
+    'UI patterns',
+    'shadcn/ui',
+    'design system',
+    'component testing',
+    'performance optimization',
+    'Prisma-free components',
+  ]
+```
+
+## Executive Summary
+
+**Purpose Statement**: This document describes the organization and purpose of components in the `src/components` folder, following a hierarchical pattern based on functionality and domain.
+
+**Key Outcomes**: After reading this document, you will understand:
+
+- Feature-based component organization and architecture patterns
+- Prisma-free component architecture for client-side type safety
+- Co-located testing patterns and performance optimization strategies
+- UI component library integration with shadcn/ui design system
+- Component design patterns and reusability principles
+
+**Prerequisites**: Understanding of:
+
+- @AGENT.md - Project overview and technology stack
+- @DESIGN_SYSTEM.md - Design system and UI component standards
+- @AGENT_STYLING_RULES.md - Styling guidelines and component patterns
+
 This document describes the organization and purpose of components in the `src/components` folder. The structure follows a hierarchical pattern based on functionality and domain.
 
 ## Overview

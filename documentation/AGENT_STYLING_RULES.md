@@ -1,5 +1,64 @@
 # AI Agent Styling Rules & Guidelines
 
+## Document Metadata
+
+```yaml
+title: 'AI Agent Styling Rules & Guidelines'
+purpose: 'Comprehensive styling guidelines for AI agents covering semantic color usage, font systems, and component generation standards'
+scope: 'Complete styling rules covering semantic color tokens, font system implementation, component patterns, and AI-specific styling guidelines'
+target_audience:
+  [
+    'AI Agents',
+    'Frontend Developers',
+    'UI/UX Developers',
+    'Component Library Maintainers',
+  ]
+complexity_level: 'Intermediate'
+estimated_reading_time: '12 minutes'
+last_updated: '2025-01-17'
+version: '2.0.0'
+dependencies:
+  - 'AGENT.md'
+  - 'DESIGN_SYSTEM.md'
+  - 'COLOR_SYSTEM_VALIDATION_2025.md'
+  - 'TYPOGRAPHY_SYSTEM_2025.md'
+related_files:
+  - '@src/app/globals.css'
+  - '@tailwind.config.ts'
+  - '@src/components/ui/'
+ai_context: 'Essential for AI agents to understand mandatory styling patterns, semantic color usage, and component generation standards'
+semantic_keywords:
+  [
+    'AI styling guidelines',
+    'semantic colors',
+    'design system rules',
+    'component generation',
+    'styling patterns',
+    'color tokens',
+    'font system',
+    'design consistency',
+  ]
+```
+
+## Executive Summary
+
+**Purpose Statement**: This document provides comprehensive styling guidelines specifically for AI agents, ensuring consistent component generation and adherence to design system standards.
+
+**Key Outcomes**: After reading this document, you will understand:
+
+- Mandatory semantic color usage patterns and forbidden hard-coded colors
+- Font system implementation with zero-loading semantic classes
+- AI-specific component generation guidelines and styling patterns
+- Complete reference for semantic color tokens across all use cases
+- Decision matrix for color selection and styling consistency
+
+**Prerequisites**: Understanding of:
+
+- @AGENT.md - Project overview and styling requirements
+- @DESIGN_SYSTEM.md - Complete design system architecture
+- @COLOR_SYSTEM_VALIDATION_2025.md - Color accessibility and validation
+- @TYPOGRAPHY_SYSTEM_2025.md - Font system implementation
+
 ## 🚨 CRITICAL: Zero Tolerance for Hard-Coded Colors & Fonts
 
 ### **Font System 2025 - Zero Loading Time**

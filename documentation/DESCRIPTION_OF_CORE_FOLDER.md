@@ -1,4 +1,60 @@
-# Core Folder BufferFolder - Essential Reference
+# Core Folder Architecture - Essential Reference
+
+## Document Metadata
+
+```yaml
+title: 'Core Folder Architecture - Essential Reference'
+purpose: 'Comprehensive guide to domain-driven design architecture, Prisma-free patterns, and core business logic organization'
+scope: 'Complete src/core/ architecture, business domains, shared infrastructure, monitoring systems, state management, and type safety patterns'
+target_audience:
+  ['AI Agents', 'Senior Developers', 'System Architects', 'Backend Developers']
+complexity_level: 'Advanced'
+estimated_reading_time: '25 minutes'
+last_updated: '2025-01-17'
+version: '3.0.0'
+dependencies:
+  - 'AGENT.md'
+  - 'DATABASE_DESCRIPTION.md'
+  - 'TYPE_STRUCTURE_ARCHITECTURE.md'
+related_files:
+  - '@src/core/'
+  - '@src/core/types/'
+  - '@src/core/domains/'
+  - '@src/core/infrastructure/monitoring/'
+  - '@src/core/state/'
+ai_context: 'Critical for understanding business logic architecture, Prisma-free patterns, autonomous debugging systems, and domain organization'
+semantic_keywords:
+  [
+    'domain-driven design',
+    'Prisma-free architecture',
+    'business logic',
+    'autonomous debugging',
+    'state management',
+    'type safety',
+    'monitoring systems',
+    'domain organization',
+    'Redux patterns',
+  ]
+```
+
+## Executive Summary
+
+**Purpose Statement**: This document provides comprehensive documentation of the core business logic architecture, featuring domain-driven design, Prisma-free client architecture, and advanced monitoring systems.
+
+**Key Outcomes**: After reading this document, you will understand:
+
+- Complete domain-driven design architecture and organization patterns
+- Prisma-free client architecture eliminating bundling issues
+- Autonomous debugging and monitoring systems
+- Redux state management with persistence patterns
+- Type safety patterns and internal type system
+- Business logic organization across authentication, dictionary, translation, and user domains
+
+**Prerequisites**: Complete understanding of:
+
+- @AGENT.md - Project foundation and technology stack
+- @DATABASE_DESCRIPTION.md - Database schema and business logic
+- @TYPE_STRUCTURE_ARCHITECTURE.md - Type system architecture
 
 ## Structure Overview
 

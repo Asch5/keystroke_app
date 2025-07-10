@@ -1,6 +1,65 @@
 # Database Architecture & Design Guide
 
-This document provides a comprehensive overview of the database schema, design principles, and key business logic. It should be read alongside `prisma/schema.prisma` for a complete understanding. This guide explains the **"why"** and **"how"** behind the data model, while the schema file provides the technical **"what."**
+## Document Metadata
+
+```yaml
+title: 'Database Architecture & Design Guide'
+purpose: 'Comprehensive overview of database schema, design principles, and business logic for the Keystroke App learning platform'
+scope: 'Complete database architecture, entity relationships, business logic patterns, dynamic language system, and query optimization for vocabulary learning application'
+target_audience:
+  [
+    'AI Agents',
+    'Backend Developers',
+    'Database Architects',
+    'Full-Stack Developers',
+  ]
+complexity_level: 'Intermediate-Advanced'
+estimated_reading_time: '15 minutes'
+last_updated: '2025-01-17'
+version: '2.1.0'
+dependencies:
+  - 'AGENT.md'
+  - 'prisma/schema.prisma'
+  - 'DESCRIPTION_OF_CORE_FOLDER.md'
+related_files:
+  - '@prisma/schema.prisma'
+  - '@src/core/types/'
+  - '@src/core/domains/dictionary/'
+  - '@src/core/domains/user/'
+ai_context: 'Essential for understanding data relationships, business logic, and database operations in the vocabulary learning system'
+semantic_keywords:
+  [
+    'database schema',
+    'entity relationships',
+    'Prisma models',
+    'business logic',
+    'dynamic language system',
+    'vocabulary learning',
+    'data architecture',
+    'user progress tracking',
+    'definition-centric model',
+  ]
+```
+
+## Executive Summary
+
+**Purpose Statement**: This document provides a comprehensive overview of the database schema, design principles, and key business logic for the Keystroke App vocabulary learning platform.
+
+**Key Outcomes**: After reading this document, you will understand:
+
+- Complete database architecture and entity relationships
+- Definition-centric learning model and user progress tracking
+- Dynamic language system with User.baseLanguageCode as single source of truth
+- Prisma-free client architecture and type safety patterns
+- Business logic patterns for vocabulary learning and list management
+- Query optimization patterns and best practices
+
+**Prerequisites**: Basic understanding of:
+
+- @AGENT.md - Project overview and technology stack
+- @DESCRIPTION_OF_CORE_FOLDER.md - Core architecture and Prisma-free patterns
+
+This guide explains the **"why"** and **"how"** behind the data model, while the schema file provides the technical **"what."**
 
 ## 1. Core Philosophy & Design Principles
 

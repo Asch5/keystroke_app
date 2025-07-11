@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { TranslationResponse, TranslationOptions } from '../types';

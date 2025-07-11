@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
 import { DialogState } from '../types';

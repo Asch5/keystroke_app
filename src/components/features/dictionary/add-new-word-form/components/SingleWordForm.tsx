@@ -1,10 +1,10 @@
 import React, { FormEvent } from 'react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { LanguageSettings } from './LanguageSettings';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { LanguageType, DictionaryType, WordProcessorState } from '../types';
+import { LanguageSettings } from './LanguageSettings';
 
 interface SingleWordFormProps {
   state: WordProcessorState;

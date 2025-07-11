@@ -1,8 +1,8 @@
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {
   cleanupAudio,
   scheduleAudioCleanup,
 } from '@/core/lib/utils/dbUtils/audioCleanup';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Service to manage database cleanup operations
@@ -34,7 +34,7 @@ export class DbCleanupService {
     } = {},
   ): Promise<void> {
     if (this.isInitialized) {
-      await serverLog('DbCleanupService is already initialized', 'warn');
+      void serverLog('DbCleanupService is already initialized', 'warn');
       return;
     }
 
@@ -46,7 +46,7 @@ export class DbCleanupService {
     // Set up scheduled audio cleanup if enabled
     if (enableAudioCleanup) {
       scheduleAudioCleanup(audioCleanupIntervalMs);
-      await serverLog('Scheduled audio cleanup configured', 'info', {
+      void serverLog('Scheduled audio cleanup configured', 'info', {
         intervalHours: audioCleanupIntervalMs / (60 * 60 * 1000),
       });
     }
@@ -58,17 +58,17 @@ export class DbCleanupService {
    * Run all cleanup tasks on demand
    */
   public async runAllCleanupTasks(): Promise<void> {
-    await serverLog('Starting all cleanup tasks...', 'info');
+    void serverLog('Starting all cleanup tasks...', 'info');
 
     // Clean up orphaned audio records
     const deletedAudioCount = await cleanupAudio();
-    await serverLog('Audio cleanup completed', 'info', {
+    void serverLog('Audio cleanup completed', 'info', {
       deletedAudioCount,
     });
 
     // Add other cleanup tasks here as needed
 
-    await serverLog('All cleanup tasks completed', 'info');
+    void serverLog('All cleanup tasks completed', 'info');
   }
 
   /**

@@ -1,6 +1,12 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Plus, X, Save, Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,6 +25,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -26,19 +33,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Plus, X, Save, Loader2 } from 'lucide-react';
-import { RelationshipType } from '@/core/types';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
+import { Textarea } from '@/components/ui/textarea';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
 import { addManualWordForms } from '@/core/domains/dictionary/actions/manual-forms-actions';
 import { getDanishFormDefinition } from '@/core/lib/utils/danishDictionary/getDanishFormDefinition';
+import { RelationshipType } from '@/core/types';
 
 // Danish-specific relationship types for forms
 const danishFormTypes = [

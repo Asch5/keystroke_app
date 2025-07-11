@@ -2,8 +2,8 @@
  * Types for AddToListDialog modular components
  */
 
-import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { UserListWithDetails } from '@/core/domains/dictionary/actions/user-list-actions';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 export interface AddToListDialogProps {
   isOpen: boolean;

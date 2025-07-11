@@ -1,5 +1,5 @@
-import { LanguageCode } from '@/core/types';
 import { clientLog } from '@/core/lib/utils/logUtils';
+import { LanguageCode } from '@/core/types';
 import {
   TranslationCombinedResponse,
   TranslationRequest,
@@ -67,7 +67,7 @@ export class TranslationService {
 
       const requestPayload = [translationRequest];
 
-      clientLog(`Sent request: ${JSON.stringify(requestPayload)}`, 'info');
+      void clientLog(`Sent request: ${JSON.stringify(requestPayload)}`, 'info');
 
       const response = await fetch(this.API_URL, {
         method: 'POST',
@@ -81,12 +81,12 @@ export class TranslationService {
         throw new Error(`Translation API error: ${response.statusText}`);
       }
 
-      const translatedDataArray = await response.json();
+      const translatedDataArray: unknown = await response.json();
       const translatedData: TranslationCombinedResponse | null =
         Array.isArray(translatedDataArray) && translatedDataArray.length > 0
-          ? translatedDataArray[0]
+          ? (translatedDataArray[0] as TranslationCombinedResponse)
           : null;
-      clientLog(
+      void clientLog(
         `FROM TRANSLATION SERVICE: Translated data: ${JSON.stringify(
           translatedData,
         )}`,
@@ -94,7 +94,10 @@ export class TranslationService {
       );
       return translatedData;
     } catch (error) {
-      clientLog(`Translation error for word ${word}: ${error}`, 'error');
+      void clientLog(
+        `Translation error for word ${word}: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+      );
       return null;
     }
   }

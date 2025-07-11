@@ -1,10 +1,10 @@
 'use client';
 
+import { Save, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, Loader2 } from 'lucide-react';
 
 // Define proper interface for component props
 interface WordEditFormContentProps {
@@ -46,13 +46,13 @@ interface WordEditFormContentProps {
   isLoading: boolean;
 }
 
-import { useWordEditFormState } from '../hooks/useWordEditFormState';
 import { useWordEditFormActions } from '../hooks/useWordEditFormActions';
-import { WordBasicFields } from './WordBasicFields';
+import { useWordEditFormState } from '../hooks/useWordEditFormState';
+import { AudioFilesSection } from './AudioFilesSection';
 import { DefinitionsSection } from './DefinitionsSection';
 import { ImagesSection } from './ImagesSection';
 import { RelatedWordsSection } from './RelatedWordsSection';
-import { AudioFilesSection } from './AudioFilesSection';
+import { WordBasicFields } from './WordBasicFields';
 
 export function WordEditFormContent({
   wordId,

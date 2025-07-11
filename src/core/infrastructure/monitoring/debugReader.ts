@@ -96,7 +96,7 @@ export class DebugReader {
     };
 
     // Log the analysis for future reference
-    await serverLog('Debug analysis completed', 'info', {
+    void serverLog('Debug analysis completed', 'info', {
       analysisId: Date.now(),
       summary: analysis.summary,
       criticalIssuesCount: criticalIssues.length,

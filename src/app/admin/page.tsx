@@ -1,7 +1,7 @@
 'use server';
 
-import { checkRole } from '@/core/lib/auth/checkRole';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { checkRole } from '@/core/lib/auth/checkRole';
 
 export default async function AdminPage() {
   await checkRole(['admin']);

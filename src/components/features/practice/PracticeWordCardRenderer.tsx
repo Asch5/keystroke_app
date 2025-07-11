@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { WordCard } from './shared';
-import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
-import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
 import PracticeDebugger from '@/core/infrastructure/monitoring/practiceDebugger';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
+import { WordCard } from './shared';
 
 interface PracticeWordCardRendererProps {
   currentWord: PracticeWord;

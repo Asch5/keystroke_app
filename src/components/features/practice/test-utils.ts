@@ -1,6 +1,6 @@
+import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 import { LearningStatus } from '@/core/types';
 import type { SessionState, WordResult } from './hooks';
-import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 /**
  * Mock practice word data for testing

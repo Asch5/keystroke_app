@@ -1,10 +1,14 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
-import { LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { handlePrismaError } from '@/core/shared/database/error-handler';
 import { prisma } from '@/core/shared/database/client';
+import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { LearningStatus } from '@/core/types';
+import {
+  DifficultyAssessment,
+  LearningUnit,
+} from '../utils/difficulty-assessment';
 import {
   PracticeSessionManager,
   PracticeSessionConfig,
@@ -12,10 +16,6 @@ import {
   PracticeAttempt,
   PRACTICE_CONFIGS,
 } from '../utils/practice-session-manager';
-import {
-  DifficultyAssessment,
-  LearningUnit,
-} from '../utils/difficulty-assessment';
 
 /**
  * Enhanced Practice Actions
@@ -90,7 +90,7 @@ export async function createIntelligentPracticeSession(
       filters,
     } = request;
 
-    serverLog(
+    void serverLog(
       `Creating intelligent ${practiceType} session for user ${userId}`,
       'info',
       {
@@ -155,7 +155,7 @@ export async function createIntelligentPracticeSession(
       config,
     );
 
-    serverLog(`Created intelligent session ${session.id}`, 'info', {
+    void serverLog(`Created intelligent session ${session.id}`, 'info', {
       wordsCount: session.learningUnits.length,
       averageDifficulty,
       estimatedDuration,
@@ -175,7 +175,7 @@ export async function createIntelligentPracticeSession(
       },
     };
   } catch (error) {
-    serverLog(
+    void serverLog(
       `Error creating intelligent practice session: ${error}`,
       'error',
       {
@@ -295,7 +295,7 @@ export async function processIntelligentAttempt(
         ? result.session.learningUnits[result.session.currentIndex]
         : undefined;
 
-    serverLog(`Processed attempt for session ${sessionId}`, 'info', {
+    void serverLog(`Processed attempt for session ${sessionId}`, 'info', {
       isCorrect,
       accuracy,
       responseTime,
@@ -334,10 +334,14 @@ export async function processIntelligentAttempt(
       },
     };
   } catch (error) {
-    serverLog(`Error processing attempt: ${error}`, 'error', {
-      sessionId: request.sessionId,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    void serverLog(
+      `Error processing attempt: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+      {
+        sessionId: request.sessionId,
+        error: error instanceof Error ? error.message : String(error),
+      },
+    );
 
     const errorMessage = handlePrismaError(error);
     return {
@@ -398,7 +402,7 @@ export async function completeIntelligentSession(sessionId: string): Promise<{
     // Complete the session
     const summary = await PracticeSessionManager.completeSession(session);
 
-    serverLog(`Completed session ${sessionId}`, 'info', {
+    void serverLog(`Completed session ${sessionId}`, 'info', {
       accuracy: summary.performance.accuracy,
       wordsLearned: summary.learning.wordsLearned,
       timeSpent: summary.performance.totalTimeSpent,
@@ -413,10 +417,14 @@ export async function completeIntelligentSession(sessionId: string): Promise<{
       summary,
     };
   } catch (error) {
-    serverLog(`Error completing session: ${error}`, 'error', {
-      sessionId,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    void serverLog(
+      `Error completing session: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+      {
+        sessionId,
+        error: error instanceof Error ? error.message : String(error),
+      },
+    );
 
     const errorMessage = handlePrismaError(error);
     return {
@@ -484,11 +492,15 @@ export async function getWordDifficultyAssessment(
       },
     };
   } catch (error) {
-    serverLog(`Error getting difficulty assessment: ${error}`, 'error', {
-      userId,
-      userDictionaryId,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    void serverLog(
+      `Error getting difficulty assessment: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+      {
+        userId,
+        userDictionaryId,
+        error: error instanceof Error ? error.message : String(error),
+      },
+    );
 
     const errorMessage = handlePrismaError(error);
     return {
@@ -682,12 +694,7 @@ export async function getWordDifficultyAnalysis(
       userDictionaryId,
       word: wordData.word.word,
       difficultyScore: result.composite,
-      classification: result.classification as
-        | 'very_easy'
-        | 'easy'
-        | 'medium'
-        | 'hard'
-        | 'very_hard',
+      classification: result.classification,
       confidence: result.confidence,
       performanceMetrics,
       linguisticMetrics,
@@ -696,11 +703,15 @@ export async function getWordDifficultyAnalysis(
       estimatedTimeToMastery: timeToMastery,
     };
   } catch (error) {
-    serverLog(`Error getting word difficulty analysis: ${error}`, 'error', {
-      userId,
-      userDictionaryId,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    void serverLog(
+      `Error getting word difficulty analysis: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+      {
+        userId,
+        userDictionaryId,
+        error: error instanceof Error ? error.message : String(error),
+      },
+    );
 
     return `Failed to analyze word difficulty: ${error instanceof Error ? error.message : String(error)}`;
   }
@@ -932,11 +943,15 @@ export async function getBatchDifficultyAssessments(
       assessments: simplifiedAssessments,
     };
   } catch (error) {
-    serverLog(`Error getting batch assessments: ${error}`, 'error', {
-      userId,
-      wordCount: userDictionaryIds.length,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    void serverLog(
+      `Error getting batch assessments: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+      {
+        userId,
+        wordCount: userDictionaryIds.length,
+        error: error instanceof Error ? error.message : String(error),
+      },
+    );
 
     const errorMessage = handlePrismaError(error);
     return {

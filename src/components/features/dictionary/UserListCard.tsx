@@ -1,9 +1,9 @@
 'use client';
 
-import { DifficultyLevel } from '@/core/types';
+import { MoreHorizontal, Edit, Trash2, ExternalLink } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Progress } from '@/components/ui/progress';
-import { MoreHorizontal, Edit, Trash2, ExternalLink } from 'lucide-react';
 import { type UserListWithDetails } from '@/core/domains/dictionary';
+import { DifficultyLevel } from '@/core/types';
 
 interface UserListCardProps {
   list: UserListWithDetails;

@@ -1,7 +1,7 @@
-import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import { DashboardContent } from '@/components/features/dashboard/DashboardContent';
 import { Suspense } from 'react';
+import { auth } from '@/auth';
+import { DashboardContent } from '@/components/features/dashboard/DashboardContent';
 import { DashboardLoadingSkeleton } from '@/components/utils/skeletons';
 
 /**
@@ -34,7 +34,7 @@ export default async function DashboardOverviewPage() {
   // Extract user information for better type safety
   const user = {
     id: session.user.id,
-    name: session.user.name || 'Learner',
+    name: session.user.name ?? 'Learner',
     email: session.user.email,
   };
 

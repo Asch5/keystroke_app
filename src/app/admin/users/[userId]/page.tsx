@@ -1,8 +1,8 @@
 // src/app/(dashboard)/dashboard/admin/users/[userId]/page.tsx
-import { getUserDetails } from '@/core/lib/db/user';
 import { formatDistance } from 'date-fns';
-import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { getUserDetails } from '@/core/lib/db/user';
 
 export default async function UserDetailsPage({
   params,

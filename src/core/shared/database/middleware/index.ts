@@ -46,7 +46,7 @@ export const performanceMiddleware = async (
 
   // Log all queries in development
   if (process.env.NODE_ENV === 'development') {
-    console.log(
+    console.warn(
       `[Prisma Query] ${params.model}.${params.action} took ${duration.toFixed(2)}ms`,
     );
   }

@@ -1,8 +1,8 @@
 'use client';
 
-import { CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Target, Headphones } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { CardHeader, CardTitle } from '@/components/ui/card';
 
 interface WriteBySoundHeaderProps {
   maxReplays: number;

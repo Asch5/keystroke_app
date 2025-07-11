@@ -1,9 +1,5 @@
 'use client';
 
-import { ModeToggle } from '@/components/shared/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import {
   ArrowRight,
   Book,
@@ -19,6 +15,10 @@ import {
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { RoleGate } from '@/components/features/auth';
+import { ModeToggle } from '@/components/shared/navigation';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 /**
  * Home page component.

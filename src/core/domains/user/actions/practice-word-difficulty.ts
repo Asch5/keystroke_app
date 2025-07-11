@@ -1,8 +1,8 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/shared/database/client';
 import { LearningStatus } from '@/core/types';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { updateSRSData } from './practice-progression';
 
 // Type definitions for word difficulty analysis
@@ -185,7 +185,7 @@ export async function analyzeWordDifficulty(
       averageDifficultyScore,
     );
 
-    serverLog('Word difficulty analysis completed', 'info', {
+    void serverLog('Word difficulty analysis completed', 'info', {
       userId,
       analyzedWords: wordMetrics.length,
       difficultWords: difficultWords.length,
@@ -204,7 +204,10 @@ export async function analyzeWordDifficulty(
       },
     };
   } catch (error) {
-    serverLog('Error analyzing word difficulty', 'error', { error, userId });
+    void serverLog('Error analyzing word difficulty', 'error', {
+      error,
+      userId,
+    });
     return {
       success: false,
       error: 'Failed to analyze word difficulty',
@@ -288,7 +291,7 @@ export async function adjustReviewFrequencyByDifficulty(
       }
     }
 
-    serverLog('Review frequency adjusted based on difficulty', 'info', {
+    void serverLog('Review frequency adjusted based on difficulty', 'info', {
       userId,
       totalAdjusted: adjustments.length,
       difficultyThreshold,
@@ -300,7 +303,7 @@ export async function adjustReviewFrequencyByDifficulty(
       totalAdjusted: adjustments.length,
     };
   } catch (error) {
-    serverLog('Error adjusting review frequency by difficulty', 'error', {
+    void serverLog('Error adjusting review frequency by difficulty', 'error', {
       error,
       userId,
     });
@@ -393,7 +396,7 @@ export async function getWordsNeedingAttention(
       words: wordsNeedingAttention,
     };
   } catch (error) {
-    serverLog('Error getting words needing attention', 'error', {
+    void serverLog('Error getting words needing attention', 'error', {
       error,
       userId,
     });
@@ -614,7 +617,10 @@ async function analyzeMistakePatterns(
 
     return patterns.sort((a, b) => b.frequency - a.frequency);
   } catch (error) {
-    serverLog('Error analyzing mistake patterns', 'error', { error, userId });
+    void serverLog('Error analyzing mistake patterns', 'error', {
+      error,
+      userId,
+    });
     return [];
   }
 }

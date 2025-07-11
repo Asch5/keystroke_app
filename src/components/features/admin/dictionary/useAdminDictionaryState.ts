@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+import { toast } from 'sonner';
 import {
   fetchDictionaryWordDetails,
   deleteSelectedWords,
   deleteWordAudio,
   type DictionaryWordDetails,
 } from '@/core/domains/dictionary/actions';
-import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
-import { toast } from 'sonner';
-import { FilterState } from './AdminDictionaryConstants';
 import { useAdminDictionaryFilters } from '@/core/shared/hooks/useSettings';
+import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
+import { FilterState } from './AdminDictionaryConstants';
 
 /**
  * Custom hook for managing all state and business logic for the admin dictionaries page
@@ -225,7 +225,7 @@ export function useAdminDictionaryState() {
   useEffect(() => {
     // Map Redux filter settings to component filter state
     const mappedFilters: FilterState = {
-      partOfSpeech: reduxFilters.selectedPartOfSpeech as PartOfSpeech[],
+      partOfSpeech: reduxFilters.selectedPartOfSpeech,
       source: reduxFilters.selectedSource as SourceType[],
       hasAudio:
         reduxFilters.selectedAudio === 'with_audio'

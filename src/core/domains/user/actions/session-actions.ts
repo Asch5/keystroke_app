@@ -2,9 +2,6 @@
 
 import { PrismaClient } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
-import { SessionType } from '@/core/types';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { handlePrismaError } from '@/core/shared/database/error-handler';
 import type {
   UserLearningSession,
   UserSessionItem,
@@ -15,6 +12,9 @@ import type {
   SessionFilterOptions,
   PaginatedSessionsResponse,
 } from '@/core/domains/user/types/session';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { SessionType } from '@/core/types';
 
 const prisma = new PrismaClient();
 
@@ -30,7 +30,7 @@ export async function createLearningSession(
   error?: string;
 }> {
   try {
-    serverLog(`Creating learning session for user ${userId}`, 'info', {
+    void serverLog(`Creating learning session for user ${userId}`, 'info', {
       userId,
       sessionType: data.sessionType,
       userListId: data.userListId,
@@ -76,7 +76,10 @@ export async function createLearningSession(
     revalidateTag(`user-sessions-${userId}`);
     revalidateTag(`session-stats-${userId}`);
 
-    serverLog(`Learning session created successfully: ${session.id}`, 'info');
+    void serverLog(
+      `Learning session created successfully: ${session.id}`,
+      'info',
+    );
 
     return {
       success: true,
@@ -101,7 +104,7 @@ export async function createLearningSession(
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to create learning session: ${errorResponse.message}`,
       'error',
       {
@@ -129,7 +132,7 @@ export async function updateLearningSession(
   error?: string;
 }> {
   try {
-    serverLog(`Updating learning session ${sessionId}`, 'info', {
+    void serverLog(`Updating learning session ${sessionId}`, 'info', {
       sessionId,
       updates: data,
     });
@@ -180,7 +183,10 @@ export async function updateLearningSession(
     revalidateTag(`session-stats-${session.userId}`);
     revalidateTag(`session-${sessionId}`);
 
-    serverLog(`Learning session updated successfully: ${sessionId}`, 'info');
+    void serverLog(
+      `Learning session updated successfully: ${sessionId}`,
+      'info',
+    );
 
     return {
       success: true,
@@ -205,7 +211,7 @@ export async function updateLearningSession(
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to update learning session: ${errorResponse.message}`,
       'error',
       {
@@ -229,7 +235,7 @@ export async function addSessionItem(
   data: AddSessionItemRequest,
 ): Promise<{ success: boolean; item?: UserSessionItem; error?: string }> {
   try {
-    serverLog(`Adding session item to session ${sessionId}`, 'info', {
+    void serverLog(`Adding session item to session ${sessionId}`, 'info', {
       sessionId,
       userDictionaryId: data.userDictionaryId,
       isCorrect: data.isCorrect,
@@ -283,7 +289,7 @@ export async function addSessionItem(
       revalidateTag(`session-${sessionId}`);
     }
 
-    serverLog(`Session item added successfully: ${item.id}`, 'info');
+    void serverLog(`Session item added successfully: ${item.id}`, 'info');
 
     return {
       success: true,
@@ -299,10 +305,14 @@ export async function addSessionItem(
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(`Failed to add session item: ${errorResponse.message}`, 'error', {
-      sessionId,
-      error: errorResponse.message,
-    });
+    void serverLog(
+      `Failed to add session item: ${errorResponse.message}`,
+      'error',
+      {
+        sessionId,
+        error: errorResponse.message,
+      },
+    );
 
     return {
       success: false,
@@ -318,7 +328,7 @@ export async function getSessionStats(
   userId: string,
 ): Promise<{ success: boolean; stats?: SessionStatsResponse; error?: string }> {
   try {
-    serverLog(`Fetching session stats for user ${userId}`, 'info', {
+    void serverLog(`Fetching session stats for user ${userId}`, 'info', {
       userId,
     });
 
@@ -401,7 +411,10 @@ export async function getSessionStats(
       })),
     };
 
-    serverLog(`Session stats fetched successfully for user ${userId}`, 'info');
+    void serverLog(
+      `Session stats fetched successfully for user ${userId}`,
+      'info',
+    );
 
     return {
       success: true,
@@ -409,7 +422,7 @@ export async function getSessionStats(
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to fetch session stats: ${errorResponse.message}`,
       'error',
       {
@@ -439,7 +452,7 @@ export async function getSessionHistory(
   error?: string;
 }> {
   try {
-    serverLog(`Fetching session history for user ${userId}`, 'info', {
+    void serverLog(`Fetching session history for user ${userId}`, 'info', {
       userId,
       page,
       pageSize,
@@ -519,7 +532,7 @@ export async function getSessionHistory(
       hasPrev: page > 1,
     };
 
-    serverLog(
+    void serverLog(
       `Session history fetched successfully for user ${userId}`,
       'info',
     );
@@ -530,7 +543,7 @@ export async function getSessionHistory(
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to fetch session history: ${errorResponse.message}`,
       'error',
       {
@@ -608,7 +621,7 @@ export async function getCurrentSession(userId: string): Promise<{
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to get current session: ${errorResponse.message}`,
       'error',
       {

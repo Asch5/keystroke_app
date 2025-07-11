@@ -2,16 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { NavLink } from '@/core/types/nav';
-import { cn } from '@/core/lib/utils';
-import { Button } from '@/components/ui/button';
 import { memo, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { cn } from '@/core/lib/utils';
+import { NavLink } from '@/core/types/nav';
 
 interface NavLinksProps {
   links: NavLink[];

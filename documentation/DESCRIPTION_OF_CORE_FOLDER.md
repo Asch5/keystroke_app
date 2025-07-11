@@ -1067,6 +1067,47 @@ Types: `DeepSeekWordRequest`, `DeepSeekWordResponse`, `DeepSeekBatchRequest`, `D
 - `textToSpeechService.ts` - Google Cloud Text-to-Speech with cost optimization
 - `blobStorageService.ts` - Vercel Blob storage for audio files with organized folder structure
 
+### 🌐 **Internationalization Services** (`shared/services/i18n/`)
+
+**NEW: Multi-Language Support System**
+
+- `types.ts` - Type definitions for translation system (200+ translation keys organized in 8 namespaces)
+- `constants.ts` - Language configuration and supported locales (6 languages: EN, RU, DA, ES, FR, DE)
+- `utils.ts` - Translation loading, key resolution, parameter interpolation, locale formatting
+- `translations/` - Translation files for all supported languages with complete localization
+
+Types: `TranslationFile`, `TranslationKey`, `TranslationParams`, `UILanguageCode`, `I18nContextType`
+
+**Key Features:**
+
+- **Type-Safe Translations**: 200+ translation keys with comprehensive TypeScript coverage
+- **Multi-Language Support**: Complete translations for English, Russian, Danish, Spanish, French, German
+- **Parameter Interpolation**: Dynamic content support with `{{variable}}` syntax
+- **Locale Formatting**: Culture-aware date, number, currency formatting using Intl API
+- **Performance Optimization**: Translation caching, lazy loading, minimal bundle impact
+- **Russian Language Support**: Complete Cyrillic localization with cultural adaptations (₽ currency, DD.MM.YYYY dates)
+- **Real-time Language Switching**: Instant interface updates without page reload
+- **Fallback System**: English fallback for missing translations with graceful degradation
+
+**Translation Namespaces:**
+
+- `common` (44 keys) - Universal actions, states, time references
+- `settings` (38 keys) - Settings forms, preferences, profile management
+- `dictionary` (43 keys) - Dictionary management, word operations, search functionality
+- `practice` (33 keys) - Learning sessions, progress tracking, practice types
+- `admin` (20 keys) - Administration, user management, system operations
+- `auth` (20 keys) - Authentication, user account management
+- `errors` (22 keys) - Error messages, validation messages, troubleshooting
+- `navigation` (12 keys) - Navigation elements, breadcrumbs, menu items
+
+**Architecture Integration:**
+
+- **I18nProvider**: Root context provider wrapping entire application in `layout.tsx`
+- **useTranslation Hook**: Main interface for components with translation and formatting functions
+- **Component Integration**: Error boundaries, settings forms, language selectors support translation keys
+- **Hard-coded String Replacement**: Systematic conversion from hard-coded strings to externalized translation keys
+- **Cursor Rule Compliance**: Addresses "Externalize Hard-coded Strings" requirement from compliance analysis
+
 ### 🎵 **Audio Download Service** (`shared/services/external-apis/audioDownloadService.ts`)
 
 **NEW: External Audio Download & Local Storage System**
@@ -1135,6 +1176,49 @@ Types: `ExternalAudioDownloadResult`, `ExternalAudioFile`
 - `useSetUserDataToRedux()` - Sync user data to Redux
 - `syncUserData()` - Internal sync function
 - `useUser()` - Redux-based hook for accessing current user state with type safety
+
+### 🌐 **Internationalization Hooks** (`shared/hooks/useTranslation.tsx`)
+
+**NEW: Translation and Localization Hooks**
+
+- `useTranslation()` - Main translation hook with full functionality
+- `useIntl()` - Lightweight formatting utilities hook
+- `useLocale()` - Locale management hook
+- `I18nProvider` - Context provider for translation system
+
+**Hook Interfaces:**
+
+```typescript
+// Main translation hook
+const {
+  t,
+  locale,
+  setLocale,
+  formatDate,
+  formatNumber,
+  formatCurrency,
+  formatRelativeTime,
+} = useTranslation();
+
+// Lightweight formatting hook
+const { locale, formatDate, formatNumber, formatCurrency, formatRelativeTime } =
+  useIntl();
+
+// Locale management hook
+const { locale, setLocale } = useLocale();
+```
+
+**Key Features:**
+
+- **Type-Safe Translation Function**: `t(key, params?, options?)` with compile-time validation
+- **Parameter Interpolation**: Support for `{{variable}}` placeholders with type safety
+- **Locale Formatting**: Culture-aware formatting using Intl API
+- **Real-time Language Switching**: Instant interface updates with `setLocale()`
+- **Performance Optimization**: Translation caching, lazy loading, minimal re-renders
+- **Environment Awareness**: Browser vs server-side rendering compatibility
+- **Local Storage Persistence**: UI language preference persistence
+- **Browser Detection**: Automatic locale detection on first visit
+- **Fallback System**: English fallback with graceful degradation
 
 ### Utility Functions
 

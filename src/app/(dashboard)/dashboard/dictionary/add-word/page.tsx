@@ -1,10 +1,10 @@
-import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { auth } from '@/auth';
-import { getUserByEmail } from '@/core/lib/db/user';
 import { AddNewWordContent } from '@/components/features/dictionary';
 import { DictionaryErrorBoundary } from '@/components/shared/error-boundaries';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { getUserByEmail } from '@/core/lib/db/user';
 
 /**
  * Add New Word Loading Skeleton

@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Dialog,
@@ -9,18 +11,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
 import { LanguageCode } from '@/core/types';
 import { AddToListDialog } from './AddToListDialog';
-import { DictionaryFilters } from './DictionaryFilters';
-import { WordTable } from './WordTable';
-import { DictionaryPagination } from './DictionaryPagination';
 import { DictionaryEmptyState } from './DictionaryEmptyState';
+import { DictionaryFilters } from './DictionaryFilters';
 import { DictionaryLoadingSkeleton } from './DictionaryLoadingSkeleton';
-import { useDictionaryState } from './hooks/useDictionaryState';
-import { useDictionaryActions } from './hooks/useDictionaryActions';
+import { DictionaryPagination } from './DictionaryPagination';
 import { useAudioPlayback } from './hooks/useAudioPlayback';
+import { useDictionaryActions } from './hooks/useDictionaryActions';
+import { useDictionaryState } from './hooks/useDictionaryState';
+import { WordTable } from './WordTable';
 
 interface MyDictionaryContentProps {
   userId: string;

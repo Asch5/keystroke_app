@@ -1,8 +1,8 @@
 'use server';
 
-import { prisma } from '@/core/shared/database/client';
 import { auth } from '@/auth';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/shared/database/client';
 
 export interface TypingPracticePreferences {
   autoSubmitAfterCorrect: boolean;
@@ -53,7 +53,7 @@ export async function getTypingPracticePreferences(): Promise<{
       return { success: false, error: 'User not authenticated' };
     }
 
-    await serverLog('Fetching typing practice preferences', 'info', {
+    void serverLog('Fetching typing practice preferences', 'info', {
       userId: session.user.id,
     });
 
@@ -74,14 +74,14 @@ export async function getTypingPracticePreferences(): Promise<{
     // Ensure all default fields exist (for backwards compatibility)
     const mergedPreferences = { ...DEFAULT_TYPING_PREFERENCES, ...typingPrefs };
 
-    await serverLog('Retrieved typing practice preferences', 'info', {
+    void serverLog('Retrieved typing practice preferences', 'info', {
       userId: session.user.id,
       hasCustomPreferences: !!studyPrefs?.typingPractice,
     });
 
     return { success: true, preferences: mergedPreferences };
   } catch (error) {
-    await serverLog('Error fetching typing practice preferences', 'error', {
+    void serverLog('Error fetching typing practice preferences', 'error', {
       error,
     });
     return { success: false, error: 'Failed to fetch preferences' };
@@ -104,7 +104,7 @@ export async function updateTypingPracticePreferences(
       return { success: false, error: 'User not authenticated' };
     }
 
-    await serverLog('Updating typing practice preferences', 'info', {
+    void serverLog('Updating typing practice preferences', 'info', {
       userId: session.user.id,
       updates: Object.keys(preferences),
     });
@@ -141,18 +141,14 @@ export async function updateTypingPracticePreferences(
       },
     });
 
-    await serverLog(
-      'Successfully updated typing practice preferences',
-      'info',
-      {
-        userId: session.user.id,
-        updatedFields: Object.keys(preferences),
-      },
-    );
+    void serverLog('Successfully updated typing practice preferences', 'info', {
+      userId: session.user.id,
+      updatedFields: Object.keys(preferences),
+    });
 
     return { success: true, preferences: updatedTypingPrefs };
   } catch (error) {
-    await serverLog('Error updating typing practice preferences', 'error', {
+    void serverLog('Error updating typing practice preferences', 'error', {
       error,
     });
     return { success: false, error: 'Failed to update preferences' };
@@ -173,10 +169,12 @@ export async function resetTypingPracticePreferences(): Promise<{
       return { success: false, error: 'User not authenticated' };
     }
 
-    await serverLog(
+    void serverLog(
       'Resetting typing practice preferences to defaults',
       'info',
-      { userId: session.user.id },
+      {
+        userId: session.user.id,
+      },
     );
 
     // Get current study preferences
@@ -205,13 +203,13 @@ export async function resetTypingPracticePreferences(): Promise<{
       },
     });
 
-    await serverLog('Successfully reset typing practice preferences', 'info', {
+    void serverLog('Successfully reset typing practice preferences', 'info', {
       userId: session.user.id,
     });
 
     return { success: true, preferences: DEFAULT_TYPING_PREFERENCES };
   } catch (error) {
-    await serverLog('Error resetting typing practice preferences', 'error', {
+    void serverLog('Error resetting typing practice preferences', 'error', {
       error,
     });
     return { success: false, error: 'Failed to reset preferences' };
@@ -245,7 +243,7 @@ export async function getAllStudyPreferences(): Promise<{
 
     return { success: true, preferences: studyPrefs };
   } catch (error) {
-    await serverLog('Error fetching all study preferences', 'error', { error });
+    void serverLog('Error fetching all study preferences', 'error', { error });
     return { success: false, error: 'Failed to fetch study preferences' };
   }
 }

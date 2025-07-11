@@ -1,11 +1,10 @@
-import { PexelsPhoto } from '@/core/lib/services/pexelsService';
-import { PexelsService } from '@/core/lib/services/pexelsService';
-import { Definition } from '@/core/types/definition';
-import { Image } from '@/core/types';
-import { clientLog } from '@/core/lib/utils/logUtils';
-import { normalizeText } from '@/core/lib/utils/commonDictUtils/wordsFormators';
-import { prisma } from '@/core/lib/prisma';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/lib/prisma';
+import { PexelsPhoto, PexelsService } from '@/core/lib/services/pexelsService';
+import { normalizeText } from '@/core/lib/utils/commonDictUtils/wordsFormators';
+import { clientLog } from '@/core/lib/utils/logUtils';
+import { Image } from '@/core/types';
+import { Definition } from '@/core/types/definition';
 
 export interface ImageMetadata {
   id: number;
@@ -173,7 +172,7 @@ export class ImageService {
   ): Promise<ImageMetadata | null> {
     try {
       clientLog(
-        `Creating image from Pexels photo for definitionId: ${definitionId || 'none'}`,
+        `Creating image from Pexels photo for definitionId: ${definitionId ?? 'none'}`,
         'info',
         { photoId: photo.id },
       );
@@ -252,7 +251,7 @@ export class ImageService {
               );
             } catch (error) {
               clientLog(
-                `Error updating definition with image: ${error}`,
+                `Error updating definition with image: ${error instanceof Error ? error.message : String(error)}`,
                 'error',
               );
               throw error; // Re-throw to trigger transaction rollback
@@ -278,7 +277,10 @@ export class ImageService {
       );
       return result;
     } catch (error) {
-      clientLog(`Error in createFromPexels: ${error}`, 'error');
+      clientLog(
+        `Error in createFromPexels: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+      );
       return null;
     }
   }
@@ -477,9 +479,7 @@ export class ImageService {
       // Try multiple pages and retry on failure
       while (
         attempt < maxRetries &&
-        (!searchResponse ||
-          !searchResponse.photos ||
-          searchResponse.photos.length === 0)
+        (!searchResponse?.photos || searchResponse.photos.length === 0)
       ) {
         attempt++;
 
@@ -507,7 +507,7 @@ export class ImageService {
           );
         } catch (error) {
           clientLog(
-            `Error in Pexels search attempt ${attempt}: ${error}`,
+            `Error in Pexels search attempt ${attempt}: ${error instanceof Error ? error.message : String(error)}`,
             'error',
           );
 
@@ -549,9 +549,7 @@ export class ImageService {
         // Try multiple pages for the fallback search
         while (
           attempt < maxRetries &&
-          (!searchResponse ||
-            !searchResponse.photos ||
-            searchResponse.photos.length === 0)
+          (!searchResponse?.photos || searchResponse.photos.length === 0)
         ) {
           attempt++;
 
@@ -578,7 +576,7 @@ export class ImageService {
             );
           } catch (error) {
             clientLog(
-              `Error in fallback search attempt ${attempt}: ${error}`,
+              `Error in fallback search attempt ${attempt}: ${error instanceof Error ? error.message : String(error)}`,
               'error',
             );
 
@@ -626,7 +624,7 @@ export class ImageService {
         );
       } else {
         clientLog(
-          `Error in getOrCreateDefinitionImage for definition ${definitionId}: ${error}`,
+          `Error in getOrCreateDefinitionImage for definition ${definitionId}: ${String(error)}`,
           'error',
         );
       }
@@ -882,7 +880,7 @@ export class ImageService {
     definitionId: number,
   ): Promise<ImageMetadata | null> {
     try {
-      serverLog(
+      void serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: Starting getOrCreateTranslatedDefinitionImage for word: "${word}", definitionId: ${definitionId}`,
         'info',
       );
@@ -894,7 +892,7 @@ export class ImageService {
       });
 
       if (!definitionWithImage) {
-        serverLog(
+        void serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Definition with id ${definitionId} not found`,
           'warn',
         );
@@ -906,7 +904,7 @@ export class ImageService {
         const formType = this.getGrammaticalFormType(
           definitionWithImage.definition,
         );
-        serverLog(
+        void serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Skipping image generation for grammatical form definition ${definitionId} (type: ${formType}): "${definitionWithImage.definition.substring(0, 100)}..."`,
           'info',
         );
@@ -915,7 +913,7 @@ export class ImageService {
 
       // If the definition already has an image, return it
       if (definitionWithImage.imageId && definitionWithImage.image) {
-        serverLog(
+        void serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Found existing image for definition ${definitionId}: ${definitionWithImage.imageId}`,
           'info',
         );
@@ -954,7 +952,7 @@ export class ImageService {
             translation !== null && translation.languageCode === 'en',
         );
 
-      serverLog(
+      void serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: Found ${englishTranslations.length} English translations for definition ${definitionId}`,
         'info',
       );
@@ -967,7 +965,7 @@ export class ImageService {
         const englishTranslation = englishTranslations[0];
         const translatedContent = englishTranslation?.content || '';
 
-        serverLog(
+        void serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Using English translation for search: "${translatedContent}"`,
           'info',
         );
@@ -978,13 +976,13 @@ export class ImageService {
           translatedContent,
         );
       } else {
-        serverLog(
+        void serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: No English translations found for definition ${definitionId}, using original word: "${wordText}"`,
           'warn',
         );
       }
 
-      serverLog(
+      void serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: Final search query: "${searchQuery}"`,
         'info',
       );
@@ -1004,13 +1002,13 @@ export class ImageService {
 
       // If we found a photo, create the image
       if (photo) {
-        serverLog(
+        void serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Creating image from Pexels photo ID: ${photo.id}`,
           'info',
         );
         const image = await this.createFromPexels(photo, definitionId);
         if (image) {
-          serverLog(
+          void serverLog(
             `======FROM getOrCreateTranslatedDefinitionImage===========: Successfully created image ${image.id} for definition ${definitionId}`,
             'info',
           );
@@ -1019,14 +1017,14 @@ export class ImageService {
       }
 
       // Fall back to the standard method if no image was found
-      serverLog(
+      void serverLog(
         `======FROM getOrCreateTranslatedDefinitionImage===========: No image found using translations, falling back to standard method`,
         'info',
       );
       return this.getOrCreateDefinitionImage(word, definitionId);
     } catch (error) {
-      serverLog(
-        `======FROM getOrCreateTranslatedDefinitionImage===========: Error in getOrCreateTranslatedDefinitionImage: ${error}`,
+      void serverLog(
+        `======FROM getOrCreateTranslatedDefinitionImage===========: Error in getOrCreateTranslatedDefinitionImage: ${error instanceof Error ? error.message : String(error)}`,
         'error',
       );
       return null;

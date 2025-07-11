@@ -1,4 +1,7 @@
-import { store } from '@/core/state/store';
+import {
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 import {
   setSyncInProgress,
   setSyncSuccess,
@@ -11,10 +14,7 @@ import {
   selectDictionaryFilters,
   selectAdminDictionaryFilters,
 } from '@/core/state/features/settingsSlice';
-import {
-  infoLog,
-  errorLog,
-} from '@/core/infrastructure/monitoring/clientLogger';
+import { store } from '@/core/state/store';
 
 // =============================================
 // SETTINGS SYNCHRONIZATION SERVICE

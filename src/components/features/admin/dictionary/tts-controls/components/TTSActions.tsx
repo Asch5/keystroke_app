@@ -1,6 +1,6 @@
+import { Volume2, Clock } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Volume2, Clock } from 'lucide-react';
 import { TTSActionsProps } from '../types';
 
 /**

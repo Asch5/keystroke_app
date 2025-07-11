@@ -1,9 +1,11 @@
 'use client';
 
+import { Loader2, Plus, ListIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { LanguageCode } from '@/core/types';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -12,16 +14,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, Plus, ListIcon } from 'lucide-react';
-import { toast } from 'sonner';
 import {
   fetchAllLists,
   addWordsToList,
   type ListWithDetails,
 } from '@/core/domains/dictionary/actions';
+import { LanguageCode } from '@/core/types';
 
 interface AddWordsToListDialogProps {
   isOpen: boolean;

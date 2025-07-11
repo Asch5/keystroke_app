@@ -1,12 +1,11 @@
 'use server';
 
-import { prisma } from '@/core/lib/prisma';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { processAndSaveDanishWord } from '@/core/lib/db/processOrdnetApi';
 import { processEnglishTranslationsForDanishWord } from '@/core/lib/db/wordTranslationProcessor';
-import type { WordVariant } from '@/core/types/translationDanishTypes';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-
+import { prisma } from '@/core/lib/prisma';
 import { ImageService } from '@/core/lib/services/imageService';
+import type { WordVariant } from '@/core/types/translationDanishTypes';
 
 interface ProcessDanishVariantResult {
   wordDisplay: string;
@@ -30,12 +29,8 @@ export async function processDanishVariantOnServer(
   try {
     const processedWordData = await processAndSaveDanishWord(variant, prisma);
 
-    if (
-      !processedWordData ||
-      !processedWordData.word ||
-      !processedWordData.word.id
-    ) {
-      serverLog(
+    if (!processedWordData?.word?.id) {
+      void serverLog(
         `Failed to process or save Danish word variant for "${originalWord}". processedWordData was insufficient.`,
         'error',
         { variant },
@@ -63,7 +58,7 @@ export async function processDanishVariantOnServer(
     ) {
       // Map to a simple array of definition IDs for image processing
       const definitionIds = processedWordData.definitions
-        .filter((def) => def && def.id != null)
+        .filter((def) => def?.id != null)
         .map((def) => ({ id: def.id as number }));
 
       if (definitionIds.length > 0) {
@@ -74,7 +69,7 @@ export async function processDanishVariantOnServer(
         );
       }
     } else {
-      serverLog(
+      void serverLog(
         `No valid definitions found for image processing. processedWordData.definitions: ${processedWordData.definitions ? `Array(${Array.isArray(processedWordData.definitions) ? processedWordData.definitions.length : 'not array'})` : 'null/undefined'}`,
         'warn',
         { variant },
@@ -88,7 +83,7 @@ export async function processDanishVariantOnServer(
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    serverLog(
+    void serverLog(
       `Error in server action processDanishVariantOnServer for "${originalWord}" (variant: ${variant.word.word}): ${errorMessage}`,
       'error',
       { error, variant },
@@ -140,18 +135,18 @@ export async function processImagesForTranslatedDefinitions(
               where: { id: definition.id },
               data: { imageId: image.id },
             });
-            serverLog(
+            void serverLog(
               `Successfully assigned image ${image.id} to definition ${definition.id}`,
               'info',
             );
           } else {
-            serverLog(
+            void serverLog(
               `No image found for Danish definition ${definition.id} (word: "${wordText}")`,
               'warn',
             );
           }
         } catch (error) {
-          serverLog(
+          void serverLog(
             `Error processing image for definition ${definition.id}: ${error instanceof Error ? error.message : String(error)}`,
             'error',
           );

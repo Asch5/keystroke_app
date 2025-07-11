@@ -1,13 +1,13 @@
 'use client';
 
+import { Trash2, Plus } from 'lucide-react';
 import { memo } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent } from '@/components/ui/card';
-import { Trash2, Plus } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions/word-details-actions';
 
 // Extract exact types from WordDetailEditData to ensure compatibility

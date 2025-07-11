@@ -1,11 +1,11 @@
 'use client';
 
-import { ReactNode, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
-import { cn } from '@/core/shared/utils/common/cn';
+import { ReactNode, useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/core/shared/utils/common/cn';
 
 interface PracticeGameContainerProps {
   children: ReactNode;

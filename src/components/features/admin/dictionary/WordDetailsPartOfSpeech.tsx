@@ -1,21 +1,21 @@
 import React from 'react';
-import { LanguageCode } from '@/core/types';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
-import { formatRelationshipType } from './utils/translation-utils';
-import { WordDetailsDefinitions } from './WordDetailsDefinitions';
 import type {
   WordPartOfSpeechDetails,
   AudioFileData,
   DetailRelationForPOS,
 } from '@/core/lib/actions/dictionaryActions';
+import { LanguageCode } from '@/core/types';
+import { formatRelationshipType } from './utils/translation-utils';
+import { WordDetailsDefinitions } from './WordDetailsDefinitions';
 
 interface WordDetailsPartOfSpeechProps {
   detail: WordPartOfSpeechDetails;

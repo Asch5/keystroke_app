@@ -1,14 +1,14 @@
 'use server';
 
-import { prisma } from '@/core/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {
   safeDatabaseOperation,
   getDatabaseErrorMessage,
 } from '@/core/lib/database-error-handler';
+import { prisma } from '@/core/lib/prisma';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { WhereInput, OrderByInput } from '@/core/types/prisma-substitutes';
 
 export interface ListWithDetails {
@@ -76,7 +76,7 @@ export async function fetchAllLists(
       sortOrder = 'desc',
     } = filters;
 
-    serverLog(
+    void serverLog(
       `Fetching lists with filters: ${JSON.stringify(filters)}`,
       'info',
     );
@@ -338,14 +338,17 @@ export async function updateList(
     });
 
     revalidatePath('/admin/dictionaries/lists');
-    serverLog(`List ${listId} updated successfully`, 'info');
+    void serverLog(`List ${listId} updated successfully`, 'info');
 
     return {
       success: true,
       message: 'List updated successfully',
     };
   } catch (error) {
-    serverLog(`Error updating list ${listId}: ${error}`, 'error');
+    void serverLog(
+      `Error updating list ${listId}: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return {
       success: false,
       message: getDatabaseErrorMessage(error),
@@ -371,14 +374,17 @@ export async function deleteList(
     });
 
     revalidatePath('/admin/dictionaries/lists');
-    serverLog(`List ${listId} deleted successfully`, 'info');
+    void serverLog(`List ${listId} deleted successfully`, 'info');
 
     return {
       success: true,
       message: 'List deleted successfully',
     };
   } catch (error) {
-    serverLog(`Error deleting list ${listId}: ${error}`, 'error');
+    void serverLog(
+      `Error deleting list ${listId}: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return {
       success: false,
       message: getDatabaseErrorMessage(error),
@@ -404,14 +410,17 @@ export async function restoreList(
     });
 
     revalidatePath('/admin/dictionaries/lists');
-    serverLog(`List ${listId} restored successfully`, 'info');
+    void serverLog(`List ${listId} restored successfully`, 'info');
 
     return {
       success: true,
       message: 'List restored successfully',
     };
   } catch (error) {
-    serverLog(`Error restoring list ${listId}: ${error}`, 'error');
+    void serverLog(
+      `Error restoring list ${listId}: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return {
       success: false,
       message: getDatabaseErrorMessage(error),
@@ -476,7 +485,10 @@ export async function updateListAction(
 
     return result;
   } catch (error) {
-    serverLog(`Error in updateListAction: ${error}`, 'error');
+    void serverLog(
+      `Error in updateListAction: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return {
       success: false,
       message: getDatabaseErrorMessage(error),

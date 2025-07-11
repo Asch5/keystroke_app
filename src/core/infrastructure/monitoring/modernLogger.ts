@@ -4,8 +4,8 @@
  */
 
 import { clientLog, DebugUtils } from './clientLogger';
-import { serverLog } from './serverLogger';
 import { otelLogger } from './otelLogger';
+import { serverLog } from './serverLogger';
 
 // Enhanced log context interface
 interface LogContext {
@@ -174,13 +174,7 @@ class ModernLogger {
             }),
           );
         } else {
-          promises.push(
-            serverLog(
-              message,
-              level as 'info' | 'warn' | 'error',
-              enhancedContext,
-            ),
-          );
+          promises.push(serverLog(message, level, enhancedContext));
         }
       }
     }

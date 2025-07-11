@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { GameState } from '../types';
 import { gameSoundService } from '@/core/domains/dictionary/services/game-sound-service';
+import { GameState } from '../types';
 
 /**
  * Game actions hook that handles all user interactions

@@ -1,15 +1,15 @@
 'use server';
 
-import { z } from 'zod';
-import { prisma } from '@/core/lib/prisma';
-import { getUserByEmail } from '@/core/lib/db/user';
-import { auth } from '@/auth';
+import { put } from '@vercel/blob';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
-import { revalidatePath } from 'next/cache';
-import { put } from '@vercel/blob';
-import { LanguageCode } from '@/core/types';
+import { z } from 'zod';
+import { auth } from '@/auth';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { getUserByEmail } from '@/core/lib/db/user';
+import { prisma } from '@/core/lib/prisma';
+import { LanguageCode } from '@/core/types';
 
 const profileSchema = z.object({
   name: z
@@ -96,7 +96,7 @@ export async function updateUserProfile(
   // Get the current user from the session
   const session = await auth();
 
-  await serverLog('User profile update request received', 'info', {
+  void serverLog('User profile update request received', 'info', {
     formDataKeys: Array.from(formData.keys()),
   });
 
@@ -159,7 +159,7 @@ export async function updateUserProfile(
 
     // Handle photo upload if provided
     if (validatedFields.data.photo) {
-      const photo = validatedFields.data.photo as File;
+      const photo = validatedFields.data.photo;
 
       // Validate file type
       if (!photo.type.startsWith('image/')) {
@@ -184,7 +184,7 @@ export async function updateUserProfile(
 
         updateData.profilePictureUrl = blob.url;
       } catch (uploadError) {
-        await serverLog('Error uploading photo', 'error', {
+        void serverLog('Error uploading photo', 'error', {
           error: uploadError,
           userId: user.id,
         });
@@ -206,7 +206,7 @@ export async function updateUserProfile(
       return { message: 'No changes to update.' };
     }
   } catch (error) {
-    await serverLog('Error updating profile', 'error', {
+    void serverLog('Error updating profile', 'error', {
       error,
       userId: session.user.email,
     });

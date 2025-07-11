@@ -588,3 +588,18 @@
 [2025-07-10T23:12:58.690Z] [info] Statistics fetched successfully for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399
 [2025-07-10T23:12:58.859Z] [info] Fetching dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399"}
 [2025-07-10T23:13:00.438Z] [info] Successfully calculated dictionary performance metrics for user fcd0c821-6c9d-4cef-8cd6-9d8fb9099399 Context: {"userId":"fcd0c821-6c9d-4cef-8cd6-9d8fb9099399","metricsCount":9}
+[2025-07-11T09:51:16.177Z] [info] Initializing server services...
+[2025-07-11T09:51:16.222Z] [info] Server services initialized successfully
+[2025-07-11T09:51:16.221Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-11T09:51:16.195Z] [info] Initializing server services...
+[2025-07-11T09:51:16.254Z] [info] Initializing server services...
+[2025-07-11T09:51:16.489Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-11T09:51:16.490Z] [info] Server services initialized successfully
+[2025-07-11T09:51:16.537Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-11T09:51:16.540Z] [info] Server services initialized successfully
+[2025-07-11T09:51:24.503Z] [info] Initializing server services...
+[2025-07-11T09:51:24.559Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}
+[2025-07-11T09:51:24.560Z] [info] Server services initialized successfully
+[2025-07-11T09:51:24.389Z] [info] Initializing server services...
+[2025-07-11T09:51:25.140Z] [info] Server services initialized successfully
+[2025-07-11T09:51:25.140Z] [info] Scheduled audio cleanup configured Context: {"intervalHours":24}

@@ -1,7 +1,7 @@
 'use client';
 
-import { Skeleton } from '@/components/ui/skeleton';
 import { ImageIcon } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ImagesSectionProps {
   isLoading: boolean;

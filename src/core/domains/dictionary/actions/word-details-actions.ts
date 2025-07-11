@@ -2,6 +2,10 @@
 
 import { prisma } from '@/core/lib/prisma';
 import {
+  getFrequencyPartOfSpeechEnum,
+  FrequencyPartOfSpeech,
+} from '@/core/lib/utils/commonDictUtils/frequencyUtils';
+import {
   LanguageCode,
   PartOfSpeech,
   SourceType,
@@ -9,12 +13,8 @@ import {
   Gender,
 } from '@/core/types';
 import { DatabaseJsonValue } from '@/core/types/database';
-import { WordDetailsUpdateInput } from '@/core/types/prisma-substitutes';
-import {
-  getFrequencyPartOfSpeechEnum,
-  FrequencyPartOfSpeech,
-} from '@/core/lib/utils/commonDictUtils/frequencyUtils';
 import { WordUpdateData, UpdateWordResult } from '@/core/types/dictionary';
+import { WordDetailsUpdateInput } from '@/core/types/prisma-substitutes';
 
 // Add type definition for image data
 interface ImageData {
@@ -264,7 +264,7 @@ export async function getWordDetails(
                 id: ex.id,
                 text: ex.example,
                 grammaticalNote: ex.grammaticalNote,
-                audio: (ex.audioLinks && ex.audioLinks[0]?.audio.url) || null,
+                audio: ex.audioLinks?.[0]?.audio.url || null,
                 translations: ex.translationLinks.map((tl) => ({
                   id: tl.translation.id,
                   languageCode: tl.translation.languageCode,
@@ -979,7 +979,7 @@ export async function updateWordDetailById(
                     // Create new example
                     await tx.definitionExample.create({
                       data: {
-                        definitionId: defData.id!,
+                        definitionId: defData.id,
                         example: exampleData.example,
                         languageCode: defData.languageCode,
                         grammaticalNote: exampleData.grammaticalNote,
@@ -1181,7 +1181,7 @@ export async function updateWordDetailById(
               }
             } else {
               // Update existing relationship
-              const [fromId, toId, type] = relData.id!.split('-');
+              const [fromId, toId, type] = relData.id.split('-');
               if (fromId && toId && type) {
                 await tx.wordDetailsRelationship.update({
                   where: {
@@ -1423,7 +1423,7 @@ export async function updateWordDetailDefinitions(
                 // Create new example
                 await tx.definitionExample.create({
                   data: {
-                    definitionId: defData.id!,
+                    definitionId: defData.id,
                     example: exampleData.example,
                     languageCode: defData.languageCode,
                     grammaticalNote: exampleData.grammaticalNote,
@@ -1711,7 +1711,7 @@ export async function updateWordDetailRelationships(
           }
         } else {
           // Update existing relationship
-          const [fromId, toId, type] = relData.id!.split('-');
+          const [fromId, toId, type] = relData.id.split('-');
           if (fromId && toId && type) {
             await tx.wordDetailsRelationship.update({
               where: {

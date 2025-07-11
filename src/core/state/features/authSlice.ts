@@ -1,5 +1,5 @@
-import { UserBasicData } from '@/core/types/user';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { UserBasicData } from '@/core/types/user';
 
 interface AuthState {
   user: UserBasicData | null;

@@ -1,5 +1,13 @@
 import { useCallback, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '@/core/state/store';
+import type {
+  CreateSessionRequest,
+  UpdateSessionRequest,
+  AddSessionItemRequest,
+  UseSessionReturn,
+  UserLearningSession,
+  UserSessionItem,
+} from '@/core/domains/user/types/session';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {
   startLearningSession,
   endLearningSession,
@@ -18,15 +26,7 @@ import {
   pauseSession,
   resumeSession,
 } from '@/core/state/features/sessionSlice';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import type {
-  CreateSessionRequest,
-  UpdateSessionRequest,
-  AddSessionItemRequest,
-  UseSessionReturn,
-  UserLearningSession,
-  UserSessionItem,
-} from '@/core/domains/user/types/session';
+import { useAppDispatch, useAppSelector } from '@/core/state/store';
 
 /**
  * Hook for managing learning sessions with Redux integration
@@ -49,7 +49,7 @@ export function useSession(): UseSessionReturn {
   const startSession = useCallback(
     async (request: CreateSessionRequest): Promise<UserLearningSession> => {
       try {
-        serverLog('Starting new session via hook', 'info', { request });
+        void serverLog('Starting new session via hook', 'info', { request });
 
         const result = await dispatch(startLearningSession(request)).unwrap();
 
@@ -58,7 +58,7 @@ export function useSession(): UseSessionReturn {
 
         return result;
       } catch (error) {
-        serverLog('Failed to start session via hook', 'error', {
+        void serverLog('Failed to start session via hook', 'error', {
           error,
         });
         throw error;
@@ -77,7 +77,7 @@ export function useSession(): UseSessionReturn {
       }
 
       try {
-        serverLog('Ending session via hook', 'info', {
+        void serverLog('Ending session via hook', 'info', {
           sessionId: currentSession.id,
           updates,
         });
@@ -101,7 +101,7 @@ export function useSession(): UseSessionReturn {
 
         dispatch(clearError());
       } catch (error) {
-        serverLog('Failed to end session via hook', 'error', { error });
+        void serverLog('Failed to end session via hook', 'error', { error });
         throw error;
       }
     },
@@ -140,14 +140,14 @@ export function useSession(): UseSessionReturn {
           }),
         ).unwrap();
 
-        serverLog('Session item added successfully', 'info', {
+        void serverLog('Session item added successfully', 'info', {
           sessionId: currentSession.id,
           itemId: result.id,
         });
 
         return result;
       } catch (error) {
-        serverLog('Failed to add session item via hook', 'error', {
+        void serverLog('Failed to add session item via hook', 'error', {
           error,
         });
         throw error;
@@ -175,11 +175,11 @@ export function useSession(): UseSessionReturn {
         }),
       );
 
-      serverLog('Session paused', 'info', {
+      void serverLog('Session paused', 'info', {
         sessionId: currentSession.id,
       });
     } catch (error) {
-      serverLog('Failed to pause session', 'error', { error });
+      void serverLog('Failed to pause session', 'error', { error });
       throw error;
     }
   }, [currentSession, isSessionActive, dispatch]);
@@ -195,11 +195,11 @@ export function useSession(): UseSessionReturn {
     try {
       dispatch(resumeSession());
 
-      serverLog('Session resumed', 'info', {
+      void serverLog('Session resumed', 'info', {
         sessionId: currentSession.id,
       });
     } catch (error) {
-      serverLog('Failed to resume session', 'error', { error });
+      void serverLog('Failed to resume session', 'error', { error });
       throw error;
     }
   }, [currentSession, isSessionActive, dispatch]);
@@ -209,7 +209,7 @@ export function useSession(): UseSessionReturn {
    */
   const resetCurrentSession = useCallback((): void => {
     dispatch(resetSession());
-    serverLog('Session state reset', 'info');
+    void serverLog('Session state reset', 'info');
   }, [dispatch]);
 
   /**
@@ -242,7 +242,7 @@ export function useSession(): UseSessionReturn {
           );
         }
       } catch (error) {
-        serverLog('Auto-save session failed', 'error', { error });
+        void serverLog('Auto-save session failed', 'error', { error });
       }
     }, 30000); // Auto-save every 30 seconds
 
@@ -264,7 +264,7 @@ export function useSession(): UseSessionReturn {
       // Optional: Auto-end session if component unmounts and session is still active
       // This could be configurable based on app requirements
       if (currentSession && isSessionActive) {
-        serverLog('Component unmounting with active session', 'info', {
+        void serverLog('Component unmounting with active session', 'info', {
           sessionId: currentSession.id,
         });
         // Could dispatch endLearningSession here if needed

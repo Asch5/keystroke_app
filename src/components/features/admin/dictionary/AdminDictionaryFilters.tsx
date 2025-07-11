@@ -1,5 +1,6 @@
 'use client';
 
+import { Filter, ChevronDown } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -12,9 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Filter, ChevronDown } from 'lucide-react';
-import { PartOfSpeech, SourceType } from '@/core/types';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
+import { PartOfSpeech, SourceType } from '@/core/types';
 import {
   FilterState,
   partOfSpeechDisplayNames,

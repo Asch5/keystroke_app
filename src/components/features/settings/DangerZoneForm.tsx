@@ -1,11 +1,10 @@
 'use client';
 
+import { Loader2, AlertTriangle, Trash2 } from 'lucide-react';
 import { useState, useActionState } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Dialog,
   DialogContent,
@@ -15,11 +14,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Loader2, AlertTriangle, Trash2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { deleteUserAccount } from '@/core/domains/user/actions/user-settings-actions';
 import type { UserSettingsState } from '@/core/domains/user/types/user-settings';
+import { useTranslation } from '@/core/shared/hooks/useTranslation';
 
 export function DangerZoneForm() {
+  const { t } = useTranslation();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [confirmationText, setConfirmationText] = useState('');
 
@@ -44,7 +46,7 @@ export function DangerZoneForm() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-destructive">
           <AlertTriangle className="h-5 w-5" />
-          Danger Zone
+          {t('settings.dangerZone')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">

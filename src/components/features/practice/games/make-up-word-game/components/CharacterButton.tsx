@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/core/shared/utils/common/cn';
 import { CharacterButtonProps } from '../types';
 

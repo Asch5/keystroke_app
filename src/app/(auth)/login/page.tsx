@@ -1,13 +1,13 @@
 'use client';
 
-import { LoginForm } from '@/components/features/auth';
-import Link from 'next/link';
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowRight } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { LoginForm } from '@/components/features/auth';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 /**
  * Loading fallback component for the login form

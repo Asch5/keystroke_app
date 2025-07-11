@@ -1,8 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Trophy } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import type { EnhancedPracticeSession } from '@/core/domains/user/actions/practice-actions';
 
 interface SessionProgress {

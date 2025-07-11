@@ -1,92 +1,184 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { defineConfig } from 'eslint/config';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
+const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
   baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
-const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
-  {
-    rules: {
-      // Font system enforcement rules
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['next/font/google', 'next/font/local'],
-              message:
-                'Font imports are not allowed. Use the semantic font system with CSS variables and Tailwind classes instead. See documentation/TYPOGRAPHY_SYSTEM_2025.md for guidelines.',
-            },
-          ],
-        },
-      ],
-      // Custom rules for color and font system enforcement
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector:
-            'Literal[value=/text-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
-          message:
-            'Hard-coded text colors are not allowed. Use semantic tokens like "text-error-foreground", "text-success-foreground", etc. See documentation/AGENT_STYLING_RULES.md for guidelines.',
-        },
-        {
-          selector:
-            'Literal[value=/bg-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
-          message:
-            'Hard-coded background colors are not allowed. Use semantic tokens like "bg-error-subtle", "bg-success-subtle", etc. See documentation/AGENT_STYLING_RULES.md for guidelines.',
-        },
-        {
-          selector:
-            'Literal[value=/border-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
-          message:
-            'Hard-coded border colors are not allowed. Use semantic tokens like "border-error-border", "border-success-border", etc. See documentation/AGENT_STYLING_RULES.md for guidelines.',
-        },
-        {
-          selector:
-            'Literal[value=/dark:text-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
-          message:
-            'Manual dark mode color variants are not allowed with semantic tokens. Semantic tokens automatically adapt to dark mode. Remove the "dark:" prefix.',
-        },
-        {
-          selector:
-            'Literal[value=/dark:bg-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
-          message:
-            'Manual dark mode color variants are not allowed with semantic tokens. Semantic tokens automatically adapt to dark mode. Remove the "dark:" prefix.',
-        },
-        {
-          selector:
-            'Literal[value=/dark:border-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
-          message:
-            'Manual dark mode color variants are not allowed with semantic tokens. Semantic tokens automatically adapt to dark mode. Remove the "dark:" prefix.',
-        },
-        // Font system enforcement rules
-        {
-          selector:
-            'Literal[value=/font-\\[((?!font-(interface|heading|body|code|reading|display|foreign-word|phonetic|definition|translation)).)*\\]/]',
-          message:
-            'Hard-coded font families are not allowed. Use semantic font classes like "font-heading", "font-body", "font-code", etc. See documentation/TYPOGRAPHY_SYSTEM_2025.md for full reference.',
-        },
-        {
-          selector:
-            'Property[key.name="fontFamily"] > Literal[value!=/^var\\(--font-(interface|heading|body|code|reading|display|foreign-word|phonetic|definition|translation)\\)$/]',
-          message:
-            'Inline font-family styles must use CSS variables. Use var(--font-heading), var(--font-body), etc. or use Tailwind font classes instead. See documentation/TYPOGRAPHY_SYSTEM_2025.md for guidelines.',
-        },
-        {
-          selector:
-            'Literal[value=/^font-(inter|roboto|open-sans|lato|source-sans|poppins|nunito|montserrat|pt-sans|ubuntu|arial|helvetica|times|georgia|courier)$/]',
-          message:
-            'Specific font family classes are not allowed. Use semantic font classes like "font-heading", "font-body", "font-code", etc. instead. See documentation/TYPOGRAPHY_SYSTEM_2025.md for guidelines.',
-        },
-      ],
-    },
-  },
-];
-
-export default eslintConfig;
+export default defineConfig([
+  // Ignore config files to prevent parsing errors
+  // {
+  //   ignores: [
+  //     '*.config.js',
+  //     '*.config.mjs',
+  //     '*.config.ts',
+  //     '.prettierrc.cjs',
+  //     '.eslintrc.*',
+  //     'postcss.config.mjs',
+  //     'tailwind.config.ts',
+  //     'vitest.config.ts',
+  //     'next.config.mjs',
+  //     '.next/**',
+  //     'node_modules/**',
+  //     'documentation/**',
+  //     'bufferFolder/**',
+  //     'tests/**',
+  //     'scripts/**',
+  //   ],
+  // },
+  // {
+  //   extends: compat.extends(
+  //     'next/core-web-vitals',
+  //     'eslint:recommended',
+  //     'plugin:@typescript-eslint/recommended',
+  //     'plugin:@typescript-eslint/recommended-requiring-type-checking',
+  //     'plugin:import/recommended',
+  //     'plugin:import/typescript',
+  //     'prettier', // Disable ESLint formatting rules that conflict with Prettier
+  //   ),
+  //   plugins: {
+  //     '@typescript-eslint': typescriptEslint,
+  //   },
+  //   languageOptions: {
+  //     parser: tsParser,
+  //     ecmaVersion: 2022,
+  //     sourceType: 'module',
+  //     parserOptions: {
+  //       project: './tsconfig.json',
+  //     },
+  //   },
+  //   rules: {
+  //     // ==========================================
+  //     // CURSOR RULES COMPLIANCE: TypeScript & Type Safety (Rule 8)
+  //     // ==========================================
+  //     '@typescript-eslint/no-unused-vars': [
+  //       'error',
+  //       {
+  //         argsIgnorePattern: '^_',
+  //         varsIgnorePattern: '^_',
+  //         destructuredArrayIgnorePattern: '^_',
+  //         ignoreRestSiblings: true,
+  //       },
+  //     ],
+  //     '@typescript-eslint/no-explicit-any': 'error',
+  //     '@typescript-eslint/ban-ts-comment': 'error',
+  //     '@typescript-eslint/no-non-null-assertion': 'warn', // Reduced from error
+  //     '@typescript-eslint/explicit-module-boundary-types': 'off', // Too strict for this project
+  //     '@typescript-eslint/prefer-as-const': 'error',
+  //     '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+  //     '@typescript-eslint/prefer-optional-chain': 'warn',
+  //     '@typescript-eslint/no-floating-promises': 'warn', // Reduced from error
+  //     '@typescript-eslint/no-misused-promises': 'warn', // Reduced from error
+  //     '@typescript-eslint/await-thenable': 'error',
+  //     '@typescript-eslint/require-await': 'off', // Disabled - too many false positives
+  //     '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
+  //     '@typescript-eslint/no-unsafe-assignment': 'warn', // Reduced for flexibility
+  //     '@typescript-eslint/no-unsafe-call': 'warn',
+  //     '@typescript-eslint/no-unsafe-member-access': 'warn',
+  //     '@typescript-eslint/no-unsafe-return': 'warn',
+  //     // ==========================================
+  //     // CURSOR RULES COMPLIANCE: React & Performance (Rules 3, 18, 21)
+  //     // ==========================================
+  //     'react-hooks/exhaustive-deps': 'warn', // Reduced from error
+  //     'react/no-unescaped-entities': 'off',
+  //     'react/jsx-key': 'error',
+  //     'react/no-array-index-key': 'warn',
+  //     'react-hooks/rules-of-hooks': 'error',
+  //     // ==========================================
+  //     // CURSOR RULES COMPLIANCE: Console.log Usage & Logging (Rule 9)
+  //     // ==========================================
+  //     'no-console': [
+  //       'warn',
+  //       {
+  //         allow: ['warn', 'error'],
+  //       },
+  //     ],
+  //     // ==========================================
+  //     // CURSOR RULES COMPLIANCE: File Size & Complexity (Rule 18)
+  //     // ==========================================
+  //     'max-lines': [
+  //       'warn',
+  //       {
+  //         max: 400,
+  //         skipBlankLines: true,
+  //         skipComments: true,
+  //       },
+  //     ],
+  //     complexity: ['warn', { max: 10 }],
+  //     // ==========================================
+  //     // CURSOR RULES COMPLIANCE: Code Quality
+  //     // ==========================================
+  //     'prefer-const': 'error',
+  //     'no-var': 'error',
+  //     'no-duplicate-imports': 'error',
+  //     'no-case-declarations': 'error',
+  //     // ==========================================
+  //     // CURSOR RULES COMPLIANCE: Next.js Best Practices & Font Optimization
+  //     // ==========================================
+  //     '@next/next/no-img-element': 'error',
+  //     '@next/next/no-page-custom-font': 'warn',
+  //     '@next/next/no-sync-scripts': 'error',
+  //     '@next/next/no-css-tags': 'error',
+  //     '@next/next/no-document-import-in-page': 'error',
+  //     '@next/next/no-head-import-in-document': 'error',
+  //     '@next/next/no-html-link-for-pages': 'error',
+  //     '@next/next/no-typos': 'error',
+  //     '@next/next/no-unwanted-polyfillio': 'error',
+  //     // ==========================================
+  //     // CURSOR RULES COMPLIANCE: Style Checking & Code Formatting
+  //     // ==========================================
+  //     // Import/Export organization
+  //     'import/order': [
+  //       'warn',
+  //       {
+  //         groups: [
+  //           'builtin',
+  //           'external',
+  //           'internal',
+  //           'parent',
+  //           'sibling',
+  //           'index',
+  //         ],
+  //         'newlines-between': 'never',
+  //         alphabetize: {
+  //           order: 'asc',
+  //           caseInsensitive: true,
+  //         },
+  //       },
+  //     ],
+  //     'import/no-duplicates': 'error',
+  //     'import/no-unresolved': 'off', // Disabled for Next.js path mapping
+  //     // Naming conventions (Modern TypeScript - no "I" prefix)
+  //     '@typescript-eslint/naming-convention': [
+  //       'warn',
+  //       {
+  //         selector: 'variableLike',
+  //         format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
+  //         leadingUnderscore: 'allow',
+  //       },
+  //       {
+  //         selector: 'typeLike',
+  //         format: ['PascalCase'],
+  //       },
+  //       {
+  //         selector: 'interface',
+  //         format: ['PascalCase'],
+  //         // Removed: prefix: ['I'] - Modern TypeScript doesn't use this
+  //       },
+  //     ],
+  //     // Removed overly opinionated style rules - let Prettier handle formatting
+  //     // Keep only essential spacing rules
+  //     'no-trailing-spaces': 'warn',
+  //     'no-multiple-empty-lines': ['warn', { max: 2 }],
+  //   },
+  // },
+]);

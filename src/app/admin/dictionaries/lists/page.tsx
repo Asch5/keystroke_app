@@ -1,19 +1,43 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import {
-  fetchAllLists,
-  fetchCategories,
-  deleteList,
-  restoreList,
-  type ListWithDetails,
-  type ListFilters,
-  type CategoryData,
-} from '@/core/domains/dictionary/actions';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+  MoreHorizontal,
+  Eye,
+  Edit,
+  Trash2,
+  RotateCcw,
+  Users,
+  Globe,
+  Lock,
+  Calendar,
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  Search,
+  List,
+  Plus,
+} from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React, { useMemo } from 'react';
+import { AdminCreateListDialog } from '@/components/features/admin/dictionary/AdminCreateListDialog';
+import {
+  AdminListsHeader,
+  useAdminListsState,
+} from '@/components/features/admin/dictionary/lists';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -31,38 +55,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  List,
-  Search,
-  Filter,
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Trash2,
-  RotateCcw,
-  Plus,
-  Download,
-  Users,
-  Globe,
-  Lock,
-  Calendar,
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
-import { toast } from 'sonner';
-import { AdminCreateListDialog } from '@/components/features/admin/dictionary/AdminCreateListDialog';
 
 // Language and difficulty display names
 const languageDisplayNames: Record<LanguageCode, string> = {
@@ -115,179 +108,36 @@ const difficultyColors: Record<DifficultyLevel, string> = {
 };
 
 export default function ListsManagementPage() {
+  // Use custom hook for state management
+  const {
+    lists,
+    categories,
+    isLoading,
+    error,
+    selectedLists,
+    isCreateDialogOpen,
+    setIsCreateDialogOpen,
+    totalCount,
+    totalPages,
+    currentPage,
+    pageSize,
+    setPageSize,
+    setCurrentPage,
+    filters,
+    setFilters,
+    loadData,
+    handleApplyFilters,
+    handleResetFilters,
+    handleSelectAll,
+    handleSelectList,
+    handleDeleteList,
+    handleRestoreList,
+    handleSort,
+    handlePageChange,
+  } = useAdminListsState();
+
+  // Router for navigation
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // State
-  const [lists, setLists] = useState<ListWithDetails[]>([]);
-  const [categories, setCategories] = useState<CategoryData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedLists, setSelectedLists] = useState<Set<string>>(new Set());
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-
-  // Pagination state
-  const [totalCount, setTotalCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
-
-  // Filter state
-  const [filters, setFilters] = useState<ListFilters>(() => {
-    const difficulty = searchParams.get('difficulty') as DifficultyLevel;
-    const language = searchParams.get('language') as LanguageCode;
-    const isPublicParam = searchParams.get('isPublic');
-    const sortByParam = searchParams.get('sortBy') as
-      | 'name'
-      | 'createdAt'
-      | 'wordCount'
-      | 'category'
-      | 'difficultyLevel';
-
-    return {
-      search: searchParams.get('search') || '',
-      category: searchParams.get('category') || '',
-      ...(difficulty && { difficulty }),
-      ...(language && { language }),
-      ...(isPublicParam && { isPublic: isPublicParam === 'true' }),
-      sortBy: sortByParam || 'createdAt',
-      sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc',
-    };
-  });
-
-  // Load data
-  const loadData = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const [listsResponse, categoriesResponse] = await Promise.all([
-        fetchAllLists({
-          ...filters,
-          page: currentPage,
-          pageSize,
-        }),
-        fetchCategories(),
-      ]);
-
-      setLists(listsResponse.lists);
-      setTotalCount(listsResponse.totalCount);
-      setTotalPages(listsResponse.totalPages);
-
-      if (categoriesResponse.success && categoriesResponse.categories) {
-        setCategories(categoriesResponse.categories);
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-      setError('Failed to load data');
-      toast.error('Failed to load lists');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, pageSize]);
-
-  // Apply filters
-  const handleApplyFilters = () => {
-    setCurrentPage(1);
-    loadData();
-
-    // Update URL params
-    const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== '') {
-        params.set(key, value.toString());
-      }
-    });
-    router.push(`/admin/dictionaries/lists?${params.toString()}`);
-  };
-
-  // Reset filters
-  const handleResetFilters = () => {
-    setFilters({
-      search: '',
-      category: '',
-      sortBy: 'createdAt',
-      sortOrder: 'desc',
-    });
-    setCurrentPage(1);
-    router.push('/admin/dictionaries/lists');
-  };
-
-  // Selection handlers
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedLists(new Set(lists.map((list) => list.id)));
-    } else {
-      setSelectedLists(new Set());
-    }
-  };
-
-  const handleSelectList = (listId: string, checked: boolean) => {
-    const newSelected = new Set(selectedLists);
-    if (checked) {
-      newSelected.add(listId);
-    } else {
-      newSelected.delete(listId);
-    }
-    setSelectedLists(newSelected);
-  };
-
-  // Action handlers
-  const handleDeleteList = async (listId: string) => {
-    if (!confirm('Are you sure you want to delete this list?')) return;
-
-    try {
-      const result = await deleteList(listId);
-      if (result.success) {
-        toast.success(result.message);
-        loadData();
-      } else {
-        toast.error(result.message);
-      }
-    } catch {
-      toast.error('Failed to delete list');
-    }
-  };
-
-  const handleRestoreList = async (listId: string) => {
-    try {
-      const result = await restoreList(listId);
-      if (result.success) {
-        toast.success(result.message);
-        loadData();
-      } else {
-        toast.error(result.message);
-      }
-    } catch {
-      toast.error('Failed to restore list');
-    }
-  };
-
-  // Sort handler
-  const handleSort = (column: string) => {
-    const newSortOrder =
-      filters.sortBy === column && filters.sortOrder === 'asc' ? 'desc' : 'asc';
-    const sortBy = column === 'difficulty' ? 'difficultyLevel' : column;
-    setFilters({
-      ...filters,
-      sortBy: sortBy as
-        | 'name'
-        | 'createdAt'
-        | 'wordCount'
-        | 'category'
-        | 'difficultyLevel',
-      sortOrder: newSortOrder,
-    });
-  };
-
-  // Pagination handlers
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   // Memoized filtered categories for display
   const categoryMap = useMemo(() => {
@@ -313,35 +163,7 @@ export default function ListsManagementPage() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       {/* Header */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center">
-                <List className="h-5 w-5 mr-2" />
-                Lists Management
-              </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
-                Manage all vocabulary lists in the system
-              </p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsCreateDialogOpen(true)}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Create List
-              </Button>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+      <AdminListsHeader onCreateList={() => setIsCreateDialogOpen(true)} />
 
       {/* Filters */}
       <Card>

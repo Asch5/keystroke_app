@@ -1,19 +1,5 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Loader2,
   Camera,
@@ -21,13 +7,28 @@ import {
   CheckCircle2,
   Upload,
 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { LANGUAGE_OPTIONS } from '@/core/domains/user/utils/settings-constants';
-import { useUserProfileUpdate } from '@/core/shared/hooks/useUserProfileUpdate';
 import {
   processProfilePicture,
   formatFileSize,
 } from '@/core/lib/utils/image-utils';
-import { toast } from 'sonner';
+import { useTranslation } from '@/core/shared/hooks/useTranslation';
+import { useUserProfileUpdate } from '@/core/shared/hooks/useUserProfileUpdate';
 
 interface ProfileSettingsFormProps {
   user: {
@@ -41,6 +42,7 @@ interface ProfileSettingsFormProps {
 }
 
 export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
@@ -141,7 +143,7 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          Profile Information
+          {t('settings.profile')}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -215,13 +217,13 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
           {/* Personal Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">{t('settings.fullName')}</Label>
               <Input
                 id="name"
                 name="name"
                 type="text"
                 defaultValue={user.name}
-                placeholder="Enter your full name"
+                placeholder={t('settings.enterYourFullName')}
                 className={state.errors?.name ? 'border-destructive' : ''}
               />
               {state.errors?.name && (
@@ -232,13 +234,13 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">{t('settings.emailAddress')}</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 defaultValue={user.email}
-                placeholder="Enter your email address"
+                placeholder={t('settings.enterYourEmailAddress')}
                 className={state.errors?.email ? 'border-destructive' : ''}
               />
               {state.errors?.email && (
@@ -252,7 +254,9 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
           {/* Language Preferences */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="baseLanguageCode">Native Language</Label>
+              <Label htmlFor="baseLanguageCode">
+                {t('settings.nativeLanguage')}
+              </Label>
               <Select
                 name="baseLanguageCode"
                 defaultValue={user.baseLanguageCode}
@@ -262,7 +266,9 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
                     state.errors?.baseLanguageCode ? 'border-destructive' : ''
                   }
                 >
-                  <SelectValue placeholder="Select your native language" />
+                  <SelectValue
+                    placeholder={t('settings.selectYourNativeLanguage')}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {LANGUAGE_OPTIONS.map((language) => (
@@ -286,7 +292,9 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="targetLanguageCode">Learning Language</Label>
+              <Label htmlFor="targetLanguageCode">
+                {t('settings.learningLanguage')}
+              </Label>
               <Select
                 name="targetLanguageCode"
                 defaultValue={user.targetLanguageCode}
@@ -296,7 +304,9 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
                     state.errors?.targetLanguageCode ? 'border-destructive' : ''
                   }
                 >
-                  <SelectValue placeholder="Select language to learn" />
+                  <SelectValue
+                    placeholder={t('settings.selectLanguageToLearn')}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {LANGUAGE_OPTIONS.map((language) => (
@@ -364,7 +374,7 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
                   Processing...
                 </>
               ) : (
-                'Save Changes'
+                t('settings.saveChanges')
               )}
             </Button>
           </div>

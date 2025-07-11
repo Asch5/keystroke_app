@@ -1,7 +1,6 @@
+import { clientLog } from '@/core/lib/utils/logUtils';
 import { LanguageCode, PartOfSpeech } from '@/core/types';
 import { FrequencyRequest, FrequencyResponse } from '@/core/types/dictionary';
-
-import { clientLog } from '@/core/lib/utils/logUtils';
 
 /**
  * Fetches frequency data for a single word
@@ -34,8 +33,8 @@ export async function fetchWordFrequency(
       return null;
     }
 
-    const data = await response.json();
-    clientLog(
+    const data: unknown = await response.json();
+    void clientLog(
       `Frequency data --- from Frequency Service first step: ${JSON.stringify(data)}`,
       'info',
     );
@@ -50,13 +49,13 @@ export async function fetchWordFrequency(
         'error' in frequencyItem &&
         frequencyItem['error'] !== null
       ) {
-        clientLog(
+        void clientLog(
           `Error fetching frequency for word ---- from Frequency Service: ${word}: ${frequencyItem['error']}`,
           'error',
         );
         return null;
       }
-      clientLog(
+      void clientLog(
         `Frequency frequencyItem ---- from Frequency Service: ${JSON.stringify(frequencyItem)}`,
         'info',
       );
@@ -98,13 +97,14 @@ export async function fetchBatchFrequencies(
       return requests.map(() => null);
     }
 
-    const data = await response.json();
+    const data: unknown = await response.json();
 
     if (Array.isArray(data)) {
       return data.map((item, index) => {
-        if ('error' in item) {
+        if (typeof item === 'object' && item !== null && 'error' in item) {
+          const errorItem = item as { error: unknown };
           console.error(
-            `Error fetching frequency for word ${requests[index]?.word}: ${item.error}`,
+            `Error fetching frequency for word ${requests[index]?.word}: ${String(errorItem.error)}`,
           );
           return null;
         }
@@ -160,7 +160,7 @@ export function getPartOfSpeechFrequency(
 export function getHighestPartOfSpeechFrequency(
   frequencyData: FrequencyResponse | null,
 ): number | null {
-  if (!frequencyData || !frequencyData.isPartOfSpeech) {
+  if (!frequencyData?.isPartOfSpeech) {
     return null;
   }
 

@@ -30,7 +30,7 @@ if (
   process.env.NODE_ENV === 'production'
 ) {
   try {
-    initializeServerServices();
+    void initializeServerServices();
     globalForPrisma.isServicesInitialized = true;
   } catch (error) {
     console.error('Failed to initialize server services:', error);

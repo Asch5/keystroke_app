@@ -1,9 +1,9 @@
 'use client';
 
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
 import { Clock } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface VocabularyTimeSettingsProps {

@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
 import { BookOpen } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 /**
  * Getting started component for typing practice

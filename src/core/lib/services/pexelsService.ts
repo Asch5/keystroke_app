@@ -1,4 +1,3 @@
-import { env } from '@/env.mjs';
 import {
   createClient,
   type PexelsApi,
@@ -12,6 +11,7 @@ import {
   infoLog,
   errorLog,
 } from '@/core/infrastructure/monitoring/clientLogger';
+import { env } from '@/env.mjs';
 
 // Export types for backward compatibility
 export type { PexelsPhoto };
@@ -75,18 +75,17 @@ export class PexelsService {
 
       // Check if there's an error in the response
       if ('error' in response) {
+        const errorResponse = response;
         await errorLog('Pexels API error occurred', {
-          error: (response as ErrorResponse).error,
+          error: errorResponse.error,
           query,
           options,
         });
-        throw new Error(
-          `Pexels API error: ${(response as ErrorResponse).error}`,
-        );
+        throw new Error(`Pexels API error: ${errorResponse.error}`);
       }
 
       // Validate the response structure
-      const searchResponse = response as PhotosSearchResponse;
+      const searchResponse = response;
       if (!searchResponse || !Array.isArray(searchResponse.photos)) {
         await errorLog('Invalid response structure from Pexels', { response });
         return { photos: [] };
@@ -129,14 +128,12 @@ export class PexelsService {
 
       // Check if there's an error
       if ('error' in response) {
-        throw new Error(
-          `Pexels API error: ${(response as ErrorResponse).error}`,
-        );
+        throw new Error(`Pexels API error: ${response.error}`);
       }
 
       await infoLog('Pexels photo fetched successfully', { photoId: id });
 
-      return response as PexelsPhoto;
+      return response;
     } catch (error) {
       await errorLog('Error fetching Pexels photo', { error, photoId: id });
       return null;

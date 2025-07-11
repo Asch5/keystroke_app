@@ -6,6 +6,7 @@ import { LanguageCode } from '@/core/types';
  */
 
 // Import types from core files
+import type { RelationshipTypeVerbsInAudio } from './danish-audio';
 import type {
   PartOfSpeechDanish,
   GenderTypeDanish,
@@ -14,7 +15,6 @@ import type {
   TranslationRequest,
 } from './danish-core';
 import type { DetailCategoryDanish } from './danish-labels';
-import type { RelationshipTypeVerbsInAudio } from './danish-audio';
 
 export interface DanishDictionaryObject {
   metadata?: {

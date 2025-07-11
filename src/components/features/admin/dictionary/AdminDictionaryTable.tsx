@@ -1,11 +1,22 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
-import { DataTable } from '@/components/ui/data-table';
+import {
+  ArrowUpDown,
+  Edit,
+  Search,
+  Play,
+  Pause,
+  Trash2,
+  MoreHorizontal,
+  Plus,
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { DataTable } from '@/components/ui/data-table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,19 +30,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {
-  ArrowUpDown,
-  Edit,
-  Search,
-  Play,
-  Pause,
-  Trash2,
-  MoreHorizontal,
-  Plus,
-} from 'lucide-react';
-import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
-import Image from 'next/image';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
+import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
 import {
   partOfSpeechDisplayNames,
   sourceTypeDisplayNames,
@@ -138,7 +138,7 @@ export function AdminDictionaryTable({
       accessorKey: 'variant',
       header: 'Variant',
       cell: ({ row }) => {
-        const variant = row.getValue('variant') as string | null;
+        const variant = row.getValue('variant') as string;
         return variant ? (
           <span className="text-muted-foreground italic">{variant}</span>
         ) : (
@@ -158,7 +158,7 @@ export function AdminDictionaryTable({
         </Button>
       ),
       cell: ({ row }) => {
-        const freq = row.getValue('frequencyGeneral') as number | null;
+        const freq = row.getValue('frequencyGeneral') as number;
         return freq ? (
           <span className="tabular-nums">{freq.toLocaleString()}</span>
         ) : (
@@ -178,7 +178,7 @@ export function AdminDictionaryTable({
         </Button>
       ),
       cell: ({ row }) => {
-        const freq = row.getValue('frequency') as number | null;
+        const freq = row.getValue('frequency') as number;
         return freq ? (
           <span className="tabular-nums">{freq.toLocaleString()}</span>
         ) : (
@@ -251,7 +251,7 @@ export function AdminDictionaryTable({
       accessorKey: 'audioUrl',
       header: 'Audio',
       cell: ({ row }) => {
-        const audioUrl = row.getValue('audioUrl') as string | null;
+        const audioUrl = row.getValue('audioUrl') as string;
         const wordDetail = row.original;
 
         if (!audioUrl) {
@@ -316,7 +316,7 @@ export function AdminDictionaryTable({
       accessorKey: 'hasImage',
       header: 'Image',
       cell: ({ row }) => {
-        const hasImage = row.getValue('hasImage') as boolean;
+        const hasImage = row.getValue('hasImage');
         const imageUrl = row.original.imageUrl;
 
         if (!hasImage || !imageUrl) {

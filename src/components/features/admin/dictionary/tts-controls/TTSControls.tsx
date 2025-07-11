@@ -1,5 +1,6 @@
 'use client';
 
+import { Volume2 } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,13 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Volume2 } from 'lucide-react';
-import { QualitySelection } from './components/QualitySelection';
-import { VoiceGenderSelection } from './components/VoiceGenderSelection';
 import { GenerationOptions } from './components/GenerationOptions';
-import { UsageStats } from './components/UsageStats';
 import { GenerationProgress } from './components/GenerationProgress';
+import { QualitySelection } from './components/QualitySelection';
 import { TTSActions } from './components/TTSActions';
+import { UsageStats } from './components/UsageStats';
+import { VoiceGenderSelection } from './components/VoiceGenderSelection';
 import { useTTSState } from './hooks/useTTSState';
 import { TTSControlsProps } from './types';
 

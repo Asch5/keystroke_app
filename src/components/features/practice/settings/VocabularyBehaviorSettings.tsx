@@ -1,7 +1,5 @@
 'use client';
 
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
   Settings,
   Eye,
@@ -14,6 +12,8 @@ import {
   Hash,
   Award,
 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface VocabularyBehaviorSettingsProps {

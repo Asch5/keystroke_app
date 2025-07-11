@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, RotateCcw } from 'lucide-react';
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/core/shared/utils/common/cn';
 import { GameState, WordData } from '../types';
 

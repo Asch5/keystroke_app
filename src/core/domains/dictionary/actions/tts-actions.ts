@@ -1,5 +1,13 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/shared/database/client';
+import { handlePrismaError } from '@/core/shared/database/error-handler';
+import {
+  blobStorageService,
+  type AudioMetadata,
+} from '@/core/shared/services/external-apis/blobStorageService';
 import {
   textToSpeechService,
   getAvailableGendersForLanguage,
@@ -7,14 +15,6 @@ import {
   type TTSRequest,
   type TTSUsageStats,
 } from '@/core/shared/services/external-apis/textToSpeechService';
-import {
-  blobStorageService,
-  type AudioMetadata,
-} from '@/core/shared/services/external-apis/blobStorageService';
-import { prisma } from '@/core/shared/database/client';
-import { handlePrismaError } from '@/core/shared/database/error-handler';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { revalidatePath } from 'next/cache';
 import { LanguageCode } from '@/core/types';
 
 export interface GenerateTTSResult {
@@ -48,7 +48,7 @@ export async function generateWordTTS(
   },
 ): Promise<GenerateTTSResult> {
   try {
-    serverLog(
+    void serverLog(
       `Starting TTS generation for word ID: ${wordId}, language: ${languageCode}`,
       'info',
     );
@@ -78,14 +78,14 @@ export async function generateWordTTS(
     });
 
     if (!word) {
-      serverLog(`Word not found for ID: ${wordId}`, 'error');
+      void serverLog(`Word not found for ID: ${wordId}`, 'error');
       return {
         success: false,
         message: 'Word not found',
       };
     }
 
-    serverLog(
+    void serverLog(
       `Found word: "${word.word}" with ${word.details.length} details`,
       'info',
     );
@@ -96,7 +96,7 @@ export async function generateWordTTS(
       .find((link) => link.isPrimary);
 
     if (existingAudio && !options?.overwriteExisting) {
-      serverLog(
+      void serverLog(
         `Audio already exists for word "${word.word}", skipping`,
         'info',
       );
@@ -116,12 +116,12 @@ export async function generateWordTTS(
       cacheKey: `word_${wordId}_${languageCode}_${word.word}`,
     };
 
-    serverLog(
+    void serverLog(
       `Generating TTS for "${word.word}" with quality: ${ttsRequest.qualityLevel}`,
       'info',
     );
     const ttsResponse = await textToSpeechService.generateSpeech(ttsRequest);
-    serverLog(
+    void serverLog(
       `TTS response received, cached: ${ttsResponse.cached}, cost: $${ttsResponse.estimatedCost}`,
       'info',
     );
@@ -139,7 +139,7 @@ export async function generateWordTTS(
         characterCount: ttsResponse.characterCount,
       };
 
-      serverLog(
+      void serverLog(
         `Uploading audio to blob storage for word "${word.word}"`,
         'info',
       );
@@ -151,7 +151,10 @@ export async function generateWordTTS(
       );
 
       if (!uploadResult.success) {
-        serverLog(`Failed to upload audio: ${uploadResult.error}`, 'error');
+        void serverLog(
+          `Failed to upload audio: ${uploadResult.error}`,
+          'error',
+        );
         return {
           success: false,
           message: `Failed to upload audio: ${uploadResult.error}`,
@@ -159,11 +162,14 @@ export async function generateWordTTS(
       }
 
       audioUrl = uploadResult.url!;
-      serverLog(`Audio uploaded successfully to: ${audioUrl}`, 'info');
+      void serverLog(`Audio uploaded successfully to: ${audioUrl}`, 'info');
 
       // Delete old audio if it exists and we're overwriting
       if (existingAudio && options?.overwriteExisting) {
-        serverLog(`Deleting existing audio for word "${word.word}"`, 'info');
+        void serverLog(
+          `Deleting existing audio for word "${word.word}"`,
+          'info',
+        );
         const audioInfo = blobStorageService.getAudioInfo(
           existingAudio.audio.url,
         );
@@ -177,7 +183,7 @@ export async function generateWordTTS(
       }
 
       // Create new audio record and link it to word details
-      serverLog(
+      void serverLog(
         `Creating audio record in database for word "${word.word}"`,
         'info',
       );
@@ -201,20 +207,20 @@ export async function generateWordTTS(
               isPrimary: true,
             },
           });
-          serverLog(
+          void serverLog(
             `Audio linked to word details for word "${word.word}"`,
             'info',
           );
         }
       } else {
-        serverLog(
+        void serverLog(
           `Warning: No word details found for word "${word.word}" to link audio`,
           'warn',
         );
       }
     } else {
       audioUrl = existingAudio.audio.url;
-      serverLog(
+      void serverLog(
         `Using existing audio URL for word "${word.word}": ${audioUrl}`,
         'info',
       );
@@ -225,10 +231,10 @@ export async function generateWordTTS(
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
-    serverLog(
+    void serverLog(
       `TTS generation completed successfully for word "${word.word}"`,
       'info',
     );
@@ -241,7 +247,10 @@ export async function generateWordTTS(
       voiceUsed: ttsResponse.voiceUsed,
     };
   } catch (error) {
-    serverLog(`Error generating word TTS for ID ${wordId}: ${error}`, 'error');
+    void serverLog(
+      `Error generating word TTS for ID ${wordId}: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     console.error('Error generating word TTS:', error);
     const handledError = handlePrismaError(error);
 
@@ -383,7 +392,7 @@ export async function generateDefinitionTTS(
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
     return {
@@ -536,7 +545,7 @@ export async function generateExampleTTS(
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
     return {
@@ -577,15 +586,15 @@ export async function generateBatchWordTTS(
   let failed = 0;
   let totalCost = 0;
 
-  serverLog(
+  void serverLog(
     `Starting batch TTS generation for ${wordIds.length} words: [${wordIds.join(', ')}]`,
     'info',
   );
-  serverLog(`Batch options: ${JSON.stringify(options)}`, 'info');
+  void serverLog(`Batch options: ${JSON.stringify(options)}`, 'info');
 
   try {
     // First, validate that all word IDs exist in the database
-    serverLog('Validating word IDs exist in database...', 'info');
+    void serverLog('Validating word IDs exist in database...', 'info');
     const existingWords = await prisma.word.findMany({
       where: {
         id: { in: wordIds },
@@ -601,7 +610,7 @@ export async function generateBatchWordTTS(
     const invalidWordIds = wordIds.filter((id) => !existingWordIds.has(id));
 
     if (invalidWordIds.length > 0) {
-      serverLog(
+      void serverLog(
         `Found ${invalidWordIds.length} invalid word IDs: [${invalidWordIds.join(', ')}]. These will be skipped.`,
         'warn',
       );
@@ -613,7 +622,7 @@ export async function generateBatchWordTTS(
           message: 'Word not found in database',
         });
         failed++;
-        serverLog(
+        void serverLog(
           `Word ${invalidId} result: FAILED - Word not found in database`,
           'error',
         );
@@ -623,7 +632,7 @@ export async function generateBatchWordTTS(
     if (validWordIds.length === 0) {
       const errorMsg =
         'No valid word IDs found. All requested words have been deleted or do not exist.';
-      serverLog(errorMsg, 'error');
+      void serverLog(errorMsg, 'error');
       return {
         success: false,
         processed: 0,
@@ -634,7 +643,7 @@ export async function generateBatchWordTTS(
       };
     }
 
-    serverLog(
+    void serverLog(
       `Processing ${validWordIds.length} valid words out of ${wordIds.length} requested`,
       'info',
     );
@@ -642,22 +651,22 @@ export async function generateBatchWordTTS(
     // Process in batches to respect rate limits
     for (let i = 0; i < validWordIds.length; i += maxConcurrent) {
       const batch = validWordIds.slice(i, i + maxConcurrent);
-      serverLog(
+      void serverLog(
         `Processing batch ${Math.floor(i / maxConcurrent) + 1}: words [${batch.join(', ')}]`,
         'info',
       );
 
       const batchPromises = batch.map((wordId) => {
-        serverLog(`Creating promise for word ID: ${wordId}`, 'info');
+        void serverLog(`Creating promise for word ID: ${wordId}`, 'info');
         return generateWordTTS(wordId, languageCode, options);
       });
 
-      serverLog(
+      void serverLog(
         `Waiting for ${batchPromises.length} promises to resolve`,
         'info',
       );
       const batchResults = await Promise.allSettled(batchPromises);
-      serverLog(
+      void serverLog(
         `Batch results received: ${batchResults.length} results`,
         'info',
       );
@@ -667,7 +676,7 @@ export async function generateBatchWordTTS(
         const wordId = batch[j];
 
         if (result && result.status === 'fulfilled') {
-          serverLog(
+          void serverLog(
             `Word ${wordId} result: ${result.value.success ? 'SUCCESS' : 'FAILED'} - ${result.value.message}`,
             result.value.success ? 'info' : 'error',
           );
@@ -677,7 +686,7 @@ export async function generateBatchWordTTS(
             totalCost += result.value.estimatedCost || 0;
           } else {
             failed++;
-            serverLog(
+            void serverLog(
               `Word ${wordId} failed with message: ${result.value.message}`,
               'error',
             );
@@ -685,7 +694,10 @@ export async function generateBatchWordTTS(
         } else if (result && result.status === 'rejected') {
           failed++;
           const errorMsg = `Error: ${result.reason}`;
-          serverLog(`Word ${wordId} promise rejected: ${errorMsg}`, 'error');
+          void serverLog(
+            `Word ${wordId} promise rejected: ${errorMsg}`,
+            'error',
+          );
           results.push({
             success: false,
             message: errorMsg,
@@ -693,7 +705,7 @@ export async function generateBatchWordTTS(
         } else {
           failed++;
           const errorMsg = `Error: Unknown result status`;
-          serverLog(`Word ${wordId} unknown error: ${errorMsg}`, 'error');
+          void serverLog(`Word ${wordId} unknown error: ${errorMsg}`, 'error');
           results.push({
             success: false,
             message: errorMsg,
@@ -701,14 +713,14 @@ export async function generateBatchWordTTS(
         }
       }
 
-      serverLog(
+      void serverLog(
         `Batch ${Math.floor(i / maxConcurrent) + 1} completed. Processed: ${processed}, Failed: ${failed}`,
         'info',
       );
 
       // Add delay between batches to respect rate limits (1000 requests/minute = ~16 requests/second)
       if (i + maxConcurrent < validWordIds.length) {
-        serverLog(
+        void serverLog(
           `Waiting 1 second before next batch to respect rate limits`,
           'info',
         );
@@ -717,14 +729,14 @@ export async function generateBatchWordTTS(
     }
 
     const finalMessage = `Batch TTS generation completed. ${processed} successful, ${failed} failed. Total cost: $${totalCost.toFixed(4)}`;
-    serverLog(finalMessage, processed > 0 ? 'info' : 'warn');
+    void serverLog(finalMessage, processed > 0 ? 'info' : 'warn');
 
     // Only revalidate path if running in Next.js context
     try {
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
     return {
@@ -737,14 +749,14 @@ export async function generateBatchWordTTS(
     };
   } catch (error) {
     const errorMsg = `Batch TTS generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
-    serverLog(errorMsg, 'error');
+    void serverLog(errorMsg, 'error');
     console.error('Error in batch TTS generation:', error);
     // Only revalidate path if running in Next.js context
     try {
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
     return {
       success: false,
@@ -821,7 +833,7 @@ export async function deleteWordAudio(
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
     return {
@@ -901,7 +913,7 @@ export async function validateWordIdsExist(wordIds: number[]): Promise<{
       existingWords,
     };
   } catch (error) {
-    serverLog(
+    void serverLog(
       `Error validating word IDs: ${error instanceof Error ? error.message : 'Unknown error'}`,
       'error',
     );

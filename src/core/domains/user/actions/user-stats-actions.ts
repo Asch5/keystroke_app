@@ -1,10 +1,10 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { LearningStatus, SessionType } from '@/core/types';
 import { cache } from 'react';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { LearningStatus, SessionType } from '@/core/types';
 
 const prisma = new PrismaClient();
 
@@ -86,7 +86,7 @@ export const getUserStatistics = cache(
     error?: string;
   }> => {
     try {
-      serverLog(
+      void serverLog(
         `Fetching comprehensive statistics for user ${userId}`,
         'info',
         { userId },
@@ -362,7 +362,10 @@ export const getUserStatistics = cache(
         },
       };
 
-      serverLog(`Statistics fetched successfully for user ${userId}`, 'info');
+      void serverLog(
+        `Statistics fetched successfully for user ${userId}`,
+        'info',
+      );
 
       return {
         success: true,
@@ -374,10 +377,14 @@ export const getUserStatistics = cache(
         typeof errorMessage === 'string'
           ? errorMessage
           : errorMessage.message || 'Unknown error';
-      serverLog(`Failed to fetch user statistics: ${errorString}`, 'error', {
-        userId,
-        error: errorString,
-      });
+      void serverLog(
+        `Failed to fetch user statistics: ${errorString}`,
+        'error',
+        {
+          userId,
+          error: errorString,
+        },
+      );
 
       return {
         success: false,
@@ -464,7 +471,7 @@ async function calculateStreak(userId: string): Promise<{
 
     return { currentStreak, longestStreak };
   } catch (error) {
-    serverLog(`Failed to calculate streak for user ${userId}`, 'error', {
+    void serverLog(`Failed to calculate streak for user ${userId}`, 'error', {
       error,
     });
     return { currentStreak: 0, longestStreak: 0 };
@@ -679,10 +686,14 @@ export const getLearningAnalytics = cache(
         typeof errorMessage === 'string'
           ? errorMessage
           : errorMessage.message || 'Unknown error';
-      serverLog(`Failed to fetch learning analytics: ${errorString}`, 'error', {
-        userId,
-        error: errorString,
-      });
+      void serverLog(
+        `Failed to fetch learning analytics: ${errorString}`,
+        'error',
+        {
+          userId,
+          error: errorString,
+        },
+      );
 
       return {
         success: false,

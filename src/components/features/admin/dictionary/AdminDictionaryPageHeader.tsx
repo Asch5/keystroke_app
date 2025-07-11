@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { ActionButtonsToolbar } from '@/components/features/admin';
 import { CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
@@ -9,9 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ActionButtonsToolbar } from '@/components/features/admin';
-import { LanguageCode } from '@/core/types';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
+import { LanguageCode } from '@/core/types';
 import { languageDisplayNames } from './AdminDictionaryConstants';
 
 interface AdminDictionaryPageHeaderProps {

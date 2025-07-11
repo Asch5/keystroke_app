@@ -16,8 +16,8 @@ export function DashboardErrorBoundary({
 }: DashboardErrorBoundaryProps) {
   return (
     <ErrorBoundaryBase
-      fallbackTitle="Dashboard Error"
-      fallbackDescription="An error occurred while loading the dashboard. Please try refreshing the page or navigate to another section."
+      fallbackTitle="errors.dashboardError"
+      fallbackDescription="errors.dashboardErrorDescription"
       showHomeButton={false} // We're already in dashboard context
       showBackButton={true}
       errorContext="Dashboard"

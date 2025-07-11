@@ -1,20 +1,20 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { LanguageCode, LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { LanguageCode, LearningStatus } from '@/core/types';
 import {
   getBestDefinitionForUser,
   TranslationData,
 } from '../../dictionary/utils/translation-utils';
+import { determineExerciseTypeProgressive } from './practice-progression';
 import {
   PracticeType,
   PracticeWord,
   UnifiedPracticeSession,
   SessionConfiguration,
 } from './practice-types';
-import { determineExerciseTypeProgressive } from './practice-progression';
 
 const prisma = new PrismaClient();
 
@@ -31,7 +31,7 @@ export async function createVocabularyPracticeSession(
   error?: string;
 }> {
   try {
-    serverLog(
+    void serverLog(
       `Creating vocabulary practice session for user ${userId}`,
       'info',
       {
@@ -106,7 +106,7 @@ export async function createVocabularyPracticeSession(
       skipRememberTranslation?: boolean;
       forceDifficulty?: number;
     } = {
-      enabledExerciseTypes: enabledExerciseTypes as string[],
+      enabledExerciseTypes: enabledExerciseTypes,
     };
 
     const practiceWords = await enhanceWordsWithExerciseTypes(
@@ -143,13 +143,17 @@ export async function createVocabularyPracticeSession(
       },
     };
 
-    serverLog(`Vocabulary practice session created: ${session.id}`, 'info', {
-      sessionId: session.id,
-      practiceMode,
-      learningStatuses,
-      wordsCount: practiceWords.length,
-      exerciseTypes: practiceWords.map((w) => w.exerciseType),
-    });
+    void serverLog(
+      `Vocabulary practice session created: ${session.id}`,
+      'info',
+      {
+        sessionId: session.id,
+        practiceMode,
+        learningStatuses,
+        wordsCount: practiceWords.length,
+        exerciseTypes: practiceWords.map((w) => w.exerciseType),
+      },
+    );
 
     return {
       success: true,
@@ -157,7 +161,7 @@ export async function createVocabularyPracticeSession(
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to create vocabulary practice session: ${errorMessage}`,
       'error',
       {
@@ -410,7 +414,7 @@ async function enhanceWordsWithExerciseTypes(
         reasoning,
       });
     } catch (error) {
-      serverLog(
+      void serverLog(
         `Error determining exercise type for word ${word.wordText}`,
         'error',
         {

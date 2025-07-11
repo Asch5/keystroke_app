@@ -1,13 +1,13 @@
 'use client';
 
+import { Volume2, VolumeX, Play, Pause, RotateCcw, Waves } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Badge } from '@/components/ui/badge';
-import { Volume2, VolumeX, Play, Pause, RotateCcw, Waves } from 'lucide-react';
-import { cn } from '@/core/shared/utils/common/cn';
-import { toast } from 'sonner';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import { cn } from '@/core/shared/utils/common/cn';
 
 type AudioType = 'word' | 'success' | 'error' | 'achievement';
 

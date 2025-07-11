@@ -1,13 +1,18 @@
 'use client';
 
+import { Trash2, Plus } from 'lucide-react';
 import { memo } from 'react';
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Trash2, Plus } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -15,11 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions';
 import { SourceType, LanguageCode } from '@/core/types';
 

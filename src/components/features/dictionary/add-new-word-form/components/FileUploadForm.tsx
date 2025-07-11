@@ -1,11 +1,11 @@
+import { Upload } from 'lucide-react';
 import React, { ChangeEvent, RefObject } from 'react';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Upload } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/core/lib/utils';
-import { LanguageSettings } from './LanguageSettings';
 import { LanguageType, DictionaryType, FileProcessorState } from '../types';
+import { LanguageSettings } from './LanguageSettings';
 
 interface FileUploadFormProps {
   language: LanguageType;
@@ -40,7 +40,7 @@ export function FileUploadForm({
     <div className="space-y-6">
       <LanguageSettings
         language={language}
-        dictionaryType={dictionaryType as DictionaryType}
+        dictionaryType={dictionaryType}
         onLanguageChange={onLanguageChange}
         onDictionaryTypeChange={onDictionaryTypeChange}
       />

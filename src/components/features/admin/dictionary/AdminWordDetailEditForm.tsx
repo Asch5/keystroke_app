@@ -1,19 +1,19 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Loader2, Save } from 'lucide-react';
 import { Accordion } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions/word-details-actions';
 
 // Imported hooks
-import { useWordDetailEditState } from './hooks/useWordDetailEditState';
-import { useWordDetailEditActions } from './hooks/useWordDetailEditActions';
-import { useDefinitionManager } from './hooks/useDefinitionManager';
+import AudioFilesSection from './AudioFilesSection';
+import DefinitionsSection from './DefinitionsSection';
 import { useAudioFileManager } from './hooks/useAudioFileManager';
+import { useDefinitionManager } from './hooks/useDefinitionManager';
+import { useWordDetailEditActions } from './hooks/useWordDetailEditActions';
 
 // Imported section components
-import DefinitionsSection from './DefinitionsSection';
-import AudioFilesSection from './AudioFilesSection';
+import { useWordDetailEditState } from './hooks/useWordDetailEditState';
 import RelationshipsSection from './RelationshipsSection';
 
 interface WordDetailEditFormProps {

@@ -1,15 +1,15 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
+import { cache } from 'react';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { handlePrismaError } from '@/core/shared/database/error-handler';
 import {
   LearningStatus,
   UserDictionary,
   UserLearningSession,
   LearningMistake,
 } from '@/core/types';
-import { cache } from 'react';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { handlePrismaError } from '@/core/shared/database/error-handler';
 
 const prismaClient = new PrismaClient();
 
@@ -153,7 +153,7 @@ export const getDictionaryPerformanceMetrics = cache(
     error?: string;
   }> => {
     try {
-      serverLog(
+      void serverLog(
         `Fetching dictionary performance metrics for user ${userId}`,
         'info',
         { userId },
@@ -332,7 +332,7 @@ export const getDictionaryPerformanceMetrics = cache(
         performanceScores,
       };
 
-      serverLog(
+      void serverLog(
         `Successfully calculated dictionary performance metrics for user ${userId}`,
         'info',
         { userId, metricsCount: Object.keys(metrics).length },
@@ -344,7 +344,7 @@ export const getDictionaryPerformanceMetrics = cache(
       };
     } catch (error) {
       const errorMessage = `Failed to fetch dictionary performance metrics: ${error instanceof Error ? error.message : 'Unknown error'}`;
-      serverLog(errorMessage, 'error', { userId, error });
+      void serverLog(errorMessage, 'error', { userId, error });
 
       handlePrismaError(error);
 

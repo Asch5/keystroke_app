@@ -1,5 +1,5 @@
-import { LanguageCode } from '@/core/types';
 import { prisma } from '@/core/shared/database/client';
+import { LanguageCode } from '@/core/types';
 
 /**
  * Interface for user's effective language configuration

@@ -121,7 +121,7 @@ class TextToSpeechService {
   constructor() {
     this.apiKey = process.env.GOOGLE_TTS_API_KEY || '';
     if (!this.apiKey) {
-      serverLog(
+      void serverLog(
         'GOOGLE_TTS_API_KEY not found in environment variables. TTS functionality will be disabled.',
         'warn',
       );
@@ -233,6 +233,11 @@ class TextToSpeechService {
 
       const data = await response.json();
 
+      // Type check the response data
+      if (!data || typeof data.audioContent !== 'string') {
+        throw new Error('Invalid response format from TTS API');
+      }
+
       // Update usage tracking
       const estimatedCost = this.updateUsageStats(
         request.qualityLevel,
@@ -240,10 +245,10 @@ class TextToSpeechService {
       );
 
       // Cache the result
-      this.addToCache(cacheKey, data.audioContent);
+      this.addToCache(cacheKey, data.audioContent as string);
 
       return {
-        audioContent: data.audioContent,
+        audioContent: data.audioContent as string,
         contentType: 'audio/mp3',
         characterCount,
         voiceUsed: voice.name,
@@ -251,7 +256,7 @@ class TextToSpeechService {
         estimatedCost,
       };
     } catch (error) {
-      serverLog('TTS Service Error', 'error', { error: String(error) });
+      void serverLog('TTS Service Error', 'error', { error: String(error) });
       throw error;
     }
   }
@@ -345,7 +350,7 @@ class TextToSpeechService {
     return Array.from(genders).sort((a, b) => {
       // Prefer FEMALE > MALE > NEUTRAL order for consistency
       const order = { FEMALE: 0, MALE: 1, NEUTRAL: 2 };
-      return order[a as keyof typeof order] - order[b as keyof typeof order];
+      return order[a] - order[b];
     });
   }
 
@@ -400,7 +405,7 @@ class TextToSpeechService {
         return genderMatchedVoice;
       } else {
         // Log that requested gender is not available and fallback to default
-        serverLog('Voice gender not available, using default', 'warn', {
+        void serverLog('Voice gender not available, using default', 'warn', {
           requestedGender: request.ssmlGender,
           languageCode: request.languageCode,
           availableGenders: this.getAvailableGenders(request.languageCode),

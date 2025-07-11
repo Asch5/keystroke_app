@@ -1,10 +1,9 @@
-import { NextAuthConfig } from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { prisma } from '@/core/lib/prisma';
-import credentialsProvider from '@/core/lib/auth/providers';
-import NextAuth from 'next-auth';
-import type { JWT } from 'next-auth/jwt';
+import NextAuth, { NextAuthConfig } from 'next-auth';
 import type { Session, User } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
+import credentialsProvider from '@/core/lib/auth/providers';
+import { prisma } from '@/core/lib/prisma';
 
 export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
@@ -22,7 +21,7 @@ export const authConfig: NextAuthConfig = {
     },
     session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        session.user.id = token.id;
         session.user.role = token.role as string;
       }
       return session;
@@ -47,7 +46,7 @@ export const edgeAuthConfig = {
     session: ({ session, token }: { session: Session; token: JWT }) => ({
       ...session,
       user: {
-        id: token.id as string,
+        id: token.id,
         role: token.role as string,
       },
     }),

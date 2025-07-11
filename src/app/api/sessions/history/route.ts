@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { getSessionHistory } from '@/core/domains/user/actions/session-actions';
+import type { SessionFilterOptions } from '@/core/domains/user/types/session';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { SessionType } from '@/core/types';
-import type { SessionFilterOptions } from '@/core/domains/user/types/session';
 
 /**
  * GET /api/sessions/history - Get paginated session history with filtering
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     const userId =
       queryUserId === session.user.id ? queryUserId : session.user.id;
 
-    serverLog(`Fetching session history for user ${userId}`, 'info', {
+    void serverLog(`Fetching session history for user ${userId}`, 'info', {
       userId,
       page,
       pageSize,
@@ -93,7 +93,10 @@ export async function GET(request: NextRequest) {
     const result = await getSessionHistory(userId, page, pageSize, filters);
 
     if (!result.success) {
-      serverLog(`Failed to fetch session history: ${result.error}`, 'error');
+      void serverLog(
+        `Failed to fetch session history: ${result.error}`,
+        'error',
+      );
       return NextResponse.json(
         { error: result.error || 'Failed to fetch session history' },
         { status: 500 },
@@ -110,7 +113,10 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    serverLog(`API error in GET /api/sessions/history: ${error}`, 'error');
+    void serverLog(
+      `API error in GET /api/sessions/history: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

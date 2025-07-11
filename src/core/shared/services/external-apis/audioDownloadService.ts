@@ -4,8 +4,8 @@
  * Downloads audio files from external URLs and stores them in Vercel Blob storage
  */
 
-import { blobStorageService, type AudioMetadata } from './blobStorageService';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { blobStorageService, type AudioMetadata } from './blobStorageService';
 
 export interface ExternalAudioDownloadResult {
   success: boolean;
@@ -42,7 +42,7 @@ class AudioDownloadService {
     metadata: AudioMetadata,
   ): Promise<ExternalAudioDownloadResult> {
     try {
-      serverLog(
+      void serverLog(
         `Starting audio download from external URL: ${externalUrl}`,
         'info',
       );
@@ -50,7 +50,7 @@ class AudioDownloadService {
       // Check if URL is already from our blob storage
       const audioInfo = blobStorageService.getAudioInfo(externalUrl);
       if (audioInfo.isVercelBlob) {
-        serverLog(
+        void serverLog(
           `Audio is already in blob storage, skipping download: ${externalUrl}`,
           'info',
         );
@@ -78,7 +78,7 @@ class AudioDownloadService {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          serverLog(
+          void serverLog(
             `Failed to fetch audio: ${response.status} ${response.statusText}`,
             'error',
           );
@@ -95,7 +95,7 @@ class AudioDownloadService {
           contentType &&
           !this.SUPPORTED_CONTENT_TYPES.includes(contentType)
         ) {
-          serverLog(
+          void serverLog(
             `Unsupported content type: ${contentType} for URL: ${externalUrl}`,
             'warn',
           );
@@ -109,7 +109,7 @@ class AudioDownloadService {
         // Check content length
         const contentLength = response.headers.get('content-length');
         if (contentLength && parseInt(contentLength) > this.MAX_FILE_SIZE) {
-          serverLog(
+          void serverLog(
             `Audio file too large: ${contentLength} bytes for URL: ${externalUrl}`,
             'warn',
           );
@@ -125,7 +125,7 @@ class AudioDownloadService {
 
         // Double-check size after download
         if (arrayBuffer.byteLength > this.MAX_FILE_SIZE) {
-          serverLog(
+          void serverLog(
             `Downloaded audio file too large: ${arrayBuffer.byteLength} bytes`,
             'warn',
           );
@@ -139,7 +139,7 @@ class AudioDownloadService {
         // Convert to base64 for blob storage
         const base64Audio = Buffer.from(arrayBuffer).toString('base64');
 
-        serverLog(
+        void serverLog(
           `Downloaded audio file: ${arrayBuffer.byteLength} bytes, uploading to blob storage`,
           'info',
         );
@@ -158,7 +158,7 @@ class AudioDownloadService {
         );
 
         if (!uploadResult.success) {
-          serverLog(
+          void serverLog(
             `Failed to upload audio to blob storage: ${uploadResult.error}`,
             'error',
           );
@@ -169,7 +169,7 @@ class AudioDownloadService {
           };
         }
 
-        serverLog(
+        void serverLog(
           `Successfully downloaded and stored audio: ${externalUrl} -> ${uploadResult.url}`,
           'info',
         );
@@ -183,7 +183,10 @@ class AudioDownloadService {
         clearTimeout(timeoutId);
 
         if (fetchError instanceof Error && fetchError.name === 'AbortError') {
-          serverLog(`Audio download timeout for URL: ${externalUrl}`, 'warn');
+          void serverLog(
+            `Audio download timeout for URL: ${externalUrl}`,
+            'warn',
+          );
           return {
             success: false,
             originalUrl: externalUrl,
@@ -191,8 +194,8 @@ class AudioDownloadService {
           };
         }
 
-        serverLog(
-          `Error downloading audio from ${externalUrl}: ${fetchError}`,
+        void serverLog(
+          `Error downloading audio from ${externalUrl}: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
           'error',
         );
         return {
@@ -205,7 +208,10 @@ class AudioDownloadService {
         };
       }
     } catch (error) {
-      serverLog(`Unexpected error in downloadAndStoreAudio: ${error}`, 'error');
+      void serverLog(
+        `Unexpected error in downloadAndStoreAudio: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+      );
       return {
         success: false,
         originalUrl: externalUrl,
@@ -243,7 +249,7 @@ class AudioDownloadService {
     const skipped = results.filter((r) => r.skipped).length;
     const failed = results.filter((r) => !r.success && !r.skipped).length;
 
-    serverLog(
+    void serverLog(
       `Batch audio download completed: ${successful} successful, ${skipped} skipped, ${failed} failed`,
       'info',
     );

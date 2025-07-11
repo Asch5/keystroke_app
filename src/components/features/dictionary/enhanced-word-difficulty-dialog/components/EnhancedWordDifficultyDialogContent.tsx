@@ -1,6 +1,8 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,19 +10,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2 } from 'lucide-react';
-import { EnhancedWordDifficultyDialogProps } from '../types';
-import { useWordAnalytics } from '../hooks/useWordAnalytics';
-import { OverviewTab } from './OverviewTab';
-import { PerformanceTab } from './PerformanceTab';
-import { ComparativeTab } from './ComparativeTab';
 import {
   PerformanceTimeline,
   MistakePatternAnalysis,
   PredictiveInsights,
 } from '../../word-analytics';
+import { useWordAnalytics } from '../hooks/useWordAnalytics';
+import { EnhancedWordDifficultyDialogProps } from '../types';
+import { ComparativeTab } from './ComparativeTab';
+import { OverviewTab } from './OverviewTab';
+import { PerformanceTab } from './PerformanceTab';
 
 export function EnhancedWordDifficultyDialogContent({
   isOpen,

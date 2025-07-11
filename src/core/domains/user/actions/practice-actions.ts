@@ -1,8 +1,8 @@
 'use server';
 
-import { LearningStatus, LanguageCode } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { LearningStatus, LanguageCode } from '@/core/types';
 import {
   type DifficultyConfig,
   DIFFICULTY_ADJUSTMENT,
@@ -10,16 +10,20 @@ import {
 
 // Import from specialized modules
 import {
-  PracticeType,
-  PracticeWord,
-  SessionConfiguration,
-  ValidateTypingRequest,
-  PracticeSessionResult,
-  UnifiedPracticeSession,
-  getPracticeTypeConfigs,
-  getPracticeTypeMultipliers,
-} from './practice-types';
-
+  generateDistractorOptions,
+  generateCharacterPool,
+  generateSimilarWord,
+  isWordSimilarEnough,
+} from './practice-game-utils';
+import {
+  trackCompleteWordProgress,
+  getLearningAnalytics,
+  analyzeDifficultWords,
+  calculateProgressMetrics,
+  updateDailyProgress,
+  getDailyProgressHistory,
+  getWeeklyProgressSummary,
+} from './practice-progress-tracking';
 import {
   getExerciseLevelMapping,
   getProgressionRequirements,
@@ -33,19 +37,6 @@ import {
   bulkUpdateSRSIntervals,
   createSRSPracticeSession,
 } from './practice-progression';
-
-import {
-  validateTypingInput,
-  validateWordInput,
-  calculateAccuracy,
-  levenshteinDistance,
-  findWordDifferences,
-  getMistakeType,
-  validateMultipleChoice,
-  validateWordConstruction,
-  calculateResponseTimeBonus,
-} from './practice-validation';
-
 import {
   createPracticeSession,
   completePracticeSession,
@@ -57,17 +48,16 @@ import {
   getSessionAnalytics,
   getEnhancedSessionSummary,
 } from './practice-session-management';
-
 import {
-  trackCompleteWordProgress,
-  getLearningAnalytics,
-  analyzeDifficultWords,
-  calculateProgressMetrics,
-  updateDailyProgress,
-  getDailyProgressHistory,
-  getWeeklyProgressSummary,
-} from './practice-progress-tracking';
-
+  PracticeType,
+  PracticeWord,
+  SessionConfiguration,
+  ValidateTypingRequest,
+  PracticeSessionResult,
+  UnifiedPracticeSession,
+  getPracticeTypeConfigs,
+  getPracticeTypeMultipliers,
+} from './practice-types';
 import {
   createUnifiedPracticeSession,
   determineExerciseType,
@@ -75,13 +65,17 @@ import {
   updateWordProgressAndSelectNext,
   getAdaptivePracticeWords,
 } from './practice-unified';
-
 import {
-  generateDistractorOptions,
-  generateCharacterPool,
-  generateSimilarWord,
-  isWordSimilarEnough,
-} from './practice-game-utils';
+  validateTypingInput,
+  validateWordInput,
+  calculateAccuracy,
+  levenshteinDistance,
+  findWordDifferences,
+  getMistakeType,
+  validateMultipleChoice,
+  validateWordConstruction,
+  calculateResponseTimeBonus,
+} from './practice-validation';
 
 // Export the DifficultyConfig type
 export type { DifficultyConfig };
@@ -290,7 +284,7 @@ export async function createTypingPracticeSession(
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to create typing practice session: ${errorMessage}`,
       'error',
       {
@@ -362,7 +356,7 @@ export async function createEnhancedPracticeSession(
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to create enhanced practice session: ${errorMessage}`,
       'error',
       {
@@ -415,7 +409,9 @@ export async function getPracticeSessionProgress(sessionId: string): Promise<{
       progress,
     };
   } catch (error) {
-    serverLog('Error getting practice session progress', 'error', { error });
+    void serverLog('Error getting practice session progress', 'error', {
+      error,
+    });
     return {
       success: false,
       error: 'Failed to get session progress',

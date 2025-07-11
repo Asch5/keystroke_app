@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
-import { LanguageCode } from '@/core/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CheckCircle, XCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useForm } from 'react-hook-form';
 import {
   Form,
   FormControl,
@@ -15,9 +18,6 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
 import {
   Select,
   SelectContent,
@@ -25,9 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useRouter } from 'next/navigation';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
+import { LanguageCode } from '@/core/types';
 
 const formSchema = z.object({
   wordText: z.string().min(1, 'Please enter a word'),

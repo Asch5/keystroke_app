@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { createLearningSession } from '@/core/domains/user/actions/session-actions';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import type { CreateSessionRequest } from '@/core/domains/user/types/session';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * POST /api/sessions - Create a new learning session
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    serverLog('Creating new learning session', 'info', {
+    void serverLog('Creating new learning session', 'info', {
       userId: session.user.id,
       sessionType: body.sessionType,
       userListId: body.userListId,
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const result = await createLearningSession(session.user.id, body);
 
     if (!result.success) {
-      serverLog(`Failed to create session: ${result.error}`, 'error');
+      void serverLog(`Failed to create session: ${result.error}`, 'error');
       return NextResponse.json(
         { error: result.error || 'Failed to create session' },
         { status: 500 },
@@ -57,7 +57,10 @@ export async function POST(request: NextRequest) {
       },
     );
   } catch (error) {
-    serverLog(`API error in POST /api/sessions: ${error}`, 'error');
+    void serverLog(
+      `API error in POST /api/sessions: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -102,7 +105,10 @@ export async function GET() {
       },
     );
   } catch (error) {
-    serverLog(`API error in GET /api/sessions: ${error}`, 'error');
+    void serverLog(
+      `API error in GET /api/sessions: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

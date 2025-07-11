@@ -1,8 +1,7 @@
 'use client';
 
-import { DifficultyLevel } from '@/core/types';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -11,6 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { type UserListFilters } from '@/core/domains/dictionary';
+import { DifficultyLevel } from '@/core/types';
 
 interface MyListsFiltersProps {
   userListFilters: UserListFilters;

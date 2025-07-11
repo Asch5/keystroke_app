@@ -1,9 +1,9 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { LearningStatus } from '@/core/types';
 import { LearningMetricsCalculator } from '../utils/learning-metrics';
 import {
   PracticeType,
@@ -282,7 +282,7 @@ export async function updateWordProgression(
       nextExerciseType,
     };
 
-    serverLog(
+    void serverLog(
       `Word progression updated: ${userDictionaryId} - Level ${currentLevel} → ${newLevel}`,
       'info',
       { progression },
@@ -294,10 +294,14 @@ export async function updateWordProgression(
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to update word progression: ${errorMessage}`, 'error', {
-      userDictionaryId,
-      error,
-    });
+    void serverLog(
+      `Failed to update word progression: ${errorMessage}`,
+      'error',
+      {
+        userDictionaryId,
+        error,
+      },
+    );
 
     return {
       success: false,
@@ -404,7 +408,7 @@ export async function getWordsForSRSReview(
       imageDescription: word.definition.image?.description || undefined,
     }));
   } catch (error) {
-    serverLog('Error getting words for SRS review', 'error', { error });
+    void serverLog('Error getting words for SRS review', 'error', { error });
     return [];
   }
 }
@@ -465,7 +469,7 @@ export async function updateSRSData(
       },
     };
   } catch (error) {
-    serverLog('Error updating SRS data', 'error', { error });
+    void serverLog('Error updating SRS data', 'error', { error });
     return {
       success: false,
       error: 'Failed to update SRS data',
@@ -569,7 +573,7 @@ export async function getSRSReviewSchedule(
 
     return { success: true, schedule };
   } catch (error) {
-    serverLog('Error getting SRS review schedule', 'error', { error });
+    void serverLog('Error getting SRS review schedule', 'error', { error });
     return { success: false, error: 'Failed to get SRS review schedule' };
   }
 }
@@ -670,7 +674,7 @@ export async function getSRSStatistics(userId: string): Promise<{
       },
     };
   } catch (error) {
-    serverLog('Error getting SRS statistics', 'error', { error });
+    void serverLog('Error getting SRS statistics', 'error', { error });
     return { success: false, error: 'Failed to get SRS statistics' };
   }
 }
@@ -716,14 +720,18 @@ export async function bulkUpdateSRSIntervals(
       updatedCount++;
     }
 
-    serverLog(`Bulk updated SRS intervals for ${updatedCount} words`, 'info', {
-      userId,
-      updatedCount,
-    });
+    void serverLog(
+      `Bulk updated SRS intervals for ${updatedCount} words`,
+      'info',
+      {
+        userId,
+        updatedCount,
+      },
+    );
 
     return { success: true, updatedCount };
   } catch (error) {
-    serverLog('Error bulk updating SRS intervals', 'error', { error });
+    void serverLog('Error bulk updating SRS intervals', 'error', { error });
     return { success: false, error: 'Failed to bulk update SRS intervals' };
   }
 }
@@ -873,7 +881,7 @@ export async function createSRSPracticeSession(
       },
     };
   } catch (error) {
-    serverLog('Error creating SRS practice session', 'error', { error });
+    void serverLog('Error creating SRS practice session', 'error', { error });
     return { success: false, error: 'Failed to create SRS practice session' };
   }
 }

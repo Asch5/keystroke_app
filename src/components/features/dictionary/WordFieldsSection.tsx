@@ -1,12 +1,12 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
 import { memo } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertTriangle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions';
 
 interface WordFieldsSectionProps {

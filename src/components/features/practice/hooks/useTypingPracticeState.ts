@@ -2,9 +2,9 @@
 
 import { useCallback } from 'react';
 import { LearningStatus } from '@/core/types';
+import { useTypingInputManager } from './useTypingInputManager';
 import { useTypingSessionManager } from './useTypingSessionManager';
 import { useTypingWordValidator } from './useTypingWordValidator';
-import { useTypingInputManager } from './useTypingInputManager';
 import type { SessionState, WordResult } from './index';
 
 interface UseTypingPracticeStateProps {

@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from '@/core/state/store';
+import {
+  settingsSyncService,
+  syncSettingsNow,
+} from '@/core/infrastructure/services/settings-sync-service';
+import { selectUser } from '@/core/state/features/authSlice';
 import {
   updateUIPreference,
   updateLearningPreference,
@@ -33,11 +37,7 @@ import {
   DictionaryFilterSettings,
   AdminDictionaryFilterSettings,
 } from '@/core/state/features/settingsSlice';
-import {
-  settingsSyncService,
-  syncSettingsNow,
-} from '@/core/infrastructure/services/settings-sync-service';
-import { selectUser } from '@/core/state/features/authSlice';
+import { useAppDispatch, useAppSelector } from '@/core/state/store';
 
 // =============================================
 // SETTINGS HOOKS

@@ -51,19 +51,25 @@ export interface WordRelationship {
  * @returns BaseWordModal containing the base word and its related forms
  */
 export function transformDanishForms(entry: DanishWordEntry): BaseWordModal {
-  const { word, forms, phonetic, audio, partOfSpeech, contextual_forms } =
-    entry;
+  const {
+    word,
+    forms,
+    phonetic,
+    audio,
+    partOfSpeech,
+    contextual_forms: contextualForms,
+  } = entry;
   const relationships: WordRelationship[] = [];
 
   // Process regular forms based on part of speech
   if (partOfSpeech.includes('substantiv' as PartOfSpeechDanish)) {
     if (forms && forms.length > 0) {
       processNounForms(word, forms, relationships, partOfSpeech);
-    } else if (contextual_forms && Object.keys(contextual_forms).length > 0) {
+    } else if (contextualForms && Object.keys(contextualForms).length > 0) {
       // If no regular forms but has contextual forms, process those
       processContextualForms(
         word,
-        contextual_forms,
+        contextualForms,
         relationships,
         partOfSpeech,
       );
@@ -76,14 +82,14 @@ export function transformDanishForms(entry: DanishWordEntry): BaseWordModal {
     processAdjectiveForms(word, forms, relationships);
 
     // If there are contextual forms, process those too for additional variations
-    if (contextual_forms && Object.keys(contextual_forms).length > 0) {
-      processAdjectiveContextualForms(word, contextual_forms, relationships);
+    if (contextualForms && Object.keys(contextualForms).length > 0) {
+      processAdjectiveContextualForms(word, contextualForms, relationships);
     }
   } else if (partOfSpeech.includes('verbum' as PartOfSpeechDanish)) {
     processVerbForms(word, forms, relationships);
   } else if (partOfSpeech.includes('pronomen' as PartOfSpeechDanish)) {
     // Add call to processPronounForms
-    processPronounForms(word, forms, relationships, contextual_forms);
+    processPronounForms(word, forms, relationships, contextualForms);
   }
 
   // Create related word modals from relationships
@@ -93,7 +99,7 @@ export function transformDanishForms(entry: DanishWordEntry): BaseWordModal {
     relationships,
     partOfSpeech[0] || ('substantiv' as PartOfSpeechDanish),
     audio,
-    contextual_forms,
+    contextualForms,
   );
 
   return {
@@ -129,8 +135,8 @@ function processContextualForms(
     currentBaseWord: string,
     currentRelatedWord: string,
     relationshipType: RelationshipType,
-    usageNote?: string | undefined,
-    definitionNumbers?: number[] | undefined,
+    usageNote?: string,
+    definitionNumbers?: number[],
   ) => {
     // Create a more unique key including usageNote and definitionNumbers
     const defNumKey = definitionNumbers ? definitionNumbers.join(',') : '';
@@ -571,7 +577,7 @@ function processVerbForms(
         // Make sure we don't get undefined here by providing a fallback
         const relationshipType: RelationshipType =
           index < relationshipTypes.length && relationshipTypes[index]
-            ? relationshipTypes[index]!
+            ? relationshipTypes[index]
             : RelationshipType.related; // Default to 'related' or a more specific default if appropriate
 
         relationships.push({
@@ -720,7 +726,7 @@ function processAdjectiveContextualForms(
     baseWord: string,
     relatedWord: string,
     relationshipType: RelationshipType,
-    usageNote?: string | undefined,
+    usageNote?: string,
   ) => {
     // Create a unique key for this relationship
     const relationshipKey = `${relatedWord}:${relationshipType}`;
@@ -1135,7 +1141,7 @@ function processPronounForms(
     currentBaseWord: string,
     currentRelatedWord: string,
     relationshipType: RelationshipType,
-    usageNote?: string | undefined,
+    usageNote?: string,
   ) => {
     const relationshipKey = `${currentRelatedWord}:${relationshipType}:${usageNote || ''}`;
     if (!addedRelationships.has(relationshipKey)) {
@@ -1197,7 +1203,7 @@ function processPronounForms(
         // If the related word is the same as the base word, only add if there is a specific usage note
         if (relatedWord === baseWord) {
           // DEBUG: Log the usage note and its trimmed state
-          console.log(
+          console.warn(
             `Pronoun: ${baseWord}, Contextual identical: ${relatedWord}, Original contextKey: '${contextKey}', Processed usageNote: '${usageNote}', IsTrimmedNoteEmpty: ${usageNote.trim() === ''}`,
           );
           if (usageNote && usageNote.trim() !== '') {
@@ -1243,14 +1249,14 @@ export function testStorAdjectiveTransformation(): void {
 
   const result = transformDanishForms(storEntry);
 
-  console.log('Testing "stor" adjective transformation:');
-  console.log('Base word:', result.word);
-  console.log('Related words and relationships:');
+  console.warn('Testing "stor" adjective transformation:');
+  console.warn('Base word:', result.word);
+  console.warn('Related words and relationships:');
 
   result.relatedWords.forEach((relatedWord) => {
-    console.log(`- ${relatedWord.word}:`);
+    console.warn(`- ${relatedWord.word}:`);
     relatedWord.relationships.forEach((rel) => {
-      console.log(
+      console.warn(
         `  * ${rel.relationshipType}: ${rel.baseWord} -> ${rel.relatedWord}`,
       );
     });
@@ -1273,12 +1279,12 @@ export function testStorAdjectiveTransformation(): void {
     ),
   );
 
-  console.log('Comparative "større" found:', comparativeFound);
-  console.log('Superlative "størst" found:', superlativeFound);
+  console.warn('Comparative "større" found:', comparativeFound);
+  console.warn('Superlative "størst" found:', superlativeFound);
 
   if (comparativeFound && superlativeFound) {
-    console.log('✅ Test PASSED: Both irregular forms are properly handled');
+    console.warn('✅ Test PASSED: Both irregular forms are properly handled');
   } else {
-    console.log('❌ Test FAILED: Irregular forms are not properly handled');
+    console.error('❌ Test FAILED: Irregular forms are not properly handled');
   }
 }

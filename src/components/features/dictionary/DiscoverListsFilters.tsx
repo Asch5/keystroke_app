@@ -1,8 +1,7 @@
 'use client';
 
-import { DifficultyLevel } from '@/core/types';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -10,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { DifficultyLevel } from '@/core/types';
 
 interface DiscoverListsFiltersProps {
   publicListFilters: { search: string; difficulty?: DifficultyLevel };

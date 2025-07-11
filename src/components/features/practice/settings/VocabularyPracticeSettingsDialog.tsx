@@ -1,5 +1,7 @@
 'use client';
 
+import { Settings, RotateCcw, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -7,10 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Settings, RotateCcw, X } from 'lucide-react';
 import { useVocabularyPracticeSettings } from '@/core/shared/hooks/useSettings';
 import {
   ExerciseTypeSettings,

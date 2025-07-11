@@ -1,12 +1,13 @@
 'use client';
 
+import { AlertCircle, RefreshCw, Home, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React, { ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, RefreshCw, Home, ArrowLeft } from 'lucide-react';
 import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
-import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/core/shared/hooks/useTranslation';
 
 interface ErrorFallbackProps {
   error: Error;
@@ -30,7 +31,16 @@ function BaseErrorFallback({
   showBackButton = true,
   onRetry,
 }: ErrorFallbackProps) {
+  const { t } = useTranslation();
   const router = useRouter();
+
+  // Handle translation keys vs direct strings
+  const displayTitle = title?.startsWith('errors.')
+    ? t(title as 'errors.somethingWentWrong')
+    : title;
+  const displayDescription = description?.startsWith('errors.')
+    ? t(description as 'errors.tryAgainLater')
+    : description;
 
   const handleGoHome = () => {
     router.push('/dashboard');
@@ -47,11 +57,13 @@ function BaseErrorFallback({
           <div className="flex justify-center mb-4">
             <AlertCircle className="h-12 w-12 text-destructive" />
           </div>
-          <CardTitle className="text-xl font-semibold">{title}</CardTitle>
+          <CardTitle className="text-xl font-semibold">
+            {displayTitle}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground text-center">
-            {description}
+            {displayDescription}
           </p>
 
           {process.env.NODE_ENV === 'development' && (

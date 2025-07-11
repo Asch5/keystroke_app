@@ -1,5 +1,6 @@
 'use client';
 
+import { Target } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -8,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Target } from 'lucide-react';
 import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface SessionConfigurationSettingsProps {

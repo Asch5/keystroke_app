@@ -22,5 +22,7 @@ export type RelationshipTypeVerbsInAudio =
   | 'betydning 3 og 6'
   | 'betydning 1, 2 og 6'
   | 'betydning 1, 2, 3 og 6'
-  | ''; //that means that it is the second sound of a previous word
-//exact word (we need to attempt to find a comparison by the words as well)
+  | '' //that means that it is the second sound of a previous word
+  //exact word examples (we need to attempt to find a comparison by the words as well)
+  | 'tur-retur'
+  | 'tur og retur';

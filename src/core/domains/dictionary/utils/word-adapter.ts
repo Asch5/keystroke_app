@@ -1,6 +1,6 @@
 import { WordEntryData } from '@/core/lib/actions/dictionaryActions';
-import { WordFormData } from '@/core/types/wordDefinition';
 import { WordFrequency } from '@/core/lib/utils/commonDictUtils/frequencyUtils';
+import { WordFormData } from '@/core/types/wordDefinition';
 
 /**
  * Adapter function to convert WordEntryData to WordDetails for the form

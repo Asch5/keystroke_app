@@ -1,13 +1,13 @@
 'use client';
 
+import { Plus, Trash2 } from 'lucide-react';
 import { memo } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Plus, Trash2 } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions';
 
 // Extract example type from definitions

@@ -1,13 +1,3 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   MoreHorizontal,
   Star,
@@ -25,6 +15,16 @@ import {
   X,
   Trash2,
 } from 'lucide-react';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { LearningStatus } from '@/core/types';
 import { WordActionsProps } from '../types';
 

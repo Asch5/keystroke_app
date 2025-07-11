@@ -1,5 +1,5 @@
-import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
 import type { SimpleWordAnalytics } from '@/core/domains/user/actions/simple-word-analytics';
+import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
 
 export interface EnhancedWordDifficultyDialogProps {
   isOpen: boolean;

@@ -1,9 +1,9 @@
 'use client';
 
+import { Volume2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { Volume2 } from 'lucide-react';
 import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface AudioSoundSettingsProps {

@@ -1,7 +1,7 @@
 'use server';
 
-import { prisma } from '@/core/lib/prisma';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/lib/prisma';
 
 // Default categories to seed
 const defaultCategories = [
@@ -48,7 +48,7 @@ export async function seedDefaultCategories(): Promise<{
   categoriesCreated: number;
 }> {
   try {
-    serverLog('Starting to seed default categories', 'info');
+    void serverLog('Starting to seed default categories', 'info');
 
     let categoriesCreated = 0;
 
@@ -63,7 +63,7 @@ export async function seedDefaultCategories(): Promise<{
           data: category,
         });
         categoriesCreated++;
-        serverLog(`Created category: ${category.name}`, 'info');
+        void serverLog(`Created category: ${category.name}`, 'info');
       }
     }
 
@@ -72,7 +72,7 @@ export async function seedDefaultCategories(): Promise<{
         ? `Successfully created ${categoriesCreated} new categories`
         : 'All default categories already exist';
 
-    serverLog(message, 'info');
+    void serverLog(message, 'info');
 
     return {
       success: true,
@@ -82,7 +82,7 @@ export async function seedDefaultCategories(): Promise<{
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error occurred';
-    serverLog(`Failed to seed categories: ${errorMessage}`, 'error');
+    void serverLog(`Failed to seed categories: ${errorMessage}`, 'error');
 
     return {
       success: false,

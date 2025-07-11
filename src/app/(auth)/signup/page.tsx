@@ -1,9 +1,9 @@
-import { SignupForm } from '@/components/features/auth';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { Separator } from '@/components/ui/separator';
-import { ArrowRight } from 'lucide-react';
+import { SignupForm } from '@/components/features/auth';
 import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 /**
  * Loading fallback component for the signup form

@@ -1,6 +1,13 @@
 'use client';
 
+import { Zap, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
 import React, { useState, useEffect, useCallback } from 'react';
+import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -8,19 +15,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Zap, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { extractWordsFromDefinitionsBatch } from '@/core/domains/dictionary/actions/deepseek-actions';
-import { getDefinitionsForWordDetails } from '@/core/domains/dictionary/actions/deepseek-actions';
 import {
+  extractWordsFromDefinitionsBatch,
+  getDefinitionsForWordDetails,
   cleanupIncorrectDeepSeekWords,
   removeLastExtractionAttempt,
 } from '@/core/domains/dictionary/actions/deepseek-actions';

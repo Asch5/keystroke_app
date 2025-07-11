@@ -1,19 +1,27 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter, useParams } from 'next/navigation';
 import {
-  getListWords,
-  removeWordsFromList,
-  getListDetails,
-  type AdminListWordWithDetails,
-  type ListWithDetails,
-} from '@/core/domains/dictionary/actions';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+  ArrowLeft,
+  Search,
+  Trash2,
+  SortAsc,
+  SortDesc,
+  Play,
+  ImageIcon,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+} from 'lucide-react';
+import { useRouter, useParams } from 'next/navigation';
+import React, { useState, useEffect, useCallback } from 'react';
+import { toast } from 'sonner';
+import { partOfSpeechDisplayNames } from '@/components/features/admin/dictionary/AdminDictionaryConstants';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -37,22 +45,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
-  ArrowLeft,
-  Search,
-  Trash2,
-  SortAsc,
-  SortDesc,
-  Play,
-  ImageIcon,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-} from 'lucide-react';
-import { toast } from 'sonner';
+  getListWords,
+  removeWordsFromList,
+  getListDetails,
+  type AdminListWordWithDetails,
+  type ListWithDetails,
+} from '@/core/domains/dictionary/actions';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
-import { partOfSpeechDisplayNames } from '@/components/features/admin/dictionary/AdminDictionaryConstants';
 
 // Types for the delete dialog
 interface DeleteDialogState {

@@ -1,17 +1,17 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import { AppSidebar } from '@/components/features/dashboard';
-import { PageBreadcrumb } from '@/components/shared/navigation';
 import { DashboardErrorBoundary } from '@/components/shared/error-boundaries';
-import { dictionaryNavLinks } from '@/core/lib/data/navLinks';
+import { PageBreadcrumb } from '@/components/shared/navigation';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Separator } from '@/components/ui/separator';
-import { memo, useMemo } from 'react';
+import { dictionaryNavLinks } from '@/core/lib/data/navLinks';
 
 /**
  * Dashboard Layout Props Interface

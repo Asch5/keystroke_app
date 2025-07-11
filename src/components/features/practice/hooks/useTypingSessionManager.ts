@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useUser } from '@/core/shared/hooks/useUser';
 import { toast } from 'sonner';
 import {
   createTypingPracticeSession,
@@ -10,6 +9,7 @@ import {
   type CreatePracticeSessionRequest,
   type DifficultyConfig,
 } from '@/core/domains/user/actions/practice-actions';
+import { useUser } from '@/core/shared/hooks/useUser';
 import { LearningStatus } from '@/core/types';
 
 interface SessionState {

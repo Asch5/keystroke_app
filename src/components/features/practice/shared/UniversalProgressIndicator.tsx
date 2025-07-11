@@ -1,9 +1,9 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Card, CardContent } from '@/components/ui/card';
 import { Clock, Target, TrendingUp } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import { cn } from '@/core/shared/utils/common/cn';
 
 type PracticeType =

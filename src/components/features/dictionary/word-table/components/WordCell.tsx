@@ -1,6 +1,6 @@
+import { Star, Edit, Volume2, VolumeX } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Star, Edit, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/core/shared/utils/common/cn';
 import { WordCellProps } from '../types';
 

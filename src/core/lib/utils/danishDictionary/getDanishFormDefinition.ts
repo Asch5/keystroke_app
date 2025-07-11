@@ -1,5 +1,5 @@
-import { RelationshipType } from '@/core/types';
 import { clientLog } from '@/core/infrastructure/monitoring/clientLogger';
+import { RelationshipType } from '@/core/types';
 
 /**
  * Generates a standardized definition for Danish word forms based on relationship type
@@ -11,7 +11,7 @@ import { clientLog } from '@/core/infrastructure/monitoring/clientLogger';
 export function getDanishFormDefinition(
   baseWordText: string,
   relatedWordText: string,
-  relationshipType: RelationshipType | string, // Allow string for custom Danish types
+  relationshipType: string, // Allow string for custom Danish types
 ): string {
   switch (relationshipType) {
     case 'definite_form_da' as const:

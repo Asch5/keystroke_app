@@ -1,10 +1,9 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
-
+import { LearningStatus } from '@/core/types';
 import {
   PracticeType,
   LearningAnalytics,
@@ -196,7 +195,7 @@ export async function trackCompleteWordProgress(
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to track complete word progress: ${errorMessage}`,
       'error',
       {
@@ -415,7 +414,7 @@ export async function getLearningAnalytics(
       analytics,
     };
   } catch (error) {
-    serverLog('Error getting learning analytics', 'error', { error });
+    void serverLog('Error getting learning analytics', 'error', { error });
     return {
       success: false,
       error: 'Failed to get learning analytics',
@@ -571,7 +570,7 @@ export async function analyzeDifficultWords(
       analysis,
     };
   } catch (error) {
-    serverLog('Error analyzing difficult words', 'error', { error });
+    void serverLog('Error analyzing difficult words', 'error', { error });
     return {
       success: false,
       error: 'Failed to analyze difficult words',
@@ -681,7 +680,7 @@ export async function calculateProgressMetrics(userId: string): Promise<{
       metrics,
     };
   } catch (error) {
-    serverLog('Error calculating progress metrics', 'error', { error });
+    void serverLog('Error calculating progress metrics', 'error', { error });
     return {
       success: false,
       error: 'Failed to calculate progress metrics',
@@ -976,7 +975,7 @@ export async function updateDailyProgress(
       existingProgress.minutesStudied > personalBest.minutesStudied ||
       existingProgress.wordsLearned > personalBest.wordsLearned;
 
-    serverLog('Daily progress updated', 'info', {
+    void serverLog('Daily progress updated', 'info', {
       userId,
       date: today,
       minutesStudied: existingProgress.minutesStudied,
@@ -998,7 +997,7 @@ export async function updateDailyProgress(
       },
     };
   } catch (error) {
-    serverLog('Error updating daily progress', 'error', { error });
+    void serverLog('Error updating daily progress', 'error', { error });
     return { success: false, error: 'Failed to update daily progress' };
   }
 }
@@ -1083,7 +1082,7 @@ export async function getDailyProgressHistory(
       },
     };
   } catch (error) {
-    serverLog('Error getting daily progress history', 'error', { error });
+    void serverLog('Error getting daily progress history', 'error', { error });
     return { success: false, error: 'Failed to get progress history' };
   }
 }
@@ -1230,7 +1229,7 @@ export async function getWeeklyProgressSummary(
       ...(comparison && { comparison }),
     };
   } catch (error) {
-    serverLog('Error getting weekly progress summary', 'error', { error });
+    void serverLog('Error getting weekly progress summary', 'error', { error });
     return { success: false, error: 'Failed to get weekly summary' };
   }
 }

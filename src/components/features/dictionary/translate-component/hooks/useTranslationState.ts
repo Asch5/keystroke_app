@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
-import { TranslationResponse, TranslationOptions } from '../types';
 import { defaultOptions } from '../constants';
+import { TranslationResponse, TranslationOptions } from '../types';
 
 /**
  * State management hook for TranslateComponent

@@ -1,17 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import { ArrowLeft, List, Plus, X } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useFormState } from 'react-dom';
-import {
-  fetchCategories,
-  createListAction,
-  createCategory,
-  type CategoryData,
-} from '@/core/domains/dictionary/actions';
-import { fetchDictionaryWordDetails } from '@/core/domains/dictionary/actions';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ImageSelector } from '@/components/features/dictionary';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -22,13 +20,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, List, Plus, X } from 'lucide-react';
+import {
+  fetchDictionaryWordDetails,
+  fetchCategories,
+  createListAction,
+  createCategory,
+  type CategoryData,
+} from '@/core/domains/dictionary/actions';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
-import { ImageSelector } from '@/components/features/dictionary';
 
 // Language display names
 const languageDisplayNames: Record<LanguageCode, string> = {
@@ -147,7 +147,7 @@ function CreateListContent() {
       }
     }
 
-    loadData();
+    void loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]); // Only depend on language, not selectedDefinitionIds to prevent infinite loops
 

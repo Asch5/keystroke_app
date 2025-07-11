@@ -1,16 +1,16 @@
 import { useRouter } from 'next/navigation';
 import { LanguageCode } from '@/core/types';
-import { useListDetailState } from '../hooks/useListDetailState';
 import { useListDetailActions } from '../hooks/useListDetailActions';
+import { useListDetailState } from '../hooks/useListDetailState';
+import type { ListDetailContentProps } from '../types';
+import { ListDetailDialogs } from './ListDetailDialogs';
 import { ListDetailHeader } from './ListDetailHeader';
+import { ListDetailLoadingSkeleton } from './ListDetailLoadingSkeleton';
+import { ListNotFound } from './ListNotFound';
 import { ListStatsCards } from './ListStatsCards';
 import { ProgressBarCard } from './ProgressBarCard';
 import { SearchBar } from './SearchBar';
 import { WordsTable } from './WordsTable';
-import { ListDetailDialogs } from './ListDetailDialogs';
-import { ListDetailLoadingSkeleton } from './ListDetailLoadingSkeleton';
-import { ListNotFound } from './ListNotFound';
-import type { ListDetailContentProps } from '../types';
 
 /**
  * Main orchestrator component for list detail content

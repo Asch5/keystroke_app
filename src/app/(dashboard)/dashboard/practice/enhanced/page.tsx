@@ -1,6 +1,6 @@
+import { Loader2 } from 'lucide-react';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { Loader2 } from 'lucide-react';
 import { EnhancedPracticePageContent } from '@/components/features/practice/EnhancedPracticePageContent';
 
 export const metadata: Metadata = {

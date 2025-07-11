@@ -1,6 +1,9 @@
 'use client';
 
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -11,10 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { AlertCircle, Loader2 } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { cleanupDatabase } from '@/core/lib/actions/databaseActions';
-import { toast } from 'sonner';
 
 export function DatabaseCleanupDialog() {
   const [isOpen, setIsOpen] = useState(false);

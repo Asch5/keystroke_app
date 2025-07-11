@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Volume2, VolumeX, ChevronRight } from 'lucide-react';
-import { cn } from '@/core/shared/utils/common/cn';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { useState, useEffect } from 'react';
 import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/core/shared/utils/common/cn';
 import { LearningStatus } from '@/core/types';
 
 interface WordCardProps {

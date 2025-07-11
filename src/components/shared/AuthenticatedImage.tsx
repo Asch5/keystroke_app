@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { cn } from '@/core/lib/utils';
 import { AlertCircle, Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   errorLogSync,
   infoLogSync,
 } from '@/core/infrastructure/monitoring/clientLogger';
+import { cn } from '@/core/lib/utils';
 
 interface AuthenticatedImageProps {
   src: string;

@@ -1,19 +1,19 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { useTypingPracticeSettings } from '@/core/shared/hooks/useSettings';
+import { useUser } from '@/core/shared/hooks/useUser';
+import { LearningStatus } from '@/core/types';
 import {
   useTypingPracticeState,
   useTypingAudioPlayback,
   type WordResult,
 } from './hooks';
-import { useTypingPracticeSettings } from '@/core/shared/hooks/useSettings';
-import { LearningStatus } from '@/core/types';
-import { useUser } from '@/core/shared/hooks/useUser';
-import { TypingPracticeHeader } from './TypingPracticeHeader';
-import { TypingWordInput } from './TypingWordInput';
-import { TypingSessionSummary } from './TypingSessionSummary';
 import { TypingGettingStarted } from './TypingGettingStarted';
+import { TypingPracticeHeader } from './TypingPracticeHeader';
 import { TypingPracticeSettings } from './TypingPracticeSettings';
+import { TypingSessionSummary } from './TypingSessionSummary';
+import { TypingWordInput } from './TypingWordInput';
 
 interface TypingPracticeContentProps {
   userListId?: string;

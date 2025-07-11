@@ -1,9 +1,19 @@
 'use client';
 
+import { PlusCircle, Trash2 } from 'lucide-react';
 import { memo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -13,18 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 import { PartOfSpeech } from '@/core/types';
 import type { WordFormValues } from '../index';
 
@@ -69,9 +69,7 @@ export const DefinitionsSection = memo(function DefinitionsSection({
   addExample,
   removeExample,
 }: DefinitionsSectionProps) {
-  const definitions = form.watch(
-    'definitions',
-  ) as WordFormValues['definitions'];
+  const definitions = form.watch('definitions');
 
   return (
     <Card>

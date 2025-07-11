@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { addSessionItem } from '@/core/domains/user/actions/session-actions';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import type { AddSessionItemRequest } from '@/core/domains/user/types/session';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * POST /api/sessions/[sessionId]/items - Add a session item
@@ -38,7 +38,7 @@ export async function POST(
       );
     }
 
-    serverLog(`Adding session item to session ${sessionId}`, 'info', {
+    void serverLog(`Adding session item to session ${sessionId}`, 'info', {
       userId: session.user.id,
       sessionId,
       userDictionaryId: body.userDictionaryId,
@@ -49,7 +49,7 @@ export async function POST(
     const result = await addSessionItem(sessionId, body);
 
     if (!result.success) {
-      serverLog(`Failed to add session item: ${result.error}`, 'error');
+      void serverLog(`Failed to add session item: ${result.error}`, 'error');
       return NextResponse.json(
         { error: result.error || 'Failed to add session item' },
         { status: 500 },
@@ -69,7 +69,7 @@ export async function POST(
       },
     );
   } catch (error) {
-    serverLog(
+    void serverLog(
       `API error in POST /api/sessions/[sessionId]/items: ${error}`,
       'error',
     );

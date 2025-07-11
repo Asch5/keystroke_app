@@ -1,13 +1,18 @@
 'use client';
 
+import { Loader2, Trash2, Plus, Save } from 'lucide-react';
 import { memo } from 'react';
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, Trash2, Plus, Save } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -15,14 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import ExamplesManager from './ExamplesManager';
+import { Textarea } from '@/components/ui/textarea';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions/word-details-actions';
+import ExamplesManager from './ExamplesManager';
 
 // Extract exact types from WordDetailEditData to ensure compatibility
 type DefinitionData = WordDetailEditData['definitions'][0];

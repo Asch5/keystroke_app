@@ -9,17 +9,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { WordCell } from './components/WordCell';
-import { DefinitionCell } from './components/DefinitionCell';
-import { ListsCell } from './components/ListsCell';
-import { StatusCell } from './components/StatusCell';
-import { ProgressCell } from './components/ProgressCell';
-import { MasteryCell } from './components/MasteryCell';
-import { LastReviewedCell } from './components/LastReviewedCell';
-import { WordActions } from './components/WordActions';
-import { useWordTableState } from './hooks/useWordTableState';
-import { WordDifficultyDialog } from '../WordDifficultyDialog';
 import { EnhancedWordDifficultyDialog } from '../EnhancedWordDifficultyDialog';
+import { WordDifficultyDialog } from '../WordDifficultyDialog';
+import { DefinitionCell } from './components/DefinitionCell';
+import { LastReviewedCell } from './components/LastReviewedCell';
+import { ListsCell } from './components/ListsCell';
+import { MasteryCell } from './components/MasteryCell';
+import { ProgressCell } from './components/ProgressCell';
+import { StatusCell } from './components/StatusCell';
+import { WordActions } from './components/WordActions';
+import { WordCell } from './components/WordCell';
+import { useWordTableState } from './hooks/useWordTableState';
 import { WordTableProps } from './types';
 
 /**

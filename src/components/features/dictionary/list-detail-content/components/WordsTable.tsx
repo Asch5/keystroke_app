@@ -1,22 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   BookOpen,
   MoreHorizontal,
@@ -26,13 +7,32 @@ import {
   Plus,
   Loader2,
 } from 'lucide-react';
-import { LanguageCode } from '@/core/types';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import {
   getDisplayDefinition,
   shouldShowTranslations,
 } from '@/core/domains/user/utils/dictionary-display-utils';
-import { getStatusColor } from '../utils/styleUtils';
+import { LanguageCode } from '@/core/types';
 import type { UserListWordWithDetails, RemoveDialogState } from '../types';
+import { getStatusColor } from '../utils/styleUtils';
 
 interface WordsTableProps {
   words: UserListWordWithDetails[];

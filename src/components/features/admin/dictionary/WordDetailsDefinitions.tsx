@@ -1,7 +1,8 @@
 'use client';
 
+import { Plus, List, Loader2, Check } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { LanguageCode } from '@/core/types';
+import { toast } from 'sonner';
 import { AuthenticatedImage } from '@/components/shared/AuthenticatedImage';
 import {
   Accordion,
@@ -9,29 +10,28 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, List, Loader2, Check } from 'lucide-react';
-import { AudioService } from '@/core/domains/dictionary/services/audio-service';
-import { findTranslation } from './utils/translation-utils';
-import { renderTextWithEmphasis } from './utils/text-rendering';
-import { AddToListDialog } from '../../dictionary/AddToListDialog';
 import {
   addDefinitionToUserDictionary,
   checkDefinitionsInUserDictionary,
 } from '@/core/domains/dictionary/actions';
-import { toast } from 'sonner';
+import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 import type { DefinitionData } from '@/core/lib/actions/dictionaryActions';
+import { LanguageCode } from '@/core/types';
+import { AddToListDialog } from '../../dictionary/AddToListDialog';
+import { renderTextWithEmphasis } from './utils/text-rendering';
+import { findTranslation } from './utils/translation-utils';
 
 // Explicitly type DefinitionExample based on the structure from dictionaryActions.ts
 type DefinitionExample = NonNullable<
@@ -122,7 +122,7 @@ export function WordDetailsDefinitions({
             ...prev,
             [definition.id]: {
               exists: true,
-              userDictionaryId: result.data!.id,
+              userDictionaryId: result.data.id,
             },
           }));
         }

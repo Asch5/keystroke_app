@@ -163,7 +163,7 @@ export const getSimpleWordAnalytics = cache(
     error?: string;
   }> => {
     try {
-      // serverLog('Fetching individual word analytics', { userId, userDictionaryId });
+      // void serverLog('Fetching individual word analytics', { userId, userDictionaryId });
 
       // Get basic word data
       const userWord = await prismaClient.userDictionary.findFirst({
@@ -188,7 +188,7 @@ export const getSimpleWordAnalytics = cache(
         analytics,
       };
     } catch (error) {
-      // serverLog('error', 'Failed to get individual word analytics', { error });
+      // void serverLog('error', 'Failed to get individual word analytics', { error });
       const handledError = handlePrismaError(error);
       return {
         success: false,

@@ -1,6 +1,6 @@
+import { compare } from 'bcryptjs';
 import Credentials from 'next-auth/providers/credentials';
 import { getUserByEmail } from '@/core/lib/db/user';
-import { compare } from 'bcryptjs';
 
 export default Credentials({
   name: 'credentials',

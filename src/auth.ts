@@ -1,10 +1,10 @@
 //adapter only works in node environment
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { prisma } from '@/core/lib/prisma';
-import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from 'bcryptjs';
 import type { NextAuthConfig } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { z } from 'zod';
+import { prisma } from '@/core/lib/prisma';
 
 // Define validation schema for credentials
 const credentialsSchema = z.object({
@@ -31,7 +31,7 @@ export const authConfig: NextAuthConfig = {
     // Add user ID and role to session
     session: async ({ session, token }) => {
       if (session.user && token) {
-        session.user.id = token.id as string;
+        session.user.id = token.id;
         session.user.role = token.role as string;
       }
       return session;
@@ -73,7 +73,7 @@ export const authConfig: NextAuthConfig = {
           });
 
           // Check if user exists and has password
-          if (!user || !user.password) {
+          if (!user?.password) {
             return null;
           }
 
@@ -88,7 +88,7 @@ export const authConfig: NextAuthConfig = {
           }
 
           // Return user without password
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
           const { password: _, ...userWithoutPassword } = user;
           return userWithoutPassword;
         } catch (error) {

@@ -1,20 +1,20 @@
 'use client';
 
+import { PlusCircle, Trash2 } from 'lucide-react';
 import { memo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RelationshipType } from '@/core/types';
 import type { WordFormValues } from '../index';
 
@@ -76,8 +76,7 @@ export const RelatedWordsSection = memo(function RelatedWordsSection({
   addRelatedWord,
   removeRelatedWord,
 }: RelatedWordsSectionProps) {
-  const relatedWords =
-    (form.watch('relatedWords') as WordFormValues['relatedWords']) || {};
+  const relatedWords = form.watch('relatedWords') || {};
 
   const relationshipTypes = [
     RelationshipType.synonym,

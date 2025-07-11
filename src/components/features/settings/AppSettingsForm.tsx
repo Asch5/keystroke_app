@@ -1,19 +1,5 @@
 'use client';
 
-import { useActionState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
 import {
   Loader2,
   AlertCircle,
@@ -22,12 +8,25 @@ import {
   Globe,
   Settings,
 } from 'lucide-react';
-import { updateAppSettings } from '@/core/domains/user/actions/user-settings-actions';
+import { useActionState } from 'react';
+import { LanguageSelector } from '@/components/shared/LanguageSelector';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import {
-  THEME_OPTIONS,
-  LANGUAGE_OPTIONS,
-} from '@/core/domains/user/utils/settings-constants';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { updateAppSettings } from '@/core/domains/user/actions/user-settings-actions';
 import type { UserSettingsState } from '@/core/domains/user/types/user-settings';
+import { THEME_OPTIONS } from '@/core/domains/user/utils/settings-constants';
+import { useTranslation } from '@/core/shared/hooks/useTranslation';
 
 interface AppSettingsFormProps {
   appSettings: {
@@ -39,6 +38,7 @@ interface AppSettingsFormProps {
 }
 
 export function AppSettingsForm({ appSettings }: AppSettingsFormProps) {
+  const { t } = useTranslation();
   const [state, formAction, isPending] = useActionState(updateAppSettings, {
     errors: {},
     message: null,
@@ -105,34 +105,16 @@ export function AppSettingsForm({ appSettings }: AppSettingsFormProps) {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4" />
-              <h3 className="text-lg font-medium">Localization</h3>
+              <h3 className="text-lg font-medium">
+                {t('settings.interfaceLanguage')}
+              </h3>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="language">Interface Language</Label>
-              <Select name="language" defaultValue={currentSettings.language}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select interface language" />
-                </SelectTrigger>
-                <SelectContent>
-                  {LANGUAGE_OPTIONS.map((language) => (
-                    <SelectItem key={language.id} value={language.id}>
-                      <div className="flex items-center gap-2">
-                        <span>{language.flag}</span>
-                        <span>{language.name}</span>
-                        <span className="text-muted-foreground text-sm">
-                          ({language.nativeName})
-                        </span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {state.errors?.language && (
-                <p className="text-sm text-destructive">
-                  {state.errors.language[0]}
-                </p>
-              )}
+              <Label htmlFor="language">
+                {t('settings.selectInterfaceLanguage')}
+              </Label>
+              <LanguageSelector />
               <p className="text-sm text-muted-foreground">
                 This controls the language used in the application interface
               </p>

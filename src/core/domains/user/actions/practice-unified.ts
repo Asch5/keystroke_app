@@ -1,24 +1,24 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { LanguageCode, LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { LanguageCode, LearningStatus } from '@/core/types';
 import {
   getBestDefinitionForUser,
   TranslationData,
 } from '../../dictionary/utils/translation-utils';
+import {
+  determineExerciseTypeProgressive,
+  getWordsForSRSReview,
+} from './practice-progression';
+import { createPracticeSession } from './practice-session-management';
 import {
   PracticeType,
   PracticeWord,
   UnifiedPracticeSession,
   SessionConfiguration,
 } from './practice-types';
-import {
-  determineExerciseTypeProgressive,
-  getWordsForSRSReview,
-} from './practice-progression';
-import { createPracticeSession } from './practice-session-management';
 const prisma = new PrismaClient();
 
 /**
@@ -33,9 +33,13 @@ export async function createUnifiedPracticeSession(
   error?: string;
 }> {
   try {
-    serverLog(`Creating unified practice session for user ${userId}`, 'info', {
-      config,
-    });
+    void serverLog(
+      `Creating unified practice session for user ${userId}`,
+      'info',
+      {
+        config,
+      },
+    );
 
     // Get user settings and language preferences
     const user = await prisma.user.findUnique({
@@ -90,7 +94,7 @@ export async function createUnifiedPracticeSession(
     } = {};
 
     if (enabledExerciseTypes) {
-      userPreferences.enabledExerciseTypes = enabledExerciseTypes as string[];
+      userPreferences.enabledExerciseTypes = enabledExerciseTypes;
     }
 
     if (vocabularySettings.skipRememberTranslation !== undefined) {
@@ -136,7 +140,7 @@ export async function createUnifiedPracticeSession(
       },
     };
 
-    serverLog(
+    void serverLog(
       `Unified practice session created: ${sessionResult.sessionId}`,
       'info',
       {
@@ -152,7 +156,7 @@ export async function createUnifiedPracticeSession(
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(
+    void serverLog(
       `Failed to create unified practice session: ${errorMessage}`,
       'error',
       {
@@ -422,7 +426,7 @@ export async function getNextWordForPractice(
       isLastWord,
     };
   } catch (error) {
-    serverLog('Error getting next word for practice', 'error', { error });
+    void serverLog('Error getting next word for practice', 'error', { error });
     return {
       success: false,
       error: 'Failed to get next word',
@@ -525,7 +529,7 @@ export async function updateWordProgressAndSelectNext(
       progressUpdated: true,
     };
   } catch (error) {
-    serverLog('Error updating word progress and selecting next', 'error', {
+    void serverLog('Error updating word progress and selecting next', 'error', {
       error,
     });
     return {
@@ -766,7 +770,7 @@ export async function getAdaptivePracticeWords(
       adaptedDifficulty,
     };
   } catch (error) {
-    serverLog('Error getting adaptive practice words', 'error', { error });
+    void serverLog('Error getting adaptive practice words', 'error', { error });
     return {
       success: false,
       error: 'Failed to get adaptive practice words',

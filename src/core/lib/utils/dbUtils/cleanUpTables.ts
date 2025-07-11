@@ -1,7 +1,7 @@
 'use server';
 
-import { prisma } from '@/core/lib/prisma';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/lib/prisma';
 
 // Tables that should never be truncated
 const PROTECTED_TABLES = [
@@ -32,9 +32,9 @@ export async function cleanTablesExceptUser() {
         await prisma.$executeRawUnsafe(
           `TRUNCATE TABLE "${tablename}" RESTART IDENTITY CASCADE;`,
         );
-        await serverLog('Table cleaned successfully', 'info', { tablename });
+        void serverLog('Table cleaned successfully', 'info', { tablename });
       } catch (tableError) {
-        await serverLog('Error cleaning table', 'error', {
+        void serverLog('Error cleaning table', 'error', {
           tablename,
           error: tableError,
         });
@@ -42,10 +42,10 @@ export async function cleanTablesExceptUser() {
       }
     }
 
-    await serverLog('All non-protected tables cleaned successfully', 'info');
+    void serverLog('All non-protected tables cleaned successfully', 'info');
     return { success: true };
   } catch (error) {
-    await serverLog('Error in cleanTablesExceptUser', 'error', { error });
+    void serverLog('Error in cleanTablesExceptUser', 'error', { error });
     throw error;
   }
 }

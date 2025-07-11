@@ -1,7 +1,25 @@
 'use client';
 
-import React, { useState, useEffect, useActionState } from 'react';
+import { ArrowLeft, Save, Plus, X, Edit } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
+import React, { useState, useEffect, useActionState } from 'react';
+import { ImageSelector } from '@/components/features/dictionary';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import {
   getListDetails,
   fetchCategories,
@@ -10,24 +28,6 @@ import {
   type ListWithDetails,
   type CategoryData,
 } from '@/core/domains/dictionary/actions';
-import { ImageSelector } from '@/components/features/dictionary';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Save, Plus, X, Edit } from 'lucide-react';
 import { DifficultyLevel } from '@/core/types';
 
 // Difficulty level display names

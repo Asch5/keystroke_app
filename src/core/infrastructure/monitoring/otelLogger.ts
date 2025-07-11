@@ -126,16 +126,12 @@ class OTelLogger {
       // Server environment - use serverLog (handle debug level)
       if (level === 'debug') {
         // serverLog doesn't support debug level, use info instead
-        await serverLog(message, 'info', {
+        void serverLog(message, 'info', {
           ...enrichedContext,
           originalLevel: 'debug',
         });
       } else {
-        await serverLog(
-          message,
-          level as 'info' | 'warn' | 'error',
-          enrichedContext,
-        );
+        void serverLog(message, level, enrichedContext);
       }
     }
 

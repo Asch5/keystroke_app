@@ -1,9 +1,9 @@
 'use client';
 
+import { Eye, EyeOff, Target, BookOpen, Keyboard } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Eye, EyeOff, Target, BookOpen, Keyboard } from 'lucide-react';
 
 interface WriteByDefinitionHeaderProps {
   word: {

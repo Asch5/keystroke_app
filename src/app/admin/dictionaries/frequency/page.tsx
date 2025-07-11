@@ -1,6 +1,8 @@
 'use client';
 
+import { AlertCircleIcon, FileJsonIcon } from 'lucide-react';
 import { useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -17,13 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircleIcon, FileJsonIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { LanguageCode } from '@/core/types';
 import { importFrequencyJson } from '@/core/domains/dictionary/actions';
+import { LanguageCode } from '@/core/types';
 
 type FrequencyWord = {
   word: string;

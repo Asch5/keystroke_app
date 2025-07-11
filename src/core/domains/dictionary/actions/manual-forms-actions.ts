@@ -1,17 +1,16 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/lib/prisma';
+import { getDanishFormDefinition } from '@/core/lib/utils/danishDictionary/getDanishFormDefinition';
 import {
   RelationshipType,
   LanguageCode,
   SourceType,
   PartOfSpeech,
 } from '@/core/types';
-
 import { DatabaseKnownRequestError } from '@/core/types/database';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { revalidatePath } from 'next/cache';
-import { getDanishFormDefinition } from '@/core/lib/utils/danishDictionary/getDanishFormDefinition';
 
 interface ManualFormData {
   wordText: string;
@@ -109,7 +108,7 @@ export async function addManualWordForms({
   forms,
 }: AddManualFormsRequest): Promise<AddManualFormsResponse> {
   try {
-    serverLog(
+    void serverLog(
       `Starting manual forms addition for word "${baseWordText}" (ID: ${baseWordDetailId})`,
       'info',
     );
@@ -137,7 +136,7 @@ export async function addManualWordForms({
 
     await prisma.$transaction(async (tx) => {
       for (const formData of forms) {
-        serverLog(
+        void serverLog(
           `Processing manual form: "${formData.wordText}" (${formData.relationshipType})`,
           'info',
         );
@@ -282,7 +281,7 @@ export async function addManualWordForms({
         });
 
         formsAdded++;
-        serverLog(
+        void serverLog(
           `Successfully added manual form: "${formData.wordText}"`,
           'info',
         );
@@ -292,7 +291,7 @@ export async function addManualWordForms({
     // Revalidate the admin dictionaries page to show the new forms
     revalidatePath('/admin/dictionaries');
 
-    serverLog(
+    void serverLog(
       `Successfully added ${formsAdded} manual forms for "${baseWordText}"`,
       'info',
     );
@@ -302,7 +301,7 @@ export async function addManualWordForms({
       formsAdded,
     };
   } catch (error) {
-    serverLog(
+    void serverLog(
       `Error adding manual forms for "${baseWordText}": ${error}`,
       'error',
     );

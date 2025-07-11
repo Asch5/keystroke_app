@@ -1,19 +1,19 @@
 'use client';
 
-import { PageBreadcrumb } from '@/components/shared/navigation';
-import { AdminErrorBoundary } from '@/components/shared/error-boundaries';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { RoleGate } from '@/components/features/auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getNavigationLinks } from '@/core/lib/utils/navigation';
+import { RoleGate } from '@/components/features/auth';
 import { AppSidebar } from '@/components/features/dashboard';
+import { AdminErrorBoundary } from '@/components/shared/error-boundaries';
+import { PageBreadcrumb } from '@/components/shared/navigation';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Separator } from '@/components/ui/separator';
+import { getNavigationLinks } from '@/core/lib/utils/navigation';
 
 export default function AdminLayout({
   children,

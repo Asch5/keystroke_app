@@ -1,4 +1,11 @@
+import {
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+} from 'lucide-react';
 import React from 'react';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -6,15 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TabsContent } from '@/components/ui/tabs';
-import {
-  AlertTriangle,
-  TrendingUp,
-  TrendingDown,
-  BarChart3,
-} from 'lucide-react';
 import { DictionaryPerformanceMetrics } from '@/core/domains/user/actions/dictionary-performance-actions';
 import { formatPercentage, getPercentageColor } from './utils';
 

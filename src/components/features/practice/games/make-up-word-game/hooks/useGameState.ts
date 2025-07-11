@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { GameState, WordData } from '../types';
 import { gameSoundService } from '@/core/domains/dictionary/services/game-sound-service';
+import { GameState, WordData } from '../types';
 
 /**
  * Main state management hook for MakeUpWordGame

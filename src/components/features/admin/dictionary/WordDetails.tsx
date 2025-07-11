@@ -1,17 +1,17 @@
 import React from 'react';
-import { LanguageCode } from '@/core/types';
 import { Accordion } from '@/components/ui/accordion';
 import { Card, CardContent } from '@/components/ui/card';
+import type {
+  WordPartOfSpeechDetails,
+  WordEntryData,
+} from '@/core/lib/actions/dictionaryActions';
+import { LanguageCode } from '@/core/types';
 import {
   WordDetailsHeader,
   WordDetailsMetadata,
   WordDetailsPartOfSpeech,
   WordDetailsRelatedWords,
 } from '.';
-import type {
-  WordPartOfSpeechDetails,
-  WordEntryData,
-} from '@/core/lib/actions/dictionaryActions';
 
 interface WordDetailsProps {
   wordDetails: WordEntryData;

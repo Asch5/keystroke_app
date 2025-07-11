@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, ReactNode } from 'react';
-import { useSettings } from '@/core/shared/hooks/useSettings';
 import {
   infoLog,
   errorLog,
 } from '@/core/infrastructure/monitoring/clientLogger';
+import { useSettings } from '@/core/shared/hooks/useSettings';
 
 interface SettingsProviderProps {
   children: ReactNode;

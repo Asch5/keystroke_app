@@ -1,10 +1,10 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/shared/database/client';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { UserListWhereInput } from '@/core/types/prisma-substitutes';
-import { revalidatePath } from 'next/cache';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 export interface UserListWithDetails {
   id: string;
@@ -142,8 +142,8 @@ export async function getUserLists(
     // }
 
     // Debug logging
-    await serverLog(`getUserLists - userId: ${userId}`, 'info');
-    await serverLog('getUserLists - whereConditions', 'info', whereConditions);
+    void serverLog(`getUserLists - userId: ${userId}`, 'info');
+    void serverLog('getUserLists - whereConditions', 'info', whereConditions);
 
     // First, let's check how many UserList records exist for this user (without includes)
     const basicUserLists = await prisma.userList.findMany({
@@ -167,13 +167,13 @@ export async function getUserLists(
       },
       select: { id: true, customNameOfList: true, listId: true },
     });
-    await serverLog(
+    void serverLog(
       `getUserLists - Basic query found: ${basicUserLists.length} records`,
       'info',
     );
 
     for (const [index, list] of basicUserLists.entries()) {
-      await serverLog(`Basic List ${index + 1}`, 'info', {
+      void serverLog(`Basic List ${index + 1}`, 'info', {
         id: list.id,
         customName: list.customNameOfList,
         listId: list.listId,
@@ -243,25 +243,25 @@ export async function getUserLists(
         where: { id: { in: basicReferencedListIds } },
         select: { id: true, name: true },
       });
-      await serverLog(
+      void serverLog(
         'getUserLists - Referenced List IDs',
         'info',
         basicReferencedListIds,
       );
-      await serverLog(
+      void serverLog(
         `getUserLists - Existing Lists found: ${existingLists.length}`,
         'info',
       );
 
       for (const list of existingLists) {
-        await serverLog(`Existing List: ${list.id} - ${list.name}`, 'info');
+        void serverLog(`Existing List: ${list.id} - ${list.name}`, 'info');
       }
 
       const missingListIds = basicReferencedListIds.filter(
         (id) => !existingLists.some((existing) => existing.id === id),
       );
       if (missingListIds.length > 0) {
-        await serverLog(
+        void serverLog(
           'getUserLists - MISSING List IDs',
           'warn',
           missingListIds,
@@ -270,14 +270,14 @@ export async function getUserLists(
     }
 
     // Debug logging
-    await serverLog(
+    void serverLog(
       `getUserLists - Found ${userLists.length} raw user lists`,
       'info',
     );
 
     for (const [index, list] of userLists.entries()) {
       const referencedList = list.listId ? listMap.get(list.listId) : null;
-      await serverLog(`List ${index + 1}`, 'info', {
+      void serverLog(`List ${index + 1}`, 'info', {
         id: list.id,
         customName: list.customNameOfList,
         listId: list.listId,
@@ -387,13 +387,13 @@ export async function getUserLists(
     );
 
     // Final debug logging
-    await serverLog(
+    void serverLog(
       `getUserLists - Returning ${userListsWithDetails.length} processed user lists`,
       'info',
     );
 
     for (const [index, list] of userListsWithDetails.entries()) {
-      await serverLog(`Processed List ${index + 1}`, 'info', {
+      void serverLog(`Processed List ${index + 1}`, 'info', {
         id: list.id,
         displayName: list.displayName,
         wordCount: list.wordCount,
@@ -943,7 +943,7 @@ export async function addListToUserCollection(
       },
     });
 
-    if (!list || !list.isPublic) {
+    if (!list?.isPublic) {
       return {
         success: false,
         message: 'List not found or not public',

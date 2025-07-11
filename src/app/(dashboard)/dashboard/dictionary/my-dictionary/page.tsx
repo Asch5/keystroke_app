@@ -1,5 +1,5 @@
-import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { auth } from '@/auth';
 import { MyDictionaryContent } from '@/components/features/dictionary';
 import { MyDictionaryLoadingSkeleton } from '@/components/utils/skeletons/MyDictionaryLoadingSkeleton';

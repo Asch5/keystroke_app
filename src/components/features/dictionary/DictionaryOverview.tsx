@@ -1,15 +1,4 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
-import {
   Book,
   BookOpen,
   Star,
@@ -22,6 +11,17 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
 import { getUserDictionaryStats } from '@/core/domains/user/actions/user-dictionary-actions';
 import { LearningStatus } from '@/core/types';
 
@@ -312,7 +312,7 @@ export async function DictionaryOverview({ userId }: DictionaryOverviewProps) {
                     className="text-sm font-medium"
                     aria-label={`${count} words with status ${getStatusLabel(status as LearningStatus)}`}
                   >
-                    {count as number}
+                    {count}
                   </div>
                   <div className="text-xs text-muted-foreground truncate px-1">
                     {getStatusLabel(status as LearningStatus)}
@@ -427,10 +427,9 @@ export async function DictionaryOverview({ userId }: DictionaryOverviewProps) {
             <CardContent>
               <div className="space-y-4">
                 {Object.entries(stats.statusBreakdown)
-                  .filter(([, count]) => (count as number) > 0)
+                  .filter(([, count]) => count > 0)
                   .map(([status, count]) => {
-                    const percentage =
-                      ((count as number) / stats.totalWords) * 100;
+                    const percentage = (count / stats.totalWords) * 100;
                     const statusLabel = getStatusLabel(
                       status as LearningStatus,
                     );
@@ -452,7 +451,7 @@ export async function DictionaryOverview({ userId }: DictionaryOverviewProps) {
                               variant="secondary"
                               className="text-xs whitespace-nowrap"
                             >
-                              {count as number} words
+                              {count} words
                             </Badge>
                             <span
                               className="text-sm text-muted-foreground whitespace-nowrap"

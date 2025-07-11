@@ -1,25 +1,25 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Pause } from 'lucide-react';
-import { cn } from '@/core/shared/utils/common/cn';
-
-// Import modular components
-import { UniversalProgressIndicator, PracticeGameContainer } from './shared';
-import { PracticeGameRenderer } from './PracticeGameRenderer';
-import { PracticeSessionSummary } from './PracticeSessionSummary';
-import { PracticeWordCardRenderer } from './PracticeWordCardRenderer';
-
-// Import custom hook
-import { usePracticeGameState } from './hooks';
-
-// Import types
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import type {
   PracticeType,
   EnhancedPracticeSession,
 } from '@/core/domains/user/actions/practice-actions';
+import { cn } from '@/core/shared/utils/common/cn';
+
+// Import modular components
 import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
+import { usePracticeGameState } from './hooks';
+import { PracticeGameRenderer } from './PracticeGameRenderer';
+import { PracticeSessionSummary } from './PracticeSessionSummary';
+import { PracticeWordCardRenderer } from './PracticeWordCardRenderer';
+import { UniversalProgressIndicator, PracticeGameContainer } from './shared';
+
+// Import custom hook
+
+// Import types
 
 interface EnhancedPracticeContentProps {
   session: EnhancedPracticeSession;

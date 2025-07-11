@@ -1,9 +1,7 @@
-import React from 'react';
-
-import { checkRole } from '@/core/lib/auth/checkRole';
-import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
+import React, { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { checkRole } from '@/core/lib/auth/checkRole';
 
 // Dynamic import for better code splitting
 const AdminDictionaryPageContent = dynamic(

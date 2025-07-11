@@ -1,8 +1,8 @@
 'use client';
 
+import { RotateCcw, Pause, VolumeX, Volume2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { RotateCcw, Pause, VolumeX, Volume2 } from 'lucide-react';
 
 interface WriteBySoundAudioControlsProps {
   isPlaying: boolean;

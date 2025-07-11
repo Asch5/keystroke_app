@@ -10,8 +10,8 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import { LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { LearningStatus } from '@/core/types';
 
 const prisma = new PrismaClient();
 
@@ -270,11 +270,15 @@ export class DifficultyAssessment {
         },
       };
     } catch (error) {
-      serverLog(`Error calculating difficulty score: ${error}`, 'error', {
-        userId,
-        userDictionaryId,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      void serverLog(
+        `Error calculating difficulty score: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+        {
+          userId,
+          userDictionaryId,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
       throw error;
     }
   }
@@ -641,7 +645,7 @@ export class DifficultyAssessment {
           const score = await this.calculateDifficultyScore(userId, id);
           return { id, score };
         } catch (error) {
-          serverLog(
+          void serverLog(
             `Failed to calculate difficulty for ${id}: ${error}`,
             'error',
           );
@@ -977,7 +981,7 @@ export class LearningProgressTracker {
         }
       });
 
-      serverLog(
+      void serverLog(
         `Updated learning progress for unit ${learningUnitId}`,
         'info',
         {
@@ -987,12 +991,16 @@ export class LearningProgressTracker {
         },
       );
     } catch (error) {
-      serverLog(`Error updating learning progress: ${error}`, 'error', {
-        userId,
-        learningUnitId,
-        practiceType,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      void serverLog(
+        `Error updating learning progress: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+        {
+          userId,
+          learningUnitId,
+          practiceType,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
       throw error;
     }
   }
@@ -1014,16 +1022,20 @@ export class LearningProgressTracker {
         },
       });
 
-      serverLog(`Tracked skip for unit ${learningUnitId}`, 'info', {
+      void serverLog(`Tracked skip for unit ${learningUnitId}`, 'info', {
         userId,
         practiceType,
       });
     } catch (error) {
-      serverLog(`Error tracking skip: ${error}`, 'error', {
-        userId,
-        learningUnitId,
-        practiceType,
-      });
+      void serverLog(
+        `Error tracking skip: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+        {
+          userId,
+          learningUnitId,
+          practiceType,
+        },
+      );
       throw error;
     }
   }

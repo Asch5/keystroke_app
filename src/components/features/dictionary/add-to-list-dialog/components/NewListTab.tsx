@@ -1,8 +1,10 @@
+import { Loader2, BookOpen } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -10,12 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { DialogFooter } from '@/components/ui/dialog';
-import { Loader2, BookOpen } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { DifficultyLevel } from '@/core/types';
 import { ImageSelector } from '../../ImageSelector';
 import { NewListTabProps, difficultyDisplayNames } from '../types';
-import { DifficultyLevel } from '@/core/types';
 
 /**
  * New list tab component for creating new lists with form fields

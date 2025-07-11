@@ -1,14 +1,4 @@
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-
+import { formatDistanceToNow } from 'date-fns';
 import {
   AlertTriangle,
   Clock,
@@ -19,7 +9,16 @@ import {
   Calendar,
   RefreshCw,
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import type { SimpleWordAnalytics } from '@/core/domains/user/actions/simple-word-analytics';
 
 interface MistakePatternAnalysisProps {

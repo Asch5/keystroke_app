@@ -1,19 +1,5 @@
 'use client';
 
-import { useActionState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
 import {
   Loader2,
   AlertCircle,
@@ -23,14 +9,28 @@ import {
   Bell,
   Volume2,
 } from 'lucide-react';
+import { useActionState } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import { updateUserLearningSettings } from '@/core/domains/user/actions/user-settings-actions';
+import type { UserSettingsState } from '@/core/domains/user/types/user-settings';
 import {
   DIFFICULTY_OPTIONS,
   SESSION_DURATION_OPTIONS,
   REVIEW_INTERVAL_OPTIONS,
   DAILY_GOAL_OPTIONS,
 } from '@/core/domains/user/utils/settings-constants';
-import type { UserSettingsState } from '@/core/domains/user/types/user-settings';
 
 interface LearningSettingsFormProps {
   settings: {

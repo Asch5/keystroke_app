@@ -7,7 +7,6 @@ export function useWordEditFormActions(
   wordId: string,
   form: UseFormReturn<WordFormValues>,
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (_values: WordFormValues) => {
     try {
       // Form submission logic would go here
@@ -53,7 +52,6 @@ export function useWordEditFormActions(
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const removeExample = (_definitionIndex: number, _exampleIndex: number) => {
     // Example removal logic would go here
     toast.success('Example removed');
@@ -93,7 +91,6 @@ export function useWordEditFormActions(
     toast.success(`Related word added to ${type}`);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const removeRelatedWord = (type: RelationshipType, _index: number) => {
     // Related word removal logic would go here
     toast.success(`Related word removed from ${type}`);

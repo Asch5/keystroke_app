@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { BarChart3, Clock, Target } from 'lucide-react';
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { UserStatistics } from '@/core/domains/user/actions/user-stats-actions';
 import { WeeklyDistributionChart } from '../charts/WeeklyDistributionChart';
 

@@ -1,13 +1,3 @@
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import {
   Target,
   AlertTriangle,
@@ -19,6 +9,16 @@ import {
   Calendar,
   BarChart3,
 } from 'lucide-react';
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import type { DictionaryPerformanceMetrics } from '@/core/domains/user/actions/dictionary-performance-actions';
 
 interface WordAnalyticsTabProps {

@@ -1,4 +1,7 @@
+import { Activity, Zap, Volume2 } from 'lucide-react';
 import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -6,9 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Activity, Zap, Volume2 } from 'lucide-react';
 import { QualitySelectionProps } from '../types';
 
 /**

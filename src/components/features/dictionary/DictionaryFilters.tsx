@@ -1,5 +1,7 @@
 'use client';
 
+import { Search, SortAsc, SortDesc, Star, Clock, Edit } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -16,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, SortAsc, SortDesc, Star, Clock, Edit } from 'lucide-react';
 import { LearningStatus, PartOfSpeech } from '@/core/types';
 
 interface DictionaryFiltersProps {

@@ -1,16 +1,16 @@
 'use client';
 
-import { memo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Loader2, Save } from 'lucide-react';
+import { memo } from 'react';
+import { RelationshipManager } from '@/components/features/dictionary/RelationshipManager';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { RelationshipManager } from '@/components/features/dictionary/RelationshipManager';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions/word-details-actions';
 
 interface RelationshipsSectionProps {

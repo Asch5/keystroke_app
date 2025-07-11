@@ -1,16 +1,14 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
 import { PrismaClient } from '@prisma/client';
-import { LearningStatus } from '@/core/types';
+import { revalidateTag } from 'next/cache';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
+import { LearningStatus } from '@/core/types';
 import {
   PRACTICE_SESSION_CONFIG,
   LearningMetricsCalculator,
 } from '../utils/learning-metrics';
-import { ValidateTypingRequest } from './practice-types';
-import { updateWordProgression, updateSRSData } from './practice-progression';
 
 // Import and re-export utility functions from utils directory
 import {
@@ -24,6 +22,8 @@ import {
   calculateResponseTimeBonus,
   WordComparisonResult,
 } from '../utils/practice-validation-utils';
+import { updateWordProgression, updateSRSData } from './practice-progression';
+import { ValidateTypingRequest } from './practice-types';
 
 // Re-export for other modules
 export {
@@ -171,12 +171,12 @@ export async function validateTypingInput(
     );
 
     if (!srsResult.success) {
-      serverLog('Failed to update SRS data', 'warn', {
+      void serverLog('Failed to update SRS data', 'warn', {
         userDictionaryId,
         error: srsResult.error,
       });
     } else {
-      serverLog('SRS data updated successfully', 'info', {
+      void serverLog('SRS data updated successfully', 'info', {
         userDictionaryId,
         srsData: srsResult.srsData,
       });
@@ -356,10 +356,14 @@ export async function validateTypingInput(
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to validate typing input: ${errorMessage}`, 'error', {
-      sessionId: request.sessionId,
-      error,
-    });
+    void serverLog(
+      `Failed to validate typing input: ${errorMessage}`,
+      'error',
+      {
+        sessionId: request.sessionId,
+        error,
+      },
+    );
 
     return {
       success: false,

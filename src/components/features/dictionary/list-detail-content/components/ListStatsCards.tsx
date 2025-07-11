@@ -1,7 +1,7 @@
-import { Card, CardContent } from '@/components/ui/card';
 import { BookOpen, Users, Target, TrendingUp } from 'lucide-react';
-import { getIconColor } from '../utils/styleUtils';
+import { Card, CardContent } from '@/components/ui/card';
 import type { ListBasicInfo } from '../types';
+import { getIconColor } from '../utils/styleUtils';
 
 interface ListStatsCardsProps {
   listInfo: ListBasicInfo;

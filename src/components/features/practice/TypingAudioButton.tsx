@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/core/shared/utils/common/cn';
 import type { SessionState } from './hooks';
 

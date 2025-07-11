@@ -1,5 +1,6 @@
 'use client';
 
+import { Target, Clock, BookOpen } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -8,9 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Target, Clock, BookOpen } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface VocabularySessionConfigurationSettingsProps {
@@ -34,7 +34,7 @@ export function VocabularySessionConfigurationSettings({
   onAutoAdvanceDelayChange,
 }: VocabularySessionConfigurationSettingsProps) {
   // Defensive checks to prevent undefined access errors during loading
-  if (!settings || typeof settings.wordsCount === 'undefined') {
+  if (typeof settings?.wordsCount === 'undefined') {
     return null;
   }
 

@@ -1,7 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import NextAuth from 'next-auth';
 import { edgeAuthConfig } from '@/core/lib/auth/edge-config';
-import type { NextRequest } from 'next/server';
 
 const { auth } = NextAuth(edgeAuthConfig);
 
@@ -39,7 +38,7 @@ function enhancedMiddleware(request: NextRequest) {
     };
 
     // In Edge Runtime, we can only use console but format it consistently
-    console.log(
+    console.warn(
       `[${logData.timestamp}] [${logData.level.toUpperCase()}] ${logData.message}:`,
       {
         method: logData.method,

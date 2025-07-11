@@ -1,7 +1,7 @@
-import React from 'react';
-import { CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Target } from 'lucide-react';
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { CardHeader, CardTitle } from '@/components/ui/card';
 import { PracticeAudioControls } from '../../../shared/PracticeAudioControls';
 import { WordData } from '../types';
 

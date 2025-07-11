@@ -1,10 +1,10 @@
 // src/app/dashboard/admin/users/components/UsersTable.tsx
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { UserWithStatsAndMeta } from '@/core/lib/db/user';
 import { formatDistance } from 'date-fns';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { UserWithStatsAndMeta } from '@/core/lib/db/user';
 
 export function UsersTable({
   users,

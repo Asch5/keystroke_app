@@ -6,6 +6,8 @@
  * from the developer console.
  */
 
+import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 import {
   infoLog,
   warnLog,
@@ -13,8 +15,6 @@ import {
   debugLog,
   DebugUtils,
 } from './clientLogger';
-import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
-import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 // Types for better organization
 interface WordCardDebugData {

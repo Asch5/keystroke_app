@@ -2,8 +2,8 @@
  * Types for TTSControls modular components
  */
 
-import { LanguageCode } from '@/core/types';
 import { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
+import { LanguageCode } from '@/core/types';
 
 export interface TTSControlsProps {
   selectedWords: Set<string>;

@@ -1,14 +1,4 @@
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+import { formatDistanceToNow } from 'date-fns';
 import {
   Brain,
   TrendingUp,
@@ -20,7 +10,17 @@ import {
   Award,
   BarChart3,
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
 import type { SimpleWordAnalytics } from '@/core/domains/user/actions/simple-word-analytics';
 
 interface PredictiveInsightsProps {
@@ -344,8 +344,7 @@ export const PredictiveInsights = React.memo<PredictiveInsightsProps>(
                   .sort((a, b) => {
                     const priorityOrder = { high: 3, medium: 2, low: 1 };
                     return (
-                      priorityOrder[b.priority as keyof typeof priorityOrder] -
-                      priorityOrder[a.priority as keyof typeof priorityOrder]
+                      priorityOrder[b.priority] - priorityOrder[a.priority]
                     );
                   })
                   .map((rec, index) => (

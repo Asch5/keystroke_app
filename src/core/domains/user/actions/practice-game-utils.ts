@@ -1,13 +1,13 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { LanguageCode, LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { PracticeType, getPracticeTypeConfigs } from './practice-types';
+import { LanguageCode, LearningStatus } from '@/core/types';
 import {
   generateSimilarWord,
   isWordSimilarEnough,
 } from '../utils/practice-game-utils';
+import { PracticeType, getPracticeTypeConfigs } from './practice-types';
 
 // Re-export for other modules
 export { generateSimilarWord, isWordSimilarEnough };
@@ -60,7 +60,7 @@ export async function generateDistractorOptions(
 
     return distractorWords;
   } catch (error) {
-    serverLog('Error generating distractor options', 'error', { error });
+    void serverLog('Error generating distractor options', 'error', { error });
     // Fallback to generated similar words
     return [
       generateSimilarWord(correctWord, [correctWord]),

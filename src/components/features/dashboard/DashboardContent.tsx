@@ -1,11 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
 import {
   BookOpen,
   Flame,
@@ -23,8 +17,14 @@ import {
   Settings,
   Users,
 } from 'lucide-react';
-import { getUserStatistics } from '@/core/domains/user/actions/user-stats-actions';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import { getSessionStats } from '@/core/domains/user/actions/session-actions';
+import { getUserStatistics } from '@/core/domains/user/actions/user-stats-actions';
 import type { UserStatistics } from '@/core/domains/user/actions/user-stats-actions';
 import type { SessionStatsResponse } from '@/core/domains/user/types/session';
 

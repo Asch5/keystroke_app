@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import {
   persistStore,
@@ -11,12 +11,11 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-import { combineReducers } from '@reduxjs/toolkit';
-import themeReducer from './features/themeSlice';
 import authReducer from './features/authSlice';
-import userDictionaryReducer from './features/userDictionarySlice';
 import sessionReducer from './features/sessionSlice';
 import settingsReducer from './features/settingsSlice';
+import themeReducer from './features/themeSlice';
+import userDictionaryReducer from './features/userDictionarySlice';
 
 // Create a root reducer
 const rootReducer = combineReducers({

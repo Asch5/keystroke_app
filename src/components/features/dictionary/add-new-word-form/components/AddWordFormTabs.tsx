@@ -1,13 +1,13 @@
 import React, { FormEvent, ChangeEvent, RefObject } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SingleWordForm } from './SingleWordForm';
-import { FileUploadForm } from './FileUploadForm';
 import {
   LanguageType,
   DictionaryType,
   WordProcessorState,
   FileProcessorState,
 } from '../types';
+import { FileUploadForm } from './FileUploadForm';
+import { SingleWordForm } from './SingleWordForm';
 
 interface AddWordFormTabsProps {
   wordState: WordProcessorState;

@@ -36,7 +36,7 @@ export function mapDanishPosToEnum(
     undefined: PartOfSpeech.undefined,
   };
 
-  return posMap[normalizedTerm as PartOfSpeechDanish] || PartOfSpeech.undefined;
+  return posMap[normalizedTerm as PartOfSpeechDanish] ?? PartOfSpeech.undefined;
 }
 
 // Optional TypeScript type guard

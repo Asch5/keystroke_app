@@ -1,9 +1,5 @@
-import { Suspense } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { User, Target, Settings, AlertTriangle } from 'lucide-react';
-import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
+import { Suspense } from 'react';
 import {
   ProfileSettingsForm,
   LearningSettingsForm,
@@ -12,6 +8,10 @@ import {
 } from '@/components/features/settings';
 import { SettingsStatusCard } from '@/components/features/settings/SettingsStatusCard';
 import { SettingsErrorBoundary } from '@/components/shared/error-boundaries';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
 
 // Force dynamic rendering since this page uses authentication
 export const dynamic = 'force-dynamic';

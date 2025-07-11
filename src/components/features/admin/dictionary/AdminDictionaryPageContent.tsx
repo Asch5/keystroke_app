@@ -1,20 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { Card, CardContent } from '@/components/ui/card';
-import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
-import { AddWordsToListDialog } from '@/components/features/admin/dictionary/AddWordsToListDialog';
-import { DeepSeekWordExtractionDialog } from '@/components/features/admin/dictionary/DeepSeekWordExtractionDialog';
-import { ManualFormsDialog } from '@/components/features/admin/dictionary/ManualFormsDialog';
+import { useState, useEffect } from 'react';
 import {
   AdminDictionaryPageHeader,
   AdminDictionaryFilters,
   AdminDictionaryTable,
   useAdminDictionaryState,
 } from '@/components/features/admin';
-import { LanguageCode } from '@/core/types';
+import { AddWordsToListDialog } from '@/components/features/admin/dictionary/AddWordsToListDialog';
+import { DeepSeekWordExtractionDialog } from '@/components/features/admin/dictionary/DeepSeekWordExtractionDialog';
+import { ManualFormsDialog } from '@/components/features/admin/dictionary/ManualFormsDialog';
+import { BulkDeleteConfirmDialog } from '@/components/shared/dialogs';
+import { Card, CardContent } from '@/components/ui/card';
 import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
+import { LanguageCode } from '@/core/types';
 
 /**
  * Admin Dictionary Page Content Component

@@ -1,19 +1,18 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { processAndSaveDanishWord } from '@/core/lib/db/processOrdnetApi';
+import { prisma } from '@/core/lib/prisma';
+import { TranslationService } from '@/core/lib/services/translationService';
+import { clientLog } from '@/core/lib/utils/logUtils';
+import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
 import { LanguageCode, SourceType, RelationshipType } from '@/core/types';
 import {
   DatabaseTransactionClient,
   DatabaseKnownRequestError,
 } from '@/core/types/database';
-import { TranslationService } from '@/core/lib/services/translationService';
-import { clientLog } from '@/core/lib/utils/logUtils';
-
-import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
-import { processAndSaveDanishWord } from '@/core/lib/db/processOrdnetApi';
-import { prisma } from '@/core/lib/prisma';
 import { ProcessedWordData } from '@/core/types/dictionary';
 import type { WordVariant } from '@/core/types/translationDanishTypes';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Process translations for a word and its related data
@@ -107,7 +106,7 @@ export async function processTranslationsForWord(
           for (const translatedDef of english_word_data.definitions) {
             const definitionTranslationText =
               translatedDef.definition_translation;
-            serverLog(
+            void serverLog(
               `definitionTranslationText: ${definitionTranslationText}`,
               'info',
             );
@@ -248,7 +247,7 @@ export async function processEnglishTranslationsForDanishWord(
 
     const danishWordId = danishWordData.word.id;
     if (!danishWordId) {
-      serverLog(
+      void serverLog(
         `Missing Danish word ID (danishWordData.word.id) for translation processing.`,
         'warn',
       );
@@ -262,7 +261,7 @@ export async function processEnglishTranslationsForDanishWord(
 
         const defId = danishWordData.definitions?.[i]?.id;
         if (!defId) {
-          serverLog(
+          void serverLog(
             `Missing definition ID for Danish definition index ${i}`,
             'warn',
           );
@@ -353,8 +352,7 @@ export async function processEnglishTranslationsForDanishWord(
                 combinedEnglishExampleTranslations[j];
 
               if (
-                !currentProcessedExample ||
-                !currentProcessedExample.id ||
+                !currentProcessedExample?.id ||
                 !englishExampleTranslationText
               ) {
                 clientLog(

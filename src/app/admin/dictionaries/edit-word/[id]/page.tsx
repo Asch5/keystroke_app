@@ -1,15 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { AdminWordDetailEditForm } from '@/components/features/admin';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   fetchWordDetailById,
   type WordDetailEditData,
 } from '@/core/domains/dictionary/actions';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { AdminWordDetailEditForm } from '@/components/features/admin';
 
 export default function EditWordDetailPage() {
   const params = useParams();
@@ -48,7 +48,7 @@ export default function EditWordDetailPage() {
       }
     }
 
-    fetchWordDetailData();
+    void fetchWordDetailData();
   }, [wordDetailId]);
 
   // Loading state

@@ -1,18 +1,18 @@
 'use client';
 
-import { authenticate, StateAuth } from '@/core/lib/actions/authActions';
-import { useActionState } from 'react';
-import { useAppDispatch } from '@/core/state/store';
-import { useEffect, useCallback, memo } from 'react';
-import { setUser } from '@/core/state/features/authSlice';
-import { UserBasicData } from '@/core/types/user';
-import { Input } from '@/components/ui/input';
+import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useActionState, useEffect, useCallback, memo } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useRouter } from 'next/navigation';
+import { authenticate, StateAuth } from '@/core/lib/actions/authActions';
+import { setUser } from '@/core/state/features/authSlice';
+import { useAppDispatch } from '@/core/state/store';
+
+import { UserBasicData } from '@/core/types/user';
 
 /**
  * LoginForm component provides user authentication functionality

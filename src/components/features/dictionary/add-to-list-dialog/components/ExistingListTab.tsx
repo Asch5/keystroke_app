@@ -1,11 +1,11 @@
+import { Loader2, Plus, ListIcon } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { DialogFooter } from '@/components/ui/dialog';
-import { Loader2, Plus, ListIcon } from 'lucide-react';
-import { ListItem } from './ListItem';
 import { ExistingListTabProps } from '../types';
+import { ListItem } from './ListItem';
 
 /**
  * Existing list tab component for selecting and adding to existing lists

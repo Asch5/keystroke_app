@@ -1,15 +1,15 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
 import { PrismaClient } from '@prisma/client';
-import { LanguageCode, LearningStatus } from '@/core/types';
+import { revalidateTag } from 'next/cache';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
-import { LearningMetricsCalculator } from '../utils/learning-metrics';
+import { LanguageCode, LearningStatus } from '@/core/types';
 import {
   getBestDefinitionForUser,
   TranslationData,
 } from '../../dictionary/utils/translation-utils';
+import { LearningMetricsCalculator } from '../utils/learning-metrics';
 import {
   SessionConfiguration,
   PracticeSessionResult,
@@ -31,7 +31,7 @@ export async function createPracticeSession(
   error?: string;
 }> {
   try {
-    serverLog(`Creating practice session for user ${userId}`, 'info', {
+    void serverLog(`Creating practice session for user ${userId}`, 'info', {
       config,
     });
 
@@ -68,7 +68,7 @@ export async function createPracticeSession(
       },
     });
 
-    serverLog(`Practice session created: ${session.id}`, 'info', {
+    void serverLog(`Practice session created: ${session.id}`, 'info', {
       sessionId: session.id,
       wordsCount: words.length,
       targetWords: Math.min(config.wordsToStudy, words.length),
@@ -81,11 +81,15 @@ export async function createPracticeSession(
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to create practice session: ${errorMessage}`, 'error', {
-      userId,
-      config,
-      error,
-    });
+    void serverLog(
+      `Failed to create practice session: ${errorMessage}`,
+      'error',
+      {
+        userId,
+        config,
+        error,
+      },
+    );
 
     return {
       success: false,
@@ -103,7 +107,7 @@ export async function completePracticeSession(sessionId: string): Promise<{
   error?: string;
 }> {
   try {
-    serverLog(`Completing practice session: ${sessionId}`, 'info');
+    void serverLog(`Completing practice session: ${sessionId}`, 'info');
 
     // Get session with items
     const session = await prisma.userLearningSession.findUnique({
@@ -227,7 +231,7 @@ export async function completePracticeSession(sessionId: string): Promise<{
     revalidateTag(`user-sessions-${session.userId}`);
     revalidateTag(`user-dictionary-${session.userId}`);
 
-    serverLog(`Practice session completed: ${sessionId}`, 'info', {
+    void serverLog(`Practice session completed: ${sessionId}`, 'info', {
       sessionResult,
     });
 
@@ -237,10 +241,14 @@ export async function completePracticeSession(sessionId: string): Promise<{
     };
   } catch (error) {
     const errorMessage = handlePrismaError(error);
-    serverLog(`Failed to complete practice session: ${errorMessage}`, 'error', {
-      sessionId,
-      error,
-    });
+    void serverLog(
+      `Failed to complete practice session: ${errorMessage}`,
+      'error',
+      {
+        sessionId,
+        error,
+      },
+    );
 
     return {
       success: false,
@@ -305,7 +313,7 @@ export async function getPracticeSessionStats(sessionId: string): Promise<{
       },
     };
   } catch (error) {
-    serverLog('Error getting session stats', 'error', { error });
+    void serverLog('Error getting session stats', 'error', { error });
     return {
       success: false,
       error: 'Failed to get session statistics',
@@ -528,7 +536,7 @@ async function updateDailyProgress(
       });
     }
   } catch (error) {
-    serverLog('Error updating daily progress', 'error', { error });
+    void serverLog('Error updating daily progress', 'error', { error });
   }
 }
 
@@ -585,7 +593,7 @@ export async function getRecentPracticeSessions(
       }),
     };
   } catch (error) {
-    serverLog('Error getting recent sessions', 'error', { error });
+    void serverLog('Error getting recent sessions', 'error', { error });
     return {
       success: false,
       error: 'Failed to get recent sessions',
@@ -609,11 +617,11 @@ export async function cancelPracticeSession(sessionId: string): Promise<{
       },
     });
 
-    serverLog(`Practice session cancelled: ${sessionId}`, 'info');
+    void serverLog(`Practice session cancelled: ${sessionId}`, 'info');
 
     return { success: true };
   } catch (error) {
-    serverLog('Error cancelling session', 'error', { error });
+    void serverLog('Error cancelling session', 'error', { error });
     return {
       success: false,
       error: 'Failed to cancel session',
@@ -659,7 +667,7 @@ export async function resumePracticeSession(sessionId: string): Promise<{
       },
     };
   } catch (error) {
-    serverLog('Error resuming session', 'error', { error });
+    void serverLog('Error resuming session', 'error', { error });
     return {
       success: false,
       error: 'Failed to resume session',
@@ -736,7 +744,7 @@ export async function updateSessionProgress(
       },
     });
 
-    serverLog('Session progress updated', 'info', {
+    void serverLog('Session progress updated', 'info', {
       sessionId,
       wordsStudied: newWordsStudied,
       completionPercentage,
@@ -754,7 +762,7 @@ export async function updateSessionProgress(
       },
     };
   } catch (error) {
-    serverLog('Error updating session progress', 'error', { error });
+    void serverLog('Error updating session progress', 'error', { error });
     return { success: false, error: 'Failed to update session progress' };
   }
 }
@@ -951,7 +959,7 @@ export async function getSessionAnalytics(sessionId: string): Promise<{
       },
     };
   } catch (error) {
-    serverLog('Error getting session analytics', 'error', { error });
+    void serverLog('Error getting session analytics', 'error', { error });
     return { success: false, error: 'Failed to get session analytics' };
   }
 }
@@ -1185,7 +1193,9 @@ export async function getEnhancedSessionSummary(sessionId: string): Promise<{
       },
     };
   } catch (error) {
-    serverLog('Error getting enhanced session summary', 'error', { error });
+    void serverLog('Error getting enhanced session summary', 'error', {
+      error,
+    });
     return { success: false, error: 'Failed to get session summary' };
   }
 }

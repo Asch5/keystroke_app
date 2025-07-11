@@ -1,22 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
-import {
-  useSettings,
-  useSettingsPersistence,
-} from '@/core/shared/hooks/useSettings';
 import {
   Cloud,
   CloudOff,
@@ -28,7 +11,24 @@ import {
   Clock,
   Loader2,
 } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import {
+  useSettings,
+  useSettingsPersistence,
+} from '@/core/shared/hooks/useSettings';
 
 /**
  * Settings Status Card - Shows sync status and provides controls

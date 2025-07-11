@@ -5,10 +5,11 @@ import {
   AuthProvider,
   ReduxProvider,
 } from '@/components/providers';
-import { SettingsProvider } from '@/components/providers/SettingsProvider';
-import { Toaster } from '@/components/ui/sonner';
-import { SpeedInsights } from '@/components/shared/SpeedInsights';
 import { PerformanceMonitoringProvider } from '@/components/providers/PerformanceMonitoringProvider';
+import { SettingsProvider } from '@/components/providers/SettingsProvider';
+import { SpeedInsights } from '@/components/shared/SpeedInsights';
+import { Toaster } from '@/components/ui/sonner';
+import { I18nProvider } from '@/core/shared/hooks/useTranslation';
 
 export const metadata: Metadata = {
   title: {
@@ -53,17 +54,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ReduxProvider>
-            <AuthProvider>
-              <SettingsProvider>
-                <PerformanceMonitoringProvider>
-                  {children}
-                  <Toaster />
-                  <SpeedInsights />
-                </PerformanceMonitoringProvider>
-              </SettingsProvider>
-            </AuthProvider>
-          </ReduxProvider>
+          <I18nProvider>
+            <ReduxProvider>
+              <AuthProvider>
+                <SettingsProvider>
+                  <PerformanceMonitoringProvider>
+                    {children}
+                    <Toaster />
+                    <SpeedInsights />
+                  </PerformanceMonitoringProvider>
+                </SettingsProvider>
+              </AuthProvider>
+            </ReduxProvider>
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

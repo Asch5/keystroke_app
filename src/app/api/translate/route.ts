@@ -1,6 +1,5 @@
+import translate, { TranslateOptions } from 'extended-google-translate-api';
 import { NextResponse } from 'next/server';
-import translate from 'extended-google-translate-api';
-import { TranslateOptions } from 'extended-google-translate-api';
 import { clientLog } from '@/core/lib/utils/logUtils';
 
 export async function POST(request: Request) {

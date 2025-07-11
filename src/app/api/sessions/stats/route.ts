@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const userId =
       queryUserId === session.user.id ? queryUserId : session.user.id;
 
-    serverLog(`Fetching session stats for user ${userId}`, 'info', {
+    void serverLog(`Fetching session stats for user ${userId}`, 'info', {
       requestedUserId: queryUserId,
       authenticatedUserId: session.user.id,
       finalUserId: userId,
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const result = await getSessionStats(userId);
 
     if (!result.success) {
-      serverLog(`Failed to fetch session stats: ${result.error}`, 'error');
+      void serverLog(`Failed to fetch session stats: ${result.error}`, 'error');
       return NextResponse.json(
         { error: result.error || 'Failed to fetch session statistics' },
         { status: 500 },
@@ -47,7 +47,10 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    serverLog(`API error in GET /api/sessions/stats: ${error}`, 'error');
+    void serverLog(
+      `API error in GET /api/sessions/stats: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

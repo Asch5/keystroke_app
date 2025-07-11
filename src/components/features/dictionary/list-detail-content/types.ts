@@ -1,5 +1,5 @@
-import { LanguageCode } from '@/core/types';
 import type { UserListWordWithDetails } from '@/core/domains/dictionary/actions/user-list-actions';
+import { LanguageCode } from '@/core/types';
 
 export interface ListDetailContentProps {
   userId: string;

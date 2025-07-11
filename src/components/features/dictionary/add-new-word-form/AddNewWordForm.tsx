@@ -1,13 +1,14 @@
 'use client';
 
 import React, { FormEvent, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DatabaseCleanupDialog } from '@/components/shared/dialogs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useTranslation } from '@/core/shared/hooks/useTranslation';
 import { AddWordFormTabs } from './components/AddWordFormTabs';
 import { ProcessedWordsHistory } from './components/ProcessedWordsHistory';
 import { useAddNewWordState } from './hooks/useAddNewWordState';
-import { useWordProcessor } from './hooks/useWordProcessor';
 import { useFileProcessor } from './hooks/useFileProcessor';
+import { useWordProcessor } from './hooks/useWordProcessor';
 import { AddNewWordFormProps, LanguageType, DictionaryType } from './types';
 
 /**
@@ -16,6 +17,8 @@ import { AddNewWordFormProps, LanguageType, DictionaryType } from './types';
  * Follows single responsibility principle and Cursor Rules guidelines
  */
 export default function AddNewWordForm({ className }: AddNewWordFormProps) {
+  const { t } = useTranslation();
+
   // State management
   const {
     wordProcessorState,
@@ -119,7 +122,7 @@ export default function AddNewWordForm({ className }: AddNewWordFormProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
-            Add New Word
+            {t('dictionary.addNewWord')}
           </CardTitle>
         </CardHeader>
         <CardContent>

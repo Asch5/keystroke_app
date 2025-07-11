@@ -7,12 +7,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TranslationResultProps } from '../types';
 import { BasicTranslation } from './BasicTranslation';
-import { TranslationsTab } from './TranslationsTab';
 import { DefinitionsTab } from './DefinitionsTab';
 import { ExamplesTab } from './ExamplesTab';
 import { RawJsonTab } from './RawJsonTab';
-import { TranslationResultProps } from '../types';
+import { TranslationsTab } from './TranslationsTab';
 
 /**
  * Translation result component that displays all translation data

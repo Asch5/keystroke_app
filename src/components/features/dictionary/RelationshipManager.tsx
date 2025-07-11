@@ -1,7 +1,11 @@
 'use client';
 
+import { Loader2, Plus, Trash2, X, Link } from 'lucide-react';
 import { useState } from 'react';
+import { AccordionContent, AccordionTrigger } from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -11,11 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { AccordionContent, AccordionTrigger } from '@/components/ui/accordion';
-import { Loader2, Plus, Trash2, X, Link } from 'lucide-react';
 import {
   searchWordsForRelationships,
   type WordDetailEditData,
@@ -159,7 +159,7 @@ export function RelationshipManager({
       toWordText: targetWordText,
       toPartOfSpeech: targetPartOfSpeech,
       toVariant: targetVariant,
-      type: selectedRelationshipType as RelationshipType,
+      type: selectedRelationshipType,
       description: null,
       orderIndex: null,
     };
@@ -185,7 +185,7 @@ export function RelationshipManager({
       id: null,
       toWordId: targetWordId,
       toWordText: targetWordText,
-      type: selectedRelationshipType as RelationshipType,
+      type: selectedRelationshipType,
       description: null,
       orderIndex: null,
     };

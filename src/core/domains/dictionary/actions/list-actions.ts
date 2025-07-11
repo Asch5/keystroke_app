@@ -2,8 +2,8 @@
 
 import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { prisma } from '@/core/lib/prisma';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/lib/prisma';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import { LanguageCode, DifficultyLevel, PartOfSpeech } from '@/core/types';
 
@@ -65,7 +65,7 @@ export async function fetchCategories(): Promise<{
   error?: string;
 }> {
   try {
-    serverLog('Fetching categories for list creation', 'info');
+    void serverLog('Fetching categories for list creation', 'info');
 
     const categories = await prisma.category.findMany({
       select: {
@@ -78,7 +78,7 @@ export async function fetchCategories(): Promise<{
       },
     });
 
-    serverLog(`Fetched ${categories.length} categories`, 'info');
+    void serverLog(`Fetched ${categories.length} categories`, 'info');
 
     return {
       success: true,
@@ -86,7 +86,10 @@ export async function fetchCategories(): Promise<{
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(`Failed to fetch categories: ${errorResponse.message}`, 'error');
+    void serverLog(
+      `Failed to fetch categories: ${errorResponse.message}`,
+      'error',
+    );
 
     return {
       success: false,
@@ -104,7 +107,7 @@ export async function createListWithWords(listData: CreateListData): Promise<{
   error?: string;
 }> {
   try {
-    serverLog('Creating new list with words', 'info', {
+    void serverLog('Creating new list with words', 'info', {
       name: listData.name,
       categoryId: listData.categoryId,
       wordCount: listData.selectedDefinitionIds.length,
@@ -147,7 +150,7 @@ export async function createListWithWords(listData: CreateListData): Promise<{
     revalidateTag('lists');
     revalidateTag(`category-lists-${listData.categoryId}`);
 
-    serverLog(`List created successfully: ${result.id}`, 'info');
+    void serverLog(`List created successfully: ${result.id}`, 'info');
 
     return {
       success: true,
@@ -155,7 +158,7 @@ export async function createListWithWords(listData: CreateListData): Promise<{
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(`Failed to create list: ${errorResponse.message}`, 'error', {
+    void serverLog(`Failed to create list: ${errorResponse.message}`, 'error', {
       listName: listData.name,
       error: errorResponse.message,
     });
@@ -179,7 +182,7 @@ export async function createCategory(
   error?: string;
 }> {
   try {
-    serverLog('Creating new category', 'info', { name });
+    void serverLog('Creating new category', 'info', { name });
 
     const category = await prisma.category.create({
       data: {
@@ -196,7 +199,7 @@ export async function createCategory(
     // Revalidate cache
     revalidateTag('categories');
 
-    serverLog(`Category created successfully: ${category.id}`, 'info');
+    void serverLog(`Category created successfully: ${category.id}`, 'info');
 
     return {
       success: true,
@@ -204,7 +207,10 @@ export async function createCategory(
     };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(`Failed to create category: ${errorResponse.message}`, 'error');
+    void serverLog(
+      `Failed to create category: ${errorResponse.message}`,
+      'error',
+    );
 
     return {
       success: false,
@@ -272,14 +278,14 @@ export async function createListAction(
       };
     }
 
-    serverLog(
+    void serverLog(
       `List creation successful, redirecting to list: ${result.listId}`,
       'info',
     );
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error occurred';
-    serverLog(`List creation action failed: ${errorMessage}`, 'error');
+    void serverLog(`List creation action failed: ${errorMessage}`, 'error');
     return { message: errorMessage, success: false };
   }
 
@@ -298,7 +304,7 @@ export async function addWordsToList(
   error?: string;
 }> {
   try {
-    serverLog('Adding words to existing list', 'info', {
+    void serverLog('Adding words to existing list', 'info', {
       listId,
       wordCount: definitionIds.length,
     });
@@ -392,12 +398,15 @@ export async function addWordsToList(
     revalidateTag(`list-${listId}`);
     revalidateTag('lists');
 
-    serverLog(`Words added to list successfully: ${listId}`, 'info');
+    void serverLog(`Words added to list successfully: ${listId}`, 'info');
 
     return { success: true };
   } catch (error) {
     const errorResponse = handlePrismaError(error);
-    serverLog(`Failed to add words to list: ${errorResponse.message}`, 'error');
+    void serverLog(
+      `Failed to add words to list: ${errorResponse.message}`,
+      'error',
+    );
 
     return {
       success: false,

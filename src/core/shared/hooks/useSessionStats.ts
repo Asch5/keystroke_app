@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/core/state/store';
+import type { UseSessionStatsReturn } from '@/core/domains/user/types/session';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { selectUser } from '@/core/state/features/authSlice';
 import {
   fetchSessionStats,
   selectSessionStats,
   updateSessionStatsCache,
 } from '@/core/state/features/sessionSlice';
-import { selectUser } from '@/core/state/features/authSlice';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import type { UseSessionStatsReturn } from '@/core/domains/user/types/session';
+import { useAppDispatch, useAppSelector } from '@/core/state/store';
 
 /**
  * Hook for managing session statistics with caching
@@ -46,7 +46,7 @@ export function useSessionStats(userId?: string): UseSessionStatsReturn {
     setError(null);
 
     try {
-      serverLog('Fetching session stats via hook', 'info', {
+      void serverLog('Fetching session stats via hook', 'info', {
         userId: targetUserId,
       });
 
@@ -56,7 +56,7 @@ export function useSessionStats(userId?: string): UseSessionStatsReturn {
       dispatch(updateSessionStatsCache(result));
       setLastFetch(new Date());
 
-      serverLog('Session stats fetched successfully', 'info', {
+      void serverLog('Session stats fetched successfully', 'info', {
         userId: targetUserId,
         totalSessions: result.totalSessions,
       });
@@ -66,7 +66,7 @@ export function useSessionStats(userId?: string): UseSessionStatsReturn {
           ? fetchError.message
           : 'Failed to fetch session stats';
       setError(errorMessage);
-      serverLog('Failed to fetch session stats via hook', 'error', {
+      void serverLog('Failed to fetch session stats via hook', 'error', {
         userId: targetUserId,
         error: errorMessage,
       });
@@ -88,7 +88,7 @@ export function useSessionStats(userId?: string): UseSessionStatsReturn {
     setError(null);
 
     try {
-      serverLog('Force refetching session stats', 'info', {
+      void serverLog('Force refetching session stats', 'info', {
         userId: targetUserId,
       });
 
@@ -103,7 +103,7 @@ export function useSessionStats(userId?: string): UseSessionStatsReturn {
           ? fetchError.message
           : 'Failed to fetch session stats';
       setError(errorMessage);
-      serverLog('Failed to force refetch session stats', 'error', {
+      void serverLog('Failed to force refetch session stats', 'error', {
         userId: targetUserId,
         error: errorMessage,
       });

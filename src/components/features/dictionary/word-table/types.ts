@@ -2,8 +2,8 @@
  * Types for WordTable modular components
  */
 
-import { LearningStatus, LanguageCode } from '@/core/types';
 import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
+import { LearningStatus, LanguageCode } from '@/core/types';
 
 export interface WordTableProps {
   words: UserDictionaryItem[];

@@ -1,15 +1,12 @@
 'use client';
 
-import { signUp, StateSignup } from '@/core/lib/actions/authActions';
-import { LANGUAGE_MAP_ARRAY } from '@/core/types/language-constants';
-import { useActionState } from 'react';
-import { Input } from '@/components/ui/input';
+import { Loader2 } from 'lucide-react';
+import { useActionState, memo, useCallback } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
-import { memo, useCallback } from 'react';
 import {
   Select,
   SelectContent,
@@ -17,6 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { signUp, StateSignup } from '@/core/lib/actions/authActions';
+import { LANGUAGE_MAP_ARRAY } from '@/core/types/language-constants';
 
 /**
  * SignupForm component provides user registration functionality

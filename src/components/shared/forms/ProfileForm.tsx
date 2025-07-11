@@ -1,18 +1,12 @@
 'use client';
 
-import { useEffect, useActionState, useCallback } from 'react';
-import { updateUserProfile } from '@/core/lib/actions/userActions';
-import { getUserByEmail } from '@/core/lib/db/user';
-import { Theme } from '@/core/types/user';
-import { setUser } from '@/core/state/features/authSlice';
-import { useAppDispatch } from '@/core/state/store';
+import { Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { LANGUAGE_MAP_ARRAY } from '@/core/types/language-constants';
+import { useEffect, useActionState, useCallback } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -20,6 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { updateUserProfile } from '@/core/lib/actions/userActions';
+import { getUserByEmail } from '@/core/lib/db/user';
+import { setUser } from '@/core/state/features/authSlice';
+import { useAppDispatch } from '@/core/state/store';
+import { LANGUAGE_MAP_ARRAY } from '@/core/types/language-constants';
+import { Theme } from '@/core/types/user';
 
 const arrTheme: Theme = ['light', 'dark'];
 

@@ -1,5 +1,5 @@
-import { PageWrapper } from '@/components/layouts';
 import { AddNewWordForm } from '@/components/features/dictionary';
+import { PageWrapper } from '@/components/layouts';
 
 export default function AddNewWord() {
   return (

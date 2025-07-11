@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { vi, beforeAll, afterEach } from 'vitest';
 import React from 'react';
+import { vi, beforeAll, afterEach } from 'vitest';
 
 // Mock Next.js modules
 vi.mock('next/navigation', () => ({

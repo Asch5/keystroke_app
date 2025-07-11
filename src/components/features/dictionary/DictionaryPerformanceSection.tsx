@@ -1,4 +1,6 @@
+import { TrendingUp, TrendingDown, Target, Activity } from 'lucide-react';
 import React from 'react';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -6,9 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, TrendingDown, Target, Activity } from 'lucide-react';
 import { DictionaryPerformanceMetrics } from '@/core/domains/user/actions/dictionary-performance-actions';
 import {
   PerformanceOverviewTab,

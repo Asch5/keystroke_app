@@ -1,15 +1,3 @@
-import React from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { TTSControls } from './TTSControls';
-import { ImageControls } from './ImageControls';
 import {
   Plus,
   List,
@@ -20,8 +8,20 @@ import {
   ListPlus,
   Zap,
 } from 'lucide-react';
-import { LanguageCode } from '@/core/types';
+import Link from 'next/link';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
+import { LanguageCode } from '@/core/types';
+import { ImageControls } from './ImageControls';
+import { TTSControls } from './TTSControls';
 
 interface ActionButtonsToolbarProps {
   selectedLanguage: LanguageCode;

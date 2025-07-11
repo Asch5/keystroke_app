@@ -6,9 +6,9 @@ import {
   addWordToUserList,
   type UserListWithDetails,
 } from '@/core/domains/dictionary/actions/user-list-actions';
-import { NewListFormData } from '../types';
-import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
+import { NewListFormData } from '../types';
 
 /**
  * Main state management hook for AddToListDialog

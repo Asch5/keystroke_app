@@ -1,6 +1,6 @@
-import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { auth } from '@/auth';
 import { StatisticsContent } from '@/components/features/dashboard/StatisticsContent';
 import { StatisticsLoadingSkeleton } from '@/components/utils/skeletons/StatisticsLoadingSkeleton';
 

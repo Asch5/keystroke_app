@@ -3,11 +3,11 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/core/shared/utils/common/cn';
-import { GameHeader } from './components/GameHeader';
 import { GameArea } from './components/GameArea';
 import { GameControls } from './components/GameControls';
-import { useGameState } from './hooks/useGameState';
+import { GameHeader } from './components/GameHeader';
 import { useGameActions } from './hooks/useGameActions';
+import { useGameState } from './hooks/useGameState';
 import { MakeUpWordGameProps } from './types';
 
 /**

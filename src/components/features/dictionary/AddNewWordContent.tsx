@@ -1,12 +1,5 @@
 'use client';
 
-import { useState, useCallback, useTransition } from 'react';
-import { LanguageCode, PartOfSpeech } from '@/core/types';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import {
   Search,
   Plus,
@@ -18,13 +11,12 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import { useState, useCallback, useTransition } from 'react';
 import { toast } from 'sonner';
-import {
-  searchWordsForUser,
-  addDefinitionToUserDictionary,
-  removeDefinitionFromUserDictionary,
-  type WordSearchResult,
-} from '@/core/domains/dictionary';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -32,6 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import {
+  searchWordsForUser,
+  addDefinitionToUserDictionary,
+  removeDefinitionFromUserDictionary,
+  type WordSearchResult,
+} from '@/core/domains/dictionary';
+import { LanguageCode, PartOfSpeech } from '@/core/types';
 import { AddToListDialog } from './AddToListDialog';
 
 interface AddNewWordContentProps {

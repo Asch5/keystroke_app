@@ -1,9 +1,9 @@
 'use server';
 
 import { z } from 'zod';
-import { prisma } from '@/core/lib/prisma';
-import { deepSeekService } from '@/core/infrastructure/services/deepseek-service';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { deepSeekService } from '@/core/infrastructure/services/deepseek-service';
+import { prisma } from '@/core/lib/prisma';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import { LanguageCode, PartOfSpeech } from '@/core/types';
 
@@ -92,7 +92,7 @@ export async function extractWordFromDefinition(
     const validatedInput = extractWordSchema.parse(input);
     const { definitionId, targetLanguage, sourceLanguage } = validatedInput;
 
-    await serverLog('Starting single word extraction', 'info', {
+    void serverLog('Starting single word extraction', 'info', {
       definitionId,
       targetLanguage,
       sourceLanguage,
@@ -126,7 +126,7 @@ export async function extractWordFromDefinition(
     // Calculate cost (approximate)
     const cost = (result.tokensUsed.total / 1000) * 0.001;
 
-    await serverLog('Word extraction completed successfully', 'info', {
+    void serverLog('Word extraction completed successfully', 'info', {
       definitionId,
       extractedWord: result.word,
       tokensUsed: result.tokensUsed.total,
@@ -143,7 +143,7 @@ export async function extractWordFromDefinition(
       },
     };
   } catch (error) {
-    await serverLog('Word extraction failed', 'error', {
+    void serverLog('Word extraction failed', 'error', {
       error: error instanceof Error ? error.message : 'Unknown error',
       input,
     });
@@ -217,7 +217,7 @@ export async function extractWordsFromDefinitionsBatch(
       onlyShortDefinitions,
     });
 
-    await serverLog('Starting batch word extraction', 'info', {
+    void serverLog('Starting batch word extraction', 'info', {
       definitionCount: validatedInput.definitionIds.length,
       targetLanguages: validatedInput.targetLanguages,
       sourceLanguage: validatedInput.sourceLanguage,
@@ -271,23 +271,23 @@ export async function extractWordsFromDefinitionsBatch(
 
           processedResults.push({
             definitionId: result.definitionId,
-            targetLanguage: result.targetLanguage!,
+            targetLanguage: result.targetLanguage,
             word: result.word,
             confidence: result.confidence,
             connected: true,
           });
           successCount++;
         } catch (error) {
-          await serverLog('Failed to connect definition to word', 'error', {
+          void serverLog('Failed to connect definition to word', 'error', {
             definitionId: result.definitionId,
             word: result.word,
-            targetLanguage: result.targetLanguage!,
+            targetLanguage: result.targetLanguage,
             error: error instanceof Error ? error.message : 'Unknown error',
           });
 
           processedResults.push({
             definitionId: result.definitionId,
-            targetLanguage: result.targetLanguage!,
+            targetLanguage: result.targetLanguage,
             word: result.word,
             confidence: result.confidence,
             connected: false,
@@ -311,7 +311,7 @@ export async function extractWordsFromDefinitionsBatch(
       }
     }
 
-    await serverLog('Batch word extraction completed', 'info', {
+    void serverLog('Batch word extraction completed', 'info', {
       totalProcessed: processedResults.length,
       successCount,
       failureCount,
@@ -331,7 +331,7 @@ export async function extractWordsFromDefinitionsBatch(
       },
     };
   } catch (error) {
-    await serverLog('Batch word extraction failed', 'error', {
+    void serverLog('Batch word extraction failed', 'error', {
       error: error instanceof Error ? error.message : 'Unknown error',
       definitionIds: definitionIds,
     });
@@ -389,7 +389,7 @@ async function findOrCreateWord(wordText: string, languageCode: LanguageCode) {
         },
       });
 
-      await serverLog('Created new word via DeepSeek', 'info', {
+      void serverLog('Created new word via DeepSeek', 'info', {
         wordId: word.id,
         word: word.word,
         languageCode,
@@ -398,7 +398,7 @@ async function findOrCreateWord(wordText: string, languageCode: LanguageCode) {
 
     return word;
   } catch (error) {
-    await serverLog('Failed to find or create word', 'error', {
+    void serverLog('Failed to find or create word', 'error', {
       wordText,
       languageCode,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -423,7 +423,7 @@ async function connectDefinitionToWord(definitionId: number, wordId: number) {
     });
 
     if (existingConnection) {
-      await serverLog('Definition-word connection already exists', 'info', {
+      void serverLog('Definition-word connection already exists', 'info', {
         definitionId,
         wordId,
       });
@@ -438,14 +438,14 @@ async function connectDefinitionToWord(definitionId: number, wordId: number) {
       },
     });
 
-    await serverLog('Created definition-word connection', 'info', {
+    void serverLog('Created definition-word connection', 'info', {
       definitionId,
       wordId,
     });
 
     return connection;
   } catch (error) {
-    await serverLog('Failed to connect definition to word', 'error', {
+    void serverLog('Failed to connect definition to word', 'error', {
       definitionId,
       wordId,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -489,7 +489,7 @@ export async function getDefinitionWordConnections(definitionIds: number[]) {
       >,
     );
   } catch (error) {
-    await serverLog('Failed to get definition-word connections', 'error', {
+    void serverLog('Failed to get definition-word connections', 'error', {
       definitionIds,
       error: error instanceof Error ? error.message : 'Unknown error',
     });
@@ -506,7 +506,7 @@ export async function getDefinitionsForWordDetails(
   onlyShortDefinitions: boolean = false,
 ): Promise<WordDetailWithDefinitions[]> {
   try {
-    await serverLog('Fetching definitions for WordDetails', 'info', {
+    void serverLog('Fetching definitions for WordDetails', 'info', {
       wordDetailIds,
       count: wordDetailIds.length,
     });
@@ -568,21 +568,17 @@ export async function getDefinitionsForWordDetails(
       })),
     }));
 
-    await serverLog(
-      'Successfully fetched definitions for WordDetails',
-      'info',
-      {
-        wordDetailsCount: result.length,
-        totalDefinitions: result.reduce(
-          (sum, wd) => sum + wd.definitions.length,
-          0,
-        ),
-      },
-    );
+    void serverLog('Successfully fetched definitions for WordDetails', 'info', {
+      wordDetailsCount: result.length,
+      totalDefinitions: result.reduce(
+        (sum, wd) => sum + wd.definitions.length,
+        0,
+      ),
+    });
 
     return result;
   } catch (error) {
-    await serverLog('Error fetching definitions for WordDetails', 'error', {
+    void serverLog('Error fetching definitions for WordDetails', 'error', {
       error: error instanceof Error ? error.message : String(error),
       wordDetailIds,
     });
@@ -608,10 +604,7 @@ export async function removeLastExtractionAttempt(): Promise<{
   error?: string;
 }> {
   try {
-    await serverLog(
-      'Starting removal of last extraction attempt words',
-      'info',
-    );
+    void serverLog('Starting removal of last extraction attempt words', 'info');
 
     // Find words created in the last 10 minutes with "DeepSeek" in sourceEntityId
     const cutoffTime = new Date(Date.now() - 10 * 60 * 1000); // 10 minutes ago
@@ -642,7 +635,7 @@ export async function removeLastExtractionAttempt(): Promise<{
     });
 
     if (recentWords.length === 0) {
-      await serverLog('No recent DeepSeek words found to remove', 'info');
+      void serverLog('No recent DeepSeek words found to remove', 'info');
       return {
         success: true,
         data: {
@@ -652,7 +645,7 @@ export async function removeLastExtractionAttempt(): Promise<{
       };
     }
 
-    await serverLog('Found recent DeepSeek words for removal', 'info', {
+    void serverLog('Found recent DeepSeek words for removal', 'info', {
       count: recentWords.length,
       words: recentWords.map((w) => w.word),
     });
@@ -680,13 +673,13 @@ export async function removeLastExtractionAttempt(): Promise<{
         });
         removedCount++;
 
-        await serverLog('Removed recent DeepSeek word', 'info', {
+        void serverLog('Removed recent DeepSeek word', 'info', {
           wordId: word.id,
           wordText: word.word,
           connectionsDeleted: word.oneWordDefinitions.length,
         });
       } catch (deleteError) {
-        await serverLog('Failed to remove recent word', 'error', {
+        void serverLog('Failed to remove recent word', 'error', {
           wordId: word.id,
           wordText: word.word,
           error:
@@ -697,7 +690,7 @@ export async function removeLastExtractionAttempt(): Promise<{
       }
     }
 
-    await serverLog('Completed removal of last extraction attempt', 'info', {
+    void serverLog('Completed removal of last extraction attempt', 'info', {
       totalFound: recentWords.length,
       totalRemoved: removedCount,
     });
@@ -710,7 +703,7 @@ export async function removeLastExtractionAttempt(): Promise<{
       },
     };
   } catch (error) {
-    await serverLog('Error removing last extraction attempt', 'error', {
+    void serverLog('Error removing last extraction attempt', 'error', {
       error: error instanceof Error ? error.message : 'Unknown error',
     });
 
@@ -742,7 +735,7 @@ export async function cleanupIncorrectDeepSeekWords(): Promise<{
   error?: string;
 }> {
   try {
-    await serverLog('Starting cleanup of incorrect DeepSeek words', 'info');
+    void serverLog('Starting cleanup of incorrect DeepSeek words', 'info');
 
     // List of Danish words that were incorrectly created as English words
     const danishWordsCreatedAsEnglish = [
@@ -781,7 +774,7 @@ export async function cleanupIncorrectDeepSeekWords(): Promise<{
       },
     });
 
-    await serverLog('Found incorrect words for cleanup', 'info', {
+    void serverLog('Found incorrect words for cleanup', 'info', {
       count: incorrectWords.length,
       words: incorrectWords.map((w) => w.word),
     });
@@ -798,7 +791,7 @@ export async function cleanupIncorrectDeepSeekWords(): Promise<{
 
         cleanedUpCount++;
 
-        await serverLog(
+        void serverLog(
           'Deleted incorrect Danish word marked as English',
           'info',
           {
@@ -808,7 +801,7 @@ export async function cleanupIncorrectDeepSeekWords(): Promise<{
           },
         );
       } catch (deleteError) {
-        await serverLog('Failed to delete incorrect word', 'error', {
+        void serverLog('Failed to delete incorrect word', 'error', {
           wordId: word.id,
           wordText: word.word,
           error:
@@ -826,7 +819,7 @@ export async function cleanupIncorrectDeepSeekWords(): Promise<{
       shouldBe: 'da', // These should have been Danish words
     }));
 
-    await serverLog('Cleanup of incorrect DeepSeek words completed', 'info', {
+    void serverLog('Cleanup of incorrect DeepSeek words completed', 'info', {
       totalFound: incorrectWords.length,
       successfullyDeleted: cleanedUpCount,
     });
@@ -839,7 +832,7 @@ export async function cleanupIncorrectDeepSeekWords(): Promise<{
       },
     };
   } catch (error) {
-    await serverLog('Cleanup of incorrect DeepSeek words failed', 'error', {
+    void serverLog('Cleanup of incorrect DeepSeek words failed', 'error', {
       error: error instanceof Error ? error.message : 'Unknown error',
     });
 

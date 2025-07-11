@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { RootState } from '@/core/state/store';
 import {
   debugLog,
   infoLog,
   errorLog,
 } from '@/core/infrastructure/monitoring/clientLogger';
+import type { RootState } from '@/core/state/store';
 //import { prisma } from '@/lib/prisma';
 
 /**
@@ -131,7 +131,7 @@ export const fetchUserDictionary = createAsyncThunk(
 
       // Check content type
       const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+      if (!contentType?.includes('application/json')) {
         await errorLog('Response is not JSON', { contentType });
         const text = await response.text();
         await errorLog('Non-JSON response body', { responseBody: text });
@@ -230,7 +230,7 @@ export const selectUserDictionary = (state: RootState) => {
       case 'reviewCount':
         comparison = a.reviewCount - b.reviewCount;
         break;
-      case 'lastReviewedAt':
+      case 'lastReviewedAt': {
         const dateA = a.lastReviewedAt
           ? new Date(a.lastReviewedAt).getTime()
           : 0;
@@ -239,6 +239,7 @@ export const selectUserDictionary = (state: RootState) => {
           : 0;
         comparison = dateA - dateB;
         break;
+      }
       default:
         comparison = 0;
     }

@@ -12,9 +12,9 @@
  * - window.debug.clear() - Clear debug session
  */
 
-import PracticeDebugger from './practiceDebugger';
 import { DebugUtils } from './clientLogger';
 import { debugReader } from './debugReader';
+import PracticeDebugger from './practiceDebugger';
 
 interface DebugConsole {
   /**

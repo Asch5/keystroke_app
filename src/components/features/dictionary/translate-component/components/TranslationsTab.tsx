@@ -1,3 +1,4 @@
+import { TranslationSynonym } from 'extended-google-translate-api';
 import React from 'react';
 import {
   Accordion,
@@ -5,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { TranslationSynonym } from 'extended-google-translate-api';
 import { TranslationsTabProps } from '../types';
 
 /**

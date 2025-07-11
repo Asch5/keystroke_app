@@ -1,17 +1,17 @@
 'use client';
 
-import { memo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Accordion } from '@/components/ui/accordion';
 import { ArrowLeft, Loader2, Save } from 'lucide-react';
+import { memo } from 'react';
+import { Accordion } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions';
-import { useWordDetailEditState } from './hooks/useWordDetailEditState';
-import { useWordDetailEditActions } from './hooks/useWordDetailEditActions';
-import WordFieldsSection from './WordFieldsSection';
-import WordDetailFieldsSection from './WordDetailFieldsSection';
-import DefinitionsSection from './DefinitionsSection';
 import AudioFilesSection from './AudioFilesSection';
+import DefinitionsSection from './DefinitionsSection';
+import { useWordDetailEditActions } from './hooks/useWordDetailEditActions';
+import { useWordDetailEditState } from './hooks/useWordDetailEditState';
 import { RelationshipManager } from './RelationshipManager';
+import WordDetailFieldsSection from './WordDetailFieldsSection';
+import WordFieldsSection from './WordFieldsSection';
 
 interface WordDetailEditFormProps {
   wordDetailId: number;

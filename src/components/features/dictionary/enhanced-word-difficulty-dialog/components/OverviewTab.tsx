@@ -1,7 +1,7 @@
 'use client';
 
+import { Target, TrendingUp, Eye, Volume2, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import {
   Card,
   CardContent,
@@ -9,13 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Target, TrendingUp, Eye, Volume2, FileText } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 import { TabComponentProps } from '../types';
-import { getStatusIcon } from '../utils/iconUtils';
 import {
   getLearningModalityColor,
   getPerformanceColor,
 } from '../utils/colorUtils';
+import { getStatusIcon } from '../utils/iconUtils';
 
 export function OverviewTab({ analytics, word }: TabComponentProps) {
   const accuracy =

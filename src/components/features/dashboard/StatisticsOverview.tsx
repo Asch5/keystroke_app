@@ -1,7 +1,7 @@
+import { BookOpen, Flame, Target, Clock, Calendar } from 'lucide-react';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { BookOpen, Flame, Target, Clock, Calendar } from 'lucide-react';
 import type { UserStatistics } from '@/core/domains/user/actions/user-stats-actions';
 
 interface StatisticsOverviewProps {

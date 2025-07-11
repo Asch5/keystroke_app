@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { toast } from 'sonner';
 import {
   addListToUserCollection,
@@ -9,6 +8,7 @@ import {
   updateUserList,
   type UserListWithDetails,
 } from '@/core/domains/dictionary';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 interface UseWordListsActionsProps {
   userId: string;

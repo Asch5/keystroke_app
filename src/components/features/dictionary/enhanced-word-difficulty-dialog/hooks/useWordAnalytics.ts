@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
 import { getSimpleWordAnalytics } from '@/core/domains/user/actions/simple-word-analytics';
+import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
 import { WordAnalyticsState } from '../types';
 
 export function useWordAnalytics(

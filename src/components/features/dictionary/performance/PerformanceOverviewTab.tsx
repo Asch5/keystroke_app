@@ -1,13 +1,3 @@
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { TabsContent } from '@/components/ui/tabs';
 import {
   TrendingUp,
   Target,
@@ -18,6 +8,16 @@ import {
   Zap,
   Award,
 } from 'lucide-react';
+import React from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { TabsContent } from '@/components/ui/tabs';
 import { DictionaryPerformanceMetrics } from '@/core/domains/user/actions/dictionary-performance-actions';
 import { formatTime, formatPercentage, getPercentageColor } from './utils';
 

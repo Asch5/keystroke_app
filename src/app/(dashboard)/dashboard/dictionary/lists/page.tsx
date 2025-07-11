@@ -1,10 +1,10 @@
-import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { auth } from '@/auth';
-import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
 import { WordListsContent } from '@/components/features/dictionary';
 import { DictionaryErrorBoundary } from '@/components/shared/error-boundaries';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
 
 /**
  * Word Lists Loading Skeleton

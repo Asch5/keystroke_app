@@ -1,13 +1,15 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/lib/prisma';
-import {
-  ProcessedWordData,
-  SubWordData,
-  RelationshipFromTo,
-  AudioFile,
-  DefinitionExampleOfProcessWordData,
-} from '@/core/types/dictionary';
+import { TranslationService } from '@/core/lib/services/translationService';
+import { getDanishFormDefinition as getDanishFormDefinitionUtil } from '@/core/lib/utils/danishDictionary/getDanishFormDefinition';
+import { mapDanishPosToEnum } from '@/core/lib/utils/danishDictionary/mapDaEng';
+import { transformDanishForms } from '@/core/lib/utils/danishDictionary/transformDanishForms';
+import { clientLog } from '@/core/lib/utils/logUtils';
+import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
+import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
+import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
 import {
   LanguageCode,
   PartOfSpeech,
@@ -18,27 +20,25 @@ import {
   Gender,
 } from '@/core/types';
 import {
+  ProcessedWordData,
+  SubWordData,
+  RelationshipFromTo,
+  AudioFile,
+  DefinitionExampleOfProcessWordData,
+} from '@/core/types/dictionary';
+import {
   DatabaseTransactionClient,
   DatabaseKnownRequestError,
   DatabaseTransactionIsolationLevel,
 } from '@/core/types/database';
-import { clientLog } from '@/core/lib/utils/logUtils';
 // Frequency services are now handled by FrequencyManager and WordService
-import { TranslationService } from '@/core/lib/services/translationService';
-import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
-import { mapDanishPosToEnum } from '@/core/lib/utils/danishDictionary/mapDaEng';
-import { transformDanishForms } from '@/core/lib/utils/danishDictionary/transformDanishForms';
 import {
   WordVariant,
   PartOfSpeechDanish,
   DetailCategoryDanish,
 } from '@/core/types/translationDanishTypes';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
 import { WordService } from '@/core/shared/services/WordService';
-import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
 import { type AudioMetadata } from '@/core/shared/services/external-apis/blobStorageService';
-import { getDanishFormDefinition as getDanishFormDefinitionUtil } from '@/core/lib/utils/danishDictionary/getDanishFormDefinition';
 //import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**
@@ -55,7 +55,7 @@ function isMainDefinition(
 ): boolean {
   // If there's no ID (single definition), treat the first one as main
   if (!definitionId) {
-    serverLog(
+    void serverLog(
       `Definition has no ID, treating as ${isFirstDefinition ? 'MAIN' : 'SUB'} definition (first: ${isFirstDefinition})`,
       'info',
     );
@@ -69,7 +69,7 @@ function isMainDefinition(
   const isInteger = /^\d+$/.test(trimmedId);
 
   // Log the determination for debugging
-  serverLog(
+  void serverLog(
     `Definition ID "${definitionId}" (trimmed: "${trimmedId}") is ${isInteger ? 'MAIN' : 'SUB'} definition`,
     'info',
   );
@@ -84,7 +84,7 @@ function isMainDefinition(
  *
  * grammaticalNote "gram" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs.
  *
- 
+
  *
  *
  */
@@ -181,7 +181,7 @@ export async function processTranslationsForWord(
 
     // Log validation results if issues found
     if (validationResult.totalIssues > 0) {
-      serverLog(
+      void serverLog(
         `Validation issues for "${mainWordText}": ${validationResult.totalIssues} total issues`,
         'info',
       );
@@ -192,7 +192,7 @@ export async function processTranslationsForWord(
       );
       if (enumSuggestions.length > 0) {
         enumSuggestions.forEach(([category, suggestions]) => {
-          serverLog(
+          void serverLog(
             `${category} enum needs these additions: ${suggestions.join(' ')}`,
             'info',
           );
@@ -201,7 +201,7 @@ export async function processTranslationsForWord(
 
       // Stop processing if structural errors found (optional - you might want to continue)
       if (!validationResult.isValid) {
-        serverLog(
+        void serverLog(
           `Structural errors found in Danish dictionary data for "${mainWordText}". Skipping processing.`,
           'error',
         );
@@ -210,7 +210,7 @@ export async function processTranslationsForWord(
     }
 
     if (!english_word_data) {
-      serverLog(
+      void serverLog(
         `No translation data returned for word: ${mainWordText}`,
         'warn',
       );
@@ -256,7 +256,7 @@ async function processAudioForWord(
     return;
   }
 
-  serverLog(
+  void serverLog(
     `Processing ${audioFiles.length} audio files for wordDetailsId: ${wordDetailsId}`,
     'info',
   );
@@ -301,7 +301,7 @@ async function processAudioForWord(
     (r) => r.downloadResult.skipped,
   ).length;
 
-  serverLog(
+  void serverLog(
     `Audio download results: ${successful} successful, ${skipped} skipped, ${failed} failed`,
     'info',
   );
@@ -309,7 +309,7 @@ async function processAudioForWord(
   // If any downloads failed, log the errors
   downloadResults.forEach((result, index) => {
     if (!result.downloadResult.success && !result.downloadResult.skipped) {
-      serverLog(
+      void serverLog(
         `Failed to download audio ${index + 1}: ${result.downloadResult.error}`,
         'warn',
       );
@@ -379,7 +379,7 @@ async function processAudioForWord(
       create: { wordDetailsId, audioId: audio.id, isPrimary: true },
     });
 
-    serverLog(
+    void serverLog(
       `Processed primary audio for wordDetailsId ${wordDetailsId}: ${primaryAudioCandidate.localUrl}`,
       'info',
     );
@@ -445,7 +445,7 @@ async function processAudioForWord(
         create: { wordDetailsId, audioId: audio.id, isPrimary: false },
       });
 
-      serverLog(
+      void serverLog(
         `Processed non-primary audio for wordDetailsId ${wordDetailsId}: ${nonPrimaryAudioCandidate.localUrl}`,
         'info',
       );
@@ -512,7 +512,7 @@ async function upsertWord(
     options?.frequencyManager, // Pass the frequency manager to avoid duplicate calls
   );
 
-  serverLog(
+  void serverLog(
     `From upsertWord in processOrdnetApi.ts (upsertWord section): wordDetails: ${JSON.stringify(wordDetails)} for word "${wordText}" with PoS option: ${options?.partOfSpeech}, passed to details: ${partOfSpeechForDetails}`,
     'info',
   );
@@ -609,7 +609,7 @@ export async function processAndSaveDanishWord(
   const gender: Gender | null = determinedGender;
   const audioFiles = danishWordData.word.audio || [];
   const etymology = danishWordData.word.etymology;
-  serverLog(`etymology: ${etymology} `, 'info');
+  void serverLog(`etymology: ${etymology} `, 'info');
   const variant = danishWordData.word.variant || '';
   const sourceEntityId = `${source}- word: ${mainWordText} - pos: ${partOfSpeech} - variant: ${variant} - forms: ${danishWordData.word.forms.join(',')}`;
   // Initialize frequency manager for this processing session
@@ -718,7 +718,7 @@ export async function processAndSaveDanishWord(
       if (def.examples && Array.isArray(def.examples)) {
         def.examples.forEach((example, index) => {
           let sourceExampleText = null;
-          if (def.sources && def.sources[index]) {
+          if (def.sources?.[index]) {
             const src = def.sources[index];
             sourceExampleText = `{bc}short {it}${src.short}{/it} {bc}full {it}${src.full}{/it}`;
           }
@@ -928,11 +928,11 @@ export async function processAndSaveDanishWord(
       if (currentMainDef.labels['Se også']) {
         const seOgsaValues: string[] = [];
         if (typeof currentMainDef.labels['Se også'] === 'string') {
-          seOgsaValues.push(currentMainDef.labels['Se også'] as string);
+          seOgsaValues.push(currentMainDef.labels['Se også']);
         } else if (Array.isArray(currentMainDef.labels['Se også'])) {
           // If it's an array, filter for string values just in case, though typically expect string[]
           seOgsaValues.push(
-            ...(currentMainDef.labels['Se også'] as string[]).filter(
+            ...currentMainDef.labels['Se også'].filter(
               (s): s is string => typeof s === 'string',
             ),
           );
@@ -1222,7 +1222,7 @@ export async function processAndSaveDanishWord(
         if (defItem.examples && Array.isArray(defItem.examples)) {
           defItem.examples.forEach((example, index) => {
             let sourceExampleText = null;
-            if (defItem.sources && defItem.sources[index]) {
+            if (defItem.sources?.[index]) {
               const srcExpr = defItem.sources[index];
               sourceExampleText = `{bc}short {it}${srcExpr.short}{/it} {bc}full {it}${srcExpr.full}{/it}`;
             }
@@ -1441,14 +1441,14 @@ export async function processAndSaveDanishWord(
         }
 
         //! Check 'Se også' label (Danish for "See also") for fixed expressions
-        if (defItem.labels && defItem.labels['Se også']) {
+        if (defItem.labels?.['Se også']) {
           const seOgsaValues: string[] = [];
           if (typeof defItem.labels['Se også'] === 'string') {
-            seOgsaValues.push(defItem.labels['Se også'] as string);
+            seOgsaValues.push(defItem.labels['Se også']);
           } else if (Array.isArray(defItem.labels['Se også'])) {
             // If it's an array, filter for string values
             seOgsaValues.push(
-              ...(defItem.labels['Se også'] as string[]).filter(
+              ...defItem.labels['Se også'].filter(
                 (s): s is string => typeof s === 'string',
               ),
             );
@@ -1593,9 +1593,7 @@ export async function processAndSaveDanishWord(
           // Update example with ID from the database
           if (
             defIndex !== -1 &&
-            processedData.definitions[defIndex] &&
-            processedData.definitions[defIndex].examples &&
-            processedData.definitions[defIndex].examples[exIndex]
+            processedData.definitions[defIndex]?.examples?.[exIndex]
           ) {
             processedData.definitions[defIndex].examples[exIndex].id =
               dbExample.id;
@@ -1612,7 +1610,7 @@ export async function processAndSaveDanishWord(
       if (subWord.word === mainWordText && subWord.languageCode === language) {
         // This is actually the main word, don't call upsertWord - use existing main word
         subWordEntity = mainWord;
-        serverLog(
+        void serverLog(
           `Skipping upsertWord for sub-word "${subWord.word}" because it matches main word - using existing main word entity`,
           'info',
         );
@@ -1675,16 +1673,14 @@ export async function processAndSaveDanishWord(
         });
         if (
           subWordIndex !== -1 &&
-          subWordsArray[subWordIndex] &&
-          subWordsArray[subWordIndex].definitions &&
-          subWordsArray[subWordIndex].definitions[defDataIndex]
+          subWordsArray[subWordIndex]?.definitions?.[defDataIndex]
         ) {
           subWordsArray[subWordIndex].definitions[defDataIndex].id =
             subWordDef.id;
         }
 
         // Debug: Log etymology before creating WordDetails
-        serverLog(
+        void serverLog(
           `Creating WordDetails for sub-word "${subWord.word}" with etymology: "${subWord.etymology}"`,
           'info',
         );
@@ -1741,13 +1737,8 @@ export async function processAndSaveDanishWord(
             });
             if (
               subWordIndex !== -1 &&
-              subWordsArray[subWordIndex] &&
-              subWordsArray[subWordIndex].definitions &&
-              subWordsArray[subWordIndex].definitions[defDataIndex] &&
-              subWordsArray[subWordIndex].definitions[defDataIndex].examples &&
-              subWordsArray[subWordIndex].definitions[defDataIndex].examples[
-                exIndex
-              ]
+              subWordsArray[subWordIndex]?.definitions?.[defDataIndex]
+                ?.examples?.[exIndex]
             ) {
               subWordsArray[subWordIndex].definitions[defDataIndex].examples[
                 exIndex
@@ -1827,7 +1818,7 @@ export async function processAndSaveDanishWord(
           },
         );
 
-        serverLog(
+        void serverLog(
           `Processing ${sortedRelationships.length} relationships for "${currentSubWord.word}" in priority order`,
           'info',
         );
@@ -1841,7 +1832,7 @@ export async function processAndSaveDanishWord(
           .join(', ');
 
         if (sortedRelationships.length > 1) {
-          serverLog(
+          void serverLog(
             `Relationship processing order for "${currentSubWord.word}": ${relationshipOrder}`,
             'info',
           );
@@ -1870,7 +1861,7 @@ export async function processAndSaveDanishWord(
             const targetSubWord = allPopulatedSubWords.find(
               (sw) => sw.word === relation.fromWord,
             );
-            if (targetSubWord && targetSubWord.id) {
+            if (targetSubWord?.id) {
               fromWordId = targetSubWord.id;
               fromWordPartOfSpeech = targetSubWord.partOfSpeech;
             }
@@ -1893,14 +1884,14 @@ export async function processAndSaveDanishWord(
             const targetSubWord = allPopulatedSubWords.find(
               (sw) => sw.word === relation.toWord,
             );
-            if (targetSubWord && targetSubWord.id) {
+            if (targetSubWord?.id) {
               toWordId = targetSubWord.id;
               toWordPartOfSpeech = targetSubWord.partOfSpeech;
             }
           }
 
           if (!fromWordId || !toWordId) {
-            serverLog(
+            void serverLog(
               `Missing wordId for relationship: from='${relation.fromWord}'(id:${fromWordId}) to='${relation.toWord}'(id:${toWordId}), for subWord '${currentSubWord.word}'. Skipping.`,
               'warn',
             );
@@ -1965,12 +1956,12 @@ export async function processAndSaveDanishWord(
             const findSubWordDataById = (wordId: number) => {
               const found = allPopulatedSubWords.find((sw) => sw.id === wordId);
               if (found) {
-                serverLog(
+                void serverLog(
                   `Found sub-word data by ID ${wordId}: "${found.word}" with etymology: "${found.etymology}"`,
                   'info',
                 );
               } else {
-                serverLog(
+                void serverLog(
                   `No sub-word data found for wordId: ${wordId}`,
                   'warn',
                 );
@@ -1984,12 +1975,12 @@ export async function processAndSaveDanishWord(
                 (sw) => sw.word === wordText,
               );
               if (found) {
-                serverLog(
+                void serverLog(
                   `Found sub-word data by text "${wordText}": etymology="${found.etymology}"`,
                   'info',
                 );
               } else {
-                serverLog(
+                void serverLog(
                   `No sub-word data found for word text: "${wordText}"`,
                   'warn',
                 );
@@ -2013,7 +2004,7 @@ export async function processAndSaveDanishWord(
                */
               const existingFromWordDetails = await tx.wordDetails.findFirst({
                 where: {
-                  wordId: fromWordId!,
+                  wordId: fromWordId,
                   partOfSpeech: fromWordPartOfSpeech || PartOfSpeech.undefined,
                 },
                 orderBy: {
@@ -2027,14 +2018,14 @@ export async function processAndSaveDanishWord(
                   fromWordId === mainWord.id &&
                   fromWordPartOfSpeech === partOfSpeech
                 ) {
-                  serverLog(
+                  void serverLog(
                     `Reusing existing main word WordDetails ${existingFromWordDetails.id} for main word ID ${fromWordId}, preserving original data`,
                     'info',
                   );
                   resolvedFromWordDetailsId = existingFromWordDetails.id;
                 } else {
                   // WordDetails exist for sub-word, update them with actual data if available
-                  let fromSubWordData = findSubWordDataById(fromWordId!);
+                  let fromSubWordData = findSubWordDataById(fromWordId);
 
                   // If not found by ID, try to find by relation.fromWord text
                   if (
@@ -2052,7 +2043,7 @@ export async function processAndSaveDanishWord(
                     const fromForms = fromSubWordData?.forms || null;
                     const fromEtymology = fromSubWordData?.etymology || null;
 
-                    serverLog(
+                    void serverLog(
                       `Updating existing sub-word WordDetails ${existingFromWordDetails.id} for fromWord ID ${fromWordId} with actual data: etymology="${fromEtymology}", phonetic="${fromPhonetic}", forms="${fromForms}"`,
                       'info',
                     );
@@ -2081,7 +2072,7 @@ export async function processAndSaveDanishWord(
                       },
                     });
                   } else {
-                    serverLog(
+                    void serverLog(
                       `Reusing existing WordDetails ${existingFromWordDetails.id} for fromWord ID ${fromWordId}, PoS ${fromWordPartOfSpeech} (no additional data to update)`,
                       'info',
                     );
@@ -2092,7 +2083,7 @@ export async function processAndSaveDanishWord(
               } else {
                 // WordDetails don't exist, create new ones with actual data
                 // Find the actual sub-word data to get real values instead of nulls
-                let fromSubWordData = findSubWordDataById(fromWordId!);
+                let fromSubWordData = findSubWordDataById(fromWordId);
 
                 // If not found by ID, try to find by relation.fromWord text
                 if (!fromSubWordData && typeof relation.fromWord === 'string') {
@@ -2108,12 +2099,12 @@ export async function processAndSaveDanishWord(
 
                 // Debug: Log the etymology value being used
                 if (fromEtymology) {
-                  serverLog(
+                  void serverLog(
                     `Using etymology "${fromEtymology}" for fromWord with ID ${fromWordId}, etymology: ${fromEtymology}`,
                     'info',
                   );
                 } else {
-                  serverLog(
+                  void serverLog(
                     `No etymology available for fromWord with ID ${fromWordId} - this might be the issue!`,
                     'warn',
                   );
@@ -2121,12 +2112,12 @@ export async function processAndSaveDanishWord(
 
                 // Log when we're preserving actual data vs using defaults
                 if (fromSubWordData) {
-                  serverLog(
+                  void serverLog(
                     `Preserving actual data for fromWord "${fromSubWordData.word}": variant="${fromVariant}", phonetic="${fromPhonetic}", forms="${fromForms}", etymology="${fromEtymology}"`,
                     'info',
                   );
                 } else {
-                  serverLog(
+                  void serverLog(
                     `No sub-word data found for fromWordId ${fromWordId}, using defaults`,
                     'warn',
                   );
@@ -2134,7 +2125,7 @@ export async function processAndSaveDanishWord(
 
                 const subFromDetails = await upsertWordDetails(
                   tx,
-                  fromWordId!,
+                  fromWordId,
                   fromWordPartOfSpeech,
                   source,
                   isFromPlural,
@@ -2166,7 +2157,7 @@ export async function processAndSaveDanishWord(
                */
               const existingToWordDetails = await tx.wordDetails.findFirst({
                 where: {
-                  wordId: toWordId!,
+                  wordId: toWordId,
                   partOfSpeech: toWordPartOfSpeech || PartOfSpeech.undefined,
                 },
                 orderBy: {
@@ -2180,14 +2171,14 @@ export async function processAndSaveDanishWord(
                   toWordId === mainWord.id &&
                   toWordPartOfSpeech === partOfSpeech
                 ) {
-                  serverLog(
+                  void serverLog(
                     `Reusing existing main word WordDetails ${existingToWordDetails.id} for main word ID ${toWordId}, preserving original data`,
                     'info',
                   );
                   resolvedToWordDetailsId = existingToWordDetails.id;
                 } else {
                   // WordDetails exist for sub-word, update them with actual data if available
-                  let toSubWordData = findSubWordDataById(toWordId!);
+                  let toSubWordData = findSubWordDataById(toWordId);
 
                   // If not found by ID, try to find by relation.toWord text
                   if (!toSubWordData && typeof relation.toWord === 'string') {
@@ -2202,7 +2193,7 @@ export async function processAndSaveDanishWord(
                     const toForms = toSubWordData?.forms || null;
                     const toEtymology = toSubWordData?.etymology || null;
 
-                    serverLog(
+                    void serverLog(
                       `Updating existing sub-word WordDetails ${existingToWordDetails.id} for toWord ID ${toWordId} with actual data: etymology="${toEtymology}", phonetic="${toPhonetic}", forms="${toForms}"`,
                       'info',
                     );
@@ -2231,7 +2222,7 @@ export async function processAndSaveDanishWord(
                       },
                     });
                   } else {
-                    serverLog(
+                    void serverLog(
                       `Reusing existing WordDetails ${existingToWordDetails.id} for toWord ID ${toWordId}, PoS ${toWordPartOfSpeech} (no additional data to update)`,
                       'info',
                     );
@@ -2242,7 +2233,7 @@ export async function processAndSaveDanishWord(
               } else {
                 // WordDetails don't exist, create new ones with actual data
                 // Find the actual sub-word data to get real values instead of nulls
-                let toSubWordData = findSubWordDataById(toWordId!);
+                let toSubWordData = findSubWordDataById(toWordId);
 
                 // If not found by ID, try to find by relation.toWord text
                 if (!toSubWordData && typeof relation.toWord === 'string') {
@@ -2258,12 +2249,12 @@ export async function processAndSaveDanishWord(
 
                 // Debug: Log the etymology value being used
                 if (toEtymology) {
-                  serverLog(
+                  void serverLog(
                     `Using etymology "${toEtymology}" for toWord with ID ${toWordId}, etymology: ${toEtymology}`,
                     'info',
                   );
                 } else {
-                  serverLog(
+                  void serverLog(
                     `No etymology available for toWord with ID ${toWordId} - this might be the issue!`,
                     'warn',
                   );
@@ -2271,12 +2262,12 @@ export async function processAndSaveDanishWord(
 
                 // Log when we're preserving actual data vs using defaults
                 if (toSubWordData) {
-                  serverLog(
+                  void serverLog(
                     `Preserving actual data for toWord "${toSubWordData.word}": variant="${toVariant}", phonetic="${toPhonetic}", forms="${toForms}", etymology="${toEtymology}"`,
                     'info',
                   );
                 } else {
-                  serverLog(
+                  void serverLog(
                     `No sub-word data found for toWordId ${toWordId}, using defaults`,
                     'warn',
                   );
@@ -2284,7 +2275,7 @@ export async function processAndSaveDanishWord(
 
                 const subToDetails = await upsertWordDetails(
                   tx,
-                  toWordId!,
+                  toWordId,
                   toWordPartOfSpeech,
                   source,
                   isToPlural,
@@ -2363,9 +2354,7 @@ export async function processAndSaveDanishWord(
 
 // Helper functions for extracting data from labels
 function extractSubjectLabels(
-  labels?: Partial<
-    Record<DetailCategoryDanish | string, string | boolean | string[]>
-  >,
+  labels?: Partial<Record<DetailCategoryDanish, string | boolean | string[]>>,
 ): string | null {
   if (!labels) return null;
 
@@ -2399,9 +2388,7 @@ function extractSubjectLabels(
 }
 
 function extractGeneralLabels(
-  labels?: Partial<
-    Record<DetailCategoryDanish | string, string | boolean | string[]>
-  >,
+  labels?: Partial<Record<DetailCategoryDanish, string | boolean | string[]>>,
 ): string | null {
   if (!labels) return null;
 
@@ -2413,11 +2400,9 @@ function extractGeneralLabels(
 }
 
 function extractGrammaticalNote(
-  labels?: Partial<
-    Record<DetailCategoryDanish | string, string | boolean | string[]>
-  >,
+  labels?: Partial<Record<DetailCategoryDanish, string | boolean | string[]>>,
 ): string | null {
-  if (!labels || !labels['grammatik']) return null;
+  if (!labels?.['grammatik']) return null;
 
   return typeof labels['grammatik'] === 'string'
     ? labels['grammatik']
@@ -2425,9 +2410,7 @@ function extractGrammaticalNote(
 }
 
 function extractUsageNote(
-  labels?: Partial<
-    Record<DetailCategoryDanish | string, string | boolean | string[]>
-  >,
+  labels?: Partial<Record<DetailCategoryDanish, string | boolean | string[]>>,
 ): string | null {
   if (!labels) return null;
 

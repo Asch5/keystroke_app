@@ -1,4 +1,3 @@
-import 'next-auth';
 import { DefaultSession } from 'next-auth';
 import { DefaultJWT } from 'next-auth/jwt';
 

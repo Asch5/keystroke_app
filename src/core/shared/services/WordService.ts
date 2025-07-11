@@ -1,3 +1,9 @@
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import {
+  fetchWordFrequency,
+  getPartOfSpeechFrequency,
+} from '@/core/lib/services/frequencyService';
+import { clientLog } from '@/core/lib/utils/logUtils';
 import {
   LanguageCode,
   PartOfSpeech,
@@ -7,14 +13,8 @@ import {
   Gender,
 } from '@/core/types';
 import { DatabaseTransactionClient } from '@/core/types/database';
-import { clientLog } from '@/core/lib/utils/logUtils';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import {
-  fetchWordFrequency,
-  getPartOfSpeechFrequency,
-} from '@/core/lib/services/frequencyService';
-import { FrequencyManager } from './FrequencyManager';
 import { AudioFile } from '@/core/types/dictionary';
+import { FrequencyManager } from './FrequencyManager';
 
 /**
  * Interface for WordDetails update data - only includes properties with meaningful values
@@ -86,7 +86,7 @@ export class WordService {
       );
       frequencyGeneral = frequencyData.general;
 
-      serverLog(
+      void serverLog(
         `Retrieved frequency data in upsertWord for "${wordText}": ${frequencyGeneral}`,
         'info',
       );
@@ -161,14 +161,14 @@ export class WordService {
             );
             posFrequency = frequencyData.posSpecific;
 
-            serverLog(
+            void serverLog(
               `Retrieved POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${dbPoSToPersist}: ${posFrequency}`,
               'info',
             );
           }
         } catch (error) {
-          serverLog(
-            `Error retrieving POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
+          void serverLog(
+            `Error retrieving POS frequency data in upsertWordDetails for word ID ${wordId}: ${error instanceof Error ? error.message : String(error)}`,
             'error',
           );
           posFrequency = null;
@@ -190,14 +190,14 @@ export class WordService {
               frequencyData,
               dbPoSToPersist,
             );
-            serverLog(
+            void serverLog(
               `Fetched POS frequency data in upsertWordDetails for word ID ${wordId}, POS ${dbPoSToPersist}: ${posFrequency}`,
               'info',
             );
           }
         } catch (error) {
-          serverLog(
-            `Error fetching POS frequency data in upsertWordDetails for word ID ${wordId}: ${error}`,
+          void serverLog(
+            `Error fetching POS frequency data in upsertWordDetails for word ID ${wordId}: ${error instanceof Error ? error.message : String(error)}`,
             'error',
           );
           posFrequency = null;
@@ -279,7 +279,7 @@ export class WordService {
       existingEmptyWordDetails._count.definitions === 0
     ) {
       // Reuse the existing empty WordDetails record by updating it
-      serverLog(
+      void serverLog(
         `Reusing existing empty WordDetails record ${existingEmptyWordDetails.id} for wordId ${wordId}, partOfSpeech ${dbPoSToPersist}`,
         'info',
       );

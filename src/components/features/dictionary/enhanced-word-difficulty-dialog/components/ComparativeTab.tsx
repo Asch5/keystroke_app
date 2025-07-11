@@ -1,8 +1,8 @@
 'use client';
 
+import { Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Users } from 'lucide-react';
 import { TabComponentProps } from '../types';
 import { getPerformanceColor } from '../utils/colorUtils';
 

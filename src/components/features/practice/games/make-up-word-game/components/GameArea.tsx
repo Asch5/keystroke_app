@@ -1,8 +1,8 @@
+import { Shuffle } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Shuffle } from 'lucide-react';
-import { CharacterButton } from './CharacterButton';
 import { GameState, WordData } from '../types';
+import { CharacterButton } from './CharacterButton';
 
 interface GameAreaProps {
   gameState: GameState;

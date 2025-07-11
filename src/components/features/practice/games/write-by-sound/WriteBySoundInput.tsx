@@ -1,9 +1,9 @@
 'use client';
 
+import { CheckCircle, XCircle } from 'lucide-react';
 import { forwardRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, XCircle } from 'lucide-react';
 import { cn } from '@/core/shared/utils/common/cn';
 
 interface WriteBySoundInputProps {

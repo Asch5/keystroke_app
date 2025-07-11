@@ -1,12 +1,12 @@
 'use server';
 
+import { prisma } from '@/core/lib/prisma';
 import {
   getWordFrequencyEnum,
   getFrequencyPartOfSpeechEnum,
   WordFrequency,
   FrequencyPartOfSpeech,
 } from '@/core/lib/utils/commonDictUtils/frequencyUtils';
-import { prisma } from '@/core/lib/prisma';
 import { LanguageCode, PartOfSpeech } from '@/core/types';
 
 /**

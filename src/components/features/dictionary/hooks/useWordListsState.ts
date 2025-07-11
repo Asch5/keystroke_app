@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { toast } from 'sonner';
 import {
   getUserLists,
@@ -10,6 +9,7 @@ import {
   type PublicUserListSummary,
   type UserListFilters,
 } from '@/core/domains/dictionary';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { useWordListsActions } from './useWordListsActions';
 
 interface UseWordListsStateProps {

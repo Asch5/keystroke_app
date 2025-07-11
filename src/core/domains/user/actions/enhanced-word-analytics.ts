@@ -269,7 +269,7 @@ export const getIndividualWordAnalytics = cache(
     error?: string;
   }> => {
     try {
-      serverLog(
+      void serverLog(
         `Fetching individual word analytics for user ${userId}, word ${userDictionaryId}`,
         'info',
         { userId, userDictionaryId },
@@ -351,7 +351,7 @@ export const getIndividualWordAnalytics = cache(
         timeline: generatePerformanceTimeline(userWord, sessionItems),
       };
 
-      serverLog(
+      void serverLog(
         `Successfully calculated individual word analytics for ${userDictionaryId}`,
         'info',
         { userId, userDictionaryId, analyticsKeys: Object.keys(analytics) },
@@ -365,7 +365,11 @@ export const getIndividualWordAnalytics = cache(
       const errorMessage = `Failed to fetch individual word analytics: ${
         error instanceof Error ? error.message : 'Unknown error'
       }`;
-      serverLog(errorMessage, 'error', { userId, userDictionaryId, error });
+      void serverLog(errorMessage, 'error', {
+        userId,
+        userDictionaryId,
+        error,
+      });
 
       handlePrismaError(error);
 

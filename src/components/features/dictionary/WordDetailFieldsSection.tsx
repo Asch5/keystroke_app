@@ -1,6 +1,8 @@
 'use client';
 
 import { memo } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -10,10 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { PartOfSpeech, SourceType, Gender } from '@/core/types';
 import type { WordDetailEditData } from '@/core/domains/dictionary/actions';
+import { PartOfSpeech, SourceType, Gender } from '@/core/types';
 
 // Display name mappings
 const partOfSpeechDisplayNames: Record<PartOfSpeech, string> = {

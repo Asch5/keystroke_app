@@ -1,5 +1,6 @@
 'use client';
 
+import { Languages, Plus, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Languages, Plus, X } from 'lucide-react';
 import { ConfigurationState } from '../types';
 import { LANGUAGE_OPTIONS } from '../utils/constants';
 

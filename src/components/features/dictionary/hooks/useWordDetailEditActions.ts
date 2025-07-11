@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
 import { toast } from 'sonner';
 import {
   updateWordDetailById,

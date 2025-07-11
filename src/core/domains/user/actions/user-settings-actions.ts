@@ -1,19 +1,18 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { auth } from '@/auth';
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
 // Note: Dynamic import used to avoid bundling issues
-import { v4 as uuidv4 } from 'uuid';
-import { prisma } from '@/core/lib/prisma';
-import { getUserByEmail } from '@/core/lib/db/user';
-import { LanguageCode } from '@/core/types';
-
 import type {
   UserSettingsState,
   UserProfileState,
 } from '@/core/domains/user/types/user-settings';
+import { getUserByEmail } from '@/core/lib/db/user';
+import { prisma } from '@/core/lib/prisma';
+import { LanguageCode } from '@/core/types';
 
 // Validation schemas
 const profileUpdateSchema = z.object({

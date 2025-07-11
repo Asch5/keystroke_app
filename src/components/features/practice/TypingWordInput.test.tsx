@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { TypingWordInput } from './TypingWordInput';
+import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 import { LearningStatus } from '@/core/types';
 import type { SessionState, WordResult } from './hooks';
-import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
+import { TypingWordInput } from './TypingWordInput';
 
 // Mock the ImageWithFallback component
 vi.mock('@/components/shared/ImageWithFallback', () => ({

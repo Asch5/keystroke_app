@@ -1,9 +1,9 @@
-import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
-import { LanguageCode } from '@/core/types';
-import { WordDetailsPageContent } from '@/components/features/dictionary/WordDetailsPageContent';
+import { Suspense } from 'react';
 import { DictionaryLoadingSkeleton } from '@/components/features/dictionary/DictionaryLoadingSkeleton';
+import { WordDetailsPageContent } from '@/components/features/dictionary/WordDetailsPageContent';
 import { auth } from '@/core/lib/auth/config';
+import { LanguageCode } from '@/core/types';
 
 interface WordDetailsPageProps {
   params: Promise<{

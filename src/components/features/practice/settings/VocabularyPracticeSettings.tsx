@@ -1,15 +1,15 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { Settings, RotateCcw } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { useState } from 'react';
+import { Separator } from '@/components/ui/separator';
 import { useVocabularyPracticeSettings } from '@/core/shared/hooks/useSettings';
 import { cn } from '@/lib/utils';
 import {

@@ -1,18 +1,11 @@
 'use client';
 
+import { Loader2, Plus, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { LanguageCode, DifficultyLevel } from '@/core/types';
+import { toast } from 'sonner';
+import { ImageSelector } from '@/components/features/dictionary';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -21,9 +14,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, Plus, X } from 'lucide-react';
-import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import {
   fetchCategories,
   createCategory,
@@ -31,7 +31,7 @@ import {
   type CategoryData,
 } from '@/core/domains/dictionary/actions';
 import { initializeBasicCategories } from '@/core/domains/dictionary/actions/init-basic-data';
-import { ImageSelector } from '@/components/features/dictionary';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 interface AdminCreateListDialogProps {
   isOpen: boolean;

@@ -1,7 +1,7 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, Brain, TrendingUp, TrendingDown } from 'lucide-react';
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { UserStatistics } from '@/core/domains/user/actions/user-stats-actions';
 import { MistakeAnalysisChart } from '../charts/MistakeAnalysisChart';
 

@@ -3,16 +3,14 @@
 import { useEffect, useState, memo, useCallback } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
+  getDictionaryPerformanceMetrics,
+  type DictionaryPerformanceMetrics,
+} from '@/core/domains/user/actions/dictionary-performance-actions';
+import {
   getUserStatistics,
   getLearningAnalytics,
 } from '@/core/domains/user/actions/user-stats-actions';
 import type { UserStatistics } from '@/core/domains/user/actions/user-stats-actions';
-import {
-  getDictionaryPerformanceMetrics,
-  type DictionaryPerformanceMetrics,
-} from '@/core/domains/user/actions/dictionary-performance-actions';
-
-import { StatisticsOverview } from './StatisticsOverview';
 import {
   LearningProgressTab,
   SessionAnalyticsTab,
@@ -23,6 +21,7 @@ import {
   GoalsTab,
   LanguageProgressTab,
 } from './statistics-tabs';
+import { StatisticsOverview } from './StatisticsOverview';
 
 interface StatisticsContentProps {
   userId: string;

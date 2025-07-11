@@ -176,7 +176,7 @@ export class DeepSeekService {
     let totalOutputTokens = 0;
     let totalTokens = 0;
 
-    serverLog('Starting DeepSeek batch processing', 'info', {
+    void serverLog('Starting DeepSeek batch processing', 'info', {
       definitionCount: definitions.length,
       targetLanguages: targetLanguages.join(', '),
       sourceLanguage,
@@ -209,7 +209,7 @@ export class DeepSeekService {
           totalOutputTokens += result.tokensUsed.output;
           totalTokens += result.tokensUsed.total;
         } catch (error) {
-          serverLog(
+          void serverLog(
             'Failed to process definition-language combination in batch',
             'error',
             {
@@ -233,7 +233,7 @@ export class DeepSeekService {
     // Calculate approximate cost (DeepSeek pricing: ~$0.001 per 1K tokens)
     const cost = (totalTokens / 1000) * 0.001;
 
-    serverLog('DeepSeek batch processing completed', 'info', {
+    void serverLog('DeepSeek batch processing completed', 'info', {
       processedCount: results.length,
       successCount: results.filter((r) => r.word).length,
       totalTokens,

@@ -157,7 +157,7 @@ export function useOptimizedImage(
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry && entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           loadImage();
           observerRef.current?.disconnect();
         }

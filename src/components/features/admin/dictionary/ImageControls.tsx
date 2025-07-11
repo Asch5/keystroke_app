@@ -1,7 +1,12 @@
 'use client';
 
+import { Image as ImageIcon, Zap, Activity, Clock, Info } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -10,17 +15,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from 'sonner';
 import {
   generateBatchWordImages,
   getImageStats,
   type DictionaryWordDetails,
 } from '@/core/domains/dictionary/actions';
-import { Image as ImageIcon, Zap, Activity, Clock, Info } from 'lucide-react';
 
 interface ImageControlsProps {
   selectedWords: Set<string>;

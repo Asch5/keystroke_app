@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { getStatusColor, getStatusLabel } from '../utils/statusUtils';
 import { StatusCellProps } from '../types';
+import { getStatusColor, getStatusLabel } from '../utils/statusUtils';
 
 /**
  * Status cell component for displaying learning status

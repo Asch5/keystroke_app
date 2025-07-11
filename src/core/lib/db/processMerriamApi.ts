@@ -1,18 +1,15 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
+import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 import { prisma } from '@/core/lib/prisma';
-import {
-  DefinitionExampleOfProcessWordData,
-  ProcessedWordData,
-  RelationshipFromTo,
-  AudioFile,
-} from '@/core/types/dictionary'; // Extended interface to include ID for database trackinginterface DefinitionExampleWithId extends DefinitionExampleOfProcessWordData {  id?: number | null;}
+import { ImageService } from '@/core/lib/services/imageService';
+import { clientLog } from '@/core/lib/utils/logUtils';
 import { saveJson } from '@/core/lib/utils/saveJson';
-import {
-  DatabaseTransactionClient,
-  DatabaseKnownRequestError,
-  DatabaseTransactionIsolationLevel,
-} from '@/core/types/database';
+import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
+import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
+import { WordService } from '@/core/shared/services/WordService';
 import {
   LanguageCode,
   PartOfSpeech,
@@ -23,14 +20,17 @@ import {
   Definition,
   Gender,
 } from '@/core/types';
-import { getWordDetails } from '@/core/lib/actions/dictionaryActions';
-import { clientLog } from '@/core/lib/utils/logUtils';
-import { ImageService } from '@/core/lib/services/imageService';
-import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
-import { WordService } from '@/core/shared/services/WordService';
-import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
+import {
+  DatabaseTransactionClient,
+  DatabaseKnownRequestError,
+  DatabaseTransactionIsolationLevel,
+} from '@/core/types/database';
+import {
+  DefinitionExampleOfProcessWordData,
+  ProcessedWordData,
+  RelationshipFromTo,
+  AudioFile,
+} from '@/core/types/dictionary'; // Extended interface to include ID for database trackinginterface DefinitionExampleWithId extends DefinitionExampleOfProcessWordData {  id?: number | null;}
 import { env } from '@/env.mjs';
 
 /**Definitions:
@@ -1487,7 +1487,7 @@ export async function processAndSaveWord(
       const uroSubWord: SubWordData = {
         word: cleanUro,
         languageCode: language,
-        partOfSpeech: mapPartOfSpeech(uro.fl) as PartOfSpeech,
+        partOfSpeech: mapPartOfSpeech(uro.fl),
         source: source,
         phonetic: uro.prs?.[0]?.ipa || uro.prs?.[0]?.mw || null,
         audioFiles: audioFiles.length > 0 ? audioFiles : null,
@@ -1838,7 +1838,7 @@ sourceWordText processing
           ) {
             // This refers to the 'currentSubWordInLoop' for context
             if (!currentSubWordInLoop.id) {
-              serverLog(
+              void serverLog(
                 `Error: currentSubWordInLoop '${currentSubWordInLoop.word}' has no ID. RelationSide: ${relationSide}`,
                 'error',
               );
@@ -1849,7 +1849,7 @@ sourceWordText processing
                   sw.partOfSpeech === currentSubWordInLoop.partOfSpeech &&
                   sw.id,
               );
-              if (foundSubWord && foundSubWord.id) {
+              if (foundSubWord?.id) {
                 wordId = foundSubWord.id;
                 partOfSpeech = foundSubWord.partOfSpeech;
                 variant = foundSubWord.variant || '';
@@ -1877,7 +1877,7 @@ sourceWordText processing
             const targetSubWord = allSubWords.find(
               (sw) => sw.word === relationSide && sw.id, // ensure ID is present
             );
-            if (targetSubWord && targetSubWord.id) {
+            if (targetSubWord?.id) {
               wordId = targetSubWord.id;
               partOfSpeech = targetSubWord.partOfSpeech;
               variant = targetSubWord.variant || '';
@@ -1939,7 +1939,7 @@ sourceWordText processing
         //! 1. Create or update the main Word
         const mainWord = await upsertWord(
           tx,
-          source as SourceType, // Ensure source is defined from initial processing
+          source, // Ensure source is defined from initial processing
           mainWordText,
           language as LanguageCode, // Ensure language is defined
           {
@@ -1960,7 +1960,7 @@ sourceWordText processing
           tx,
           mainWord.id,
           processedData.word.partOfSpeech, // Use partOfSpeech from initial processing
-          source as SourceType,
+          source,
           false, // isPlural
           processedData.word.variant || '',
           processedData.word.phonetic,
@@ -2106,7 +2106,7 @@ sourceWordText processing
               }
             }
           } catch (error) {
-            serverLog(
+            void serverLog(
               `Process in processMerriamApi.ts (definition section): Error processing definition: ${error}`,
               'error',
             );
@@ -2131,7 +2131,7 @@ sourceWordText processing
           ) {
             // This is actually the main word, don't call upsertWord - use existing main word
             subWordEntity = mainWord;
-            serverLog(
+            void serverLog(
               `Skipping upsertWord for sub-word "${subWord.word}" because it matches main word - using existing main word entity`,
               'info',
             );
@@ -2140,7 +2140,7 @@ sourceWordText processing
             // This is a genuine sub-word, safe to call upsertWord
             subWordEntity = await upsertWord(
               tx,
-              source as SourceType,
+              source,
               subWord.word,
               subWord.languageCode as LanguageCode,
               {
@@ -2214,7 +2214,7 @@ sourceWordText processing
               tx,
               subWordEntity.id,
               subWord.partOfSpeech || null,
-              source as SourceType,
+              source,
               false, // isPlural
               subWord.variant || '',
               subWord.phonetic || null,
@@ -2284,7 +2284,7 @@ sourceWordText processing
 
         for (const currentProcessingSubWord of allPopulatedSubWords) {
           if (!currentProcessingSubWord.id) {
-            serverLog(
+            void serverLog(
               `Skipping relationships for subWord '${currentProcessingSubWord.word}' as it has no ID. This should not happen.`,
               'error',
             );
@@ -2314,7 +2314,7 @@ sourceWordText processing
                     );
                     return;
                   }
-                  const relationType = relation.type as RelationshipType;
+                  const relationType = relation.type;
 
                   // Use the newly added getWordEntityInfo function
                   const fromInfo = await getWordEntityInfo(
@@ -2324,7 +2324,7 @@ sourceWordText processing
                     currentProcessingSubWord, // Current sub-word in loop context
                     allPopulatedSubWords, // All sub-words (with IDs)
                     relationType, // Relation type for PoS fallback
-                    source as SourceType, // API source as default
+                    source, // API source as default
                   );
                   const toInfo = await getWordEntityInfo(
                     relation.toWord,
@@ -2333,7 +2333,7 @@ sourceWordText processing
                     currentProcessingSubWord,
                     allPopulatedSubWords,
                     relationType,
-                    source as SourceType,
+                    source,
                   );
 
                   if (!fromInfo.wordId || !toInfo.wordId) {
@@ -2686,7 +2686,7 @@ async function processImagesForDefinitions(
             );
           }
         } catch (error) {
-          serverLog(
+          void serverLog(
             `FROM processImagesForDefinitions: Error processing image for definition ${definition.id}: ${error instanceof Error ? error.message : String(error)}`,
             'error',
           );
@@ -3175,14 +3175,14 @@ async function processAudioForWord(
   const failed = downloadResults.filter((r) => !r.success && !r.skipped);
   const skipped = downloadResults.filter((r) => r.skipped);
 
-  serverLog(
+  void serverLog(
     `🎵 Audio download results for word "${wordText}": ${successful.length} successful, ${failed.length} failed, ${skipped.length} skipped`,
     'info',
   );
 
   // Log detailed results for failures
   if (failed.length > 0) {
-    serverLog(
+    void serverLog(
       `❌ Failed audio downloads for "${wordText}": ${failed.map((f) => `${f.originalUrl} (${f.error})`).join(', ')}`,
       'warn',
     );
@@ -3495,7 +3495,7 @@ function extractSynonymsFromDefinitionPatterns(
       if (dxtMatches) {
         for (const match of dxtMatches) {
           const wordMatch = match.match(/\{dxt\|([^|:]+)/);
-          if (wordMatch && wordMatch[1]) {
+          if (wordMatch?.[1]) {
             const cleanWord = wordMatch[1].trim();
             if (cleanWord && !synonyms.includes(cleanWord)) {
               synonyms.push(cleanWord);
@@ -3509,7 +3509,7 @@ function extractSynonymsFromDefinitionPatterns(
       if (sxMatches) {
         for (const match of sxMatches) {
           const wordMatch = match.match(/\{sx\|([^|:]+)/);
-          if (wordMatch && wordMatch[1]) {
+          if (wordMatch?.[1]) {
             const cleanWord = wordMatch[1].trim();
             if (cleanWord && !synonyms.includes(cleanWord)) {
               synonyms.push(cleanWord);

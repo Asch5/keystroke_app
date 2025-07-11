@@ -1,11 +1,11 @@
 'use server';
 
-import { prisma } from '@/core/shared/database/client';
-import { auth } from '@/auth';
-import { handlePrismaError } from '@/core/shared/database/error-handler';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { transformDatabaseSettingsToState } from '@/core/domains/user/utils/settings-transformation';
 import type { InputJsonValue } from '@prisma/client/runtime/library';
+import { auth } from '@/auth';
+import { transformDatabaseSettingsToState } from '@/core/domains/user/utils/settings-transformation';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/shared/database/client';
+import { handlePrismaError } from '@/core/shared/database/error-handler';
 
 // =============================================
 // SETTINGS SYNCHRONIZATION SERVER ACTIONS
@@ -101,7 +101,7 @@ export async function loadUserSettings(userId?: string) {
         : undefined,
     );
 
-    await serverLog('Settings loaded successfully', 'info', {
+    void serverLog('Settings loaded successfully', 'info', {
       userId: targetUserId,
       hasCustomSettings: Object.keys(settings).length > 0,
       hasStudyPreferences: Object.keys(studyPreferences).length > 0,
@@ -115,7 +115,7 @@ export async function loadUserSettings(userId?: string) {
   } catch (error) {
     const { message, code } = handlePrismaError(error);
 
-    await serverLog('Failed to load user settings', 'error', {
+    void serverLog('Failed to load user settings', 'error', {
       error: message,
       code,
       userId,
@@ -166,28 +166,28 @@ export async function syncUserSettings(data: SettingsSyncData) {
         update: Object.assign(
           {},
           typeof learningPrefs.dailyGoal === 'number' && {
-            dailyGoal: learningPrefs.dailyGoal as number,
+            dailyGoal: learningPrefs.dailyGoal,
           },
           typeof learningPrefs.notificationsEnabled === 'boolean' && {
-            notificationsEnabled: learningPrefs.notificationsEnabled as boolean,
+            notificationsEnabled: learningPrefs.notificationsEnabled,
           },
           typeof learningPrefs.soundEnabled === 'boolean' && {
-            soundEnabled: learningPrefs.soundEnabled as boolean,
+            soundEnabled: learningPrefs.soundEnabled,
           },
           typeof learningPrefs.autoPlayAudio === 'boolean' && {
-            autoPlayAudio: learningPrefs.autoPlayAudio as boolean,
+            autoPlayAudio: learningPrefs.autoPlayAudio,
           },
           typeof learningPrefs.darkMode === 'boolean' && {
-            darkMode: learningPrefs.darkMode as boolean,
+            darkMode: learningPrefs.darkMode,
           },
           typeof learningPrefs.sessionDuration === 'number' && {
-            sessionDuration: learningPrefs.sessionDuration as number,
+            sessionDuration: learningPrefs.sessionDuration,
           },
           typeof learningPrefs.reviewInterval === 'number' && {
-            reviewInterval: learningPrefs.reviewInterval as number,
+            reviewInterval: learningPrefs.reviewInterval,
           },
           typeof learningPrefs.difficultyPreference === 'number' && {
-            difficultyPreference: learningPrefs.difficultyPreference as number,
+            difficultyPreference: learningPrefs.difficultyPreference,
           },
           learningPrefs.learningReminders && {
             learningReminders:
@@ -214,7 +214,7 @@ export async function syncUserSettings(data: SettingsSyncData) {
       });
     }
 
-    await serverLog('Settings synchronized successfully', 'info', {
+    void serverLog('Settings synchronized successfully', 'info', {
       userId,
       settingsKeys: Object.keys(settings),
       studyPreferencesKeys: Object.keys(studyPreferences),
@@ -232,7 +232,7 @@ export async function syncUserSettings(data: SettingsSyncData) {
   } catch (error) {
     const { message, code } = handlePrismaError(error);
 
-    await serverLog('Failed to sync user settings', 'error', {
+    void serverLog('Failed to sync user settings', 'error', {
       error: message,
       code,
       userId: data.userId,
@@ -300,7 +300,7 @@ export async function exportUserSettingsData(userId?: string) {
       version: '1.0',
     };
 
-    await serverLog('Settings exported successfully', 'info', {
+    void serverLog('Settings exported successfully', 'info', {
       userId: targetUserId,
       exportSize: JSON.stringify(exportData).length,
     });
@@ -313,7 +313,7 @@ export async function exportUserSettingsData(userId?: string) {
   } catch (error) {
     const { message, code } = handlePrismaError(error);
 
-    await serverLog('Failed to export user settings', 'error', {
+    void serverLog('Failed to export user settings', 'error', {
       error: message,
       code,
       userId,
@@ -364,7 +364,7 @@ export async function importUserSettingsData(data: SettingsImportData) {
       });
     }
 
-    await serverLog('Settings imported successfully', 'info', {
+    void serverLog('Settings imported successfully', 'info', {
       userId,
       settingsKeys: Object.keys(data.settings || {}),
       studyPreferencesKeys: Object.keys(data.studyPreferences || {}),
@@ -382,7 +382,7 @@ export async function importUserSettingsData(data: SettingsImportData) {
   } catch (error) {
     const { message, code } = handlePrismaError(error);
 
-    await serverLog('Failed to import user settings', 'error', {
+    void serverLog('Failed to import user settings', 'error', {
       error: message,
       code,
     });

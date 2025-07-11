@@ -1,14 +1,14 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
+import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
+import type { SessionState, WordResult } from './hooks';
 import { useTypingInputState } from './hooks/useTypingInputState';
-import { TypingWordDisplay } from './TypingWordDisplay';
+import { TypingAudioButton } from './TypingAudioButton';
+import { TypingControls } from './TypingControls';
 import { TypingInputField } from './TypingInputField';
 import { TypingResultFeedback } from './TypingResultFeedback';
-import { TypingControls } from './TypingControls';
-import { TypingAudioButton } from './TypingAudioButton';
-import type { SessionState, WordResult } from './hooks';
-import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
+import { TypingWordDisplay } from './TypingWordDisplay';
 
 interface TypingWordInputProps {
   sessionState: SessionState;

@@ -1,10 +1,5 @@
 'use client';
 
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import {
   Brain,
   Target,
@@ -16,6 +11,11 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface ExerciseTypeSettingsProps {
@@ -40,7 +40,7 @@ export function ExerciseTypeSettings({
   onMakeUpWordAdditionalCharactersChange,
 }: ExerciseTypeSettingsProps) {
   // Defensive checks to prevent undefined access errors during loading
-  if (!settings || typeof settings.enableRememberTranslation === 'undefined') {
+  if (typeof settings?.enableRememberTranslation === 'undefined') {
     return null;
   }
 

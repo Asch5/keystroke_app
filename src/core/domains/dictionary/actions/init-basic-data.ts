@@ -1,7 +1,7 @@
 'use server';
 
-import { prisma } from '@/core/lib/prisma';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/lib/prisma';
 
 /**
  * Initialize basic categories if none exist
@@ -41,7 +41,7 @@ export async function initializeBasicCategories(): Promise<{
       skipDuplicates: true,
     });
 
-    await serverLog(
+    void serverLog(
       `Created ${createdCategories.count} basic categories`,
       'info',
     );
@@ -53,7 +53,7 @@ export async function initializeBasicCategories(): Promise<{
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
-    await serverLog(
+    void serverLog(
       `Failed to create basic categories: ${errorMessage}`,
       'error',
     );

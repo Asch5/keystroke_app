@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/core/lib/prisma';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { prisma } from '@/core/lib/prisma';
 
 export async function GET(
   request: Request,
@@ -14,13 +14,13 @@ export async function GET(
     imageId = id;
     const parsedId = parseInt(id);
 
-    serverLog(`🖼️ Image API: Requesting image ID ${id}`, 'info', {
+    void serverLog(`🖼️ Image API: Requesting image ID ${id}`, 'info', {
       imageId: id,
       parsedId,
     });
 
     if (isNaN(parsedId)) {
-      serverLog(`❌ Image API: Invalid image ID format: ${id}`, 'error', {
+      void serverLog(`❌ Image API: Invalid image ID format: ${id}`, 'error', {
         imageId: id,
       });
       return NextResponse.json({ error: 'Invalid image ID' }, { status: 400 });
@@ -31,7 +31,7 @@ export async function GET(
     });
 
     if (!image) {
-      serverLog(
+      void serverLog(
         `❌ Image API: Image not found in database: ${parsedId}`,
         'error',
         { imageId: parsedId },
@@ -39,7 +39,7 @@ export async function GET(
       return NextResponse.json({ error: 'Image not found' }, { status: 404 });
     }
 
-    serverLog(
+    void serverLog(
       `📍 Image API: Found image in database, fetching from: ${image.url}`,
       'info',
       { imageId: parsedId, imageUrl: image.url },
@@ -49,7 +49,7 @@ export async function GET(
     const imageResponse = await fetch(image.url);
 
     if (!imageResponse.ok) {
-      serverLog(
+      void serverLog(
         `❌ Image API: Failed to fetch external image: ${image.url} - Status: ${imageResponse.status} ${imageResponse.statusText}`,
         'error',
         {
@@ -72,7 +72,7 @@ export async function GET(
 
     const duration = Date.now() - startTime;
 
-    serverLog(
+    void serverLog(
       `✅ Image API: Successfully served image ${parsedId} in ${duration}ms`,
       'info',
       {
@@ -94,7 +94,7 @@ export async function GET(
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
 
-    serverLog(
+    void serverLog(
       `💥 Image API: Error fetching image ${imageId || 'unknown'}: ${errorMessage}`,
       'error',
       {

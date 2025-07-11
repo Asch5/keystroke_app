@@ -1,13 +1,13 @@
 import { toast } from 'sonner';
+import { processDanishVariantOnServer } from '@/core/lib/actions/danishDictionaryActions/danishWordActions';
+import { checkWordExistsByUuid } from '@/core/lib/actions/dictionaryActions';
 import {
   getWordFromMerriamWebster,
   processAllWords,
   processOneWord,
 } from '@/core/lib/db/processMerriamApi';
-import { processDanishVariantOnServer } from '@/core/lib/actions/danishDictionaryActions/danishWordActions';
-import { checkWordExistsByUuid } from '@/core/lib/actions/dictionaryActions';
-import { ProcessedWord } from '../types';
 import { DanishDictionaryObject } from '@/core/types/translationDanishTypes';
+import { ProcessedWord } from '../types';
 
 /**
  * Hook for processing individual words

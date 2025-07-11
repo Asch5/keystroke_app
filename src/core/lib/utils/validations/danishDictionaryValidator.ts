@@ -517,11 +517,7 @@ export function validateDanishDictionary(
 
         if (isObject(stem)) {
           if (stem.partOfSpeech && typeof stem.partOfSpeech === 'string') {
-            if (
-              !KNOWN_STEMS_POS.includes(
-                stem.partOfSpeech as PartOfSpeechForStems,
-              )
-            ) {
+            if (!KNOWN_STEMS_POS.includes(stem.partOfSpeech)) {
               unknownEntities.stemsPartOfSpeech.add(stem.partOfSpeech);
               addIssue(
                 'stemsPartOfSpeech',
@@ -663,11 +659,7 @@ export function validateDanishDictionary(
                 stem.partOfSpeech &&
                 typeof stem.partOfSpeech === 'string'
               ) {
-                if (
-                  !KNOWN_STEMS_POS.includes(
-                    stem.partOfSpeech as PartOfSpeechForStems,
-                  )
-                ) {
+                if (!KNOWN_STEMS_POS.includes(stem.partOfSpeech)) {
                   unknownEntities.stemsPartOfSpeech.add(stem.partOfSpeech);
                   addIssue(
                     'stemsPartOfSpeech',

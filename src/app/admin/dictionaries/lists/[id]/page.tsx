@@ -1,17 +1,5 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import Image from 'next/image';
-import {
-  getListDetails,
-  type ListWithDetails,
-} from '@/core/domains/dictionary/actions';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   ArrowLeft,
   Calendar,
@@ -26,6 +14,18 @@ import {
   Languages,
   Target,
 } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter, useParams } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import {
+  getListDetails,
+  type ListWithDetails,
+} from '@/core/domains/dictionary/actions';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 // Language and difficulty display names

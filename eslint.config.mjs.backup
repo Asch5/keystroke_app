@@ -1,0 +1,225 @@
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
+const eslintConfig = [
+  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  {
+    rules: {
+      // CURSOR RULES COMPLIANCE: TypeScript & Type Safety (Rule 8)
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/prefer-as-const': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+
+      // CURSOR RULES COMPLIANCE: Component Standards (Rule 3 & 18)
+      'react/jsx-key': 'error',
+      'react/no-array-index-key': 'warn',
+      'react/jsx-no-bind': 'warn',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
+      // CURSOR RULES COMPLIANCE: Performance (Rule 21)
+      'react/jsx-no-leaked-render': 'warn',
+      'react/no-unstable-nested-components': 'error',
+
+      // COMPREHENSIVE SYNTAX RESTRICTIONS: Internationalization + Color System + Font System
+      'no-restricted-syntax': [
+        'error',
+        // AGENT.MD COMPLIANCE: Internationalization (Rule 22) - Hard-coded String Detection
+        {
+          selector:
+            'Literal[value=/^[A-Z][a-zA-Z\\s]{3,}$/]:not([parent.property.name="className"]):not([parent.property.name="href"]):not([parent.property.name="src"]):not([parent.property.name="alt"]):not([parent.key.name="key"])',
+          message:
+            'Hard-coded user-facing strings are not allowed. Use translation keys with useTranslation hook: t("namespace.key"). See documentation/INTERNATIONALIZATION_IMPLEMENTATION.md for guidelines.',
+        },
+        {
+          selector:
+            'TemplateLiteral:has(TemplateElement[value.raw=/[A-Z][a-zA-Z\\s]{5,}/])',
+          message:
+            'Hard-coded user-facing strings in template literals are not allowed. Use translation keys with parameter interpolation: t("namespace.key", { param: value }). See documentation/INTERNATIONALIZATION_IMPLEMENTATION.md for guidelines.',
+        },
+
+      // CURSOR RULES COMPLIANCE: Console.log Usage (Rule 9) - Logging Standards
+      'no-console': [
+        'error',
+        {
+          allow: ['warn', 'error'],
+        },
+      ],
+      'no-restricted-globals': [
+        'error',
+        {
+          name: 'console',
+          message:
+            'Use structured logging instead: import { infoLog, errorLog } from "@/core/infrastructure/monitoring/clientLogger" for client-side or serverLog for server-side. See documentation/LOGGING_SYSTEM_OVERVIEW.md for guidelines.',
+        },
+      ],
+
+      // AGENT.MD COMPLIANCE: Font System Enforcement
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['next/font/google', 'next/font/local'],
+              message:
+                'Font imports are not allowed. Use the semantic font system with CSS variables and Tailwind classes instead. See documentation/TYPOGRAPHY_SYSTEM_2025.md for guidelines.',
+            },
+            {
+              group: ['@prisma/client'],
+              importNames: ['PrismaClient', 'Prisma'],
+              message:
+                'Prisma client imports are not allowed in client components. Use internal types from @/core/types for client-side code. Server actions and API routes can import Prisma directly. See AGENT.md for Prisma-free architecture guidelines.',
+            },
+          ],
+        },
+      ],
+      // AGENT.MD COMPLIANCE: File Size Limits (Rule 18)
+      'max-lines': [
+        'warn',
+        {
+          max: 400,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+      complexity: ['warn', { max: 10 }],
+
+      // CURSOR RULES COMPLIANCE: Error Handling (Rule 11)
+      'no-throw-literal': 'error',
+      'prefer-promise-reject-errors': 'error',
+
+        // AGENT.MD COMPLIANCE: Color System Enforcement
+        {
+          selector:
+            'Literal[value=/text-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
+          message:
+            'Hard-coded text colors are not allowed. Use semantic tokens like "text-error-foreground", "text-success-foreground", etc. See documentation/AGENT_STYLING_RULES.md for guidelines.',
+        },
+        {
+          selector:
+            'Literal[value=/bg-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
+          message:
+            'Hard-coded background colors are not allowed. Use semantic tokens like "bg-error-subtle", "bg-success-subtle", etc. See documentation/AGENT_STYLING_RULES.md for guidelines.',
+        },
+        {
+          selector:
+            'Literal[value=/border-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
+          message:
+            'Hard-coded border colors are not allowed. Use semantic tokens like "border-error-border", "border-success-border", etc. See documentation/AGENT_STYLING_RULES.md for guidelines.',
+        },
+        {
+          selector:
+            'Literal[value=/dark:text-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
+          message:
+            'Manual dark mode color variants are not allowed with semantic tokens. Semantic tokens automatically adapt to dark mode. Remove the "dark:" prefix.',
+        },
+        {
+          selector:
+            'Literal[value=/dark:bg-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
+          message:
+            'Manual dark mode color variants are not allowed with semantic tokens. Semantic tokens automatically adapt to dark mode. Remove the "dark:" prefix.',
+        },
+        {
+          selector:
+            'Literal[value=/dark:border-(red|green|blue|yellow|purple|pink|indigo|gray|slate|zinc|neutral|stone|orange|amber|lime|emerald|teal|cyan|sky|violet|fuchsia|rose)-(50|100|200|300|400|500|600|700|800|900|950)/]',
+          message:
+            'Manual dark mode color variants are not allowed with semantic tokens. Semantic tokens automatically adapt to dark mode. Remove the "dark:" prefix.',
+        },
+        // Font system enforcement rules
+        {
+          selector:
+            'Literal[value=/font-\\[((?!font-(interface|heading|body|code|reading|display|foreign-word|phonetic|definition|translation)).)*\\]/]',
+          message:
+            'Hard-coded font families are not allowed. Use semantic font classes like "font-heading", "font-body", "font-code", etc. See documentation/TYPOGRAPHY_SYSTEM_2025.md for full reference.',
+        },
+        {
+          selector:
+            'Property[key.name="fontFamily"] > Literal[value!=/^var\\(--font-(interface|heading|body|code|reading|display|foreign-word|phonetic|definition|translation)\\)$/]',
+          message:
+            'Inline font-family styles must use CSS variables. Use var(--font-heading), var(--font-body), etc. or use Tailwind font classes instead. See documentation/TYPOGRAPHY_SYSTEM_2025.md for guidelines.',
+        },
+        {
+          selector:
+            'Literal[value=/^font-(inter|roboto|open-sans|lato|source-sans|poppins|nunito|montserrat|pt-sans|ubuntu|arial|helvetica|times|georgia|courier)$/]',
+          message:
+            'Specific font family classes are not allowed. Use semantic font classes like "font-heading", "font-body", "font-code", etc. instead. See documentation/TYPOGRAPHY_SYSTEM_2025.md for guidelines.',
+        },
+      ],
+
+      // CURSOR RULES COMPLIANCE: Accessibility (Rule 1)
+      'jsx-a11y/alt-text': 'error',
+      'jsx-a11y/aria-props': 'error',
+      'jsx-a11y/aria-proptypes': 'error',
+      'jsx-a11y/aria-unsupported-elements': 'error',
+      'jsx-a11y/role-has-required-aria-props': 'error',
+      'jsx-a11y/role-supports-aria-props': 'error',
+
+      // CURSOR RULES COMPLIANCE: Security (Rule 12)
+      'react/no-danger': 'warn',
+      'react/no-danger-with-children': 'error',
+
+      // AGENT.MD COMPLIANCE: Import Organization
+      'import/order': [
+        'warn',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+          ],
+          'newlines-between': 'never',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+
+      // CURSOR RULES COMPLIANCE: Naming Conventions
+      '@typescript-eslint/naming-convention': [
+        'warn',
+        {
+          selector: 'interface',
+          format: ['PascalCase'],
+        },
+        {
+          selector: 'typeAlias',
+          format: ['PascalCase'],
+        },
+        {
+          selector: 'enum',
+          format: ['PascalCase'],
+        },
+      ],
+
+      // CURSOR RULES COMPLIANCE: Prevent Magic Numbers
+      'no-magic-numbers': [
+        'warn',
+        {
+          ignore: [0, 1, -1],
+          ignoreArrayIndexes: true,
+          enforceConst: true,
+        },
+      ],
+
+      // AGENT.MD COMPLIANCE: Consistent Code Style
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'object-shorthand': 'warn',
+    },
+  },
+];
+
+export default eslintConfig;

@@ -1,11 +1,10 @@
-import { LanguageCode, PartOfSpeech } from '@/core/types';
-
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import {
   fetchWordFrequency,
   getGeneralFrequency,
   getPartOfSpeechFrequency,
 } from '@/core/lib/services/frequencyService';
+import { LanguageCode, PartOfSpeech } from '@/core/types';
 
 /**
  * FrequencyManager class to handle frequency data caching and avoid duplicate API calls
@@ -29,7 +28,7 @@ export class FrequencyManager {
     // Check if we have cached data
     if (!this.cache.has(cacheKey)) {
       try {
-        serverLog(
+        void serverLog(
           `Fetching frequency data for "${word}" (${languageCode})`,
           'info',
         );
@@ -45,13 +44,13 @@ export class FrequencyManager {
           posSpecific: posSpecificCache,
         });
 
-        serverLog(
+        void serverLog(
           `Cached frequency data for "${word}": general=${generalFreq}`,
           'info',
         );
       } catch (error) {
-        serverLog(
-          `Error fetching frequency data for "${word}": ${error}`,
+        void serverLog(
+          `Error fetching frequency data for "${word}": ${error instanceof Error ? error.message : String(error)}`,
           'error',
         );
 
@@ -63,7 +62,10 @@ export class FrequencyManager {
       }
     }
 
-    const cachedData = this.cache.get(cacheKey)!;
+    const cachedData = this.cache.get(cacheKey);
+    if (!cachedData) {
+      return { general: null, posSpecific: null };
+    }
     let posSpecificFreq: number | null = null;
 
     // Get PoS-specific frequency if requested
@@ -78,20 +80,20 @@ export class FrequencyManager {
           );
           cachedData.posSpecific.set(partOfSpeech, posSpecificFreq);
 
-          serverLog(
+          void serverLog(
             `Cached PoS frequency for "${word}" (${partOfSpeech}): ${posSpecificFreq}`,
             'info',
           );
         } catch (error) {
-          serverLog(
-            `Error fetching PoS frequency for "${word}" (${partOfSpeech}): ${error}`,
+          void serverLog(
+            `Error fetching PoS frequency for "${word}" (${partOfSpeech}): ${error instanceof Error ? error.message : String(error)}`,
             'error',
           );
           cachedData.posSpecific.set(partOfSpeech, null);
           posSpecificFreq = null;
         }
       } else {
-        posSpecificFreq = cachedData.posSpecific.get(partOfSpeech)!;
+        posSpecificFreq = cachedData.posSpecific.get(partOfSpeech) ?? null;
       }
     }
 

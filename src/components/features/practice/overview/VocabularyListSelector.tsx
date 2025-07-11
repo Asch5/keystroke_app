@@ -1,5 +1,7 @@
 'use client';
 
+import { Target, BookOpen, Users } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -14,9 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Target, BookOpen, Users } from 'lucide-react';
 import type {
   UserListWithDetails,
   PublicListSummary,

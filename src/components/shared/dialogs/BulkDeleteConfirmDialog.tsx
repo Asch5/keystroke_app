@@ -1,6 +1,9 @@
 'use client';
 
+import { Trash2, AlertTriangle } from 'lucide-react';
 import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,9 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Trash2, AlertTriangle } from 'lucide-react';
 
 interface BulkDeleteConfirmDialogProps {
   isOpen: boolean;

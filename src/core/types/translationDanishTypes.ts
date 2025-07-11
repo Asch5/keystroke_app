@@ -21,7 +21,6 @@ import { LanguageCode } from '@/core/types';
  * grammaticalNote "gram" - General labels provide information such as whether a headword is typically capitalized, used as an attributive noun, etc. A set of one or more such labels is contained in an lbs.
  *
  * usageNote "usg" - Usage notes provide information about the usage of a headword or a particular sense of a headword. A set of one or more such labels is contained in an usg.
- 
  *
  *
  */
@@ -206,7 +205,7 @@ export interface WordVariant {
       audio_type: string;
       audio_url: string;
       phonetic_audio: string;
-      word: RelationshipTypeVerbsInAudio | null | string;
+      word: RelationshipTypeVerbsInAudio | null;
     }[];
     etymology: string | null;
     colloquialism: string[];

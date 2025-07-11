@@ -1,4 +1,6 @@
+import { Activity, Star, AlertTriangle } from 'lucide-react';
 import React from 'react';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -9,8 +11,6 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { TabsContent } from '@/components/ui/tabs';
-import { Activity, Star, AlertTriangle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { DictionaryPerformanceMetrics } from '@/core/domains/user/actions/dictionary-performance-actions';
 
 interface PerformanceScoresTabProps {

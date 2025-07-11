@@ -1,10 +1,10 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { ImageService } from '@/core/lib/services/imageService';
 import { prisma } from '@/core/shared/database/client';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
-import { revalidatePath } from 'next/cache';
 
 export interface GenerateImageResult {
   success: boolean;
@@ -32,7 +32,7 @@ export async function generateWordImages(
   },
 ): Promise<GenerateImageResult> {
   try {
-    serverLog(`Starting image generation for word ID: ${wordId}`, 'info');
+    void serverLog(`Starting image generation for word ID: ${wordId}`, 'info');
 
     // Get word with details and their definitions
     const word = await prisma.word.findUnique({
@@ -67,14 +67,14 @@ export async function generateWordImages(
     });
 
     if (!word) {
-      serverLog(`Word not found for ID: ${wordId}`, 'error');
+      void serverLog(`Word not found for ID: ${wordId}`, 'error');
       return {
         success: false,
         message: 'Word not found',
       };
     }
 
-    serverLog(
+    void serverLog(
       `Found word: "${word.word}" (${word.languageCode}) with ${word.details.length} details`,
       'info',
     );
@@ -85,7 +85,7 @@ export async function generateWordImages(
       .map((wd) => wd.definition);
 
     if (allDefinitions.length === 0) {
-      serverLog(`No definitions found for word "${word.word}"`, 'warn');
+      void serverLog(`No definitions found for word "${word.word}"`, 'warn');
       return {
         success: false,
         message: 'No definitions found for this word',
@@ -96,7 +96,7 @@ export async function generateWordImages(
     const definitionsWithoutImages = allDefinitions.filter((def) => !def.image);
 
     if (definitionsWithoutImages.length === 0 && !options?.overwriteExisting) {
-      serverLog(
+      void serverLog(
         `All definitions already have images for word "${word.word}", skipping`,
         'info',
       );
@@ -117,7 +117,7 @@ export async function generateWordImages(
       ? allDefinitions
       : definitionsWithoutImages;
 
-    serverLog(
+    void serverLog(
       `Processing ${definitionsToProcess.length} definitions for word "${word.word}"`,
       'info',
     );
@@ -126,7 +126,7 @@ export async function generateWordImages(
       try {
         // Delete existing image if overwriting
         if (definition.image && options?.overwriteExisting) {
-          serverLog(
+          void serverLog(
             `Deleting existing image for definition ${definition.id}`,
             'info',
           );
@@ -136,7 +136,7 @@ export async function generateWordImages(
         }
 
         // Generate new image
-        serverLog(
+        void serverLog(
           `Generating image for definition ${definition.id}: "${definition.definition.substring(0, 50)}..."`,
           'info',
         );
@@ -155,7 +155,7 @@ export async function generateWordImages(
                 definition.id,
               );
 
-        serverLog(
+        void serverLog(
           `Using ${word.languageCode === 'en' ? 'direct definition' : 'translated definition'} method for image generation`,
           'info',
         );
@@ -169,13 +169,13 @@ export async function generateWordImages(
 
           processedCount++;
           lastImageUrl = image.url;
-          serverLog(
+          void serverLog(
             `Successfully generated image for definition ${definition.id}`,
             'info',
           );
         } else {
           failedCount++;
-          serverLog(
+          void serverLog(
             `Failed to generate image for definition ${definition.id}`,
             'warn',
           );
@@ -185,7 +185,7 @@ export async function generateWordImages(
         await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error) {
         failedCount++;
-        serverLog(
+        void serverLog(
           `Error generating image for definition ${definition.id}: ${error}`,
           'error',
         );
@@ -197,7 +197,7 @@ export async function generateWordImages(
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
     const resultMessage =
@@ -205,7 +205,7 @@ export async function generateWordImages(
         ? `Successfully generated images for ${processedCount} definitions of "${word.word}"${failedCount > 0 ? ` (${failedCount} failed)` : ''}`
         : `Failed to generate any images for "${word.word}"`;
 
-    serverLog(
+    void serverLog(
       `Image generation completed for word "${word.word}": ${processedCount} successful, ${failedCount} failed`,
       processedCount > 0 ? 'info' : 'warn',
     );
@@ -217,7 +217,7 @@ export async function generateWordImages(
       wordText: word.word,
     };
   } catch (error) {
-    serverLog(
+    void serverLog(
       `Error generating word images for ID ${wordId}: ${error}`,
       'error',
     );
@@ -246,15 +246,15 @@ export async function generateBatchWordImages(
   let processed = 0;
   let failed = 0;
 
-  serverLog(
+  void serverLog(
     `Starting batch image generation for ${wordIds.length} words: [${wordIds.join(', ')}]`,
     'info',
   );
-  serverLog(`Batch options: ${JSON.stringify(options)}`, 'info');
+  void serverLog(`Batch options: ${JSON.stringify(options)}`, 'info');
 
   try {
     // First, validate that all word IDs exist in the database
-    serverLog('Validating word IDs exist in database...', 'info');
+    void serverLog('Validating word IDs exist in database...', 'info');
     const existingWords = await prisma.word.findMany({
       where: {
         id: { in: wordIds },
@@ -270,7 +270,7 @@ export async function generateBatchWordImages(
     const invalidWordIds = wordIds.filter((id) => !existingWordIds.has(id));
 
     if (invalidWordIds.length > 0) {
-      serverLog(
+      void serverLog(
         `Found ${invalidWordIds.length} invalid word IDs: [${invalidWordIds.join(', ')}]. These will be skipped.`,
         'warn',
       );
@@ -282,7 +282,7 @@ export async function generateBatchWordImages(
           message: 'Word not found in database',
         });
         failed++;
-        serverLog(
+        void serverLog(
           `Word ${invalidId} result: FAILED - Word not found in database`,
           'error',
         );
@@ -292,7 +292,7 @@ export async function generateBatchWordImages(
     if (validWordIds.length === 0) {
       const errorMsg =
         'No valid word IDs found. All requested words have been deleted or do not exist.';
-      serverLog(errorMsg, 'error');
+      void serverLog(errorMsg, 'error');
       return {
         success: false,
         processed: 0,
@@ -302,7 +302,7 @@ export async function generateBatchWordImages(
       };
     }
 
-    serverLog(
+    void serverLog(
       `Processing ${validWordIds.length} valid words out of ${wordIds.length} requested`,
       'info',
     );
@@ -310,22 +310,22 @@ export async function generateBatchWordImages(
     // Process in batches to respect rate limits
     for (let i = 0; i < validWordIds.length; i += maxConcurrent) {
       const batch = validWordIds.slice(i, i + maxConcurrent);
-      serverLog(
+      void serverLog(
         `Processing batch ${Math.floor(i / maxConcurrent) + 1}: words [${batch.join(', ')}]`,
         'info',
       );
 
       const batchPromises = batch.map((wordId) => {
-        serverLog(`Creating promise for word ID: ${wordId}`, 'info');
+        void serverLog(`Creating promise for word ID: ${wordId}`, 'info');
         return generateWordImages(wordId, options);
       });
 
-      serverLog(
+      void serverLog(
         `Waiting for ${batchPromises.length} promises to resolve`,
         'info',
       );
       const batchResults = await Promise.allSettled(batchPromises);
-      serverLog(
+      void serverLog(
         `Batch results received: ${batchResults.length} results`,
         'info',
       );
@@ -335,7 +335,7 @@ export async function generateBatchWordImages(
         const wordId = batch[j];
 
         if (result?.status === 'fulfilled') {
-          serverLog(
+          void serverLog(
             `Word ${wordId} result: ${result.value.success ? 'SUCCESS' : 'FAILED'} - ${result.value.message}`,
             result.value.success ? 'info' : 'error',
           );
@@ -344,7 +344,7 @@ export async function generateBatchWordImages(
             processed++;
           } else {
             failed++;
-            serverLog(
+            void serverLog(
               `Word ${wordId} failed with message: ${result.value.message}`,
               'error',
             );
@@ -352,7 +352,10 @@ export async function generateBatchWordImages(
         } else if (result?.status === 'rejected') {
           failed++;
           const errorMsg = `Error: ${result.reason}`;
-          serverLog(`Word ${wordId} promise rejected: ${errorMsg}`, 'error');
+          void serverLog(
+            `Word ${wordId} promise rejected: ${errorMsg}`,
+            'error',
+          );
           results.push({
             success: false,
             message: errorMsg,
@@ -360,14 +363,14 @@ export async function generateBatchWordImages(
         }
       }
 
-      serverLog(
+      void serverLog(
         `Batch ${Math.floor(i / maxConcurrent) + 1} completed. Processed: ${processed}, Failed: ${failed}`,
         'info',
       );
 
       // Add delay between batches to respect rate limits
       if (i + maxConcurrent < validWordIds.length) {
-        serverLog(
+        void serverLog(
           `Waiting 2 seconds before next batch to respect rate limits`,
           'info',
         );
@@ -376,14 +379,14 @@ export async function generateBatchWordImages(
     }
 
     const finalMessage = `Batch image generation completed. ${processed} successful, ${failed} failed.`;
-    serverLog(finalMessage, processed > 0 ? 'info' : 'warn');
+    void serverLog(finalMessage, processed > 0 ? 'info' : 'warn');
 
     // Only revalidate path if running in Next.js context
     try {
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
     return {
@@ -395,7 +398,7 @@ export async function generateBatchWordImages(
     };
   } catch (error) {
     const errorMsg = `Batch image generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
-    serverLog(errorMsg, 'error');
+    void serverLog(errorMsg, 'error');
     console.error('Error in batch image generation:', error);
 
     // Only revalidate path if running in Next.js context
@@ -403,7 +406,7 @@ export async function generateBatchWordImages(
       revalidatePath('/admin/dictionaries');
     } catch {
       // Ignore revalidation errors when running outside Next.js context
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
     return {
@@ -423,7 +426,7 @@ export async function deleteWordImages(
   wordId: number,
 ): Promise<GenerateImageResult> {
   try {
-    serverLog(`Deleting images for word ID: ${wordId}`, 'info');
+    void serverLog(`Deleting images for word ID: ${wordId}`, 'info');
 
     const word = await prisma.word.findUnique({
       where: { id: wordId },
@@ -477,7 +480,7 @@ export async function deleteWordImages(
         await prisma.image.delete({
           where: { id: definition.image.id },
         });
-        serverLog(
+        void serverLog(
           `Deleted image ${definition.image.id} for definition ${definition.id}`,
           'info',
         );
@@ -488,7 +491,7 @@ export async function deleteWordImages(
     try {
       revalidatePath('/admin/dictionaries');
     } catch {
-      serverLog('Revalidation skipped (not in Next.js context)', 'info');
+      void serverLog('Revalidation skipped (not in Next.js context)', 'info');
     }
 
     return {
@@ -497,7 +500,10 @@ export async function deleteWordImages(
       wordText: word.word,
     };
   } catch (error) {
-    serverLog(`Error deleting word images for ID ${wordId}: ${error}`, 'error');
+    void serverLog(
+      `Error deleting word images for ID ${wordId}: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     const handledError = handlePrismaError(error);
 
     return {
@@ -542,7 +548,10 @@ export async function getImageStats(): Promise<{
       recentlyGenerated: recentImages,
     };
   } catch (error) {
-    serverLog(`Error getting image stats: ${error}`, 'error');
+    void serverLog(
+      `Error getting image stats: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     return {
       totalImages: 0,
       definitionsWithImages: 0,

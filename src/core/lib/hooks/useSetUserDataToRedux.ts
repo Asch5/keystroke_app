@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import { useAppDispatch } from '@/core/state/store';
-import { setUser, clearUser } from '@/core/state/features/authSlice';
-import { UserBasicData } from '@/core/types/user';
 import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 import { getUserByEmail } from '@/core/lib/db/user';
+import { setUser, clearUser } from '@/core/state/features/authSlice';
+import { useAppDispatch } from '@/core/state/store';
+import { UserBasicData } from '@/core/types/user';
 
 export function useSetUserDataToRedux() {
   const { data: session, status } = useSession();
@@ -46,6 +46,6 @@ export function useSetUserDataToRedux() {
       }
     };
 
-    syncUserData();
+    void syncUserData();
   }, [session, status, dispatch]);
 }

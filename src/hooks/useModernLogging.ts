@@ -3,8 +3,8 @@
  * Provides component-aware logging with automatic context enrichment
  */
 
-import { useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import { useCallback, useEffect, useRef } from 'react';
 import { log } from '@/core/infrastructure/monitoring/modernLogger';
 
 // Performance monitoring hook

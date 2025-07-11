@@ -1,12 +1,10 @@
 'use client';
 
-import { useSelector } from 'react-redux';
-import { NavLinks } from '@/components/features/dashboard';
 import { PowerIcon, Menu, ChevronLeft, ChevronRight } from 'lucide-react';
 import { signOut } from 'next-auth/react';
-import { NavLink } from '@/core/types/nav';
 import { useState, memo, useCallback, useMemo } from 'react';
-import { RootState } from '@/core/state/store';
+import { useSelector } from 'react-redux';
+import { NavLinks } from '@/components/features/dashboard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -17,6 +15,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { RootState } from '@/core/state/store';
+import { NavLink } from '@/core/types/nav';
 
 interface SideNavContentProps {
   links: NavLink[];

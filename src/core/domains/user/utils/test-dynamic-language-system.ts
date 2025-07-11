@@ -3,8 +3,8 @@
  * This file provides comprehensive testing of the new dynamic language functionality
  */
 
-import { getBestDefinitionForUser } from '../../dictionary/utils/translation-utils';
 import { LanguageCode } from '@/core/types';
+import { getBestDefinitionForUser } from '../../dictionary/utils/translation-utils';
 
 // Note: getUserLanguageConfig and processUserDictionaryItemForDisplay are available for testing
 // but not used in this mock test file to avoid database dependencies

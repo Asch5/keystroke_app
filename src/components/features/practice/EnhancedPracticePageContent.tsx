@@ -1,25 +1,24 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
-import { useUser } from '@/core/shared/hooks/useUser';
-import { EnhancedPracticeContent } from './EnhancedPracticeContent';
-import { useVocabularyPracticeSettings } from '@/core/shared/hooks/useSettings';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   createEnhancedPracticeSession,
   PracticeType,
   EnhancedPracticeSession,
   CreatePracticeSessionRequest,
 } from '@/core/domains/user/actions/practice-actions';
+import { UnifiedPracticeSession } from '@/core/domains/user/actions/practice-types';
 import { createUnifiedPracticeSession } from '@/core/domains/user/actions/practice-unified';
 import { createVocabularyPracticeSession } from '@/core/domains/user/actions/vocabulary-practice-actions';
-import { UnifiedPracticeSession } from '@/core/domains/user/actions/practice-types';
-import { LanguageCode, LearningStatus } from '@/core/types';
 import PracticeDebugger from '@/core/infrastructure/monitoring/practiceDebugger';
+import { useVocabularyPracticeSettings } from '@/core/shared/hooks/useSettings';
+import { useUser } from '@/core/shared/hooks/useUser';
+import { LanguageCode, LearningStatus } from '@/core/types';
+import { EnhancedPracticeContent } from './EnhancedPracticeContent';
 import '@/core/infrastructure/monitoring/debugConsole'; // Initialize debug console
 
 /**

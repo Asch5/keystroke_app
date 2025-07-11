@@ -1,20 +1,20 @@
 'use client';
 
+import { PlusCircle, Trash2 } from 'lucide-react';
 import { memo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
-import { Checkbox } from '@/components/ui/checkbox';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import type { WordFormValues } from '../index';
 
 interface AudioFilesSectionProps {
@@ -30,7 +30,7 @@ export const AudioFilesSection = memo(function AudioFilesSection({
   addAudioFile,
   removeAudioFile,
 }: AudioFilesSectionProps) {
-  const audioFiles = form.watch('audioFiles') as WordFormValues['audioFiles'];
+  const audioFiles = form.watch('audioFiles');
 
   return (
     <Card>

@@ -1,19 +1,5 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Brain,
   Clock,
@@ -32,10 +18,24 @@ import {
   Star,
   Loader2,
 } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import { LearningStatus } from '@/core/types';
-import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getWordDifficultyAnalysis } from '@/core/domains/user/actions/enhanced-practice-actions';
+import type { UserDictionaryItem } from '@/core/domains/user/actions/user-dictionary-actions';
+import { LearningStatus } from '@/core/types';
 
 interface WordDifficultyDialogProps {
   isOpen: boolean;

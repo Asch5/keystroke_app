@@ -1,5 +1,5 @@
-import { PartOfSpeech, SourceType, LanguageCode } from '@/core/types';
 import { WordFrequency } from '@/core/lib/utils/commonDictUtils/frequencyUtils';
+import { PartOfSpeech, SourceType, LanguageCode } from '@/core/types';
 
 /**
  * Represents the junction table between WordDetails and Definition

@@ -1,17 +1,16 @@
 'use client';
 
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { WordDetails } from '@/components/features/admin';
+import { PageWrapper } from '@/components/layouts';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   getWordDetails,
   type WordEntryData,
 } from '@/core/lib/actions/dictionaryActions';
 import { LanguageCode } from '@/core/types';
-import { PageWrapper } from '@/components/layouts';
-import { WordDetails } from '@/components/features/admin';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useRouter } from 'next/navigation';
 
 export default function WordDetailsPage() {
   const params = useParams();

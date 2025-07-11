@@ -1,8 +1,8 @@
 'use client';
 
 import { SpeedInsights as VercelSpeedInsights } from '@vercel/speed-insights/next';
-import { infoLog } from '@/core/infrastructure/monitoring/clientLogger';
 import { useEffect } from 'react';
+import { infoLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 /**
  * Enhanced Speed Insights component with comprehensive performance monitoring

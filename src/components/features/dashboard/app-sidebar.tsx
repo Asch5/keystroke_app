@@ -1,11 +1,23 @@
 'use client';
 
-import { useSelector } from 'react-redux';
-import { PowerIcon, BookOpen, Plus, List, Library } from 'lucide-react';
+import {
+  PowerIcon,
+  BookOpen,
+  Plus,
+  List,
+  Library,
+  ChevronRight,
+} from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { NavLink } from '@/core/types/nav';
-import { RootState } from '@/core/state/store';
+import { useSelector } from 'react-redux';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import {
   Sidebar,
   SidebarContent,
@@ -22,14 +34,8 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
+import { RootState } from '@/core/state/store';
+import { NavLink } from '@/core/types/nav';
 
 interface AppSidebarProps {
   /**

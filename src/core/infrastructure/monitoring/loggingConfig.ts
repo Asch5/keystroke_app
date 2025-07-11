@@ -203,7 +203,7 @@ class LoggingConfigurator {
     const otelDestination = destinations.find(
       (d) => d.name === 'otel' && d.enabled,
     );
-    if (otelDestination && otelDestination.endpoint) {
+    if (otelDestination?.endpoint) {
       otelLogger.initialize({
         serviceName: 'keystroke-app',
         serviceVersion: process.env.npm_package_version || '1.0.0',

@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { TranslationForm } from './components/TranslationForm';
 import { ErrorDisplay } from './components/ErrorDisplay';
+import { TranslationForm } from './components/TranslationForm';
 import { TranslationResult } from './components/TranslationResult';
 import { useTranslationState } from './hooks/useTranslationState';
 

@@ -1,7 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { BookOpen, RotateCcw, Shuffle, Target, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -9,13 +12,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { useUser } from '@/core/shared/hooks/useUser';
 import { LearningStatus } from '@/core/types';
 import { VocabularyPracticeSettings } from './settings';
-import { BookOpen, RotateCcw, Shuffle, Target, ArrowLeft } from 'lucide-react';
 
 interface VocabularyPracticeContentProps {
   userListId?: string;

@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { LanguageCode } from '@/core/types';
+import { useState, useEffect } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
-import { WordDetails } from '../admin/dictionary';
 import { getWordDetails } from '@/core/domains/dictionary/actions';
-import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
 import type { WordEntryData } from '@/core/domains/dictionary/actions';
+import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
+import { LanguageCode } from '@/core/types';
+import { WordDetails } from '../admin/dictionary';
 
 interface WordDetailsPageContentProps {
   word: string;

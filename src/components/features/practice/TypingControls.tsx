@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Trophy, SkipForward } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import type { SessionState, WordResult } from './hooks';
 
 interface TypingControlsProps {

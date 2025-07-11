@@ -1,9 +1,9 @@
 'use client';
 
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
 import { Settings, BarChart3 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 
 interface BehaviorDisplaySettingsProps {

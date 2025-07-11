@@ -1,5 +1,11 @@
 'use client';
 
+import type {
+  PracticeType,
+  EnhancedPracticeSession,
+  PracticeWord,
+} from '@/core/domains/user/actions/practice-actions';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 import {
   ChooseRightWordGame,
   RememberTranslationGame,
@@ -7,12 +13,6 @@ import {
   WriteByDefinitionGame,
   WriteBySoundGame,
 } from './games';
-import type {
-  PracticeType,
-  EnhancedPracticeSession,
-  PracticeWord,
-} from '@/core/domains/user/actions/practice-actions';
-import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 
 type PracticeConfigsType = Record<
   PracticeType,

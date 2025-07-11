@@ -7,8 +7,8 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import { SessionType, LearningStatus } from '@/core/types';
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+import { SessionType, LearningStatus } from '@/core/types';
 import {
   DifficultyAssessment,
   LearningProgressTracker,
@@ -130,7 +130,7 @@ export class PracticeSessionManager {
     try {
       const { userId, config } = options;
 
-      serverLog(`Creating practice session for user ${userId}`, 'info', {
+      void serverLog(`Creating practice session for user ${userId}`, 'info', {
         sessionType: config.sessionType,
         targetWords: config.targetWords,
         userListId: options.userListId,
@@ -211,17 +211,21 @@ export class PracticeSessionManager {
       // Store active session
       this.activeSessions.set(session.id, session);
 
-      serverLog(`Created practice session ${session.id}`, 'info', {
+      void serverLog(`Created practice session ${session.id}`, 'info', {
         wordsCount: filteredUnits.length,
         averageDifficulty: session.analytics.averageDifficulty,
       });
 
       return session;
     } catch (error) {
-      serverLog(`Error creating practice session: ${error}`, 'error', {
-        userId: options.userId,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      void serverLog(
+        `Error creating practice session: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+        {
+          userId: options.userId,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
       throw error;
     }
   }
@@ -348,11 +352,15 @@ export class PracticeSessionManager {
         ...(adaptiveAdjustment && { adaptiveAdjustment }),
       };
     } catch (error) {
-      serverLog(`Error processing attempt: ${error}`, 'error', {
-        sessionId,
-        attempt,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      void serverLog(
+        `Error processing attempt: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+        {
+          sessionId,
+          attempt,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
       throw error;
     }
   }
@@ -393,7 +401,7 @@ export class PracticeSessionManager {
       // Clean up active session
       this.activeSessions.delete(session.id);
 
-      serverLog(`Completed practice session ${session.id}`, 'info', {
+      void serverLog(`Completed practice session ${session.id}`, 'info', {
         duration: summary.performance.totalTimeSpent,
         accuracy: summary.performance.accuracy,
         wordsLearned: summary.learning.wordsLearned,
@@ -401,10 +409,14 @@ export class PracticeSessionManager {
 
       return summary;
     } catch (error) {
-      serverLog(`Error completing session: ${error}`, 'error', {
-        sessionId: session.id,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      void serverLog(
+        `Error completing session: ${error instanceof Error ? error.message : String(error)}`,
+        'error',
+        {
+          sessionId: session.id,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
       throw error;
     }
   }
@@ -420,7 +432,7 @@ export class PracticeSessionManager {
         (Date.now() - session.startTime.getTime()) / 1000,
       );
 
-      serverLog(`Paused session ${sessionId}`, 'info');
+      void serverLog(`Paused session ${sessionId}`, 'info');
     }
   }
 
@@ -433,7 +445,7 @@ export class PracticeSessionManager {
       session.status = 'active';
       session.startTime = new Date(); // Reset start time for elapsed calculation
 
-      serverLog(`Resumed session ${sessionId}`, 'info');
+      void serverLog(`Resumed session ${sessionId}`, 'info');
     }
   }
 
@@ -462,7 +474,7 @@ export class PracticeSessionManager {
 
       this.activeSessions.delete(sessionId);
 
-      serverLog(`Abandoned session ${sessionId}`, 'info', {
+      void serverLog(`Abandoned session ${sessionId}`, 'info', {
         completionPercentage:
           (session.progress.completed / session.progress.total) * 100,
       });

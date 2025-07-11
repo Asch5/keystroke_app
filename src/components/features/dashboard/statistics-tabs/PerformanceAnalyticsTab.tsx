@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity } from 'lucide-react';
+import React, { Suspense } from 'react';
 import { DictionaryPerformanceSection } from '@/components/features/dictionary/DictionaryPerformanceSection';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { DictionaryPerformanceMetrics } from '@/core/domains/user/actions/dictionary-performance-actions';
 
 interface PerformanceAnalyticsTabProps {

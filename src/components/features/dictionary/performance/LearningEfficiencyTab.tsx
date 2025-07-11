@@ -1,3 +1,4 @@
+import { TrendingUp, Target, Clock, Zap, BookOpen } from 'lucide-react';
 import React from 'react';
 import {
   Card,
@@ -8,7 +9,6 @@ import {
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { TabsContent } from '@/components/ui/tabs';
-import { TrendingUp, Target, Clock, Zap, BookOpen } from 'lucide-react';
 import { DictionaryPerformanceMetrics } from '@/core/domains/user/actions/dictionary-performance-actions';
 import { formatPercentage, getPercentageColor } from './utils';
 

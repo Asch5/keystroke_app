@@ -630,14 +630,14 @@ async function* getProgressStream(userId: string) {
 import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 // Usage throughout the system
-serverLog('Session created successfully', 'info', {
+void serverLog('Session created successfully', 'info', {
   sessionId,
   userId,
   practiceType,
   wordCount: words.length,
 });
 
-serverLog('SRS update failed', 'error', {
+void serverLog('SRS update failed', 'error', {
   userDictionaryId,
   error: error.message,
   stack: error.stack,
@@ -759,7 +759,7 @@ console.log('SRS Debug:', {
 
 ```typescript
 // Verify session update calls
-serverLog('Session update attempt', 'info', {
+void serverLog('Session update attempt', 'info', {
   sessionId,
   wordCompleted,
   isCorrect,
@@ -803,7 +803,7 @@ const start = Date.now();
 const result = await getLearningAnalytics(userId, 'month');
 const duration = Date.now() - start;
 
-serverLog('Analytics performance', 'info', {
+void serverLog('Analytics performance', 'info', {
   userId,
   duration,
   recordCount: result.analytics?.totalSessions,

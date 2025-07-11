@@ -3,15 +3,15 @@
 import { memo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import type { WordFormValues } from '../index';
 
 interface WordBasicFieldsProps {
@@ -41,7 +41,7 @@ export const WordBasicFields = memo(function WordBasicFields({
                   <FormControl>
                     <Input
                       {...field}
-                      value={(field.value as string) || ''}
+                      value={field.value || ''}
                       placeholder="Enter the word"
                       disabled={isLoading}
                     />

@@ -1,19 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card, CardContent } from '@/components/ui/card';
 import { Keyboard, Target } from 'lucide-react';
-import { useUser } from '@/core/shared/hooks/useUser';
-import { VocabularyPracticeSettingsDialog } from './settings';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   getUserLists,
   getAvailablePublicLists,
   type UserListWithDetails,
   type PublicListSummary,
 } from '@/core/domains/dictionary/actions/user-list-actions';
+import { useTranslation } from '@/core/shared/hooks/useTranslation';
+import { useUser } from '@/core/shared/hooks/useUser';
 import { PracticeTypeCard, VocabularyListSelector } from './overview';
 import type { PracticeType } from './overview';
+import { VocabularyPracticeSettingsDialog } from './settings';
 
 const PRACTICE_TYPES: PracticeType[] = [
   {
@@ -50,6 +51,7 @@ const PRACTICE_TYPES: PracticeType[] = [
  * Practice overview component that allows users to choose practice types and lists
  */
 export function PracticeOverviewContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user } = useUser();
 
@@ -144,10 +146,9 @@ export function PracticeOverviewContent() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Practice Your Vocabulary</h1>
+        <h1 className="text-3xl font-bold">{t('practice.practiceOverview')}</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Choose from different practice types and select which vocabulary list
-          you want to focus on.
+          {t('practice.selectVocabularySource')}
         </p>
       </div>
 

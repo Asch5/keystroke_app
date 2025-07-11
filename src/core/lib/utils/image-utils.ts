@@ -94,7 +94,9 @@ export async function compressImage(
 
         tryCompress();
       } catch (error) {
-        reject(error);
+        reject(
+          error instanceof Error ? error : new Error('Compression failed'),
+        );
       }
     };
 
@@ -277,7 +279,9 @@ export async function createSquareCrop(
           0.9,
         );
       } catch (error) {
-        reject(error);
+        reject(
+          error instanceof Error ? error : new Error('Image cropping failed'),
+        );
       }
     };
 

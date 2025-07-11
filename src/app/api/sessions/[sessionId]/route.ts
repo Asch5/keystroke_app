@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { updateLearningSession } from '@/core/domains/user/actions/session-actions';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import type { UpdateSessionRequest } from '@/core/domains/user/types/session';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * PATCH /api/sessions/[sessionId] - Update a learning session
@@ -23,7 +23,7 @@ export async function PATCH(
     // Parse request body
     const body: UpdateSessionRequest = await request.json();
 
-    serverLog(`Updating learning session ${sessionId}`, 'info', {
+    void serverLog(`Updating learning session ${sessionId}`, 'info', {
       userId: session.user.id,
       sessionId,
       updates: body,
@@ -33,7 +33,7 @@ export async function PATCH(
     const result = await updateLearningSession(sessionId, body);
 
     if (!result.success) {
-      serverLog(`Failed to update session: ${result.error}`, 'error');
+      void serverLog(`Failed to update session: ${result.error}`, 'error');
       return NextResponse.json(
         { error: result.error || 'Failed to update session' },
         { status: 500 },
@@ -52,7 +52,7 @@ export async function PATCH(
       },
     );
   } catch (error) {
-    serverLog(
+    void serverLog(
       `API error in PATCH /api/sessions/[sessionId]: ${error}`,
       'error',
     );

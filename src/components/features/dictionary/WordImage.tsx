@@ -1,16 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { ImageIcon, SearchIcon, Loader2, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
-import { ImageMetadata } from '@/core/lib/services/imageService';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -20,10 +15,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { ImageMetadata } from '@/core/lib/services/imageService';
 //import { Label } from '@/components/ui/label';
-import { ImageIcon, SearchIcon, Loader2, AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
 import { normalizeText } from '@/core/lib/utils/commonDictUtils/wordsFormators';
 
 interface WordImageProps {
@@ -62,11 +62,7 @@ export function WordImage({
 
       // Check if response is OK and has the expected content type
       const contentType = response.headers.get('content-type');
-      if (
-        !response.ok ||
-        !contentType ||
-        !contentType.includes('application/json')
-      ) {
+      if (!response.ok || !contentType?.includes('application/json')) {
         // If not JSON, try to get the text to provide a better error message
         const text = await response.text();
 
@@ -127,11 +123,7 @@ export function WordImage({
 
       // Check for HTML or non-JSON responses
       const contentType = response.headers.get('content-type');
-      if (
-        !response.ok ||
-        !contentType ||
-        !contentType.includes('application/json')
-      ) {
+      if (!response.ok || !contentType?.includes('application/json')) {
         // If not JSON, try to get the text to provide a better error message
         const text = await response.text();
 

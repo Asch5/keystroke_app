@@ -1,14 +1,14 @@
 'use server';
 
-import { AuthError } from 'next-auth';
-import { signIn } from '@/auth';
+import { hash } from 'bcryptjs';
 import { redirect } from 'next/navigation';
+import { AuthError } from 'next-auth';
 import { z } from 'zod';
+import { signIn } from '@/auth';
 import { getUserByEmail } from '@/core/lib/db/user';
 import { prisma } from '@/core/lib/prisma';
-import { hash } from 'bcryptjs';
-import { UserBasicData } from '@/core/types/user';
 import { LanguageCode } from '@/core/types';
+import { UserBasicData } from '@/core/types/user';
 
 const formSchemaLogin = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),

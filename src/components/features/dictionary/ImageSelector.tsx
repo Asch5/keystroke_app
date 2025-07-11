@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { ImageIcon, SearchIcon, Loader2, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -12,8 +14,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ImageIcon, SearchIcon, Loader2, AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface ImageData {
   id: number;
@@ -74,7 +74,7 @@ export function ImageSelector({
       }
 
       const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+      if (!contentType?.includes('application/json')) {
         throw new Error('Invalid response: Expected JSON content type');
       }
 

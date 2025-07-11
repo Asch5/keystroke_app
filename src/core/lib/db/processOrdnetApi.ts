@@ -9,7 +9,9 @@ import { transformDanishForms } from '@/core/lib/utils/danishDictionary/transfor
 import { clientLog } from '@/core/lib/utils/logUtils';
 import { validateDanishDictionary } from '@/core/lib/utils/validations/danishDictionaryValidator';
 import { audioDownloadService } from '@/core/shared/services/external-apis/audioDownloadService';
+import { type AudioMetadata } from '@/core/shared/services/external-apis/blobStorageService';
 import { FrequencyManager } from '@/core/shared/services/FrequencyManager';
+import { WordService } from '@/core/shared/services/WordService';
 import {
   LanguageCode,
   PartOfSpeech,
@@ -20,25 +22,23 @@ import {
   Gender,
 } from '@/core/types';
 import {
+  DatabaseTransactionClient,
+  DatabaseKnownRequestError,
+  DatabaseTransactionIsolationLevel,
+} from '@/core/types/database';
+import {
   ProcessedWordData,
   SubWordData,
   RelationshipFromTo,
   AudioFile,
   DefinitionExampleOfProcessWordData,
 } from '@/core/types/dictionary';
-import {
-  DatabaseTransactionClient,
-  DatabaseKnownRequestError,
-  DatabaseTransactionIsolationLevel,
-} from '@/core/types/database';
 // Frequency services are now handled by FrequencyManager and WordService
 import {
   WordVariant,
   PartOfSpeechDanish,
   DetailCategoryDanish,
 } from '@/core/types/translationDanishTypes';
-import { WordService } from '@/core/shared/services/WordService';
-import { type AudioMetadata } from '@/core/shared/services/external-apis/blobStorageService';
 //import { processTranslationsForWord } from '@/core/lib/db/wordTranslationProcessor';
 
 /**
@@ -268,7 +268,7 @@ async function processAudioForWord(
       languageCode: languageCode,
       qualityLevel: 'standard', // External audio files are typically standard quality
       voiceGender: 'FEMALE', // Default for Danish sources
-      characterCount: wordText?.length || audioFile.word?.length || 0,
+      characterCount: wordText?.length ?? audioFile.word?.length ?? 0,
     };
 
     // Download and store the audio
@@ -322,7 +322,7 @@ async function processAudioForWord(
     originalAudioFile: AudioFile;
   } | null = null;
   if (isPrimaryArg && downloadResults.length > 0) {
-    primaryAudioCandidate = downloadResults[0] || null;
+    primaryAudioCandidate = downloadResults[0] ?? null;
   }
 
   // Determine which audio file will be non-primary, if any
@@ -334,7 +334,7 @@ async function processAudioForWord(
     if (isPrimaryArg && i === 0) {
       continue;
     }
-    nonPrimaryAudioCandidate = downloadResults[i] || null;
+    nonPrimaryAudioCandidate = downloadResults[i] ?? null;
     break;
   }
 
@@ -349,15 +349,15 @@ async function processAudioForWord(
         languageCode: languageCode,
         source: source,
         note:
-          primaryAudioCandidate.originalAudioFile.note ||
-          primaryAudioCandidate.originalAudioFile.word ||
+          primaryAudioCandidate.originalAudioFile.note ??
+          primaryAudioCandidate.originalAudioFile.word ??
           'Downloaded from external source',
       },
       update: {
         source: source,
         note:
-          primaryAudioCandidate.originalAudioFile.note ||
-          primaryAudioCandidate.originalAudioFile.word ||
+          primaryAudioCandidate.originalAudioFile.note ??
+          primaryAudioCandidate.originalAudioFile.word ??
           'Downloaded from external source',
       },
     });
@@ -406,15 +406,15 @@ async function processAudioForWord(
           languageCode: languageCode,
           source: source,
           note:
-            nonPrimaryAudioCandidate.originalAudioFile.note ||
-            nonPrimaryAudioCandidate.originalAudioFile.word ||
+            nonPrimaryAudioCandidate.originalAudioFile.note ??
+            nonPrimaryAudioCandidate.originalAudioFile.word ??
             'Downloaded from external source',
         },
         update: {
           source: source,
           note:
-            nonPrimaryAudioCandidate.originalAudioFile.note ||
-            nonPrimaryAudioCandidate.originalAudioFile.word ||
+            nonPrimaryAudioCandidate.originalAudioFile.note ??
+            nonPrimaryAudioCandidate.originalAudioFile.word ??
             'Downloaded from external source',
         },
       });
@@ -1484,12 +1484,12 @@ export async function processAndSaveDanishWord(
 
   const performDbOperations = async (tx: DatabaseTransactionClient) => {
     const mainWord = await upsertWord(tx, source, mainWordText, language, {
-      phonetic: processedData.word.phonetic || null,
-      audioFiles: processedData.word.audioFiles || null,
-      etymology: processedData.word.etymology || null,
-      sourceEntityId: processedData.word.sourceEntityId || null,
+      phonetic: processedData.word.phonetic ?? null,
+      audioFiles: processedData.word.audioFiles ?? null,
+      etymology: processedData.word.etymology ?? null,
+      sourceEntityId: processedData.word.sourceEntityId ?? null,
       partOfSpeech,
-      variant: processedData.word.variant || '',
+      variant: processedData.word.variant ?? '',
       isHighlighted: false,
       frequencyGeneral: frequencyGeneral,
       frequencyManager: frequencyManager,
@@ -1502,7 +1502,7 @@ export async function processAndSaveDanishWord(
       partOfSpeech,
       source,
       false,
-      processedData.word.variant || '',
+      processedData.word.variant ?? '',
       processedData.word.phonetic,
       frequency,
       gender,
@@ -1527,21 +1527,21 @@ export async function processAndSaveDanishWord(
           },
         },
         update: {
-          subjectStatusLabels: definitionData.subjectStatusLabels || null,
-          generalLabels: definitionData.generalLabels || null,
-          grammaticalNote: definitionData.grammaticalNote || null,
-          usageNote: definitionData.usageNote || null,
-          isInShortDef: definitionData.isInShortDef || false,
+          subjectStatusLabels: definitionData.subjectStatusLabels ?? null,
+          generalLabels: definitionData.generalLabels ?? null,
+          grammaticalNote: definitionData.grammaticalNote ?? null,
+          usageNote: definitionData.usageNote ?? null,
+          isInShortDef: definitionData.isInShortDef ?? false,
         },
         create: {
           definition: definitionData.definition,
           source: definitionData.source as SourceType,
           languageCode: definitionData.languageCode as LanguageCode,
-          subjectStatusLabels: definitionData.subjectStatusLabels || null,
-          generalLabels: definitionData.generalLabels || null,
-          grammaticalNote: definitionData.grammaticalNote || null,
-          usageNote: definitionData.usageNote || null,
-          isInShortDef: definitionData.isInShortDef || false,
+          subjectStatusLabels: definitionData.subjectStatusLabels ?? null,
+          generalLabels: definitionData.generalLabels ?? null,
+          grammaticalNote: definitionData.grammaticalNote ?? null,
+          usageNote: definitionData.usageNote ?? null,
+          isInShortDef: definitionData.isInShortDef ?? false,
         },
       });
       // Update definitionData with the ID from the database
@@ -1582,12 +1582,12 @@ export async function processAndSaveDanishWord(
               example: example.example,
               languageCode: example.languageCode as LanguageCode,
               definitionId: definition.id,
-              grammaticalNote: example.grammaticalNote || null,
-              sourceOfExample: example.sourceOfExample || null,
+              grammaticalNote: example.grammaticalNote ?? null,
+              sourceOfExample: example.sourceOfExample ?? null,
             },
             update: {
-              grammaticalNote: example.grammaticalNote || null,
-              sourceOfExample: example.sourceOfExample || null,
+              grammaticalNote: example.grammaticalNote ?? null,
+              sourceOfExample: example.sourceOfExample ?? null,
             },
           });
           // Update example with ID from the database
@@ -1622,9 +1622,9 @@ export async function processAndSaveDanishWord(
           subWord.word,
           subWord.languageCode as LanguageCode,
           {
-            phonetic: subWord.phonetic || null,
-            audioFiles: subWord.audioFiles || null,
-            etymology: subWord.etymology || null,
+            phonetic: subWord.phonetic ?? null,
+            audioFiles: subWord.audioFiles ?? null,
+            etymology: subWord.etymology ?? null,
             partOfSpeech: subWord.partOfSpeech,
             frequencyManager: frequencyManager,
           },
@@ -1654,21 +1654,21 @@ export async function processAndSaveDanishWord(
             },
           },
           update: {
-            subjectStatusLabels: defData.subjectStatusLabels || null,
-            generalLabels: defData.generalLabels || null,
-            grammaticalNote: defData.grammaticalNote || null,
-            usageNote: defData.usageNote || null,
-            isInShortDef: defData.isInShortDef || false,
+            subjectStatusLabels: defData.subjectStatusLabels ?? null,
+            generalLabels: defData.generalLabels ?? null,
+            grammaticalNote: defData.grammaticalNote ?? null,
+            usageNote: defData.usageNote ?? null,
+            isInShortDef: defData.isInShortDef ?? false,
           },
           create: {
             definition: defData.definition,
             source: defData.source as SourceType,
             languageCode: defData.languageCode as LanguageCode,
-            subjectStatusLabels: defData.subjectStatusLabels || null,
-            generalLabels: defData.generalLabels || null,
-            grammaticalNote: defData.grammaticalNote || null,
-            usageNote: defData.usageNote || null,
-            isInShortDef: defData.isInShortDef || false,
+            subjectStatusLabels: defData.subjectStatusLabels ?? null,
+            generalLabels: defData.generalLabels ?? null,
+            grammaticalNote: defData.grammaticalNote ?? null,
+            usageNote: defData.usageNote ?? null,
+            isInShortDef: defData.isInShortDef ?? false,
           },
         });
         if (
@@ -1688,15 +1688,15 @@ export async function processAndSaveDanishWord(
         const subWordDetails = await upsertWordDetails(
           tx,
           subWordEntity.id,
-          subWord.partOfSpeech || null,
+          subWord.partOfSpeech ?? null,
           source,
           false,
-          subWord.variant || '',
-          subWord.phonetic || null,
+          subWord.variant ?? '',
+          subWord.phonetic ?? null,
           null,
-          subWord.gender || null,
-          subWord.forms || null,
-          subWord.etymology || null,
+          subWord.gender ?? null,
+          subWord.forms ?? null,
+          subWord.etymology ?? null,
           frequencyManager,
         );
         await tx.wordDefinition.upsert({
@@ -1727,12 +1727,12 @@ export async function processAndSaveDanishWord(
                 example: example.example,
                 languageCode: example.languageCode as LanguageCode,
                 definitionId: subWordDef.id,
-                grammaticalNote: example.grammaticalNote || null,
-                sourceOfExample: example.sourceOfExample || null,
+                grammaticalNote: example.grammaticalNote ?? null,
+                sourceOfExample: example.sourceOfExample ?? null,
               },
               update: {
-                grammaticalNote: example.grammaticalNote || null,
-                sourceOfExample: example.sourceOfExample || null,
+                grammaticalNote: example.grammaticalNote ?? null,
+                sourceOfExample: example.sourceOfExample ?? null,
               },
             });
             if (
@@ -2037,11 +2037,11 @@ export async function processAndSaveDanishWord(
 
                   if (fromSubWordData) {
                     // Update existing WordDetails with actual data from sub-word
-                    const fromVariant = fromSubWordData?.variant || '';
-                    const fromPhonetic = fromSubWordData?.phonetic || null;
-                    const fromGender = fromSubWordData?.gender || null;
-                    const fromForms = fromSubWordData?.forms || null;
-                    const fromEtymology = fromSubWordData?.etymology || null;
+                    const fromVariant = fromSubWordData?.variant ?? '';
+                    const fromPhonetic = fromSubWordData?.phonetic ?? null;
+                    const fromGender = fromSubWordData?.gender ?? null;
+                    const fromForms = fromSubWordData?.forms ?? null;
+                    const fromEtymology = fromSubWordData?.etymology ?? null;
 
                     void serverLog(
                       `Updating existing sub-word WordDetails ${existingFromWordDetails.id} for fromWord ID ${fromWordId} with actual data: etymology="${fromEtymology}", phonetic="${fromPhonetic}", forms="${fromForms}"`,
@@ -2053,21 +2053,11 @@ export async function processAndSaveDanishWord(
                       data: {
                         variant: fromVariant,
                         phonetic:
-                          fromPhonetic !== null
-                            ? fromPhonetic
-                            : existingFromWordDetails.phonetic,
-                        gender:
-                          fromGender !== null
-                            ? fromGender
-                            : existingFromWordDetails.gender,
-                        forms:
-                          fromForms !== null
-                            ? fromForms
-                            : existingFromWordDetails.forms,
+                          fromPhonetic ?? existingFromWordDetails.phonetic,
+                        gender: fromGender ?? existingFromWordDetails.gender,
+                        forms: fromForms ?? existingFromWordDetails.forms,
                         etymology:
-                          fromEtymology !== null
-                            ? fromEtymology
-                            : existingFromWordDetails.etymology,
+                          fromEtymology ?? existingFromWordDetails.etymology,
                         isPlural: isFromPlural,
                       },
                     });
@@ -2091,11 +2081,11 @@ export async function processAndSaveDanishWord(
                 }
 
                 // Use actual data from sub-word if available, otherwise use defaults
-                const fromVariant = fromSubWordData?.variant || '';
-                const fromPhonetic = fromSubWordData?.phonetic || null;
-                const fromGender = fromSubWordData?.gender || null;
-                const fromForms = fromSubWordData?.forms || null;
-                const fromEtymology = fromSubWordData?.etymology || null;
+                const fromVariant = fromSubWordData?.variant ?? '';
+                const fromPhonetic = fromSubWordData?.phonetic ?? null;
+                const fromGender = fromSubWordData?.gender ?? null;
+                const fromForms = fromSubWordData?.forms ?? null;
+                const fromEtymology = fromSubWordData?.etymology ?? null;
 
                 // Debug: Log the etymology value being used
                 if (fromEtymology) {
@@ -2187,11 +2177,11 @@ export async function processAndSaveDanishWord(
 
                   if (toSubWordData) {
                     // Update existing WordDetails with actual data from sub-word
-                    const toVariant = toSubWordData?.variant || '';
-                    const toPhonetic = toSubWordData?.phonetic || null;
-                    const toGender = toSubWordData?.gender || null;
-                    const toForms = toSubWordData?.forms || null;
-                    const toEtymology = toSubWordData?.etymology || null;
+                    const toVariant = toSubWordData?.variant ?? '';
+                    const toPhonetic = toSubWordData?.phonetic ?? null;
+                    const toGender = toSubWordData?.gender ?? null;
+                    const toForms = toSubWordData?.forms ?? null;
+                    const toEtymology = toSubWordData?.etymology ?? null;
 
                     void serverLog(
                       `Updating existing sub-word WordDetails ${existingToWordDetails.id} for toWord ID ${toWordId} with actual data: etymology="${toEtymology}", phonetic="${toPhonetic}", forms="${toForms}"`,
@@ -2202,22 +2192,11 @@ export async function processAndSaveDanishWord(
                       where: { id: existingToWordDetails.id },
                       data: {
                         variant: toVariant,
-                        phonetic:
-                          toPhonetic !== null
-                            ? toPhonetic
-                            : existingToWordDetails.phonetic,
-                        gender:
-                          toGender !== null
-                            ? toGender
-                            : existingToWordDetails.gender,
-                        forms:
-                          toForms !== null
-                            ? toForms
-                            : existingToWordDetails.forms,
+                        phonetic: toPhonetic ?? existingToWordDetails.phonetic,
+                        gender: toGender ?? existingToWordDetails.gender,
+                        forms: toForms ?? existingToWordDetails.forms,
                         etymology:
-                          toEtymology !== null
-                            ? toEtymology
-                            : existingToWordDetails.etymology,
+                          toEtymology ?? existingToWordDetails.etymology,
                         isPlural: isToPlural,
                       },
                     });
@@ -2241,11 +2220,11 @@ export async function processAndSaveDanishWord(
                 }
 
                 // Use actual data from sub-word if available, otherwise use defaults
-                const toVariant = toSubWordData?.variant || '';
-                const toPhonetic = toSubWordData?.phonetic || null;
-                const toGender = toSubWordData?.gender || null;
-                const toForms = toSubWordData?.forms || null;
-                const toEtymology = toSubWordData?.etymology || null;
+                const toVariant = toSubWordData?.variant ?? '';
+                const toPhonetic = toSubWordData?.phonetic ?? null;
+                const toGender = toSubWordData?.gender ?? null;
+                const toForms = toSubWordData?.forms ?? null;
+                const toEtymology = toSubWordData?.etymology ?? null;
 
                 // Debug: Log the etymology value being used
                 if (toEtymology) {

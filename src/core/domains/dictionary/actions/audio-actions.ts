@@ -1,5 +1,6 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/lib/prisma';
 import { AudioUpdateData } from '@/core/types/dictionary';
 
@@ -33,7 +34,7 @@ export async function createAudioForExample(
 
     return createdAudio;
   } catch (error) {
-    console.error('Error creating audio for example:', error);
+    await serverLog('Error creating audio for example', 'error', error);
     throw new Error(
       `Failed to create audio for example: ${error instanceof Error ? error.message : String(error)}`,
     );
@@ -72,7 +73,7 @@ export async function createAudioForWord(
 
     return { success: true };
   } catch (error) {
-    console.error('Error creating audio for word:', error);
+    await serverLog('Error creating audio for word', 'error', error);
     throw new Error('Failed to create audio for word');
   }
 }
@@ -107,7 +108,7 @@ export async function createAudioForDefinition(
 
     return createdAudio;
   } catch (error) {
-    console.error('Error creating audio for definition:', error);
+    await serverLog('Error creating audio for definition', 'error', error);
     throw new Error(
       `Failed to create audio for definition: ${error instanceof Error ? error.message : String(error)}`,
     );

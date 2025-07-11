@@ -3,6 +3,12 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import {
+  debugLog,
+  infoLog,
+  warnLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 
 /**
  * Custom hook for audio playback in typing practice
@@ -19,14 +25,15 @@ export function useTypingAudioPlayback() {
    */
   const playWordAudio = useCallback(
     async (word: string, audioUrl: string | undefined, isCorrect: boolean) => {
-      console.log('🎵 Attempting to play audio for word:', word, {
+      void debugLog('🎵 Attempting to play audio for word:', {
+        word,
         audioUrl,
         isCorrect,
       });
 
       // Check if audio is available in database
       if (!audioUrl) {
-        console.warn('⚠️ No audio URL provided for word:', word);
+        void warnLog('⚠️ No audio URL provided for word:', { word });
         toast.info('🔇 No audio available for this word', {
           description: 'Audio will be added to the database when available',
           duration: 2000,
@@ -37,21 +44,20 @@ export function useTypingAudioPlayback() {
       setIsPlayingAudio(true);
 
       try {
-        console.log('🔊 Playing audio from database...');
+        void infoLog('🔊 Playing audio from database...');
         await AudioService.playAudioFromDatabase(audioUrl);
-        console.log('✅ Audio playback successful for word:', word);
+        void infoLog('✅ Audio playback successful for word:', { word });
 
         // Add visual feedback
-        console.log(
-          '🎯 Audio played for',
-          isCorrect ? 'correct' : 'incorrect',
-          'answer',
-        );
-      } catch (error) {
-        console.error(
-          '❌ Database audio playback failed for word:',
+        void infoLog('🎯 Audio played for answer type:', {
           word,
-          error,
+          isCorrect,
+          answerType: isCorrect ? 'correct' : 'incorrect',
+        });
+      } catch (error) {
+        await errorLog(
+          '❌ Database audio playback failed for word',
+          `${word}: ${error instanceof Error ? error.message : String(error)}`,
         );
 
         // NO FALLBACK - only notify user that audio is not available
@@ -77,7 +83,10 @@ export function useTypingAudioPlayback() {
       AudioService.stopCurrentAudio();
       setIsPlayingAudio(false);
     } catch (error) {
-      console.error('Error stopping audio:', error);
+      await errorLog(
+        'Error stopping audio',
+        error instanceof Error ? error.message : String(error),
+      );
     }
   }, []);
 

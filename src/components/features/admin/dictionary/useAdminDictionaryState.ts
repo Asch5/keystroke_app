@@ -10,6 +10,10 @@ import {
 import { useAdminDictionaryFilters } from '@/core/shared/hooks/useSettings';
 import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
 import { FilterState } from './AdminDictionaryConstants';
+import {
+  debugLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 
 /**
  * Custom hook for managing all state and business logic for the admin dictionaries page
@@ -74,8 +78,8 @@ export function useAdminDictionaryState() {
 
     // Debug: Log frequency data for first few items
     if (wordDetails.length > 0) {
-      console.log(
-        'Debug: Sample frequency data:',
+      void debugLog(
+        'Sample frequency data:',
         wordDetails.slice(0, 5).map((item) => ({
           word: item.wordText,
           frequencyGeneral: item.frequencyGeneral,
@@ -129,7 +133,7 @@ export function useAdminDictionaryState() {
       filters.frequencyGeneralMin !== null ||
       filters.frequencyGeneralMax !== null
     ) {
-      console.log('Debug: Applying frequency general filter:', {
+      void debugLog('Applying frequency general filter:', {
         min: filters.frequencyGeneralMin,
         max: filters.frequencyGeneralMax,
         itemsBeforeFilter: filtered.length,
@@ -163,10 +167,9 @@ export function useAdminDictionaryState() {
         return passes;
       });
 
-      console.log(
-        'Debug: Items after frequency general filter:',
-        filtered.length,
-      );
+      void debugLog('Items after frequency general filter:', {
+        count: filtered.length,
+      });
     }
 
     // Filter by specific frequency range
@@ -207,7 +210,10 @@ export function useAdminDictionaryState() {
           await fetchDictionaryWordDetails(selectedLanguage);
         setWordDetails(fetchedWordDetails);
       } catch (error) {
-        console.error('Error loading word details:', error);
+        await errorLog(
+          'Error loading word details',
+          error instanceof Error ? error.message : String(error),
+        );
       } finally {
         setIsLoading(false);
       }

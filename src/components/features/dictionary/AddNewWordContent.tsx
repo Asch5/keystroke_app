@@ -33,6 +33,7 @@ import {
 } from '@/core/domains/dictionary';
 import { LanguageCode, PartOfSpeech } from '@/core/types';
 import { AddToListDialog } from './AddToListDialog';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 interface AddNewWordContentProps {
   userId: string;
@@ -158,7 +159,10 @@ export function AddNewWordContent({
         setTotalCount(result.totalCount);
         setCurrentPage(page);
       } catch (error) {
-        console.error('Error searching words:', error);
+        await errorLog(
+          'Error searching words',
+          error instanceof Error ? error.message : String(error),
+        );
         toast.error('Failed to search words. Please try again.');
       } finally {
         setIsSearching(false);
@@ -193,8 +197,12 @@ export function AddNewWordContent({
             toast.error(result.error || 'Failed to add word to dictionary');
           }
         } catch (error) {
-          console.error('Error adding definition:', error);
+          await errorLog(
+            'Error adding definition',
+            error instanceof Error ? error.message : String(error),
+          );
           toast.error('Failed to add word to dictionary');
+        } finally {
         }
       });
     },
@@ -235,8 +243,12 @@ export function AddNewWordContent({
           toast.error(result.error || 'Failed to add word to dictionary');
         }
       } catch (error) {
-        console.error('Error adding definition:', error);
+        await errorLog(
+          'Error adding definition',
+          error instanceof Error ? error.message : String(error),
+        );
         toast.error('Failed to add word to dictionary');
+      } finally {
       }
     });
   };
@@ -259,8 +271,12 @@ export function AddNewWordContent({
           await handleSearch(searchQuery, currentPage);
         }
       } catch (error) {
-        console.error('Error removing definition:', error);
+        await errorLog(
+          'Error removing definition',
+          error instanceof Error ? error.message : String(error),
+        );
         toast.error('Failed to remove word from dictionary');
+      } finally {
       }
     });
   };

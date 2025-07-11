@@ -406,7 +406,7 @@ export async function getUserLists(
       totalCount: filteredLists.length,
     };
   } catch (error) {
-    console.error('Error fetching user lists:', error);
+    await serverLog('Error fetching user lists', 'error', error);
     throw new Error('Failed to fetch user lists');
   }
 }
@@ -518,7 +518,7 @@ export async function getAvailablePublicLists(
       totalCount: publicListsSummary.length,
     };
   } catch (error) {
-    console.error('Error fetching public lists:', error);
+    await serverLog('Error fetching public lists', 'error', error);
     throw new Error('Failed to fetch public lists');
   }
 }
@@ -690,7 +690,7 @@ export async function getPublicUserLists(
       totalCount: publicUserListsSummary.length,
     };
   } catch (error) {
-    console.error('Error fetching public user lists:', error);
+    await serverLog('Error fetching public user lists', 'error', error);
     throw new Error('Failed to fetch public user lists');
   }
 }
@@ -816,7 +816,7 @@ export async function getPublicListPreview(
 
     return { words };
   } catch (error) {
-    console.error('Error fetching public list preview:', error);
+    await serverLog('Error fetching public list preview', 'error', error);
     throw new Error('Failed to fetch list preview');
   }
 }
@@ -911,7 +911,7 @@ export async function getPublicUserListPreview(
 
     return { words };
   } catch (error) {
-    console.error('Error fetching public user list preview:', error);
+    await serverLog('Error fetching public user list preview', 'error', error);
     throw new Error('Failed to fetch user list preview');
   }
 }
@@ -1050,7 +1050,7 @@ export async function addListToUserCollection(
       userListId: result.id,
     };
   } catch (error) {
-    console.error('Error adding list to user collection:', error);
+    await serverLog('Error adding list to user collection', 'error', error);
 
     // Handle specific error cases
     if (error instanceof Error && error.message === 'LIST_ALREADY_EXISTS') {
@@ -1201,7 +1201,11 @@ export async function addPublicUserListToCollection(
       userListId: result.id,
     };
   } catch (error) {
-    console.error('Error adding public user list to collection:', error);
+    await serverLog(
+      'Error adding public user list to collection',
+      'error',
+      error,
+    );
     return {
       success: false,
       message: 'Failed to add list to collection',
@@ -1235,7 +1239,7 @@ export async function removeListFromUserCollection(
       message: 'List removed from your collection',
     };
   } catch (error) {
-    console.error('Error removing list from user collection:', error);
+    await serverLog('Error removing list from user collection', 'error', error);
     return {
       success: false,
       message: 'Failed to remove list from collection',
@@ -1279,10 +1283,10 @@ export async function createCustomUserList(
       userListId: userList.id,
     };
   } catch (error) {
-    console.error('Error creating custom user list:', error);
+    await serverLog('Error creating custom user list', 'error', error);
     return {
       success: false,
-      message: 'Failed to create custom list',
+      message: 'Failed to create list',
     };
   }
 }
@@ -1341,7 +1345,7 @@ export async function updateUserList(
       message: 'List updated successfully',
     };
   } catch (error) {
-    console.error('Error updating user list:', error);
+    await serverLog('Error updating user list', 'error', error);
     return {
       success: false,
       message: 'Failed to update list',
@@ -1415,8 +1419,11 @@ export async function addWordToUserList(
 
     return { success: true, message: 'Word added to list successfully' };
   } catch (error) {
-    console.error('Error adding word to user list:', error);
-    return { success: false, message: 'Failed to add word to list' };
+    await serverLog('Error adding word to user list', 'error', error);
+    return {
+      success: false,
+      message: 'Failed to add word to list',
+    };
   }
 }
 
@@ -1468,8 +1475,11 @@ export async function removeWordFromUserList(
 
     return { success: true, message: 'Word removed from list successfully' };
   } catch (error) {
-    console.error('Error removing word from user list:', error);
-    return { success: false, message: 'Failed to remove word from list' };
+    await serverLog('Error removing word from user list', 'error', error);
+    return {
+      success: false,
+      message: 'Failed to remove word from list',
+    };
   }
 }
 
@@ -1758,8 +1768,8 @@ export async function getUserListWords(
       listDetails,
     };
   } catch (error) {
-    console.error('Error fetching user list words:', error);
-    throw new Error('Failed to fetch user list words');
+    await serverLog('Error fetching user list words', 'error', error);
+    throw new Error('Failed to fetch list words');
   }
 }
 
@@ -1808,8 +1818,11 @@ export async function reorderUserListWords(
 
     return { success: true, message: 'Word order updated successfully' };
   } catch (error) {
-    console.error('Error reordering user list words:', error);
-    return { success: false, message: 'Failed to update word order' };
+    await serverLog('Error reordering user list words', 'error', error);
+    return {
+      success: false,
+      message: 'Failed to reorder words',
+    };
   }
 }
 
@@ -1927,10 +1940,10 @@ export async function populateInheritedListWithWords(
       wordsAdded,
     };
   } catch (error) {
-    console.error('Error populating inherited list:', error);
+    await serverLog('Error populating inherited list', 'error', error);
     return {
       success: false,
-      message: 'Failed to populate list with words',
+      message: 'Failed to populate inherited list',
     };
   }
 }

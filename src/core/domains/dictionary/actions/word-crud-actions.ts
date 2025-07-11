@@ -1,5 +1,6 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/lib/prisma';
 import {
   LanguageCode,
@@ -162,7 +163,7 @@ export async function fetchDictionaryWords(
 
     return wordsWithFrequency;
   } catch (error) {
-    console.error('Error fetching dictionary words:', error);
+    await serverLog('Error fetching dictionary words', 'error', error);
     throw new Error('Failed to fetch dictionary words');
   }
 }
@@ -272,7 +273,7 @@ export async function fetchDictionaryWordDetails(
 
     return transformedWordDetails;
   } catch (error) {
-    console.error('Error fetching dictionary word details:', error);
+    await serverLog('Error fetching dictionary word details', 'error', error);
     throw new Error('Failed to fetch dictionary word details');
   }
 }
@@ -311,7 +312,7 @@ export async function addWordToUserDictionary(
 
     return userDictionary;
   } catch (error) {
-    console.error('Error adding word to user dictionary:', error);
+    await serverLog('Error adding word to user dictionary', 'error', error);
     throw new Error('Failed to add word to user dictionary');
   }
 }
@@ -372,7 +373,7 @@ export async function checkWordExistsByUuid(
         }
       : null;
   } catch (error) {
-    console.error('Error checking word existence by UUID:', error);
+    await serverLog('Error checking word existence by UUID', 'error', error);
     throw new Error('Failed to check word existence by UUID');
   }
 }
@@ -396,7 +397,7 @@ export async function fetchWordById(wordId: string) {
 
     return word;
   } catch (error) {
-    console.error('Error fetching word by ID:', error);
+    await serverLog('Error fetching word by ID', 'error', error);
     throw new Error(
       `Failed to fetch word: ${error instanceof Error ? error.message : String(error)}`,
     );
@@ -505,7 +506,9 @@ export async function deleteWordDetails(
             if (audioUsageCount === 0) {
               // Audio is orphaned, can be cleaned up
               // Note: Actual file deletion would happen here in a real implementation
-              console.log(`Audio file can be cleaned up: ${audioUrl}`);
+              await serverLog('Audio file can be cleaned up', 'info', {
+                audioUrl,
+              });
             }
           }
 
@@ -518,7 +521,9 @@ export async function deleteWordDetails(
             if (imageUsageCount === 0) {
               // Image is orphaned, can be cleaned up
               // Note: Actual file deletion would happen here in a real implementation
-              console.log(`Image file can be cleaned up: ${imageUrl}`);
+              await serverLog('Image file can be cleaned up', 'info', {
+                imageUrl,
+              });
             }
           }
 
@@ -536,7 +541,10 @@ export async function deleteWordDetails(
 
           deletedCount++;
         } catch (error) {
-          console.error(`Error deleting word detail ${wordDetailId}:`, error);
+          await serverLog('Error deleting word detail', 'error', {
+            wordDetailId,
+            error,
+          });
           errors.push(
             `Failed to delete word detail ${wordDetailId}: ${error instanceof Error ? error.message : String(error)}`,
           );
@@ -550,7 +558,7 @@ export async function deleteWordDetails(
       errors,
     };
   } catch (error) {
-    console.error('Error in deleteWordDetails transaction:', error);
+    await serverLog('Error in deleteWordDetails transaction', 'error', error);
     return {
       success: false,
       deletedCount,
@@ -671,7 +679,9 @@ export async function deleteWords(
             if (audioUsageCount === 0) {
               // Audio is orphaned, can be cleaned up
               // Note: Actual file deletion would happen here in a real implementation
-              console.log(`Audio file can be cleaned up: ${audioUrl}`);
+              await serverLog('Audio file can be cleaned up', 'info', {
+                audioUrl,
+              });
             }
           }
 
@@ -684,13 +694,15 @@ export async function deleteWords(
             if (imageUsageCount === 0) {
               // Image is orphaned, can be cleaned up
               // Note: Actual file deletion would happen here in a real implementation
-              console.log(`Image file can be cleaned up: ${imageUrl}`);
+              await serverLog('Image file can be cleaned up', 'info', {
+                imageUrl,
+              });
             }
           }
 
           deletedCount++;
         } catch (error) {
-          console.error(`Error deleting word ${wordId}:`, error);
+          await serverLog('Error deleting word', 'error', { wordId, error });
           errors.push(
             `Failed to delete word ${wordId}: ${error instanceof Error ? error.message : String(error)}`,
           );
@@ -704,7 +716,7 @@ export async function deleteWords(
       errors,
     };
   } catch (error) {
-    console.error('Error in deleteWords transaction:', error);
+    await serverLog('Error in deleteWords transaction', 'error', error);
     return {
       success: false,
       deletedCount,
@@ -772,7 +784,7 @@ export async function deleteSelectedWords(
       };
     }
   } catch (error) {
-    console.error('Error in deleteSelectedWords:', error);
+    await serverLog('Error in deleteSelectedWords', 'error', error);
     return {
       success: false,
       message: `Failed to delete words: ${error instanceof Error ? error.message : String(error)}`,

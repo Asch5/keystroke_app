@@ -251,7 +251,6 @@ export async function generateWordTTS(
       `Error generating word TTS for ID ${wordId}: ${error instanceof Error ? error.message : String(error)}`,
       'error',
     );
-    console.error('Error generating word TTS:', error);
     const handledError = handlePrismaError(error);
 
     return {
@@ -404,7 +403,10 @@ export async function generateDefinitionTTS(
       voiceUsed: ttsResponse.voiceUsed,
     };
   } catch (error) {
-    console.error('Error generating definition TTS:', error);
+    void serverLog(
+      `Error generating definition TTS for ID ${definitionId}: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     const handledError = handlePrismaError(error);
 
     return {
@@ -557,7 +559,10 @@ export async function generateExampleTTS(
       voiceUsed: ttsResponse.voiceUsed,
     };
   } catch (error) {
-    console.error('Error generating example TTS:', error);
+    void serverLog(
+      `Error generating example TTS for ID ${exampleId}: ${error instanceof Error ? error.message : String(error)}`,
+      'error',
+    );
     const handledError = handlePrismaError(error);
 
     return {

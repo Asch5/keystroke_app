@@ -8,6 +8,12 @@
  * - Performance optimized with sound caching
  */
 
+import {
+  debugLog,
+  warnLog,
+  infoLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
+
 interface GameSoundConfig {
   volume: number; // 0.0 to 1.0
   enabled: boolean;
@@ -48,7 +54,7 @@ class GameSoundService {
         this.audioContext = new AudioContextClass();
       }
     } catch (error) {
-      console.warn('Web Audio API not supported:', error);
+      void warnLog('Web Audio API not supported', { error });
     }
 
     // Preload static sound files if enabled
@@ -83,9 +89,9 @@ class GameSoundService {
         });
 
         this.audioCache.set(type, audio);
-        console.log(`✅ Loaded game sound: ${type}`);
+        void infoLog(`✅ Loaded game sound: ${type}`);
       } catch (error) {
-        console.warn(`⚠️ Failed to load sound file for ${type}:`, error);
+        void warnLog(`⚠️ Failed to load sound file for ${type}`, { error });
         // Will fall back to Web Audio API
       }
     }
@@ -104,7 +110,7 @@ class GameSoundService {
         await cachedAudio.play();
         return;
       } catch (error) {
-        console.warn('Failed to play cached error sound:', error);
+        void warnLog('Failed to play cached error sound', { error });
       }
     }
 
@@ -125,7 +131,7 @@ class GameSoundService {
         await cachedAudio.play();
         return;
       } catch (error) {
-        console.warn('Failed to play cached success sound:', error);
+        void warnLog('Failed to play cached success sound', { error });
       }
     }
 
@@ -146,7 +152,7 @@ class GameSoundService {
         await cachedAudio.play();
         return;
       } catch (error) {
-        console.warn('Failed to play cached keystroke sound:', error);
+        void warnLog('Failed to play cached keystroke sound', { error });
       }
     }
 
@@ -186,7 +192,7 @@ class GameSoundService {
       oscillator.start(this.audioContext.currentTime);
       oscillator.stop(this.audioContext.currentTime + 0.25);
     } catch (error) {
-      console.warn('Failed to generate error tone:', error);
+      void warnLog('Failed to generate error tone', { error });
     }
   }
 
@@ -230,7 +236,7 @@ class GameSoundService {
         oscillator.stop(startTime + duration);
       });
     } catch (error) {
-      console.warn('Failed to generate success tone:', error);
+      void warnLog('Failed to generate success tone', { error });
     }
   }
 
@@ -274,7 +280,7 @@ class GameSoundService {
 
       source.start();
     } catch (error) {
-      console.warn('Failed to generate keystroke tone:', error);
+      void warnLog('Failed to generate keystroke tone', { error });
     }
   }
 

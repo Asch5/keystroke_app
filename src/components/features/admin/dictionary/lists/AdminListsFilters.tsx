@@ -11,11 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { LanguageCode, DifficultyLevel } from '@/core/types';
 import type {
   ListFilters,
   CategoryData,
 } from '@/core/domains/dictionary/actions';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 // Language and difficulty display names
 const languageDisplayNames: Record<LanguageCode, string> = {

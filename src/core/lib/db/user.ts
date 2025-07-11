@@ -165,14 +165,14 @@ function calculateUserStats(user: UserWithStats): UserStats {
 
   const sessionTypes = sessions.reduce(
     (acc, curr) => {
-      acc[curr.sessionType] = (acc[curr.sessionType] || 0) + 1;
+      acc[curr.sessionType] = (acc[curr.sessionType] ?? 0) + 1;
       return acc;
     },
     {} as Record<string, number>,
   );
 
   const preferredSessionType =
-    Object.entries(sessionTypes).sort(([, a], [, b]) => b - a)[0]?.[0] || null;
+    Object.entries(sessionTypes).sort(([, a], [, b]) => b - a)[0]?.[0] ?? null;
 
   return {
     totalWords,
@@ -181,7 +181,7 @@ function calculateUserStats(user: UserWithStats): UserStats {
     lastActive,
     totalSessions: sessions.length,
     averageScore:
-      sessions.reduce((acc, curr) => acc + (curr.score || 0), 0) /
+      sessions.reduce((acc, curr) => acc + (curr.score ?? 0), 0) /
         sessions.length || 0,
     learningStreak: Math.max(
       ...user.userDictionary.map((w) => w.correctStreak),
@@ -264,7 +264,7 @@ function calculateLearningProgress(user: UserWithStats) {
         ),
         score:
           sessions.reduce(
-            (acc: number, s: { score: number | null }) => acc + (s.score || 0),
+            (acc: number, s: { score: number | null }) => acc + (s.score ?? 0),
             0,
           ) / sessions.length || 0,
       };

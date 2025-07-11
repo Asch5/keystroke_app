@@ -20,6 +20,12 @@ import { useUser } from '@/core/shared/hooks/useUser';
 import { LanguageCode, LearningStatus } from '@/core/types';
 import { EnhancedPracticeContent } from './EnhancedPracticeContent';
 import '@/core/infrastructure/monitoring/debugConsole'; // Initialize debug console
+import {
+  debugLog,
+  infoLog,
+  warnLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 
 /**
  * Convert practice mode to learning statuses
@@ -78,14 +84,14 @@ export function EnhancedPracticePageContent() {
 
   // Debug logging for settings
   useEffect(() => {
-    console.log('🔧 Settings Loading Debug:', {
+    void debugLog('🔧 Settings Loading Debug:', {
       settingsLoaded,
       hasSettings: !!settings,
       settingsKeys: settings ? Object.keys(settings) : [],
     });
 
     if (settingsLoaded) {
-      console.log('🔧 Vocabulary Practice Settings Debug:', {
+      void debugLog('🔧 Vocabulary Practice Settings Debug:', {
         autoPlayAudioOnWordCard: settings.autoPlayAudioOnWordCard,
         showDefinitionImages: settings.showDefinitionImages,
         showPhoneticPronunciation: settings.showPhoneticPronunciation,
@@ -96,7 +102,7 @@ export function EnhancedPracticePageContent() {
         allSettings: settings,
       });
     } else {
-      console.log(
+      void warnLog(
         '⚠️ Settings not loaded yet, using defaults or undefined values',
       );
     }
@@ -137,7 +143,7 @@ export function EnhancedPracticePageContent() {
       // Get learning statuses based on practice mode
       const practiceModeStatuses = getPracticeModeStatuses(practiceMode);
 
-      console.log('🎯 Practice Session Creation Debug:', {
+      void debugLog('🎯 Practice Session Creation Debug:', {
         sessionPracticeType,
         practiceMode,
         practiceModeStatuses,
@@ -226,36 +232,43 @@ export function EnhancedPracticePageContent() {
         }),
       };
 
-      console.log('📋 Practice Session Result:', sessionDebugData);
+      // Debug log session creation result
+      void infoLog('📋 Practice Session Result:', sessionDebugData);
 
+      // Extract session from result
       if (result.success && result.session) {
         setSession(result.session);
-
-        // Initialize debugging session
-        await PracticeDebugger.initializeSession({
-          sessionType: sessionPracticeType,
-          practiceMode,
-          practiceModeStatuses: getPracticeModeStatuses(practiceMode),
-          enabledExerciseTypes,
-          settings: {
-            difficultyLevel: settings.difficultyLevel,
-            wordsCount: settings.wordsCount,
-            autoPlayAudio: settings.autoPlayAudioOnWordCard,
-            showImages: settings.showDefinitionImages,
-          },
-          sessionResult: sessionDebugData,
-        }).catch((error) =>
-          console.error('Failed to initialize debug session:', error),
-        );
       } else {
         throw new Error(result.error || 'Failed to create practice session');
       }
-    } catch (err) {
-      console.error('Failed to initialize practice session:', err);
+
+      // Initialize debugging session
+      await PracticeDebugger.initializeSession({
+        sessionType: sessionPracticeType,
+        practiceMode,
+        practiceModeStatuses: getPracticeModeStatuses(practiceMode),
+        enabledExerciseTypes,
+        settings: {
+          difficultyLevel: settings.difficultyLevel,
+          wordsCount: settings.wordsCount,
+          autoPlayAudio: settings.autoPlayAudioOnWordCard,
+          showImages: settings.showDefinitionImages,
+        },
+        sessionResult: sessionDebugData,
+      }).catch(
+        (error) =>
+          void errorLog(
+            'Failed to initialize debug session:',
+            error instanceof Error ? error.message : String(error),
+          ),
+      );
+    } catch (error) {
       setError(
-        err instanceof Error
-          ? err.message
-          : 'Failed to initialize practice session',
+        error instanceof Error ? error.message : 'Failed to create session',
+      );
+      void errorLog(
+        'Failed to initialize practice session:',
+        error instanceof Error ? error.message : String(error),
       );
     } finally {
       setIsLoading(false);

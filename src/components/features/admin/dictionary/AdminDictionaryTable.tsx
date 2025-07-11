@@ -138,7 +138,7 @@ export function AdminDictionaryTable({
       accessorKey: 'variant',
       header: 'Variant',
       cell: ({ row }) => {
-        const variant = row.getValue('variant') as string;
+        const variant = row.getValue('variant') as string | null;
         return variant ? (
           <span className="text-muted-foreground italic">{variant}</span>
         ) : (
@@ -158,7 +158,7 @@ export function AdminDictionaryTable({
         </Button>
       ),
       cell: ({ row }) => {
-        const freq = row.getValue('frequencyGeneral') as number;
+        const freq = row.getValue('frequencyGeneral');
         return freq ? (
           <span className="tabular-nums">{freq.toLocaleString()}</span>
         ) : (
@@ -178,7 +178,7 @@ export function AdminDictionaryTable({
         </Button>
       ),
       cell: ({ row }) => {
-        const freq = row.getValue('frequency') as number;
+        const freq = row.getValue('frequency');
         return freq ? (
           <span className="tabular-nums">{freq.toLocaleString()}</span>
         ) : (
@@ -226,7 +226,7 @@ export function AdminDictionaryTable({
       accessorKey: 'definition',
       header: 'Definition of the word',
       cell: ({ row }) => {
-        const definition = row.getValue('definition') as string;
+        const definition = row.getValue('definition') as string | null;
         const fullDefinition = row.original.definitionFull;
 
         if (!definition) {
@@ -251,7 +251,7 @@ export function AdminDictionaryTable({
       accessorKey: 'audioUrl',
       header: 'Audio',
       cell: ({ row }) => {
-        const audioUrl = row.getValue('audioUrl') as string;
+        const audioUrl = row.getValue('audioUrl') as string | null;
         const wordDetail = row.original;
 
         if (!audioUrl) {

@@ -8,6 +8,7 @@ import {
   updateWordDetailImages,
   type WordDetailEditData,
 } from '@/core/domains/dictionary/actions/word-details-actions';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 interface UseWordDetailEditActionsProps {
   wordDetailId: number;
@@ -63,7 +64,10 @@ export function useWordDetailEditActions({
         toast.error(result.error || 'Failed to save definitions');
       }
     } catch (error) {
-      console.error('Error saving definitions:', error);
+      await errorLog(
+        'Error saving definitions',
+        error instanceof Error ? error.message : String(error),
+      );
       toast.error('Failed to save definitions');
     } finally {
       setIsSavingDefinitions(false);
@@ -91,7 +95,10 @@ export function useWordDetailEditActions({
         toast.error(result.error || 'Failed to save audio files');
       }
     } catch (error) {
-      console.error('Error saving audio files:', error);
+      await errorLog(
+        'Error saving audio files',
+        error instanceof Error ? error.message : String(error),
+      );
       toast.error('Failed to save audio files');
     } finally {
       setIsSavingAudioFiles(false);
@@ -119,7 +126,10 @@ export function useWordDetailEditActions({
         toast.error(result.error || 'Failed to save images');
       }
     } catch (error) {
-      console.error('Error saving images:', error);
+      await errorLog(
+        'Error saving images',
+        error instanceof Error ? error.message : String(error),
+      );
       toast.error('Failed to save images');
     } finally {
       setIsSavingImages(false);
@@ -148,7 +158,10 @@ export function useWordDetailEditActions({
         toast.error(result.error || 'Failed to save relationships');
       }
     } catch (error) {
-      console.error('Error saving relationships:', error);
+      await errorLog(
+        'Error saving relationships',
+        error instanceof Error ? error.message : String(error),
+      );
       toast.error('Failed to save relationships');
     } finally {
       setIsSavingRelationships(false);
@@ -173,7 +186,10 @@ export function useWordDetailEditActions({
         toast.error(result.error || 'Failed to save changes');
       }
     } catch (error) {
-      console.error('Error saving all changes:', error);
+      await errorLog(
+        'Error saving all changes',
+        error instanceof Error ? error.message : String(error),
+      );
       toast.error('Failed to save changes');
     } finally {
       setIsSaving(false);

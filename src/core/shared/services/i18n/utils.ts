@@ -5,6 +5,7 @@ import type {
   TranslationParams,
   UILanguageCode,
 } from './types';
+import { warnLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 /**
  * Translation Utilities
@@ -37,7 +38,7 @@ export async function loadTranslations(
 
     return translationFile;
   } catch {
-    console.warn(
+    void warnLog(
       `Failed to load translations for locale ${locale}, falling back to English`,
     );
 
@@ -134,7 +135,7 @@ export function getStoredLocale(): UILanguageCode {
       return stored;
     }
   } catch {
-    console.warn('Failed to read stored locale preference');
+    void warnLog('Failed to read stored locale preference');
   }
 
   return getBrowserLocale();
@@ -149,7 +150,7 @@ export function storeLocale(locale: UILanguageCode): void {
   try {
     localStorage.setItem('keystroke_ui_language', locale);
   } catch {
-    console.warn('Failed to store locale preference');
+    void warnLog('Failed to store locale preference');
   }
 }
 

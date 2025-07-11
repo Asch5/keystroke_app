@@ -8,6 +8,7 @@ import {
   ExampleUpdateData,
   AudioUpdateData,
 } from '@/core/types/dictionary';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 export async function updateWord(
   wordId: string,
@@ -24,8 +25,8 @@ export async function updateWord(
 
     return { success: true };
   } catch (error) {
-    console.error('Error updating word:', error);
-    throw new Error('Failed to update word');
+    await serverLog('Error updating word', 'error', error);
+    throw new Error('Failed to update word due to database error');
   }
 }
 

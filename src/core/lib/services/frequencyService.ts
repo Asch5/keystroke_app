@@ -1,6 +1,7 @@
 import { clientLog } from '@/core/lib/utils/logUtils';
 import { LanguageCode, PartOfSpeech } from '@/core/types';
 import { FrequencyRequest, FrequencyResponse } from '@/core/types/dictionary';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Fetches frequency data for a single word
@@ -27,9 +28,10 @@ export async function fetchWordFrequency(
     });
 
     if (!response.ok) {
-      console.error(
-        `Failed to fetch frequency for word ${word}: ${response.statusText}`,
-      );
+      await serverLog('Failed to fetch frequency for word', 'error', {
+        word,
+        statusText: response.statusText,
+      });
       return null;
     }
 
@@ -64,7 +66,10 @@ export async function fetchWordFrequency(
 
     return null;
   } catch (error) {
-    console.error(`Exception fetching frequency for word ${word}:`, error);
+    await serverLog('Exception fetching frequency for word', 'error', {
+      word,
+      error,
+    });
     return null;
   }
 }
@@ -91,30 +96,40 @@ export async function fetchBatchFrequencies(
     });
 
     if (!response.ok) {
-      console.error(
-        `Failed to fetch batch frequencies: ${response.statusText}`,
-      );
+      await serverLog('Failed to fetch batch frequencies', 'error', {
+        statusText: response.statusText,
+      });
       return requests.map(() => null);
     }
 
     const data: unknown = await response.json();
 
     if (Array.isArray(data)) {
-      return data.map((item, index) => {
-        if (typeof item === 'object' && item !== null && 'error' in item) {
-          const errorItem = item as { error: unknown };
-          console.error(
-            `Error fetching frequency for word ${requests[index]?.word}: ${String(errorItem.error)}`,
-          );
-          return null;
-        }
-        return item as FrequencyResponse;
-      });
+      const results = await Promise.all(
+        data.map(async (item, index) => {
+          if (typeof item === 'object' && item !== null && 'error' in item) {
+            const errorItem = item as { error: unknown };
+            await serverLog(
+              'Error fetching frequency for word in batch',
+              'error',
+              {
+                word: requests[index]?.word,
+                error: String(errorItem.error),
+              },
+            );
+            return null;
+          }
+          return item as FrequencyResponse;
+        }),
+      );
+      return results;
     }
 
     return requests.map(() => null);
   } catch (error) {
-    console.error(`Exception fetching batch frequencies:`, error);
+    await serverLog('Exception fetching batch frequencies', 'error', {
+      error,
+    });
     return requests.map(() => null);
   }
 }

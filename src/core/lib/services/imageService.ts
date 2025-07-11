@@ -272,7 +272,7 @@ export class ImageService {
       );
 
       clientLog(
-        `Image created successfully with ID: ${result?.id || 'unknown'}`,
+        `Image created successfully with ID: ${result?.id ?? 'unknown'}`,
         'info',
       );
       return result;
@@ -308,7 +308,7 @@ export class ImageService {
         medium: image.url,
         large: image.url,
       },
-      alt: image.description || '',
+      alt: image.description ?? '',
       mimeType: 'image/jpeg',
       fileSize: 0,
       createdAt: image.createdAt,
@@ -357,7 +357,7 @@ export class ImageService {
         medium: image.url,
         large: image.url,
       },
-      alt: image.description || '',
+      alt: image.description ?? '',
       mimeType: 'image/jpeg',
       fileSize: 0,
       createdAt: image.createdAt,
@@ -457,14 +457,14 @@ export class ImageService {
       // Get the first associated WordDetails (if any)
       const wordDetailsEntry = definition.wordDetails?.[0];
       const partOfSpeech = wordDetailsEntry?.wordDetails?.partOfSpeech;
-      const isPlural = wordDetailsEntry?.wordDetails?.isPlural || false;
+      const isPlural = wordDetailsEntry?.wordDetails?.isPlural ?? false;
 
       // Create a unique search query for each definition by adding a fragment of the definition text
       // This ensures different definitions get different images
       const combinedDefinition = {
         ...definition,
         word: word,
-        partOfSpeech: partOfSpeech || 'undefined',
+        partOfSpeech: partOfSpeech ?? 'undefined',
         isPlural: isPlural,
       } as unknown as Definition;
 
@@ -642,7 +642,7 @@ export class ImageService {
         medium: image.url,
         large: image.url,
       },
-      alt: image.description || '',
+      alt: image.description ?? '',
       mimeType: 'image/jpeg',
       fileSize: 0,
       createdAt: image.createdAt,

@@ -1,3 +1,4 @@
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { RelationshipType } from '@/core/types';
 import { PartOfSpeechDanish } from '@/core/types/translationDanishTypes';
 
@@ -1203,9 +1204,13 @@ function processPronounForms(
         // If the related word is the same as the base word, only add if there is a specific usage note
         if (relatedWord === baseWord) {
           // DEBUG: Log the usage note and its trimmed state
-          console.warn(
-            `Pronoun: ${baseWord}, Contextual identical: ${relatedWord}, Original contextKey: '${contextKey}', Processed usageNote: '${usageNote}', IsTrimmedNoteEmpty: ${usageNote.trim() === ''}`,
-          );
+          void serverLog('Pronoun contextual analysis', 'warn', {
+            baseWord,
+            relatedWord,
+            contextKey,
+            usageNote,
+            isTrimmedNoteEmpty: usageNote.trim() === '',
+          });
           if (usageNote && usageNote.trim() !== '') {
             // Use a specific relationship type for contextual usage of the base form
             addRelationship(
@@ -1234,7 +1239,7 @@ function processPronounForms(
 }
 
 // Test function to verify the fix for irregular adjectives like "stor"
-export function testStorAdjectiveTransformation(): void {
+export async function testStorAdjectiveTransformation(): Promise<void> {
   const storEntry: DanishWordEntry = {
     word: 'stor',
     word_variants: ['stor'],
@@ -1249,18 +1254,21 @@ export function testStorAdjectiveTransformation(): void {
 
   const result = transformDanishForms(storEntry);
 
-  console.warn('Testing "stor" adjective transformation:');
-  console.warn('Base word:', result.word);
-  console.warn('Related words and relationships:');
-
-  result.relatedWords.forEach((relatedWord) => {
-    console.warn(`- ${relatedWord.word}:`);
-    relatedWord.relationships.forEach((rel) => {
-      console.warn(
-        `  * ${rel.relationshipType}: ${rel.baseWord} -> ${rel.relatedWord}`,
-      );
-    });
+  await serverLog('Testing "stor" adjective transformation', 'info', {
+    baseWord: result.word,
+    relatedWordsCount: result.relatedWords.length,
   });
+
+  for (const relatedWord of result.relatedWords) {
+    await serverLog('Related word analysis', 'info', {
+      word: relatedWord.word,
+      relationships: relatedWord.relationships.map((rel) => ({
+        type: rel.relationshipType,
+        from: rel.baseWord,
+        to: rel.relatedWord,
+      })),
+    });
+  }
 
   // Check if "større" and "størst" are properly handled
   const comparativeFound = result.relatedWords.some((rw) =>
@@ -1279,12 +1287,21 @@ export function testStorAdjectiveTransformation(): void {
     ),
   );
 
-  console.warn('Comparative "større" found:', comparativeFound);
-  console.warn('Superlative "størst" found:', superlativeFound);
+  await serverLog('Test results analysis', 'info', {
+    comparativeFound,
+    superlativeFound,
+    testPassed: comparativeFound && superlativeFound,
+  });
 
   if (comparativeFound && superlativeFound) {
-    console.warn('✅ Test PASSED: Both irregular forms are properly handled');
+    await serverLog(
+      '✅ Test PASSED: Both irregular forms are properly handled',
+      'info',
+    );
   } else {
-    console.error('❌ Test FAILED: Irregular forms are not properly handled');
+    await serverLog(
+      '❌ Test FAILED: Irregular forms are not properly handled',
+      'error',
+    );
   }
 }

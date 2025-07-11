@@ -4,6 +4,12 @@
  * NO Web Speech API fallback - only plays actual audio files from database
  */
 
+import {
+  debugLog,
+  infoLog,
+  warnLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
+
 export class AudioService {
   private static currentAudio: HTMLAudioElement | null = null;
 
@@ -18,7 +24,7 @@ export class AudioService {
       throw new Error('Invalid audio URL provided');
     }
 
-    console.log('🎵 Attempting to play audio from:', audioUrl);
+    void debugLog('🎵 Attempting to play audio from:', { audioUrl });
 
     // Check if we need to use proxy for external URLs
     let finalAudioUrl = audioUrl;
@@ -36,15 +42,15 @@ export class AudioService {
       if (needsProxy) {
         // Use proxy for external URLs like static.ordnet.dk
         finalAudioUrl = `/api/audio/proxy?url=${encodeURIComponent(audioUrl)}`;
-        console.log('🔄 Using proxy for external URL');
+        void infoLog('🔄 Using proxy for external URL');
       } else if (isVercelBlob) {
-        console.log('☁️ Playing directly from Vercel Blob Storage');
+        void infoLog('☁️ Playing directly from Vercel Blob Storage');
       } else {
-        console.log('🏠 Playing from same origin or localhost');
+        void infoLog('🏠 Playing from same origin or localhost');
       }
     } catch {
       // If URL parsing fails, use original URL
-      console.warn('⚠️ Could not parse URL, using as-is');
+      void warnLog('⚠️ Could not parse URL, using as-is');
     }
 
     // Stop any currently playing audio
@@ -57,22 +63,22 @@ export class AudioService {
 
         // Set up event handlers with proper Promise resolution
         audio.onloadstart = () => {
-          console.log('📥 Audio loading started');
+          void debugLog('📥 Audio loading started');
         };
 
         audio.oncanplay = () => {
-          console.log('🎵 Audio ready to play');
+          void debugLog('🎵 Audio ready to play');
         };
 
         audio.onplay = () => {
           this.currentAudio = audio;
-          console.log('🔊 Audio playback started successfully');
+          void infoLog('🔊 Audio playback started successfully');
           resolve();
         };
 
         audio.onended = () => {
           this.currentAudio = null;
-          console.log('🏁 Audio playback completed');
+          void infoLog('🏁 Audio playback completed');
         };
 
         audio.onerror = () => {
@@ -148,7 +154,7 @@ export class AudioService {
       this.currentAudio.pause();
       this.currentAudio.currentTime = 0;
       this.currentAudio = null;
-      console.log('⏹️ Audio stopped');
+      void infoLog('⏹️ Audio stopped');
     }
   }
 

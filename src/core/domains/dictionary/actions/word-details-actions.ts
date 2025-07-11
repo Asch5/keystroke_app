@@ -1,5 +1,6 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/lib/prisma';
 import {
   getFrequencyPartOfSpeechEnum,
@@ -427,7 +428,7 @@ export async function getWordDetails(
 
     return finalWordEntry;
   } catch (error) {
-    console.error('Error fetching word details:', error);
+    await serverLog('Error fetching word details', 'error', error);
     if (error instanceof Error) {
       throw new Error(`Failed to fetch word details: ${error.message}`);
     }
@@ -612,7 +613,10 @@ export async function updateWordDetails(
         // Note: This is a simplified implementation
         // In a full implementation, you'd need to handle WordToWordRelationship
         // and WordDetailsRelationship tables properly
-        console.log('Related words handling not fully implemented yet');
+        await serverLog(
+          'Related words handling not fully implemented yet',
+          'warn',
+        );
       }
 
       return updatedWord;
@@ -628,7 +632,7 @@ export async function updateWordDetails(
       },
     };
   } catch (error) {
-    console.error('Error updating word details:', error);
+    await serverLog('Error updating word details', 'error', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -840,7 +844,7 @@ export async function fetchWordDetailById(
       })),
     };
   } catch (error) {
-    console.error('Error fetching word detail by ID:', error);
+    await serverLog('Error fetching word detail by ID', 'error', error);
     return null;
   }
 }
@@ -1067,7 +1071,9 @@ export async function updateWordDetailById(
             } else {
               // Validate audio data before processing
               if (!validateAudioData(audioData)) {
-                console.warn('Skipping invalid audio data:', audioData);
+                void serverLog('Skipping invalid audio data', 'warn', {
+                  audioData,
+                });
                 continue; // Skip invalid audio data
               }
 
@@ -1279,7 +1285,7 @@ export async function updateWordDetailById(
 
     return { success: true };
   } catch (error) {
-    console.error('Error updating word detail:', error);
+    await serverLog('Error updating word detail', 'error', error);
 
     // Provide more specific error messages for common issues
     let errorMessage = 'Unknown error occurred';
@@ -1365,7 +1371,7 @@ export async function searchWordsForRelationships(
       wordDetails: word.details,
     }));
   } catch (error) {
-    console.error('Error searching words for relationships:', error);
+    await serverLog('Error searching words for relationships', 'error', error);
     return [];
   }
 }
@@ -1477,12 +1483,8 @@ export async function updateWordDetailDefinitions(
 
     return { success: true };
   } catch (error) {
-    console.error('Error updating definitions:', error);
-    return {
-      success: false,
-      error:
-        error instanceof Error ? error.message : 'Failed to update definitions',
-    };
+    await serverLog('Error updating definitions', 'error', error);
+    return { success: false, error: 'Failed to update definitions' };
   }
 }
 
@@ -1530,7 +1532,9 @@ export async function updateWordDetailAudioFiles(
         } else {
           // Validate audio data before processing
           if (!validateAudioData(audioData)) {
-            console.warn('Skipping invalid audio data:', audioData);
+            void serverLog('Skipping invalid audio data', 'warn', {
+              audioData,
+            });
             continue; // Skip invalid audio data
           }
 
@@ -1602,26 +1606,8 @@ export async function updateWordDetailAudioFiles(
 
     return { success: true };
   } catch (error) {
-    console.error('Error updating audio files:', error);
-
-    // Provide more specific error messages for common issues
-    let errorMessage = 'Failed to update audio files';
-    if (error instanceof Error) {
-      if (error.message.includes('Unique constraint failed')) {
-        if (
-          error.message.includes('url') &&
-          error.message.includes('language_code')
-        ) {
-          errorMessage =
-            'An audio file with this URL and language already exists in the system.';
-        }
-      }
-    }
-
-    return {
-      success: false,
-      error: errorMessage,
-    };
+    await serverLog('Error updating audio files', 'error', error);
+    return { success: false, error: 'Failed to update audio files' };
   }
 }
 
@@ -1650,11 +1636,8 @@ export async function updateWordDetailImages(
 
     return { success: true };
   } catch (error) {
-    console.error('Error updating definition images:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to update images',
-    };
+    await serverLog('Error updating definition images', 'error', error);
+    return { success: false, error: 'Failed to update definition images' };
   }
 }
 
@@ -1802,13 +1785,7 @@ export async function updateWordDetailRelationships(
 
     return { success: true };
   } catch (error) {
-    console.error('Error updating relationships:', error);
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : 'Failed to update relationships',
-    };
+    await serverLog('Error updating relationships', 'error', error);
+    return { success: false, error: 'Failed to update relationships' };
   }
 }

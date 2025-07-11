@@ -5,6 +5,11 @@ import {
   populateInheritedListWithWords,
 } from '@/core/domains/dictionary/actions/user-list-actions';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import {
+  debugLog,
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 import type { RemoveDialogState, AddWordsDialogState } from '../types';
 
 interface UseListDetailActionsProps {
@@ -66,7 +71,7 @@ export function useListDetailActions({
   const playWordAudio = useCallback(
     async (word: string, audioUrl: string | null, wordId: string) => {
       // Debug logging
-      console.log('🔊 Audio playback requested:', {
+      await debugLog('🔊 Audio playback requested:', {
         word,
         audioUrl,
         wordId,
@@ -76,7 +81,7 @@ export function useListDetailActions({
 
       // Check if audio is available in database
       if (!audioUrl) {
-        console.log('❌ No audio URL provided');
+        await infoLog('❌ No audio URL provided');
         toast.error('🔇 No audio available for this word', {
           description: 'Audio will be added to the database soon',
           duration: 3000,
@@ -86,7 +91,7 @@ export function useListDetailActions({
 
       if (isPlayingAudio && playingWordId === wordId) {
         // Stop if already playing this word
-        console.log('⏹️ Stopping current audio playback');
+        await infoLog('⏹️ Stopping current audio playback');
         setIsPlayingAudio(false);
         setPlayingWordId(null);
         return;
@@ -96,11 +101,14 @@ export function useListDetailActions({
       setPlayingWordId(wordId);
 
       try {
-        console.log('🎵 Starting audio playback via AudioService');
+        await infoLog('🎵 Starting audio playback via AudioService');
         await AudioService.playAudioFromDatabase(audioUrl);
-        console.log('✅ Audio playback completed successfully');
+        await infoLog('✅ Audio playback completed successfully');
       } catch (error) {
-        console.error('❌ Audio playback failed:', error);
+        await errorLog(
+          '❌ Audio playback failed',
+          error instanceof Error ? error.message : String(error),
+        );
         toast.error('Failed to play audio', {
           description: 'There was an issue playing the audio file',
           duration: 3000,
@@ -130,7 +138,10 @@ export function useListDetailActions({
           toast.error(result.message);
         }
       } catch (error) {
-        console.error('Error removing word from list:', error);
+        await errorLog(
+          'Error removing word from list',
+          error instanceof Error ? error.message : String(error),
+        );
         toast.error('Failed to remove word from list');
       } finally {
         setRemoveDialog({
@@ -155,7 +166,10 @@ export function useListDetailActions({
           toast.error(result.message);
         }
       } catch (error) {
-        console.error('Error populating list:', error);
+        await errorLog(
+          'Error populating list',
+          error instanceof Error ? error.message : String(error),
+        );
         toast.error('Failed to populate list');
       }
     });

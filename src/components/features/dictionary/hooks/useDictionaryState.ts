@@ -9,6 +9,10 @@ import {
 } from '@/core/domains/user/actions/user-dictionary-actions';
 import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
 import {
+  debugLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
+import {
   LearningStatus,
   PartOfSpeech,
   DifficultyLevel,
@@ -76,12 +80,12 @@ export function useDictionaryState(userId: string) {
         pageSize,
       };
 
-      console.log('🔍 Fetching dictionary words with filters:', filters);
+      await debugLog('Fetching dictionary words with filters', { ...filters });
 
       const result = await getUserDictionary(userId, filters);
 
       if (result && typeof result !== 'string') {
-        console.log('✅ Dictionary fetch successful:', {
+        await debugLog('Dictionary fetch successful', {
           itemsCount: result.items.length,
           totalCount: result.totalCount,
           searchQuery,
@@ -91,7 +95,10 @@ export function useDictionaryState(userId: string) {
         setTotalPages(result.totalPages);
       }
     } catch (error) {
-      console.error('❌ Error fetching dictionary words:', error);
+      await errorLog(
+        'Error fetching dictionary words',
+        error instanceof Error ? error.message : String(error),
+      );
       toast.error('Failed to load dictionary words');
     } finally {
       setLoading(false);
@@ -120,7 +127,10 @@ export function useDictionaryState(userId: string) {
           target: userSettings.user.targetLanguageCode,
         });
       } catch (error) {
-        console.error('Error loading user settings:', error);
+        await errorLog(
+          'Error loading user settings',
+          error instanceof Error ? error.message : String(error),
+        );
       }
     };
 

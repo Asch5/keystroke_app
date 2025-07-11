@@ -7,6 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import {
+  warnLog,
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 import { cn } from '@/core/shared/utils/common/cn';
 
 type AudioType = 'word' | 'success' | 'error' | 'achievement';
@@ -52,7 +57,7 @@ export function PracticeAudioControls({
 
   const handlePlay = useCallback(async () => {
     if (!audioUrl) {
-      console.warn('🎵 Audio playback failed: No audio URL provided');
+      await warnLog('Audio playback failed: No audio URL provided');
       return;
     }
 
@@ -63,7 +68,7 @@ export function PracticeAudioControls({
     }
 
     try {
-      console.log('🎵 Playing audio via AudioService:', { audioUrl });
+      await infoLog('Playing audio via AudioService', { audioUrl });
 
       setIsPlaying(true);
       await AudioService.playAudioFromDatabase(audioUrl);
@@ -74,10 +79,9 @@ export function PracticeAudioControls({
       onReplayCountChange?.(newCount);
       onPlay?.();
 
-      console.log('🎵 Audio playback started successfully via AudioService');
+      await infoLog('Audio playback started successfully via AudioService');
     } catch (error) {
-      console.error('🎵 AudioService playback failed:', {
-        error,
+      await errorLog('AudioService playback failed', {
         errorMessage: error instanceof Error ? error.message : String(error),
         audioUrl,
       });
@@ -91,8 +95,8 @@ export function PracticeAudioControls({
     }
   }, [audioUrl, maxReplays, replayCount, onReplayCountChange, onPlay]);
 
-  const handlePause = useCallback(() => {
-    console.log('🎵 Stopping audio via AudioService');
+  const handlePause = useCallback(async () => {
+    await infoLog('Stopping audio via AudioService');
     AudioService.stopCurrentAudio();
     setIsPlaying(false);
     onPause?.();
@@ -123,7 +127,7 @@ export function PracticeAudioControls({
   useEffect(() => {
     if (autoPlay && !hasAutoPlayed && audioUrl) {
       setHasAutoPlayed(true);
-      console.log('🎵 Auto-playing audio');
+      void infoLog('Auto-playing audio');
       handlePlay();
     }
   }, [autoPlay, hasAutoPlayed, audioUrl, handlePlay]);

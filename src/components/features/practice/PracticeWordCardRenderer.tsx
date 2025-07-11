@@ -1,11 +1,16 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
 import PracticeDebugger from '@/core/infrastructure/monitoring/practiceDebugger';
 import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
 import { WordCard } from './shared';
+import {
+  debugLog,
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 
 interface PracticeWordCardRendererProps {
   currentWord: PracticeWord;
@@ -71,17 +76,21 @@ export function PracticeWordCardRenderer({
       settings: safeSettings,
       conditionalLogic,
       finalProps: {},
-    }).catch((error) => console.error('Debug logging failed:', error));
+    }).catch(
+      (error) =>
+        void errorLog(
+          'Debug logging failed',
+          error instanceof Error ? error.message : String(error),
+        ),
+    );
 
-    // Keep minimal console logs for immediate debugging
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🃏 WordCard Quick Debug:', {
-        word: currentWord.wordText,
-        hasAudio: !!currentWord.audioUrl,
-        hasImage: !!currentWord.imageId || !!currentWord.imageUrl,
-        shouldShowImage: conditionalLogic.shouldShowImage,
-      });
-    }
+    // Quick debug before transformation
+    void debugLog('🃏 WordCard Quick Debug:', {
+      word: currentWord.wordText,
+      hasAudio: !!currentWord.audioUrl,
+      hasImage: !!currentWord.imageId || !!currentWord.imageUrl,
+      shouldShowImage: conditionalLogic.shouldShowImage,
+    });
   }, [currentWord, settings, safeSettings]);
 
   // Create word card props
@@ -121,12 +130,8 @@ export function PracticeWordCardRenderer({
     [currentWord, safeSettings],
   );
 
-  // Debug log final props being passed to WordCard
-  useEffect(() => {
-    if (wordCardProps) {
-      console.log('🎯 WordCard Final Props:', wordCardProps);
-    }
-  }, [wordCardProps]);
+  // Final debug before render
+  void debugLog('🎯 WordCard Final Props:', wordCardProps);
 
   if (!currentWord) return null;
 
@@ -145,7 +150,10 @@ export function PracticeWordCardRenderer({
         await AudioService.playAudioFromDatabase(audioUrl);
       }
     } catch (error) {
-      console.error('Error playing audio:', error);
+      void errorLog(
+        'Error playing audio',
+        error instanceof Error ? error.message : String(error),
+      );
     } finally {
       // Reset playing state after a short delay
       setTimeout(() => {

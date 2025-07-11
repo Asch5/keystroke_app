@@ -2,6 +2,11 @@
 
 import { useRef, useEffect } from 'react';
 import { gameSoundService } from '@/core/domains/dictionary/services/game-sound-service';
+import {
+  debugLog,
+  infoLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 import type { TypingPracticeSettings } from '@/core/state/features/settingsSlice';
 import type { SessionState, WordResult } from './index';
 
@@ -72,7 +77,9 @@ export function useTypingInputState({
       !hasPlayedAutoAudioRef.current;
 
     if (shouldPlayAutoAudio && currentWord) {
-      console.log('🎵 Auto-playing audio for new word:', currentWord.wordText);
+      void infoLog('🎵 Auto-playing audio for new word:', {
+        word: currentWord.wordText,
+      });
       hasPlayedAutoAudioRef.current = true;
 
       // Play audio automatically when word appears
@@ -132,7 +139,7 @@ export function useTypingInputState({
         event.preventDefault();
         event.stopPropagation();
 
-        console.log('🎯 Enter key pressed:', {
+        void debugLog('🎯 Enter key pressed:', {
           showResult,
           userInput: sessionState.userInput,
           userInputLength: sessionState.userInput?.length || 0,
@@ -140,13 +147,13 @@ export function useTypingInputState({
 
         if (showResult) {
           // When showing results, Enter triggers "Next Word"
-          console.log('📝 Triggering Next Word');
+          void infoLog('📝 Triggering Next Word');
           onNextWord();
         } else {
           // When typing, Enter behavior depends on input
           if (sessionState.userInput && sessionState.userInput.length > 0) {
             // If user has typed something, submit the word
-            console.log('✅ Triggering Submit');
+            void infoLog('✅ Triggering Submit');
             onWordSubmit();
 
             // Play success sound if word is correct
@@ -159,13 +166,16 @@ export function useTypingInputState({
             }
           } else {
             // If user hasn't typed anything, skip the word
-            console.log('⏭️ Triggering Skip');
+            void infoLog('⏭️ Triggering Skip');
             onSkipWord()
               .then(() => {
-                console.log('✨ Skip completed');
+                void infoLog('✨ Skip completed');
               })
-              .catch((error) => {
-                console.error('❌ Skip error:', error);
+              .catch(async (error) => {
+                await errorLog(
+                  '❌ Skip error',
+                  error instanceof Error ? error.message : String(error),
+                );
               });
           }
         }

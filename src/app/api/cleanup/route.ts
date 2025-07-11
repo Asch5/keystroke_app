@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { DbCleanupService } from '@/core/lib/utils/dbUtils/dbCleanupService';
 
 /**
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Cleanup failed:', error);
+    await serverLog('Cleanup failed', 'error', error);
     return NextResponse.json(
       { error: 'Cleanup operation failed', details: (error as Error).message },
       { status: 500 },

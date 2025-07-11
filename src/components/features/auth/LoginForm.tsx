@@ -11,7 +11,6 @@ import { Label } from '@/components/ui/label';
 import { authenticate, StateAuth } from '@/core/lib/actions/authActions';
 import { setUser } from '@/core/state/features/authSlice';
 import { useAppDispatch } from '@/core/state/store';
-
 import { UserBasicData } from '@/core/types/user';
 
 /**

@@ -21,6 +21,7 @@ import {
   addWordsToList,
   type ListWithDetails,
 } from '@/core/domains/dictionary/actions';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 import { LanguageCode } from '@/core/types';
 
 interface AddWordsToListDialogProps {

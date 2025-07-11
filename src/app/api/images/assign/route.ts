@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/core/lib/prisma';
 import { ImageService } from '@/core/lib/services/imageService';
 import { PexelsService } from '@/core/lib/services/pexelsService';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 export async function POST(request: Request) {
   // Ensure proper JSON content type in response
@@ -15,10 +16,10 @@ export async function POST(request: Request) {
     try {
       body = await request.json();
     } catch (parseError) {
-      console.error('Error parsing request body:', parseError);
+      await serverLog('Error parsing request body', 'error', parseError);
       return NextResponse.json(
-        { error: 'Invalid JSON in request body' },
-        { status: 400, headers },
+        { error: 'Invalid request body' },
+        { status: 400 },
       );
     }
 
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
           data: { imageId: image.id },
         });
       } catch (dbError) {
-        console.error('Error updating definition:', dbError);
+        await serverLog('Error updating definition', 'error', dbError);
         return NextResponse.json(
           { error: 'Failed to update definition with image' },
           { status: 500, headers },
@@ -71,14 +72,14 @@ export async function POST(request: Request) {
 
       return NextResponse.json({ success: true, image }, { headers });
     } catch (apiError) {
-      console.error('API integration error:', apiError);
+      await serverLog('API integration error', 'error', apiError);
       return NextResponse.json(
         { error: 'Service integration failed' },
         { status: 502, headers },
       );
     }
   } catch (error) {
-    console.error('Error assigning image:', error);
+    await serverLog('Error assigning image', 'error', error);
     return NextResponse.json(
       { error: 'Failed to assign image' },
       { status: 500, headers },

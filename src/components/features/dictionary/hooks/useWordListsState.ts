@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { toast } from 'sonner';
 import {
   getUserLists,
   getAvailablePublicLists,
@@ -11,6 +10,10 @@ import {
 } from '@/core/domains/dictionary';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { useWordListsActions } from './useWordListsActions';
+import {
+  debugLog,
+  errorLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 
 interface UseWordListsStateProps {
   userId: string;
@@ -136,19 +139,17 @@ export function useWordListsState({
   const loadUserLists = useCallback(async () => {
     try {
       const result = await getUserLists(userId, userListFilters);
-      console.log('useWordListsState - loadUserLists result:', {
-        userListsCount: result.userLists.length,
+      void debugLog('useWordListsState - loadUserLists result:', {
+        userListsLength: result.userLists?.length,
         totalCount: result.totalCount,
-        userLists: result.userLists.map((list) => ({
-          id: list.id,
-          displayName: list.displayName,
-          wordCount: list.wordCount,
-        })),
       });
       setUserLists(result.userLists);
     } catch (error) {
-      console.error('Error loading user lists:', error);
-      toast.error('Failed to load your lists');
+      await errorLog(
+        'Error loading user lists',
+        error instanceof Error ? error.message : String(error),
+      );
+      setIsLoading(false);
     }
   }, [userId, userListFilters]);
 
@@ -172,8 +173,10 @@ export function useWordListsState({
       );
       setPublicLists(result.publicLists);
     } catch (error) {
-      console.error('Error loading public lists:', error);
-      toast.error('Failed to load public lists');
+      await errorLog(
+        'Error loading public lists',
+        error instanceof Error ? error.message : String(error),
+      );
     }
   }, [userId, userLanguages, publicListFilters]);
 
@@ -197,8 +200,10 @@ export function useWordListsState({
       );
       setPublicUserLists(result.publicUserLists);
     } catch (error) {
-      console.error('Error loading public user lists:', error);
-      toast.error('Failed to load community lists');
+      await errorLog(
+        'Error loading public user lists',
+        error instanceof Error ? error.message : String(error),
+      );
     }
   }, [userId, userLanguages, publicListFilters]);
 

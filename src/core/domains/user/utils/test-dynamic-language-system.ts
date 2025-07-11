@@ -3,6 +3,10 @@
  * This file provides comprehensive testing of the new dynamic language functionality
  */
 
+import {
+  debugLog,
+  infoLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 import { LanguageCode } from '@/core/types';
 import { getBestDefinitionForUser } from '../../dictionary/utils/translation-utils';
 
@@ -13,21 +17,21 @@ import { getBestDefinitionForUser } from '../../dictionary/utils/translation-uti
  * Test the dynamic language system with mock data
  */
 export async function testDynamicLanguageSystem() {
-  console.log('🧪 Testing Dynamic Language System...\n');
+  await infoLog('🧪 Testing Dynamic Language System...\n');
 
   // Test 1: User Language Configuration
-  console.log('Test 1: User Language Configuration');
+  await infoLog('Test 1: User Language Configuration');
   try {
     // This would normally require a real userId from the database
-    console.log(
+    await infoLog(
       '✅ getUserLanguageConfig function is properly exported and typed',
     );
   } catch (error) {
-    console.log('❌ getUserLanguageConfig failed:', error);
+    await debugLog('❌ getUserLanguageConfig failed:', { error });
   }
 
   // Test 2: Translation Logic
-  console.log('\nTest 2: Translation Logic');
+  await infoLog('\nTest 2: Translation Logic');
   const mockTranslations = [
     {
       id: 1,
@@ -49,7 +53,7 @@ export async function testDynamicLanguageSystem() {
     'english' as LanguageCode,
   );
 
-  console.log('English user result:', {
+  await debugLog('English user result:', {
     content: englishResult.content,
     isTranslation: englishResult.isTranslation,
     languageCode: englishResult.languageCode,
@@ -63,7 +67,7 @@ export async function testDynamicLanguageSystem() {
     'spanish' as LanguageCode,
   );
 
-  console.log('Spanish user result:', {
+  await debugLog('Spanish user result:', {
     content: spanishResult.content,
     isTranslation: spanishResult.isTranslation,
     languageCode: spanishResult.languageCode,
@@ -77,14 +81,14 @@ export async function testDynamicLanguageSystem() {
     'danish' as LanguageCode,
   );
 
-  console.log('Danish user result:', {
+  await debugLog('Danish user result:', {
     content: danishResult.content,
     isTranslation: danishResult.isTranslation,
     languageCode: danishResult.languageCode,
   });
 
   // Test 3: Integration Validation
-  console.log('\nTest 3: System Integration Status');
+  await infoLog('\nTest 3: System Integration Status');
 
   const integrationChecks = [
     '✅ Schema Migration: baseLanguageCode removed from UserDictionary, List, UserList',
@@ -96,13 +100,17 @@ export async function testDynamicLanguageSystem() {
     '✅ Language Helpers: getUserLanguageConfig providing single source of truth',
   ];
 
-  integrationChecks.forEach((check) => console.log(check));
+  for (const check of integrationChecks) {
+    await infoLog(check);
+  }
 
-  console.log('\n🎉 Dynamic Language System Test Summary:');
-  console.log('✅ Translation logic working correctly');
-  console.log('✅ User language preferences being respected');
-  console.log('✅ Fallback to original content when no translation available');
-  console.log('✅ System ready for production use');
+  await infoLog('\n🎉 Dynamic Language System Test Summary:');
+  await infoLog('✅ Translation logic working correctly');
+  await infoLog('✅ User language preferences being respected');
+  await infoLog(
+    '✅ Fallback to original content when no translation available',
+  );
+  await infoLog('✅ System ready for production use');
 
   return {
     status: 'success',
@@ -119,15 +127,15 @@ export async function testDynamicLanguageSystem() {
 /**
  * Verify schema changes are properly applied
  */
-export function verifySchemaChanges() {
-  console.log('\n🔍 Schema Verification:');
-  console.log('✅ UserDictionary model: baseLanguageCode removed');
-  console.log('✅ UserList model: baseLanguageCode removed');
-  console.log('✅ List model: baseLanguageCode removed');
-  console.log(
+export async function verifySchemaChanges() {
+  await infoLog('\n🔍 Schema Verification:');
+  await infoLog('✅ UserDictionary model: baseLanguageCode removed');
+  await infoLog('✅ UserList model: baseLanguageCode removed');
+  await infoLog('✅ List model: baseLanguageCode removed');
+  await infoLog(
     '✅ User model: baseLanguageCode retained as single source of truth',
   );
-  console.log(
+  await infoLog(
     '✅ All models maintain targetLanguageCode for vocabulary language',
   );
 
@@ -137,8 +145,8 @@ export function verifySchemaChanges() {
 /**
  * Test the user-centric language approach
  */
-export function testUserCentricApproach() {
-  console.log('\n🎯 User-Centric Language System Benefits:');
+export async function testUserCentricApproach() {
+  await infoLog('\n🎯 User-Centric Language System Benefits:');
 
   const benefits = [
     '🌍 Global Language Switching: User changes base language → ALL content adapts',
@@ -149,7 +157,9 @@ export function testUserCentricApproach() {
     '🧩 Extensibility: Easy to add new languages without schema changes',
   ];
 
-  benefits.forEach((benefit) => console.log(benefit));
+  for (const benefit of benefits) {
+    await infoLog(benefit);
+  }
 
   return benefits;
 }

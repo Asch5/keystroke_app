@@ -39,6 +39,7 @@ import {
   DEFAULT_SOURCE_LANGUAGE,
   DEFAULT_ONLY_SHORT_DEFINITIONS,
 } from './deepseek-word-extraction-dialog/utils/constants';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 export function DeepSeekWordExtractionDialog({
   open,
@@ -85,8 +86,11 @@ export function DeepSeekWordExtractionDialog({
       );
       setWordDetailsWithDefinitions(data);
     } catch (error) {
-      console.error('Error loading definitions:', error);
-      toast.error('Failed to load definitions');
+      await errorLog(
+        'Error loading definitions',
+        error instanceof Error ? error.message : String(error),
+      );
+      toast.error('Failed to extract definitions');
     } finally {
       setIsLoadingDefinitions(false);
     }

@@ -293,13 +293,15 @@ export async function getWordFromMerriamWebster(
 
     // Log API key availability for debugging
     if (!API_KEY) {
-      console.error(`API key missing for dictionary type: ${dictionaryType}`);
+      await serverLog('API key missing for dictionary type', 'error', {
+        dictionaryType,
+      });
     }
 
     if (!API_KEY) {
-      console.error(
-        `API key not configured for dictionary type: ${dictionaryType}`,
-      );
+      await serverLog('API key not configured for dictionary type', 'error', {
+        dictionaryType,
+      });
       return {
         message: null,
         errors: {
@@ -317,14 +319,18 @@ export async function getWordFromMerriamWebster(
 
     // Log errors only
     if (!response.ok) {
-      console.error(
-        `API Response Status: ${response.status} ${response.statusText}`,
-      );
+      await serverLog('API Response Status error', 'error', {
+        status: response.status,
+        statusText: response.statusText,
+      });
     }
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`API request failed (${response.status}): ${errorText}`);
+      await serverLog('API request failed', 'error', {
+        status: response.status,
+        errorText,
+      });
       return {
         message: null,
         errors: {
@@ -362,8 +368,8 @@ export async function getWordFromMerriamWebster(
       errors: {},
     };
   } catch (error) {
-    console.error('Error fetching word from Merriam-Webster:', error);
-    console.error('Error details:', {
+    await serverLog('Error fetching word from Merriam-Webster', 'error', error);
+    await serverLog('Error details', 'error', {
       message: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : 'No stack trace',
       dictionaryType,
@@ -2623,9 +2629,12 @@ sourceWordText processing
 
     return processedData;
   } catch (error) {
-    console.error('Error saving word data for:', apiResponse?.meta?.id, error);
+    await serverLog('Error saving word data', 'error', {
+      wordId: apiResponse?.meta?.id,
+      error,
+    });
     if (error instanceof DatabaseKnownRequestError) {
-      console.error('Prisma Error Code:', error.code);
+      await serverLog('Prisma Error Code', 'error', { code: error.code });
       // Add specific error handling based on error codes
       if (error.code === 'P2028') {
         throw new Error(
@@ -2703,7 +2712,7 @@ async function processImagesForDefinitions(
 
 function cleanupDefinitionText(text: unknown): string {
   if (typeof text !== 'string') {
-    console.warn('Non-string definition text encountered:', text);
+    void serverLog('Non-string definition text encountered', 'warn', text);
     return String(text || '')
       .replace(/{[^}]+}/g, '')
       .replace(/\s+/g, ' ')
@@ -2723,7 +2732,7 @@ function cleanupDefinitionText(text: unknown): string {
 
 function cleanupExampleText(text: unknown): string {
   if (typeof text !== 'string') {
-    console.warn('Non-string example text encountered:', text);
+    void serverLog('Non-string example text encountered', 'warn', text);
     return (
       String(text || '')
         // .replace(/{(?!it}|\/it})([^}]+)}/g, '') // Keep {it} and {/it} tags but remove others
@@ -2756,7 +2765,7 @@ function cleanupExampleText(text: unknown): string {
  */
 function mapPartOfSpeech(apiFl: string | undefined | null): PartOfSpeech {
   if (!apiFl) {
-    console.warn('Missing functional label (fl) in API response.');
+    void serverLog('Missing functional label (fl) in API response', 'warn');
     return PartOfSpeech.undefined;
   }
   switch (apiFl.toLowerCase()) {
@@ -2780,14 +2789,16 @@ function mapPartOfSpeech(apiFl: string | undefined | null): PartOfSpeech {
       return PartOfSpeech.interjection;
     case 'abbreviation':
     case 'symbol':
-      console.warn(
-        `Mapping potentially unhandled part of speech: ${apiFl}. Using undefined.`,
-      );
+      void serverLog('Mapping potentially unhandled part of speech', 'warn', {
+        apiFl,
+        action: 'Using undefined',
+      });
       return PartOfSpeech.undefined;
     default:
-      console.warn(
-        `Unknown part of speech encountered: ${apiFl}. Using undefined.`,
-      );
+      void serverLog('Unknown part of speech encountered', 'warn', {
+        apiFl,
+        action: 'Using undefined',
+      });
       return PartOfSpeech.undefined;
   }
 }
@@ -2808,7 +2819,9 @@ function mapSourceType(apiSrc: string | undefined | null): SourceType {
     case 'collegiate':
 
     default:
-      console.warn(`Unknown source type: ${apiSrc}, defaulting to user`);
+      void serverLog('Unknown source type, defaulting to user', 'warn', {
+        apiSrc,
+      });
       return SourceType.user;
   }
 }
@@ -2863,7 +2876,10 @@ export async function processAllWords(
       const result = await processAndSaveWord(response);
       results.push(result);
     } catch (error) {
-      console.error(`Error processing word ${response.meta?.id}:`, error);
+      await serverLog('Error processing word', 'error', {
+        wordId: response.meta?.id,
+        error,
+      });
       // Continue processing other words even if one fails
     }
   }
@@ -3394,7 +3410,7 @@ function getStringFromArray(
 
 function formatWithBC(text: unknown): string {
   if (typeof text !== 'string') {
-    console.warn('Input is not a string:', text);
+    void serverLog('Input is not a string', 'warn', text);
     return '';
   }
 

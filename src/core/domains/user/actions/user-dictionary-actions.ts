@@ -11,6 +11,7 @@ import {
   Gender,
 } from '@/core/types';
 import { getUserLanguageConfig } from '../utils/language-helpers';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Interface for user dictionary item with comprehensive learning data
@@ -455,7 +456,7 @@ export const getUserDictionary = cache(
         hasPreviousPage,
       };
     } catch (error) {
-      console.error('Error fetching user dictionary:', error);
+      await serverLog('Error fetching user dictionary', 'error', error);
       return {
         items: [],
         totalCount: 0,
@@ -523,8 +524,10 @@ export async function updateWordLearningStatus(
 
     return { success: true, data: updatedEntry };
   } catch (error) {
-    console.error('Error updating word learning status:', error);
-    return handlePrismaError(error);
+    await serverLog('Error updating word learning status', 'error', error);
+    throw new Error(
+      handlePrismaError(error).message || 'Failed to update learning status',
+    );
   }
 }
 
@@ -554,8 +557,10 @@ export async function toggleWordFavorite(
 
     return { success: true, data: updatedEntry };
   } catch (error) {
-    console.error('Error toggling word favorite:', error);
-    return handlePrismaError(error);
+    await serverLog('Error toggling word favorite', 'error', error);
+    throw new Error(
+      handlePrismaError(error).message || 'Failed to toggle favorite',
+    );
   }
 }
 
@@ -589,8 +594,10 @@ export async function updateUserWordCustomData(
 
     return { success: true, data: updatedEntry };
   } catch (error) {
-    console.error('Error updating user word custom data:', error);
-    return handlePrismaError(error);
+    await serverLog('Error updating user word custom data', 'error', error);
+    throw new Error(
+      handlePrismaError(error).message || 'Failed to update custom data',
+    );
   }
 }
 
@@ -614,8 +621,11 @@ export async function removeWordFromUserDictionary(
 
     return { success: true, data: deletedEntry };
   } catch (error) {
-    console.error('Error removing word from user dictionary:', error);
-    return handlePrismaError(error);
+    await serverLog('Error removing word from user dictionary', 'error', error);
+    throw new Error(
+      handlePrismaError(error).message ||
+        'Failed to remove word from dictionary',
+    );
   }
 }
 

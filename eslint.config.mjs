@@ -33,6 +33,10 @@ export default defineConfig([
   //     'bufferFolder/**',
   //     'tests/**',
   //     'scripts/**',
+  //     'documentation/**',
+  //     'bufferFolder/**',
+  //     'tests/**',
+  //     'scripts/**',
   //   ],
   // },
   // {

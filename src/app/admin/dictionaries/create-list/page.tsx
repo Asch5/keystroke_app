@@ -12,7 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -21,6 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import {
   fetchDictionaryWordDetails,
   fetchCategories,
@@ -28,6 +28,7 @@ import {
   createCategory,
   type CategoryData,
 } from '@/core/domains/dictionary/actions';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 // Language display names
@@ -141,7 +142,10 @@ function CreateListContent() {
           setSelectedWords(selectedWordInfo);
         }
       } catch (error) {
-        console.error('Error loading data:', error);
+        await errorLog(
+          'Error loading data',
+          error instanceof Error ? error.message : String(error),
+        );
       } finally {
         setIsLoading(false);
       }
@@ -200,11 +204,17 @@ function CreateListContent() {
         setNewCategoryDescription('');
         setShowNewCategoryForm(false);
       } else {
-        console.error('Failed to create category:', result.error);
+        await errorLog(
+          'Failed to create category',
+          result.error || 'Unknown error',
+        );
         // Could add toast notification here for better UX
       }
     } catch (error) {
-      console.error('Error creating category:', error);
+      await errorLog(
+        'Error creating category',
+        error instanceof Error ? error.message : String(error),
+      );
       // Could add toast notification here for better UX
     } finally {
       setIsCreatingCategory(false);

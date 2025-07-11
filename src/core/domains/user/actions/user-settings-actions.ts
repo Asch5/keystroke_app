@@ -10,6 +10,7 @@ import type {
   UserSettingsState,
   UserProfileState,
 } from '@/core/domains/user/types/user-settings';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { getUserByEmail } from '@/core/lib/db/user';
 import { prisma } from '@/core/lib/prisma';
 import { LanguageCode } from '@/core/types';
@@ -231,7 +232,7 @@ export async function updateUserProfile(
         const fileName = `profile/${user.id}-${uuidv4()}.${fileExtension}`;
 
         // Log upload attempt for debugging
-        console.log('Attempting to upload profile picture:', {
+        await serverLog('Attempting to upload profile picture', 'info', {
           fileName,
           fileSize: photo.size,
           fileType: photo.type,
@@ -247,13 +248,13 @@ export async function updateUserProfile(
 
         updateData.profilePictureUrl = blob.url;
 
-        console.log('Profile picture uploaded successfully:', {
+        await serverLog('Profile picture uploaded successfully', 'info', {
           fileName,
           blobUrl: blob.url,
           userId: user.id,
         });
       } catch (uploadError) {
-        console.error('Error uploading photo:', uploadError);
+        await serverLog('Error uploading photo', 'error', uploadError);
 
         // Provide more specific error messages
         const errorMessage =
@@ -321,7 +322,7 @@ export async function updateUserProfile(
 
     return { message: 'No changes to update.' };
   } catch (error) {
-    console.error('Error updating profile:', error);
+    await serverLog('Error updating profile', 'error', error);
     return { message: 'An unexpected error occurred.' };
   }
 }
@@ -465,7 +466,7 @@ export async function updateUserLearningSettings(
       success: true,
     };
   } catch (error) {
-    console.error('Error updating learning settings:', error);
+    await serverLog('Error updating learning settings', 'error', error);
     return { message: 'An unexpected error occurred.' };
   }
 }
@@ -522,7 +523,7 @@ export async function updateAppSettings(
     revalidatePath('/dashboard/settings');
     return { message: 'App settings updated successfully.', success: true };
   } catch (error) {
-    console.error('Error updating app settings:', error);
+    await serverLog('Error updating app settings', 'error', error);
     return { message: 'An unexpected error occurred.' };
   }
 }
@@ -551,7 +552,7 @@ export async function getUserSettings() {
       appSettings: userWithSettings.settings as Record<string, unknown>,
     };
   } catch (error) {
-    console.error('Error fetching user settings:', error);
+    await serverLog('Error fetching user settings', 'error', error);
     throw error;
   }
 }
@@ -583,7 +584,7 @@ export async function deleteUserAccount(
     // Redirect to home page
     redirect('/');
   } catch (error) {
-    console.error('Error deleting user account:', error);
+    await serverLog('Error deleting user account', 'error', error);
     return { message: 'An unexpected error occurred.' };
   }
 }

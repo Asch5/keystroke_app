@@ -3,6 +3,11 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import {
+  debugLog,
+  errorLog,
+  infoLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 
 /**
  * Custom hook for audio playback functionality
@@ -18,7 +23,7 @@ export function useAudioPlayback() {
   const playWordAudio = useCallback(
     async (word: string, audioUrl: string | null, wordId: string) => {
       // Debug logging
-      console.log('🔊 Audio playback requested:', {
+      await debugLog('Audio playback requested', {
         word,
         audioUrl,
         wordId,
@@ -28,7 +33,7 @@ export function useAudioPlayback() {
 
       // Check if audio is available in database
       if (!audioUrl) {
-        console.log('❌ No audio URL provided');
+        await infoLog('No audio URL provided');
         toast.error('🔇 No audio available for this word', {
           description: 'Audio will be added to the database soon',
           duration: 3000,
@@ -38,7 +43,7 @@ export function useAudioPlayback() {
 
       if (isPlayingAudio && playingWordId === wordId) {
         // Stop if already playing this word
-        console.log('⏹️ Stopping current audio playback');
+        await infoLog('Stopping current audio playback');
         setIsPlayingAudio(false);
         setPlayingWordId(null);
         return;
@@ -48,15 +53,17 @@ export function useAudioPlayback() {
       setPlayingWordId(wordId);
 
       try {
-        console.log('🎵 Attempting to play audio from URL:', audioUrl);
+        await debugLog('Attempting to play audio from URL', { audioUrl });
         // Only play from database - no fallback
         await AudioService.playAudioFromDatabase(audioUrl);
-        console.log('✅ Audio playback successful');
+        await infoLog('Audio playback successful');
         toast.success('🔊 Playing pronunciation', { duration: 2000 });
       } catch (error) {
-        console.error('❌ Database audio playback failed:', error);
-        console.error('Error details:', {
-          error,
+        await errorLog(
+          'Database audio playback failed',
+          error instanceof Error ? error.message : String(error),
+        );
+        await errorLog('Error details', {
           audioUrl,
           word,
           errorMessage: error instanceof Error ? error.message : String(error),

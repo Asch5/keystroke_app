@@ -1,6 +1,11 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  infoLog,
+  errorLog,
+  warnLog,
+} from '@/core/infrastructure/monitoring/clientLogger';
 import { useTypingPracticeSettings } from '@/core/shared/hooks/useSettings';
 import { useUser } from '@/core/shared/hooks/useUser';
 import { LearningStatus } from '@/core/types';
@@ -75,11 +80,11 @@ export function TypingPracticeContent({
    * Enhanced word submit handler that includes automatic audio playback
    */
   const handleWordSubmitWithAudio = async (inputValue?: string) => {
-    console.log('🎯 Word submitted, processing result...');
+    await infoLog('Word submitted, processing result');
     const result = await handleWordSubmit(inputValue);
 
     if (result && sessionState.currentWord) {
-      console.log('📊 Word result received:', {
+      await infoLog('Word result received', {
         isCorrect: result.isCorrect,
         word: sessionState.currentWord.wordText,
         hasAudio: !!sessionState.currentWord.audioUrl,
@@ -93,10 +98,13 @@ export function TypingPracticeContent({
           result.isCorrect,
         );
       } catch (error) {
-        console.error('❌ Error playing audio after word submission:', error);
+        await errorLog(
+          'Error playing audio after word submission',
+          error instanceof Error ? error.message : String(error),
+        );
       }
     } else {
-      console.warn('⚠️ No result or current word available for audio playback');
+      await warnLog('No result or current word available for audio playback');
     }
   };
 
@@ -104,11 +112,11 @@ export function TypingPracticeContent({
    * Enhanced skip handler that includes automatic audio playback
    */
   const handleSkipWithAudio = async (): Promise<WordResult | undefined> => {
-    console.log('⏭️ Word skipped, processing...');
+    await infoLog('Word skipped, processing');
     const result = await handleSkipWord();
 
     if (result && sessionState.currentWord) {
-      console.log('📊 Skip result for word:', {
+      await infoLog('Skip result for word', {
         word: sessionState.currentWord.wordText,
         hasAudio: !!sessionState.currentWord.audioUrl,
       });
@@ -121,11 +129,14 @@ export function TypingPracticeContent({
           false, // skipped = incorrect
         );
       } catch (error) {
-        console.error('❌ Error playing audio after word skip:', error);
+        await errorLog(
+          'Error playing audio after word skip',
+          error instanceof Error ? error.message : String(error),
+        );
       }
     } else {
-      console.warn(
-        '⚠️ No result or current word available for skip audio playback',
+      await warnLog(
+        'No result or current word available for skip audio playback',
       );
     }
 

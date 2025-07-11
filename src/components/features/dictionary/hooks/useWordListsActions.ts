@@ -9,6 +9,7 @@ import {
   type UserListWithDetails,
 } from '@/core/domains/dictionary';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 interface UseWordListsActionsProps {
   userId: string;
@@ -55,8 +56,13 @@ export function useWordListsActions({
           toast.error(result.message);
         }
       } catch (error) {
-        console.error('Error adding list to collection:', error);
-        toast.error('Failed to add list to collection');
+        await errorLog(
+          'Error adding list to collection',
+          error instanceof Error ? error.message : String(error),
+        );
+        toast.error(
+          error instanceof Error ? error.message : 'Failed to add list',
+        );
       } finally {
         setIsPending(false);
       }
@@ -83,8 +89,14 @@ export function useWordListsActions({
           toast.error(result.message);
         }
       } catch (error) {
-        console.error('Error adding public user list to collection:', error);
-        toast.error('Failed to add list to collection');
+        await errorLog(
+          'Error adding public user list to collection',
+          error instanceof Error ? error.message : String(error),
+        );
+        toast.error(
+          error instanceof Error ? error.message : 'Failed to add list',
+        );
+      } finally {
       }
     },
     [userId, userLanguages, loadUserLists, loadPublicUserLists],
@@ -109,8 +121,14 @@ export function useWordListsActions({
           toast.error(result.message);
         }
       } catch (error) {
-        console.error('Error removing list from collection:', error);
-        toast.error('Failed to remove list from collection');
+        await errorLog(
+          'Error removing list from collection',
+          error instanceof Error ? error.message : String(error),
+        );
+        toast.error(
+          error instanceof Error ? error.message : 'Failed to remove list',
+        );
+      } finally {
       }
     },
     [userId, loadUserLists, loadPublicLists, loadPublicUserLists],
@@ -140,8 +158,14 @@ export function useWordListsActions({
           toast.error(result.message);
         }
       } catch (error) {
-        console.error('Error creating list:', error);
-        toast.error('Failed to create list');
+        await errorLog(
+          'Error creating list',
+          error instanceof Error ? error.message : String(error),
+        );
+        toast.error(
+          error instanceof Error ? error.message : 'Failed to create list',
+        );
+      } finally {
       }
     },
     [userId, userLanguages.target, loadUserLists, setIsCreateDialogOpen],
@@ -171,8 +195,14 @@ export function useWordListsActions({
           toast.error(result.message);
         }
       } catch (error) {
-        console.error('Error updating list:', error);
-        toast.error('Failed to update list');
+        await errorLog(
+          'Error updating list',
+          error instanceof Error ? error.message : String(error),
+        );
+        toast.error(
+          error instanceof Error ? error.message : 'Failed to update list',
+        );
+      } finally {
       }
     },
     [userId, loadUserLists, setEditingList],

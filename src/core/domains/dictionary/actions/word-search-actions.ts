@@ -3,6 +3,7 @@
 import { prisma } from '@/core/shared/database/client';
 import { LanguageCode, LearningStatus, PartOfSpeech } from '@/core/types';
 import { getBestDefinitionForUser } from '../utils/translation-utils';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Interface for search results grouped by word
@@ -196,7 +197,7 @@ export async function searchWords(
       totalPages,
     };
   } catch (error) {
-    console.error('Error searching words:', error);
+    await serverLog('Error searching words', 'error', error);
     throw new Error('Failed to search words');
   }
 }
@@ -260,8 +261,12 @@ export async function addDefinitionToUserDictionary(
 
     return { success: true, data: newEntry, isNew: true };
   } catch (error) {
-    console.error('Error adding definition to user dictionary:', error);
-    throw new Error('Failed to add word to dictionary');
+    await serverLog(
+      'Error adding definition to user dictionary',
+      'error',
+      error,
+    );
+    throw new Error('Failed to add definition to user dictionary');
   }
 }
 

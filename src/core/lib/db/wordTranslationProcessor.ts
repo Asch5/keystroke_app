@@ -123,7 +123,7 @@ export async function processTranslationsForWord(
               });
 
               if (!translation) {
-                translation = await transactionPrisma.translation.create({
+                translation ??= await transactionPrisma.translation.create({
                   data: {
                     languageCode: LanguageCode.da,
                     content: definitionTranslationText,
@@ -163,13 +163,15 @@ export async function processTranslationsForWord(
                     });
 
                   if (!exampleTrans) {
-                    exampleTrans = await transactionPrisma.translation.create({
-                      data: {
-                        languageCode: LanguageCode.da,
-                        content: exampleTranslationText,
-                        source: SourceType.helsinki_nlp,
+                    exampleTrans ??= await transactionPrisma.translation.create(
+                      {
+                        data: {
+                          languageCode: LanguageCode.da,
+                          content: exampleTranslationText,
+                          source: SourceType.helsinki_nlp,
+                        },
                       },
-                    });
+                    );
                   }
 
                   await transactionPrisma.exampleTranslation.upsert({
@@ -278,7 +280,7 @@ export async function processEnglishTranslationsForDanishWord(
           });
 
           if (!englishTranslation) {
-            englishTranslation = await tx.translation.create({
+            englishTranslation ??= await tx.translation.create({
               data: {
                 languageCode: LanguageCode.en,
                 content: danishDef.definition_translation_en,
@@ -373,7 +375,7 @@ export async function processEnglishTranslationsForDanishWord(
               });
 
               if (!exampleTranslation) {
-                exampleTranslation = await tx.translation.create({
+                exampleTranslation ??= await tx.translation.create({
                   data: {
                     languageCode: LanguageCode.en,
                     content: englishExampleTranslationText,
@@ -505,7 +507,7 @@ export async function processEnglishTranslationsForDanishWord(
           });
 
           if (!englishTranslation) {
-            englishTranslation = await tx.translation.create({
+            englishTranslation ??= await tx.translation.create({
               data: {
                 languageCode: LanguageCode.en,
                 content: expressionDef.definition_translation_en,
@@ -636,7 +638,7 @@ export async function processEnglishTranslationsForDanishWord(
               });
 
               if (!exampleTranslation) {
-                exampleTranslation = await tx.translation.create({
+                exampleTranslation ??= await tx.translation.create({
                   data: {
                     languageCode: LanguageCode.en,
                     content: translationText,
@@ -699,7 +701,7 @@ export async function processEnglishTranslationsForDanishWord(
               });
 
               if (!exampleTranslation) {
-                exampleTranslation = await tx.translation.create({
+                exampleTranslation ??= await tx.translation.create({
                   data: {
                     languageCode: LanguageCode.en,
                     content: translationText,

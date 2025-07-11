@@ -28,6 +28,7 @@ import {
   type ListWithDetails,
   type CategoryData,
 } from '@/core/domains/dictionary/actions';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 import { DifficultyLevel } from '@/core/types';
 
 // Difficulty level display names
@@ -108,7 +109,10 @@ export default function EditListPage() {
           setCategories(categoriesResult.categories);
         }
       } catch (err) {
-        console.error('Error loading data:', err);
+        await errorLog(
+          'Error loading data',
+          err instanceof Error ? err.message : String(err),
+        );
         setError('Failed to load list data');
       } finally {
         setIsLoading(false);
@@ -116,7 +120,7 @@ export default function EditListPage() {
     };
 
     if (listId) {
-      loadData();
+      void loadData();
     }
   }, [listId]);
 
@@ -147,7 +151,7 @@ export default function EditListPage() {
     try {
       const result = await createCategory(
         newCategoryName,
-        newCategoryDescription ?? undefined,
+        newCategoryDescription || undefined,
       );
 
       if (result.success && result.category) {
@@ -165,11 +169,17 @@ export default function EditListPage() {
         setNewCategoryDescription('');
         setShowNewCategoryForm(false);
       } else {
-        console.error('Failed to create category:', result.error);
+        await errorLog(
+          'Failed to create category',
+          result.error ?? 'Unknown error',
+        );
         // Could add toast notification here for better UX
       }
     } catch (error) {
-      console.error('Error creating category:', error);
+      await errorLog(
+        'Error creating category',
+        error instanceof Error ? error.message : String(error),
+      );
       // Could add toast notification here for better UX
     } finally {
       setIsCreatingCategory(false);

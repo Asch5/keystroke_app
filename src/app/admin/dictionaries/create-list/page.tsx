@@ -113,7 +113,7 @@ function CreateListContent() {
     searchParams
       .get('selectedDefinitions')
       ?.split(',')
-      .map((id) => parseInt(id.trim()))
+      .map((id) => parseInt(id.trim(), 10))
       .filter((id) => !isNaN(id)) || [];
 
   useEffect(() => {
@@ -131,7 +131,7 @@ function CreateListContent() {
           const wordDetails = await fetchDictionaryWordDetails(language);
           const selectedWordInfo = wordDetails
             .filter((word) =>
-              selectedDefinitionIds.includes(word.definitionId!),
+              selectedDefinitionIds.includes(word.definitionId ?? 0),
             )
             .map((word) => ({
               id: word.id.toString(),
@@ -186,7 +186,7 @@ function CreateListContent() {
     try {
       const result = await createCategory(
         newCategoryName,
-        newCategoryDescription ?? undefined,
+        newCategoryDescription || undefined,
       );
 
       if (result.success && result.category) {

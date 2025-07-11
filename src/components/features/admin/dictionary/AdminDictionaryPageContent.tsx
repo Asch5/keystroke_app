@@ -37,7 +37,6 @@ export function AdminDictionaryPageContent() {
             setUserBaseLanguage(userSettings.user.baseLanguageCode);
           }
         } catch (error) {
-          console.error('Error fetching user language:', error);
           // Default to English if error
           setUserBaseLanguage(LanguageCode.en);
         }

@@ -326,7 +326,7 @@ export default function ListsManagementPage() {
           <Select
             value={pageSize.toString()}
             onValueChange={(value) => {
-              setPageSize(parseInt(value));
+              setPageSize(parseInt(value, 10));
               setCurrentPage(1);
             }}
           >

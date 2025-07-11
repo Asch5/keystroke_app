@@ -138,12 +138,13 @@ Act as a senior full-stack developer with expertise in modern React/Next.js appl
 
 #### `/documentation/` - Comprehensive Documentation
 
-Contains 26+ specialized documentation files covering:
+Contains 27+ specialized documentation files covering:
 
 - Architecture guides (@documentation/TYPE_STRUCTURE_ARCHITECTURE.md)
 - Design systems (@documentation/DESIGN_SYSTEM.md)
 - Practice system (@documentation/PRACTICE_SYSTEM_DESIGN.md)
 - Performance guides (@documentation/PERFORMANCE_IMPLEMENTATION.md)
+- CI/CD implementation (@documentation/CI_CD_IMPLEMENTATION.md)
 - Database schema (@documentation/DATABASE_DESCRIPTION.md)
 
 ### Root Structure
@@ -313,6 +314,7 @@ This AGENT.md file serves as the central hub for AI agent configuration. For det
 - **Database**: @documentation/DATABASE_DESCRIPTION.md
 - **Practice System**: @documentation/PRACTICE_SYSTEM_DESIGN.md
 - **Performance**: @documentation/PERFORMANCE_IMPLEMENTATION.md
+- **CI/CD Implementation**: @documentation/CI_CD_IMPLEMENTATION.md
 - **Design System**: @documentation/DESIGN_SYSTEM.md
 
 Each documentation file follows AI-optimized structure with complete context, consistent terminology, and semantic clarity for enhanced agent comprehension.

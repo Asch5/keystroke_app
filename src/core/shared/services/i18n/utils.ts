@@ -1,3 +1,4 @@
+import { warnLog } from '@/core/infrastructure/monitoring/clientLogger';
 import { SUPPORTED_LOCALES, DEFAULT_UI_LANGUAGE } from './constants';
 import type {
   TranslationFile,
@@ -5,7 +6,6 @@ import type {
   TranslationParams,
   UILanguageCode,
 } from './types';
-import { warnLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 /**
  * Translation Utilities

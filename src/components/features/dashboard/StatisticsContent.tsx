@@ -9,8 +9,8 @@ import {
 import {
   getUserStatistics,
   getLearningAnalytics,
+  type UserStatistics,
 } from '@/core/domains/user/actions/user-stats-actions';
-import type { UserStatistics } from '@/core/domains/user/actions/user-stats-actions';
 import {
   LearningProgressTab,
   SessionAnalyticsTab,

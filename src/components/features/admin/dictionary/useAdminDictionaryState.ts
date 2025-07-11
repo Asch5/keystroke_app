@@ -7,13 +7,13 @@ import {
   deleteWordAudio,
   type DictionaryWordDetails,
 } from '@/core/domains/dictionary/actions';
-import { useAdminDictionaryFilters } from '@/core/shared/hooks/useSettings';
-import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
-import { FilterState } from './AdminDictionaryConstants';
 import {
   debugLog,
   errorLog,
 } from '@/core/infrastructure/monitoring/clientLogger';
+import { useAdminDictionaryFilters } from '@/core/shared/hooks/useSettings';
+import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
+import { FilterState } from './AdminDictionaryConstants';
 
 /**
  * Custom hook for managing all state and business logic for the admin dictionaries page

@@ -31,7 +31,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import type { DictionaryWordDetails } from '@/core/domains/dictionary/actions';
-import { LanguageCode, PartOfSpeech, SourceType } from '@/core/types';
+import { LanguageCode } from '@/core/types';
 import {
   partOfSpeechDisplayNames,
   sourceTypeDisplayNames,
@@ -126,10 +126,12 @@ export function AdminDictionaryTable({
         </Button>
       ),
       cell: ({ row }) => {
-        const pos = row.getValue('partOfSpeech') as PartOfSpeech;
+        const pos = row.getValue('partOfSpeech') as string;
         return (
           <span className="capitalize">
-            {partOfSpeechDisplayNames[pos] || pos}
+            {partOfSpeechDisplayNames[
+              pos as keyof typeof partOfSpeechDisplayNames
+            ] || pos}
           </span>
         );
       },
@@ -158,7 +160,7 @@ export function AdminDictionaryTable({
         </Button>
       ),
       cell: ({ row }) => {
-        const freq = row.getValue('frequencyGeneral');
+        const freq = row.getValue('frequencyGeneral') as number | null;
         return freq ? (
           <span className="tabular-nums">{freq.toLocaleString()}</span>
         ) : (
@@ -178,7 +180,7 @@ export function AdminDictionaryTable({
         </Button>
       ),
       cell: ({ row }) => {
-        const freq = row.getValue('frequency');
+        const freq = row.getValue('frequency') as number | null;
         return freq ? (
           <span className="tabular-nums">{freq.toLocaleString()}</span>
         ) : (
@@ -198,10 +200,12 @@ export function AdminDictionaryTable({
         </Button>
       ),
       cell: ({ row }) => {
-        const source = row.getValue('source') as SourceType;
+        const source = row.getValue('source') as string;
         return (
           <span className="text-sm">
-            {sourceTypeDisplayNames[source] || source}
+            {sourceTypeDisplayNames[
+              source as keyof typeof sourceTypeDisplayNames
+            ] || source}
           </span>
         );
       },

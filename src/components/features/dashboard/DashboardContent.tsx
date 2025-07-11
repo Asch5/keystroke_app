@@ -24,8 +24,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { getSessionStats } from '@/core/domains/user/actions/session-actions';
-import { getUserStatistics } from '@/core/domains/user/actions/user-stats-actions';
-import type { UserStatistics } from '@/core/domains/user/actions/user-stats-actions';
+import {
+  getUserStatistics,
+  type UserStatistics,
+} from '@/core/domains/user/actions/user-stats-actions';
 import type { SessionStatsResponse } from '@/core/domains/user/types/session';
 
 interface DashboardContentProps {

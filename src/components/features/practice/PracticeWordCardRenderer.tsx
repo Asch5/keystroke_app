@@ -3,14 +3,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
 import type { PracticeWord } from '@/core/domains/user/actions/practice-actions';
-import PracticeDebugger from '@/core/infrastructure/monitoring/practiceDebugger';
-import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
-import { WordCard } from './shared';
 import {
   debugLog,
   infoLog,
   errorLog,
 } from '@/core/infrastructure/monitoring/clientLogger';
+import PracticeDebugger from '@/core/infrastructure/monitoring/practiceDebugger';
+import type { VocabularyPracticeSettings } from '@/core/state/features/settingsSlice';
+import { WordCard } from './shared';
 
 interface PracticeWordCardRendererProps {
   currentWord: PracticeWord;

@@ -1,6 +1,5 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import NextAuth, { NextAuthConfig } from 'next-auth';
-import type { Session, User } from 'next-auth';
+import NextAuth, { NextAuthConfig, type Session, type User } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import credentialsProvider from '@/core/lib/auth/providers';
 import { prisma } from '@/core/lib/prisma';
@@ -9,7 +8,7 @@ export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
   pages: { signIn: '/login' },
   session: { strategy: 'jwt' },
-  secret: process.env.NEXTAUTH_SECRET!,
+  secret: process.env.NEXTAUTH_SECRET ?? '',
   providers: [credentialsProvider],
   callbacks: {
     jwt({ token, user }) {
@@ -34,7 +33,7 @@ export { handlers, auth, signIn, signOut };
 
 // Separate edge-compatible config
 export const edgeAuthConfig = {
-  secret: process.env.NEXTAUTH_SECRET!,
+  secret: process.env.NEXTAUTH_SECRET ?? '',
   pages: { signIn: '/login' },
   session: { strategy: 'jwt' as const },
   callbacks: {

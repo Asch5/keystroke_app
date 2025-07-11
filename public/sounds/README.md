@@ -5,13 +5,11 @@ This directory contains audio files for typing practice feedback.
 ## Required Sound Files
 
 1. **error.mp3** (or .wav) - Wrong letter/mistake sound
-
    - Short, low-pitched buzz or beep
    - Duration: ~200-300ms
    - Suggested: 440Hz tone with slight distortion
 
 2. **success.mp3** (or .wav) - Correct completion sound
-
    - Pleasant, higher-pitched chime or ding
    - Duration: ~500-800ms
    - Suggested: C major chord (261Hz, 329Hz, 392Hz)

@@ -13,8 +13,19 @@ import {
   selectVocabularyPracticeSettings,
   selectDictionaryFilters,
   selectAdminDictionaryFilters,
+  type SettingsState,
 } from '@/core/state/features/settingsSlice';
 import { store } from '@/core/state/store';
+
+// =============================================
+// API RESPONSE INTERFACES
+// =============================================
+
+interface SettingsApiResponse {
+  success: boolean;
+  error?: string;
+  data?: Record<string, unknown>;
+}
 
 // =============================================
 // SETTINGS SYNCHRONIZATION SERVICE
@@ -154,7 +165,7 @@ export class SettingsSyncService {
         );
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as SettingsApiResponse;
 
       if (!result.success) {
         throw new Error(result.error ?? 'Settings sync failed');
@@ -227,7 +238,7 @@ export class SettingsSyncService {
         );
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as SettingsApiResponse;
 
       if (!result.success) {
         throw new Error(result.error ?? 'Failed to load settings');
@@ -237,11 +248,11 @@ export class SettingsSyncService {
       const { initializeSettings } = await import(
         '@/core/state/features/settingsSlice'
       );
-      store.dispatch(initializeSettings(result.data));
+      store.dispatch(initializeSettings(result.data ?? {}));
 
       await infoLog('Settings initialized successfully from database', {
         userId,
-        settingsLoaded: Object.keys(result.data).length,
+        settingsLoaded: Object.keys(result.data ?? {}).length,
       });
 
       return true;
@@ -291,7 +302,7 @@ export class SettingsSyncService {
    */
   public async importSettings(settingsJson: string): Promise<boolean> {
     try {
-      const settings = JSON.parse(settingsJson);
+      const settings = JSON.parse(settingsJson) as Partial<SettingsState>;
 
       const { initializeSettings } = await import(
         '@/core/state/features/settingsSlice'

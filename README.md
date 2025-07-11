@@ -1,43 +1,47 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Keystroke App
+
+A modern language learning platform built with Next.js, TypeScript, and Prisma.
+
+## Features
+
+- Multi-language dictionary with audio pronunciation
+- Interactive typing practice with spaced repetition
+- Comprehensive vocabulary management
+- Advanced practice games and exercises
+- Real-time performance analytics
+
+## Technology Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
+- **Backend**: Prisma, PostgreSQL, NextAuth.js
+- **UI**: shadcn/ui components with consistent design system
+- **Testing**: Vitest, React Testing Library, Playwright
+- **CI/CD**: GitHub Actions with comprehensive quality gates
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies: `pnpm install`
+3. Set up environment variables
+4. Run the development server: `pnpm dev`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Testing
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Unit Tests**: `pnpm test`
+- **Component Tests**: `pnpm test:components`
+- **End-to-End Tests**: `pnpm test:e2e`
+- **All Tests**: `pnpm test:all`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## CI/CD Pipeline
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses a comprehensive CI/CD pipeline with:
 
-## Learn More
+- Code quality checks (ESLint, Prettier, TypeScript)
+- Comprehensive testing (Unit, Integration, E2E)
+- Security scanning and dependency audits
+- Performance monitoring with Lighthouse
+- Automated deployment with quality gates
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js BufferFolder](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-# Check out our [Next.js deployment bufferfolder](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-# keystroke_app
-
-This is an application to help in learning to type foreign language words on the keyboard it helps in learning the language in learning new words and also developing typing skills
-
-> > > > > > > fb1d1e200dfa09800f900ac990d89df0646f66db
+**CI/CD Test**: Pipeline validation successful ✅

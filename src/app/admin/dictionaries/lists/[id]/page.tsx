@@ -26,6 +26,7 @@ import {
   getListDetails,
   type ListWithDetails,
 } from '@/core/domains/dictionary/actions';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 // Language and difficulty display names
@@ -99,7 +100,10 @@ export default function ListDetailsPage() {
           setError('List not found');
         }
       } catch (err) {
-        console.error('Error loading list details:', err);
+        await errorLog(
+          'Error loading list details',
+          err instanceof Error ? err.message : String(err),
+        );
         setError('Failed to load list details');
       } finally {
         setIsLoading(false);
@@ -107,7 +111,7 @@ export default function ListDetailsPage() {
     };
 
     if (listId) {
-      loadListDetails();
+      void loadListDetails();
     }
   }, [listId]);
 

@@ -1,5 +1,6 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/lib/prisma';
 import {
   WordUpdateData,
@@ -8,7 +9,6 @@ import {
   ExampleUpdateData,
   AudioUpdateData,
 } from '@/core/types/dictionary';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 export async function updateWord(
   wordId: string,

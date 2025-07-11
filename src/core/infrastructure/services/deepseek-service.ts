@@ -5,6 +5,22 @@ import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
  * Provides cost-effective word retrieval from definitions
  */
 
+/**
+ * DeepSeek API response interface
+ */
+interface DeepSeekApiResponse {
+  choices: Array<{
+    message: {
+      content: string;
+    };
+  }>;
+  usage?: {
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    total_tokens?: number;
+  };
+}
+
 export interface DeepSeekWordRequest {
   definition: string;
   targetLanguage: string;
@@ -112,7 +128,7 @@ export class DeepSeekService {
         );
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as DeepSeekApiResponse;
 
       if (!data.choices?.[0]?.message?.content) {
         throw new Error('Invalid response format from DeepSeek API');
@@ -349,7 +365,8 @@ Word:`;
     };
 
     return (
-      (languages[languageCode ?? 'en'] || languageCode?.toUpperCase()) ??
+      languages[languageCode ?? 'en'] ??
+      languageCode?.toUpperCase() ??
       'UNKNOWN'
     );
   }

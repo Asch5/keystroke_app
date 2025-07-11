@@ -1,0 +1,118 @@
+name: 🔄 Dependencies & Security
+
+on:
+  schedule:
+    # Run every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+
+jobs:
+  audit:
+    name: 🔍 Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: 📥 Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔍 Run Security Audit
+        run: pnpm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: 📊 Generate Security Report
+        run: |
+          pnpm audit --json > security-report.json || true
+          echo "Security audit completed"
+
+      - name: 📤 Upload Security Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-report.json
+          retention-days: 30
+
+  outdated:
+    name: 📦 Outdated Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: 📥 Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 📊 Check Outdated Dependencies
+        run: |
+          pnpm outdated --format json > outdated-report.json || true
+          echo "Outdated dependencies check completed"
+
+      - name: 📤 Upload Outdated Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdated-report
+          path: outdated-report.json
+          retention-days: 30
+
+  license-check:
+    name: 📜 License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛒 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: 📥 Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 📜 Install License Checker
+        run: npm install -g license-checker
+
+      - name: 🔍 Check Licenses
+        run: |
+          license-checker --json > license-report.json
+          echo "License check completed"
+
+      - name: 📤 Upload License Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: license-report.json
+          retention-days: 30

@@ -1,7 +1,7 @@
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { clientLog } from '@/core/lib/utils/logUtils';
 import { LanguageCode, PartOfSpeech } from '@/core/types';
 import { FrequencyRequest, FrequencyResponse } from '@/core/types/dictionary';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Fetches frequency data for a single word

@@ -8,8 +8,8 @@ import {
   updateUserList,
   type UserListWithDetails,
 } from '@/core/domains/dictionary';
-import { LanguageCode, DifficultyLevel } from '@/core/types';
 import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
 
 interface UseWordListsActionsProps {
   userId: string;

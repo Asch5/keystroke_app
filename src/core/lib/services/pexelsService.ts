@@ -2,9 +2,7 @@ import {
   createClient,
   type PexelsApi,
   type Photo as PexelsPhoto,
-  type PhotosSearchResponse,
   type PhotosSearchParams,
-  type ErrorResponse,
 } from 'pexels';
 import {
   debugLog,

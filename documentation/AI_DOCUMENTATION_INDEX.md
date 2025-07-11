@@ -218,11 +218,20 @@ AI Documentation System/
 
 ### Development & Deployment
 
+**CI_CD_IMPLEMENTATION.md** - Comprehensive CI/CD Pipeline
+
+- **Purpose**: Enterprise-grade CI/CD pipeline implementation with comprehensive testing, security scanning, and performance monitoring
+- **Scope**: Complete CI/CD system with GitHub Actions, automated testing, security scanning, performance monitoring, deployment automation
+- **Dependencies**: DESCRIPTION_OF_ROOT_FOLDER.md, PERFORMANCE_IMPLEMENTATION.md, DEBUGGING_SYSTEM.md
+- **AI Context**: Advanced CI/CD workflow implementation for Next.js applications with enterprise-grade automation
+- **Complexity Level**: Advanced
+- **Key Topics**: GitHub Actions, automated testing, security scanning, performance monitoring, deployment automation, health checks
+
 **VERCEL_DEPLOYMENT_CHECKLIST.md** - Deployment Process
 
 - **Purpose**: Complete deployment process and production readiness checklist
 - **Scope**: Deployment steps, environment setup, production configuration, monitoring
-- **Dependencies**: ENV_SETUP_SUMMARY.md, PERFORMANCE_IMPLEMENTATION.md
+- **Dependencies**: ENV_SETUP_SUMMARY.md, PERFORMANCE_IMPLEMENTATION.md, CI_CD_IMPLEMENTATION.md
 - **AI Context**: Production deployment guidance and operational procedures
 - **Complexity Level**: Intermediate
 - **Key Topics**: Deployment process, production setup, monitoring, performance
@@ -394,6 +403,13 @@ AI Documentation System/
 3. DESCRIPTION_OF_CORE_FOLDER.md (business logic patterns)
 4. PERFORMANCE_IMPLEMENTATION.md (optimization)
 
+**CI/CD & Deployment**:
+
+1. AGENT.md (project context)
+2. CI_CD_IMPLEMENTATION.md (comprehensive pipeline)
+3. VERCEL_DEPLOYMENT_CHECKLIST.md (deployment process)
+4. PERFORMANCE_IMPLEMENTATION.md (monitoring)
+
 **Debugging & Troubleshooting**:
 
 1. DEBUGGING_SYSTEM.md (debugging tools)
@@ -412,6 +428,7 @@ Each document is optimized for semantic search with consistent terminology:
 - **User Experience**: interface, interaction, accessibility, usability
 - **Database**: schema, models, relationships, queries
 - **Testing**: validation, verification, quality assurance, debugging
+- **CI/CD**: automation, pipeline, deployment, continuous integration, GitHub Actions, workflow
 
 ## Maintenance Guidelines
 
@@ -436,5 +453,5 @@ Each document is optimized for semantic search with consistent terminology:
 **Index Version**: 1.0.0  
 **Last Updated**: January 2025  
 **Maintained By**: Development Team  
-**Total Documents**: 26  
+**Total Documents**: 27  
 **Estimated Total Reading Time**: 4-6 hours for complete understanding

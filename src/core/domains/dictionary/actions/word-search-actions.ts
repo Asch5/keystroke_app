@@ -1,9 +1,9 @@
 'use server';
 
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/shared/database/client';
 import { LanguageCode, LearningStatus, PartOfSpeech } from '@/core/types';
 import { getBestDefinitionForUser } from '../utils/translation-utils';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Interface for search results grouped by word

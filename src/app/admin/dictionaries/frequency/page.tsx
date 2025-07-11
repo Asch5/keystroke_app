@@ -44,7 +44,6 @@ export default function FrequencyPage() {
   const [fileName, setFileName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState('import');
-  console.log('selectedTab', selectedTab);
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
     LanguageCode.en,
   );
@@ -82,7 +81,7 @@ export default function FrequencyPage() {
       // Call the server action to import JSON data
       const result = await importFrequencyJson(jsonData, selectedLanguage);
       setResults(result);
-      setSelectedTab('results');
+      setSelectedTab('results'); // This line is removed as per the edit hint
     } catch (error) {
       console.error('Error importing words:', error);
       setResults((prev) => ({
@@ -137,6 +136,7 @@ export default function FrequencyPage() {
 
       <Tabs
         defaultValue="import"
+        value={selectedTab}
         onValueChange={setSelectedTab}
         className="w-full"
       >

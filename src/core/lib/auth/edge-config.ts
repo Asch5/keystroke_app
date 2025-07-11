@@ -2,7 +2,7 @@ import type { NextAuthConfig, Session, User } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 
 export const edgeAuthConfig: NextAuthConfig = {
-  secret: process.env.NEXTAUTH_SECRET!,
+  secret: process.env.NEXTAUTH_SECRET ?? '',
   pages: { signIn: '/login' },
   session: { strategy: 'jwt' },
   providers: [], // Empty array for edge safety

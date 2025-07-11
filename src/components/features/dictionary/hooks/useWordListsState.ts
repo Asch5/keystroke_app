@@ -8,12 +8,12 @@ import {
   type PublicUserListSummary,
   type UserListFilters,
 } from '@/core/domains/dictionary';
-import { LanguageCode, DifficultyLevel } from '@/core/types';
-import { useWordListsActions } from './useWordListsActions';
 import {
   debugLog,
   errorLog,
 } from '@/core/infrastructure/monitoring/clientLogger';
+import { LanguageCode, DifficultyLevel } from '@/core/types';
+import { useWordListsActions } from './useWordListsActions';
 
 interface UseWordListsStateProps {
   userId: string;

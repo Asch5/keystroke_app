@@ -36,7 +36,7 @@ export async function processDanishVariantOnServer(
         { variant },
       );
       return {
-        wordDisplay: `word: ${variant.word.word} variant: ${variant.word.variant} partOfSpeech: ${variant.word.partOfSpeech} forms: ${variant.word.forms}`,
+        wordDisplay: `word: ${variant.word.word} variant: ${variant.word.variant} partOfSpeech: ${JSON.stringify(variant.word.partOfSpeech)} forms: ${JSON.stringify(variant.word.forms)}`,
         status: 'error',
         language: 'da',
         error: 'Failed to save Danish word variant.',
@@ -77,7 +77,7 @@ export async function processDanishVariantOnServer(
     }
 
     return {
-      wordDisplay: `word: ${variant.word.word} variant: ${variant.word.variant} partOfSpeech: ${variant.word.partOfSpeech} forms: ${variant.word.forms}`,
+      wordDisplay: `word: ${variant.word.word} variant: ${variant.word.variant} partOfSpeech: ${JSON.stringify(variant.word.partOfSpeech)} forms: ${JSON.stringify(variant.word.forms)}`,
       status: 'added',
       language: 'da',
     };
@@ -90,7 +90,7 @@ export async function processDanishVariantOnServer(
     );
     console.error('Error in processDanishVariantOnServer:', error);
     return {
-      wordDisplay: `word: ${variant.word.word} variant: ${variant.word.variant} partOfSpeech: ${variant.word.partOfSpeech} forms: ${variant.word.forms}`,
+      wordDisplay: `word: ${variant.word.word} variant: ${variant.word.variant} partOfSpeech: ${JSON.stringify(variant.word.partOfSpeech)} forms: ${JSON.stringify(variant.word.forms)}`,
       status: 'error',
       language: 'da',
       error: `Server error: ${errorMessage}`,

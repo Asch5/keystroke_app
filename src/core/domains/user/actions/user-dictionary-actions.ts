@@ -1,6 +1,7 @@
 'use server';
 
 import { cache } from 'react';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/shared/database/client';
 import { handlePrismaError } from '@/core/shared/database/error-handler';
 import {
@@ -11,7 +12,6 @@ import {
   Gender,
 } from '@/core/types';
 import { getUserLanguageConfig } from '../utils/language-helpers';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 
 /**
  * Interface for user dictionary item with comprehensive learning data

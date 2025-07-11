@@ -53,6 +53,7 @@ import {
   type ListWithDetails,
 } from '@/core/domains/dictionary/actions';
 import { AudioService } from '@/core/domains/dictionary/services/audio-service';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 // Types for the delete dialog
 interface DeleteDialogState {
@@ -122,7 +123,10 @@ export default function AdminListWordsPage() {
       setWords(wordsResult.words);
       setTotalCount(wordsResult.totalCount);
     } catch (err) {
-      console.error('Error loading data:', err);
+      await errorLog(
+        'Error loading data',
+        err instanceof Error ? err.message : String(err),
+      );
       setError('Failed to load list data');
     } finally {
       setLoading(false);
@@ -131,7 +135,7 @@ export default function AdminListWordsPage() {
 
   // Initial load and refetch on filter changes
   useEffect(() => {
-    fetchData();
+    void fetchData();
   }, [fetchData]);
 
   // Reset page when search changes
@@ -199,7 +203,10 @@ export default function AdminListWordsPage() {
         toast.error(result.message);
       }
     } catch (error) {
-      console.error('Error removing words:', error);
+      await errorLog(
+        'Error removing words',
+        error instanceof Error ? error.message : String(error),
+      );
       toast.error('Failed to remove words from list');
     } finally {
       setDeleteDialog({ open: false, wordTexts: [], definitionIds: [] });
@@ -227,7 +234,10 @@ export default function AdminListWordsPage() {
 
       await AudioService.playAudioFromDatabase(audioUrl);
     } catch (error) {
-      console.error('Error playing audio:', error);
+      await errorLog(
+        'Error playing audio',
+        error instanceof Error ? error.message : String(error),
+      );
       toast.error('Failed to play audio');
     } finally {
       setIsPlayingAudio(false);

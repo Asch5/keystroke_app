@@ -23,11 +23,10 @@ import {
   getDefinitionsForWordDetails,
   cleanupIncorrectDeepSeekWords,
   removeLastExtractionAttempt,
+  type WordDetailWithDefinitions,
+  type DefinitionForExtraction,
 } from '@/core/domains/dictionary/actions/deepseek-actions';
-import type {
-  WordDetailWithDefinitions,
-  DefinitionForExtraction,
-} from '@/core/domains/dictionary/actions/deepseek-actions';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 import { ConfigurationSection } from './deepseek-word-extraction-dialog/components/ConfigurationSection';
 import {
   DeepSeekWordExtractionDialogProps,
@@ -39,7 +38,6 @@ import {
   DEFAULT_SOURCE_LANGUAGE,
   DEFAULT_ONLY_SHORT_DEFINITIONS,
 } from './deepseek-word-extraction-dialog/utils/constants';
-import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 export function DeepSeekWordExtractionDialog({
   open,

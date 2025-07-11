@@ -31,9 +31,9 @@ import {
   removeDefinitionFromUserDictionary,
   type WordSearchResult,
 } from '@/core/domains/dictionary';
+import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 import { LanguageCode, PartOfSpeech } from '@/core/types';
 import { AddToListDialog } from './AddToListDialog';
-import { errorLog } from '@/core/infrastructure/monitoring/clientLogger';
 
 interface AddNewWordContentProps {
   userId: string;

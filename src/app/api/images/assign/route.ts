@@ -1,8 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
 import { prisma } from '@/core/lib/prisma';
 import { ImageService } from '@/core/lib/services/imageService';
 import { PexelsService } from '@/core/lib/services/pexelsService';
-import { serverLog } from '@/core/infrastructure/monitoring/serverLogger';
+
+interface AssignImageRequest {
+  imageId: number;
+  definitionId: number;
+}
 
 export async function POST(request: Request) {
   // Ensure proper JSON content type in response
@@ -12,9 +17,9 @@ export async function POST(request: Request) {
 
   try {
     // Parse request body, handling potential syntax errors
-    let body;
+    let body: AssignImageRequest;
     try {
-      body = await request.json();
+      body = (await request.json()) as AssignImageRequest;
     } catch (parseError) {
       await serverLog('Error parsing request body', 'error', parseError);
       return NextResponse.json(

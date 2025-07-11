@@ -2,6 +2,7 @@
 
 import { AppSidebar } from '@/components/features/dashboard';
 import { PageBreadcrumb } from '@/components/shared/navigation';
+import { DashboardErrorBoundary } from '@/components/shared/error-boundaries';
 import { dictionaryNavLinks } from '@/core/lib/data/navLinks';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -35,6 +36,7 @@ interface DashboardLayoutProps {
  * - Accessible design with proper ARIA attributes and semantic HTML
  * - Performance optimized with memoization and stable references
  * - Integration with shadcn/ui sidebar components
+ * - Comprehensive error boundary protection
  *
  * Layout Structure:
  * - Left sidebar with navigation links and user context
@@ -54,44 +56,49 @@ function DashboardLayout({ children }: DashboardLayoutProps) {
   const navigationLinks = useMemo(() => dictionaryNavLinks, []);
 
   return (
-    <SidebarProvider>
-      <AppSidebar links={navigationLinks} />
-      <SidebarInset>
-        {/* Dashboard Header with Navigation Controls */}
-        <header
-          className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
-          role="banner"
-        >
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger
-              className="-ml-1"
-              aria-label="Toggle sidebar navigation"
-            />
-            <Separator
-              orientation="vertical"
-              className="mr-2 h-4"
-              aria-hidden="true"
-            />
-            <PageBreadcrumb />
-          </div>
-        </header>
+    <DashboardErrorBoundary>
+      <SidebarProvider>
+        <AppSidebar links={navigationLinks} />
+        <SidebarInset>
+          {/* Dashboard Header with Navigation Controls */}
+          <header
+            className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+            role="banner"
+          >
+            <div className="flex items-center gap-2 px-4">
+              <SidebarTrigger
+                className="-ml-1"
+                aria-label="Toggle sidebar navigation"
+              />
+              <Separator
+                orientation="vertical"
+                className="mr-2 h-4"
+                aria-hidden="true"
+              />
+              <PageBreadcrumb />
+            </div>
+          </header>
 
-        {/* Main Content Container */}
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <main className="flex-1" role="main" id="main-content">
-            <ScrollArea className="h-full" aria-label="Dashboard content area">
-              <div
-                className="flex-1 p-4"
-                role="region"
-                aria-label="Page content"
+          {/* Main Content Container */}
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+            <main className="flex-1" role="main" id="main-content">
+              <ScrollArea
+                className="h-full"
+                aria-label="Dashboard content area"
               >
-                {children}
-              </div>
-            </ScrollArea>
-          </main>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+                <div
+                  className="flex-1 p-4"
+                  role="region"
+                  aria-label="Page content"
+                >
+                  {children}
+                </div>
+              </ScrollArea>
+            </main>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    </DashboardErrorBoundary>
   );
 }
 

@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { DictionaryOverview } from '@/components/features/dictionary';
+import { DictionaryErrorBoundary } from '@/components/shared/error-boundaries';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 /**
@@ -60,6 +61,7 @@ function DictionaryOverviewSkeleton() {
  * - Progress visualization and learning insights
  * - Accessible design with proper semantic structure
  * - Responsive layout optimized for all devices
+ * - Comprehensive error boundary protection
  *
  * Navigation Options:
  * - Add new words to personal dictionary
@@ -97,22 +99,24 @@ export default async function DictionaryPage() {
 
         {/* Main Dictionary Content */}
         <main role="main">
-          <Suspense
-            fallback={
-              <div
-                role="status"
-                aria-label="Loading dictionary overview"
-                aria-live="polite"
-              >
-                <span className="sr-only">
-                  Loading your dictionary overview...
-                </span>
-                <DictionaryOverviewSkeleton />
-              </div>
-            }
-          >
-            <DictionaryOverview userId={user.id} />
-          </Suspense>
+          <DictionaryErrorBoundary>
+            <Suspense
+              fallback={
+                <div
+                  role="status"
+                  aria-label="Loading dictionary overview"
+                  aria-live="polite"
+                >
+                  <span className="sr-only">
+                    Loading your dictionary overview...
+                  </span>
+                  <DictionaryOverviewSkeleton />
+                </div>
+              }
+            >
+              <DictionaryOverview userId={user.id} />
+            </Suspense>
+          </DictionaryErrorBoundary>
         </main>
       </div>
     </div>

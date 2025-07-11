@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { getUserSettings } from '@/core/domains/user/actions/user-settings-actions';
 import { WordListsContent } from '@/components/features/dictionary';
+import { DictionaryErrorBoundary } from '@/components/shared/error-boundaries';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 /**
@@ -66,6 +67,7 @@ function WordListsSkeleton() {
  * - Search and filtering functionality
  * - Accessible design with proper semantic structure
  * - Responsive grid layout optimized for all devices
+ * - Comprehensive error boundary protection
  *
  * List Types:
  * - Personal Lists: User-created vocabulary collections
@@ -120,25 +122,27 @@ export default async function WordListsPage() {
 
         {/* Main Word Lists Content */}
         <main role="main">
-          <Suspense
-            fallback={
-              <div
-                role="status"
-                aria-label="Loading word lists"
-                aria-live="polite"
-              >
-                <span className="sr-only">
-                  Loading your word lists and available collections...
-                </span>
-                <WordListsSkeleton />
-              </div>
-            }
-          >
-            <WordListsContent
-              userId={userContext.id}
-              userLanguages={userContext.languages}
-            />
-          </Suspense>
+          <DictionaryErrorBoundary>
+            <Suspense
+              fallback={
+                <div
+                  role="status"
+                  aria-label="Loading word lists"
+                  aria-live="polite"
+                >
+                  <span className="sr-only">
+                    Loading your word lists and available collections...
+                  </span>
+                  <WordListsSkeleton />
+                </div>
+              }
+            >
+              <WordListsContent
+                userId={userContext.id}
+                userLanguages={userContext.languages}
+              />
+            </Suspense>
+          </DictionaryErrorBoundary>
         </main>
       </div>
     </div>

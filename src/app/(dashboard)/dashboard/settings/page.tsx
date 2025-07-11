@@ -11,43 +11,36 @@ import {
   DangerZoneForm,
 } from '@/components/features/settings';
 import { SettingsStatusCard } from '@/components/features/settings/SettingsStatusCard';
+import { SettingsErrorBoundary } from '@/components/shared/error-boundaries';
 
 // Force dynamic rendering since this page uses authentication
 export const dynamic = 'force-dynamic';
 
-// Loading skeleton component
+// Settings loading skeleton component
 function SettingsLoadingSkeleton() {
   return (
-    <div className="space-y-6">
+    <div className="flex-1 space-y-6 p-8 pt-6">
       <div className="space-y-2">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-96" />
       </div>
-      <Card>
-        <CardContent className="pt-6">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-28" />
+      <div className="grid w-full grid-cols-4 space-x-2">
+        {Array.from({ length: 4 }, (_, i) => (
+          <Skeleton key={i} className="h-10" />
+        ))}
+      </div>
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="pt-6 space-y-4">
+            {Array.from({ length: 5 }, (_, i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="h-4 w-32" />
                 <Skeleton className="h-10 w-full" />
               </div>
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-36" />
-                <Skeleton className="h-10 w-full" />
-              </div>
-            </div>
-            <Skeleton className="h-10 w-32 ml-auto" />
-          </div>
-        </CardContent>
-      </Card>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -152,7 +145,7 @@ async function SettingsContent() {
       <div className="flex-1 space-y-6 p-8 pt-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground text-destructive">
+          <p className="text-muted-foreground">
             Error loading settings. Please try refreshing the page.
           </p>
         </div>
@@ -163,8 +156,10 @@ async function SettingsContent() {
 
 export default function SettingsPage() {
   return (
-    <Suspense fallback={<SettingsLoadingSkeleton />}>
-      <SettingsContent />
-    </Suspense>
+    <SettingsErrorBoundary>
+      <Suspense fallback={<SettingsLoadingSkeleton />}>
+        <SettingsContent />
+      </Suspense>
+    </SettingsErrorBoundary>
   );
 }

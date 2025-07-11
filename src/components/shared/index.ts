@@ -10,6 +10,9 @@ export * from './dialogs';
 // Data Display
 export * from './data-display';
 
+// Error Boundaries
+export * from './error-boundaries';
+
 // Images
 export { AuthenticatedImage } from './AuthenticatedImage';
 export { ImageWithFallback } from './ImageWithFallback';

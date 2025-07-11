@@ -1,46 +1,30 @@
 import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
-import { AddNewWordContent } from '@/components/features/dictionary';
 import { getUserByEmail } from '@/core/lib/db/user';
+import { AddNewWordContent } from '@/components/features/dictionary';
+import { DictionaryErrorBoundary } from '@/components/shared/error-boundaries';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 /**
  * Add New Word Loading Skeleton
- * Provides accessible loading state while word search functionality is being loaded
+ * Provides accessible loading state while word search interface is being loaded
  */
 function AddNewWordSkeleton() {
   return (
     <div className="space-y-6" role="presentation" aria-hidden="true">
-      {/* Search Section Skeleton */}
       <Card className="animate-pulse">
         <CardHeader>
-          <div className="h-6 bg-muted rounded w-32"></div>
+          <div className="h-6 bg-muted rounded w-48"></div>
+          <div className="h-4 bg-muted rounded w-96"></div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="h-10 bg-muted rounded w-full"></div>
-          <div className="h-10 bg-muted rounded w-24"></div>
-        </CardContent>
-      </Card>
-
-      {/* Search Results Skeleton */}
-      <Card className="animate-pulse">
-        <CardHeader>
-          <div className="h-6 bg-muted rounded w-40"></div>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {Array.from({ length: 5 }, (_, i) => (
-            <div
-              key={`search-result-${i}`}
-              className="flex items-center justify-between p-4 border rounded"
-            >
-              <div className="space-y-2 flex-1">
-                <div className="h-5 bg-muted rounded w-32"></div>
-                <div className="h-4 bg-muted rounded w-48"></div>
-              </div>
-              <div className="h-8 bg-muted rounded w-20"></div>
-            </div>
-          ))}
+          <div className="h-32 bg-muted rounded w-full"></div>
+          <div className="flex gap-2">
+            <div className="h-10 bg-muted rounded w-24"></div>
+            <div className="h-10 bg-muted rounded w-32"></div>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -63,6 +47,7 @@ function AddNewWordSkeleton() {
  * - Integration with user's learning progress tracking
  * - Accessible design with proper semantic structure
  * - Responsive interface optimized for all devices
+ * - Comprehensive error boundary protection
  *
  * User Context:
  * - Retrieves user language preferences (base/target languages)
@@ -109,26 +94,28 @@ export default async function AddNewWordPage() {
 
         {/* Main Word Search and Addition Content */}
         <main role="main">
-          <Suspense
-            fallback={
-              <div
-                role="status"
-                aria-label="Loading word search interface"
-                aria-live="polite"
-              >
-                <span className="sr-only">
-                  Loading word search and addition interface...
-                </span>
-                <AddNewWordSkeleton />
-              </div>
-            }
-          >
-            <AddNewWordContent
-              userId={userContext.id}
-              baseLanguageCode={userContext.baseLanguageCode}
-              targetLanguageCode={userContext.targetLanguageCode}
-            />
-          </Suspense>
+          <DictionaryErrorBoundary>
+            <Suspense
+              fallback={
+                <div
+                  role="status"
+                  aria-label="Loading word search interface"
+                  aria-live="polite"
+                >
+                  <span className="sr-only">
+                    Loading word search and addition interface...
+                  </span>
+                  <AddNewWordSkeleton />
+                </div>
+              }
+            >
+              <AddNewWordContent
+                userId={userContext.id}
+                baseLanguageCode={userContext.baseLanguageCode}
+                targetLanguageCode={userContext.targetLanguageCode}
+              />
+            </Suspense>
+          </DictionaryErrorBoundary>
         </main>
       </div>
     </div>

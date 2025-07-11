@@ -198,7 +198,7 @@ const userDictionarySlice = createSlice({
           state.error = (action.payload as ApiErrorResponse).message;
         } else {
           state.error =
-            action.error.message || 'Failed to fetch user dictionary';
+            action.error.message ?? 'Failed to fetch user dictionary';
         }
       });
   },

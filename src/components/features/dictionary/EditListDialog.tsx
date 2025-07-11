@@ -63,10 +63,10 @@ export function EditListDialog({
   useEffect(() => {
     if (list) {
       setFormData({
-        customName: list.customNameOfList || '',
-        customDescription: list.customDescriptionOfList || '',
-        customDifficulty: list.customDifficulty || '',
-        customCoverImageUrl: list.customCoverImageUrl || '',
+        customName: list.customNameOfList ?? '',
+        customDescription: list.customDescriptionOfList ?? '',
+        customDifficulty: list.customDifficulty ?? '',
+        customCoverImageUrl: list.customCoverImageUrl ?? '',
       });
     }
   }, [list]);
@@ -142,7 +142,7 @@ export function EditListDialog({
               placeholder={
                 isCustomList
                   ? 'Enter list name...'
-                  : list.originalList?.name || 'Custom name...'
+                  : (list.originalList?.name ?? 'Custom name...')
               }
               disabled={isSubmitting}
             />
@@ -169,7 +169,7 @@ export function EditListDialog({
               placeholder={
                 isCustomList
                   ? 'Describe your list...'
-                  : list.originalList?.description || 'Custom description...'
+                  : (list.originalList?.description ?? 'Custom description...')
               }
               rows={3}
               disabled={isSubmitting}
@@ -200,7 +200,7 @@ export function EditListDialog({
                   placeholder={
                     isCustomList
                       ? 'Select difficulty...'
-                      : `Original: ${difficultyDisplayNames[list.originalList?.difficultyLevel || 'beginner']}`
+                      : `Original: ${difficultyDisplayNames[list.originalList?.difficultyLevel ?? 'beginner']}`
                   }
                 />
               </SelectTrigger>

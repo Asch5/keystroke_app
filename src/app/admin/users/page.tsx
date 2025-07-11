@@ -27,7 +27,7 @@
 //     order?: string;
 //   };
 // }) {
-//   const page = Number(searchParams.page) || 1;
+//   const page = Number(searchParams.page) ?? 1;
 //   const search = searchParams.search;
 //   const sort = validSortFields.includes(searchParams.sort as ValidSortField)
 //     ? (searchParams.sort as ValidSortField)
@@ -42,7 +42,7 @@
 //         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
 //           User Management
 //         </h1>
-//         <SearchBar defaultValue={search || ''} />
+//         <SearchBar defaultValue={search ?? ''} />
 //       </div>
 
 //       <UsersTable users={users} sortBy={sort} sortOrder={order} />

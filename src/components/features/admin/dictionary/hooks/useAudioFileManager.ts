@@ -119,7 +119,7 @@ export function useAudioFileManager({
               ? (value as AudioFileData['source'])
               : audioFile.source,
           note: field === 'note' ? (value as string | null) : audioFile.note,
-          _toDelete: audioFile._toDelete || false,
+          _toDelete: audioFile._toDelete ?? false,
         };
         return { ...prev, audioFiles: updatedAudioFiles };
       });

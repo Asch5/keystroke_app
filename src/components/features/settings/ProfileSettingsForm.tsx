@@ -152,7 +152,7 @@ export function ProfileSettingsForm({ user }: ProfileSettingsFormProps) {
           <div className="flex flex-col items-center space-y-4">
             <div className="relative">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={currentProfilePicture || undefined} />
+                <AvatarImage src={currentProfilePicture ?? undefined} />
                 <AvatarFallback className="text-lg">
                   {user.name.charAt(0).toUpperCase()}
                 </AvatarFallback>

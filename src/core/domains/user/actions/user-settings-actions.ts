@@ -228,7 +228,7 @@ export async function updateUserProfile(
 
       try {
         // Generate a unique filename with proper extension
-        const fileExtension = photo.name.split('.').pop() || 'jpg';
+        const fileExtension = photo.name.split('.').pop() ?? 'jpg';
         const fileName = `profile/${user.id}-${uuidv4()}.${fileExtension}`;
 
         // Log upload attempt for debugging

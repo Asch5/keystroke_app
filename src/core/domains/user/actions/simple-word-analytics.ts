@@ -222,8 +222,8 @@ function generateDemoAnalytics(
   const complexity = Math.min(wordLength / 2, 5);
 
   // Generate realistic but demo data with null safety
-  const mistakes = userWord.amountOfMistakes || 0;
-  const skips = userWord.skipCount || 0;
+  const mistakes = userWord.amountOfMistakes ?? 0;
+  const skips = userWord.skipCount ?? 0;
   const totalAttempts = Math.max(mistakes + skips + 10, 20);
   const correctAttempts = Math.max(totalAttempts - mistakes - skips, 10);
 
@@ -232,11 +232,11 @@ function generateDemoAnalytics(
       totalAttempts,
       correctAttempts,
       averageResponseTime: 2500, // Default response time for demo
-      currentStreak: userWord.correctStreak || 3,
-      masteryScore: userWord.masteryScore || 75,
-      skipCount: userWord.skipCount || 2,
-      mistakeCount: userWord.amountOfMistakes || 5,
-      srsLevel: userWord.srsLevel || 2,
+      currentStreak: userWord.correctStreak ?? 3,
+      masteryScore: userWord.masteryScore ?? 75,
+      skipCount: userWord.skipCount ?? 2,
+      mistakeCount: userWord.amountOfMistakes ?? 5,
+      srsLevel: userWord.srsLevel ?? 2,
     },
 
     sessionPerformance: {
@@ -273,20 +273,20 @@ function generateDemoAnalytics(
 
     errorAnalytics: {
       mistakesByTimeOfDay: generateMistakesByTimeOfDay(
-        userWord.amountOfMistakes || 5,
+        userWord.amountOfMistakes ?? 5,
       ),
       mistakesBySessionPosition: {
-        early: Math.floor((userWord.amountOfMistakes || 5) * 0.2),
-        middle: Math.floor((userWord.amountOfMistakes || 5) * 0.5),
-        late: Math.floor((userWord.amountOfMistakes || 5) * 0.3),
+        early: Math.floor((userWord.amountOfMistakes ?? 5) * 0.2),
+        middle: Math.floor((userWord.amountOfMistakes ?? 5) * 0.5),
+        late: Math.floor((userWord.amountOfMistakes ?? 5) * 0.3),
       },
       recoveryTimeAfterMistake: 3.2 + complexity * 0.5,
       mistakeReductionRate: Math.max(15 - complexity * 2, -5),
       mistakeRecurrencePattern: generateMistakePatterns('word'), // Default word for demo
       errorCorrection: {
-        selfCorrected: Math.max((userWord.amountOfMistakes || 0) - 2, 0),
-        hintRequired: Math.min(2, userWord.amountOfMistakes || 0),
-        skipped: userWord.skipCount || 0,
+        selfCorrected: Math.max((userWord.amountOfMistakes ?? 0) - 2, 0),
+        hintRequired: Math.min(2, userWord.amountOfMistakes ?? 0),
+        skipped: userWord.skipCount ?? 0,
       },
       commonMisspellings: generateCommonMisspellings('word'), // Default word for demo
       errorTypeEvolution: [
@@ -472,11 +472,11 @@ function generateSmartInsights(
     confidence: number;
   }> = [];
 
-  if ((userWord.correctStreak || 0) > 5) {
+  if ((userWord.correctStreak ?? 0) > 5) {
     insights.push({
       type: 'achievement' as const,
       title: 'Great Progress!',
-      description: `You've maintained a ${userWord.correctStreak || 0}-day streak with this word.`,
+      description: `You've maintained a ${userWord.correctStreak ?? 0}-day streak with this word.`,
       actionable: false,
       confidence: 95,
     });
@@ -562,7 +562,7 @@ function generateMilestones(
     performance: 20,
   });
 
-  if ((userWord.correctStreak || 0) > 0) {
+  if ((userWord.correctStreak ?? 0) > 0) {
     milestones.push({
       date: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
       event: 'first_correct' as const,
@@ -571,7 +571,7 @@ function generateMilestones(
     });
   }
 
-  if ((userWord.correctStreak || 0) > 3) {
+  if ((userWord.correctStreak ?? 0) > 3) {
     milestones.push({
       date: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
       event: 'streak_milestone' as const,

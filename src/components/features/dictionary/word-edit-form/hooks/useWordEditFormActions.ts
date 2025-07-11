@@ -77,8 +77,8 @@ export function useWordEditFormActions(
   };
 
   const addRelatedWord = (type: RelationshipType) => {
-    const currentRelatedWords = form.getValues('relatedWords') || {};
-    const wordsOfType = currentRelatedWords[type] || [];
+    const currentRelatedWords = form.getValues('relatedWords') ?? {};
+    const wordsOfType = currentRelatedWords[type] ?? [];
     form.setValue('relatedWords', {
       ...currentRelatedWords,
       [type]: [

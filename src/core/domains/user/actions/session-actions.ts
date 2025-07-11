@@ -40,8 +40,8 @@ export async function createLearningSession(
     const session = await prisma.userLearningSession.create({
       data: {
         userId,
-        userListId: data.userListId || null,
-        listId: data.listId || null,
+        userListId: data.userListId ?? null,
+        listId: data.listId ?? null,
         sessionType: data.sessionType,
         startTime: new Date(),
         wordsStudied: 0,
@@ -246,8 +246,8 @@ export async function addSessionItem(
         sessionId,
         userDictionaryId: data.userDictionaryId,
         isCorrect: data.isCorrect,
-        responseTime: data.responseTime || null,
-        attemptsCount: data.attemptsCount || 1,
+        responseTime: data.responseTime ?? null,
+        attemptsCount: data.attemptsCount ?? 1,
       },
     });
 
@@ -387,10 +387,10 @@ export async function getSessionStats(
 
     const stats: SessionStatsResponse = {
       totalSessions,
-      totalWordsStudied: sessions._sum.wordsStudied || 0,
-      averageScore: sessions._avg.score || 0,
+      totalWordsStudied: sessions._sum.wordsStudied ?? 0,
+      averageScore: sessions._avg.score ?? 0,
       streakDays,
-      lastSessionDate: recentSessions[0]?.createdAt || null,
+      lastSessionDate: recentSessions[0]?.createdAt ?? null,
       recentSessions: recentSessions.map((s) => ({
         id: '', // Not needed for stats
         userId,

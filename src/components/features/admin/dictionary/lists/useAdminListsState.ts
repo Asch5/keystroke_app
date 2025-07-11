@@ -43,12 +43,12 @@ export function useAdminListsState() {
       | 'difficultyLevel';
 
     return {
-      search: searchParams.get('search') || '',
-      category: searchParams.get('category') || '',
+      search: searchParams.get('search') ?? '',
+      category: searchParams.get('category') ?? '',
       ...(difficulty && { difficulty }),
       ...(language && { language }),
       ...(isPublicParam && { isPublic: isPublicParam === 'true' }),
-      sortBy: sortByParam || 'createdAt',
+      sortBy: sortByParam ?? 'createdAt',
       sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc',
     };
   });

@@ -97,7 +97,7 @@ export function VocabularyPracticeContent({
 }: VocabularyPracticeContentProps) {
   const { user } = useUser();
   const router = useRouter();
-  const [selectedMode, setSelectedMode] = useState<string>(mode || '');
+  const [selectedMode, setSelectedMode] = useState<string>(mode ?? '');
 
   /**
    * Start practice with selected mode

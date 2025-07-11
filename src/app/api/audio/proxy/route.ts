@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     return new NextResponse(audioBuffer, {
       status: 200,
       headers: {
-        'Content-Type': response.headers.get('Content-Type') || 'audio/mpeg',
+        'Content-Type': response.headers.get('Content-Type') ?? 'audio/mpeg',
         'Content-Length': audioBuffer.byteLength.toString(),
         'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
         'Access-Control-Allow-Origin': '*',

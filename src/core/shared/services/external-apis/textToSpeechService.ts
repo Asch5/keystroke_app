@@ -119,7 +119,7 @@ class TextToSpeechService {
   };
 
   constructor() {
-    this.apiKey = process.env.GOOGLE_TTS_API_KEY || '';
+    this.apiKey = process.env.GOOGLE_TTS_API_KEY ?? '';
     if (!this.apiKey) {
       void serverLog(
         'GOOGLE_TTS_API_KEY not found in environment variables. TTS functionality will be disabled.',
@@ -134,9 +134,9 @@ class TextToSpeechService {
       charactersByVoiceType: {},
       estimatedCost: 0,
       remainingFreeQuota: {
-        standard: this.qualityLevels.standard?.freeLimit || 0,
-        high: this.qualityLevels.high?.freeLimit || 0,
-        premium: this.qualityLevels.premium?.freeLimit || 0,
+        standard: this.qualityLevels.standard?.freeLimit ?? 0,
+        high: this.qualityLevels.high?.freeLimit ?? 0,
+        premium: this.qualityLevels.premium?.freeLimit ?? 0,
       },
       lastReset: new Date(),
     };
@@ -197,8 +197,8 @@ class TextToSpeechService {
         },
         audioConfig: {
           audioEncoding: 'MP3',
-          speakingRate: request.speakingRate || 1.0,
-          pitch: request.pitch || 0.0,
+          speakingRate: request.speakingRate ?? 1.0,
+          pitch: request.pitch ?? 0.0,
         },
       };
 
@@ -227,7 +227,7 @@ class TextToSpeechService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          `TTS API Error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`,
+          `TTS API Error: ${response.status} - ${errorData.error?.message ?? 'Unknown error'}`,
         );
       }
 
@@ -311,9 +311,9 @@ class TextToSpeechService {
       charactersByVoiceType: {},
       estimatedCost: 0,
       remainingFreeQuota: {
-        standard: this.qualityLevels.standard?.freeLimit || 0,
-        high: this.qualityLevels.high?.freeLimit || 0,
-        premium: this.qualityLevels.premium?.freeLimit || 0,
+        standard: this.qualityLevels.standard?.freeLimit ?? 0,
+        high: this.qualityLevels.high?.freeLimit ?? 0,
+        premium: this.qualityLevels.premium?.freeLimit ?? 0,
       },
       lastReset: new Date(),
     };
@@ -359,7 +359,7 @@ class TextToSpeechService {
    */
   getDefaultGender(languageCode: string): 'MALE' | 'FEMALE' | 'NEUTRAL' | null {
     const availableGenders = this.getAvailableGenders(languageCode);
-    return availableGenders.length > 0 ? availableGenders[0] || null : null;
+    return availableGenders.length > 0 ? (availableGenders[0] ?? null) : null;
   }
 
   /**
@@ -435,17 +435,17 @@ class TextToSpeechService {
       Math.max(
         0,
         characterCount -
-          (this.usageStats.remainingFreeQuota[qualityLevel] || 0),
-      ) * (qualityConfig?.costPerCharacter || 0);
+          (this.usageStats.remainingFreeQuota[qualityLevel] ?? 0),
+      ) * (qualityConfig?.costPerCharacter ?? 0);
 
     this.usageStats.totalCharacters += characterCount;
     this.usageStats.charactersByVoiceType[qualityLevel] =
-      (this.usageStats.charactersByVoiceType[qualityLevel] || 0) +
+      (this.usageStats.charactersByVoiceType[qualityLevel] ?? 0) +
       characterCount;
     this.usageStats.estimatedCost += cost;
     this.usageStats.remainingFreeQuota[qualityLevel] = Math.max(
       0,
-      (this.usageStats.remainingFreeQuota[qualityLevel] || 0) - characterCount,
+      (this.usageStats.remainingFreeQuota[qualityLevel] ?? 0) - characterCount,
     );
 
     return cost;

@@ -50,7 +50,7 @@ export default async function MyDictionaryPage() {
   // Extract user information for better type safety
   const user = {
     id: session.user.id,
-    name: session.user.name || 'User',
+    name: session.user.name ?? 'User',
     email: session.user.email,
   };
 

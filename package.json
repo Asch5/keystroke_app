@@ -34,7 +34,9 @@
     "analyze:open": "cross-env ANALYZE=true pnpm run build && start .next/analyze/client.html",
     "analyze:server": "cross-env ANALYZE=true pnpm run build && start .next/analyze/nodejs.html",
     "docs:validate": "node scripts/validate-docs.mjs",
-    "docs:check": "node scripts/validate-docs.mjs"
+    "docs:check": "node scripts/validate-docs.mjs",
+    "fix:nullish": "node scripts/fix-nullish-coalescing.mjs",
+    "fix:remaining-nullish": "node scripts/fix-remaining-nullish.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.3.22",

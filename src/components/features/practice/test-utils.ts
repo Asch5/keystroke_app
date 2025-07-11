@@ -62,7 +62,7 @@ export const createMockSessionState = (
   sessionId: 'test-session-id',
   words: mockPracticeWords,
   currentWordIndex: 0,
-  currentWord: mockPracticeWords[0] || null,
+  currentWord: mockPracticeWords[0] ?? null,
   userInput: '',
   difficultyConfig: {
     wordsPerSession: 10,

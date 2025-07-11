@@ -106,8 +106,8 @@ export function findWordDifferences(
   const maxLength = Math.max(userInput.length, correctWord.length);
 
   for (let i = 0; i < maxLength; i++) {
-    const userChar = userInput[i] || '';
-    const correctChar = correctWord[i] || '';
+    const userChar = userInput[i] ?? '';
+    const correctChar = correctWord[i] ?? '';
 
     if (userChar !== correctChar) {
       differences.push({

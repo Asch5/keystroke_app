@@ -100,7 +100,7 @@ export function PublicListPreviewDialog({
         : await import('@/core/domains/dictionary').then((m) =>
             m.getPublicListPreview(list.id, userLanguages),
           );
-      setWords(preview.words || []);
+      setWords(preview.words ?? []);
     } catch (error) {
       console.error('Error loading list preview:', error);
       toast.error('Failed to load list preview');

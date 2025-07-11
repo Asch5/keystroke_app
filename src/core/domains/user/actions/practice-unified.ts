@@ -82,7 +82,7 @@ export async function createUnifiedPracticeSession(
     ) {
       return {
         success: false,
-        error: sessionResult.error || 'Failed to create session',
+        error: sessionResult.error ?? 'Failed to create session',
       };
     }
 
@@ -130,7 +130,7 @@ export async function createUnifiedPracticeSession(
         sessionScore: 0,
       },
       adaptiveSettings: {
-        difficulty: config.difficulty || 2,
+        difficulty: config.difficulty ?? 2,
         adaptiveDifficulty:
           (vocabularySettings.adaptiveDifficulty as boolean) || false,
         pauseOnIncorrect:
@@ -187,8 +187,8 @@ export async function determineExerciseType(
   exerciseType: PracticeType;
   reasoning: string;
 }> {
-  const attempts = word.attempts || 0;
-  const correctAttempts = word.correctAttempts || 0;
+  const attempts = word.attempts ?? 0;
+  const correctAttempts = word.correctAttempts ?? 0;
   const successRate = attempts > 0 ? correctAttempts / attempts : 0;
   const masteryScore = (correctAttempts / Math.max(attempts, 1)) * 100;
 
@@ -233,7 +233,7 @@ export async function determineExerciseType(
       userPreferences.forceDifficulty
     ] || ['write-by-definition'];
     const availableType =
-      typesForDifficulty.find(isTypeEnabled) || 'remember-translation';
+      typesForDifficulty.find(isTypeEnabled) ?? 'remember-translation';
 
     return {
       exerciseType: availableType,
@@ -364,17 +364,17 @@ export async function getNextWordForPractice(
       userDictionaryId: item.userDictionary.id,
       wordText:
         item.userDictionary.definition.wordDetails[0]?.wordDetails?.word
-          ?.word || '',
+          ?.word ?? '',
       definition: item.userDictionary.definition.definition,
-      difficulty: item.userDictionary.srsLevel || 0,
+      difficulty: item.userDictionary.srsLevel ?? 0,
       learningStatus: item.userDictionary.learningStatus,
-      attempts: item.userDictionary.reviewCount || 0,
+      attempts: item.userDictionary.reviewCount ?? 0,
       correctAttempts: Math.round(
-        ((item.userDictionary.reviewCount || 0) *
-          (item.userDictionary.masteryScore || 0)) /
+        ((item.userDictionary.reviewCount ?? 0) *
+          (item.userDictionary.masteryScore ?? 0)) /
           100,
       ),
-      srsLevel: item.userDictionary.srsLevel || 0,
+      srsLevel: item.userDictionary.srsLevel ?? 0,
       imageUrl: item.userDictionary.definition.image?.url,
       imageId: item.userDictionary.definition.image?.id,
     }));
@@ -474,13 +474,13 @@ export async function updateWordProgressAndSelectNext(
     }
 
     // Update basic metrics
-    const newReviewCount = (userWord.reviewCount || 0) + 1;
+    const newReviewCount = (userWord.reviewCount ?? 0) + 1;
     const newCorrectAttempts = isCorrect
       ? Math.round(
-          ((userWord.reviewCount || 0) * (userWord.masteryScore || 0)) / 100,
+          ((userWord.reviewCount ?? 0) * (userWord.masteryScore ?? 0)) / 100,
         ) + 1
       : Math.round(
-          ((userWord.reviewCount || 0) * (userWord.masteryScore || 0)) / 100,
+          ((userWord.reviewCount ?? 0) * (userWord.masteryScore ?? 0)) / 100,
         );
 
     await prisma.userDictionary.update({
@@ -505,15 +505,15 @@ export async function updateWordProgressAndSelectNext(
     const practiceWord: PracticeWord = {
       userDictionaryId: userWord.id,
       wordText:
-        userWord.definition.wordDetails[0]?.wordDetails?.word?.word || '',
+        userWord.definition.wordDetails[0]?.wordDetails?.word?.word ?? '',
       definition: userWord.definition.definition,
-      difficulty: userWord.srsLevel || 0,
+      difficulty: userWord.srsLevel ?? 0,
       learningStatus: userWord.learningStatus,
       attempts: newReviewCount,
       correctAttempts: newCorrectAttempts,
-      srsLevel: userWord.srsLevel || 0,
+      srsLevel: userWord.srsLevel ?? 0,
       imageUrl: undefined,
-      imageId: userWord.definition.imageId || undefined,
+      imageId: userWord.definition.imageId ?? undefined,
     };
 
     // Determine next exercise type
@@ -729,27 +729,27 @@ export async function getAdaptivePracticeWords(
 
         // Get one-word translation from DefinitionToOneWord table
         const oneWordLink = userWord.definition.oneWordLinks?.[0];
-        const oneWordTranslation = oneWordLink?.word?.word || '';
+        const oneWordTranslation = oneWordLink?.word?.word ?? '';
 
         const wordDetail = userWord.definition.wordDetails[0]?.wordDetails;
 
         return {
           userDictionaryId: userWord.id,
           wordText:
-            userWord.definition.wordDetails[0]?.wordDetails?.word?.word || '',
+            userWord.definition.wordDetails[0]?.wordDetails?.word?.word ?? '',
           definition: definitionData.content,
           oneWordTranslation,
-          difficulty: userWord.srsLevel || 0,
+          difficulty: userWord.srsLevel ?? 0,
           learningStatus: userWord.learningStatus,
-          attempts: userWord.reviewCount || 0,
+          attempts: userWord.reviewCount ?? 0,
           correctAttempts: Math.round(
-            ((userWord.reviewCount || 0) * (userWord.masteryScore || 0)) / 100,
+            ((userWord.reviewCount ?? 0) * (userWord.masteryScore ?? 0)) / 100,
           ),
-          srsLevel: userWord.srsLevel || 0,
+          srsLevel: userWord.srsLevel ?? 0,
           imageUrl: userWord.definition.image?.url,
-          imageId: userWord.definition.imageId || undefined,
-          partOfSpeech: wordDetail?.partOfSpeech || undefined,
-          phonetic: wordDetail?.word?.phoneticGeneral || undefined,
+          imageId: userWord.definition.imageId ?? undefined,
+          partOfSpeech: wordDetail?.partOfSpeech ?? undefined,
+          phonetic: wordDetail?.word?.phoneticGeneral ?? undefined,
           audioUrl: '', // Will be populated by audio service if available
         };
       });
@@ -762,7 +762,7 @@ export async function getAdaptivePracticeWords(
       allWords.reduce((sum, w) => sum + w.difficulty, 0) /
       Math.max(allWords.length, 1);
     const adaptedDifficulty =
-      Math.round(avgDifficulty) || config.difficulty || 2;
+      (Math.round(avgDifficulty) || config.difficulty) ?? 2;
 
     return {
       success: true,

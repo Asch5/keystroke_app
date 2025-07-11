@@ -39,7 +39,7 @@ export function UsageStats({ ttsStats }: UsageStatsProps) {
           <div>
             <span className="text-muted-foreground">Standard Quota:</span>
             <p className="font-medium text-success-foreground">
-              {ttsStats.remainingFreeQuota.standard?.toLocaleString() || 0}{' '}
+              {ttsStats.remainingFreeQuota.standard?.toLocaleString() ?? 0}{' '}
               remaining
             </p>
           </div>

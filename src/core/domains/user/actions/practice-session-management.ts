@@ -147,7 +147,7 @@ export async function completePracticeSession(sessionId: string): Promise<{
       (item) => item.isCorrect,
     ).length;
     const totalTime = session.sessionItems.reduce(
-      (sum, item) => sum + (item.responseTime || 0),
+      (sum, item) => sum + (item.responseTime ?? 0),
       0,
     );
     const averageTime = totalWords > 0 ? totalTime / totalWords : 0;
@@ -162,9 +162,9 @@ export async function completePracticeSession(sessionId: string): Promise<{
         // Simple difficulty calculation since the method doesn't exist
         const wordDifficulty = Math.min(
           100,
-          (userWord.amountOfMistakes || 0) * 10 +
-            (100 - (userWord.masteryScore || 0)) +
-            (userWord.srsLevel || 0) * 5,
+          (userWord.amountOfMistakes ?? 0) * 10 +
+            (100 - (userWord.masteryScore ?? 0)) +
+            (userWord.srsLevel ?? 0) * 5,
         );
 
         return sum + wordDifficulty;
@@ -205,7 +205,7 @@ export async function completePracticeSession(sessionId: string): Promise<{
       totalTime,
       averageTime,
       sessionScore,
-      wordsLearned: session.wordsLearned || 0,
+      wordsLearned: session.wordsLearned ?? 0,
       difficultyScore,
       practiceType: session.sessionType,
       startTime: session.startTime,
@@ -214,10 +214,10 @@ export async function completePracticeSession(sessionId: string): Promise<{
         userDictionaryId: item.userDictionaryId,
         wordText:
           item.userDictionary?.definition.wordDetails[0]?.wordDetails?.word
-            ?.word || '',
+            ?.word ?? '',
         isCorrect: item.isCorrect,
-        responseTime: item.responseTime || 0,
-        attempts: item.attemptsCount || 1,
+        responseTime: item.responseTime ?? 0,
+        attempts: item.attemptsCount ?? 1,
       })),
     };
 
@@ -225,7 +225,7 @@ export async function completePracticeSession(sessionId: string): Promise<{
     await updateDailyProgress(
       session.userId,
       totalTime,
-      session.wordsLearned || 0,
+      session.wordsLearned ?? 0,
     );
 
     revalidateTag(`user-sessions-${session.userId}`);
@@ -307,7 +307,7 @@ export async function getPracticeSessionStats(sessionId: string): Promise<{
         correctAnswers,
         incorrectAnswers,
         accuracy,
-        wordsLearned: session.wordsLearned || 0,
+        wordsLearned: session.wordsLearned ?? 0,
         timeElapsed,
         currentScore: Math.max(0, currentScore),
       },
@@ -457,7 +457,7 @@ async function selectPracticeWords(
 
     // Get one-word translation from DefinitionToOneWord table
     const oneWordLink = userWord.definition.oneWordLinks?.[0];
-    const oneWordTranslation = oneWordLink?.word?.word || '';
+    const oneWordTranslation = oneWordLink?.word?.word ?? '';
 
     // Get audio URL from definition audio or word details audio
     let audioUrl = '';
@@ -472,22 +472,22 @@ async function selectPracticeWords(
 
     return {
       userDictionaryId: userWord.id,
-      wordText: word?.word || '',
+      wordText: word?.word ?? '',
       definition: definitionData.content,
       oneWordTranslation,
-      difficulty: userWord.srsLevel || 0,
+      difficulty: userWord.srsLevel ?? 0,
       learningStatus: userWord.learningStatus,
-      attempts: userWord.reviewCount || 0,
+      attempts: userWord.reviewCount ?? 0,
       correctAttempts: Math.round(
-        ((userWord.reviewCount || 0) * (userWord.masteryScore || 0)) / 100,
+        ((userWord.reviewCount ?? 0) * (userWord.masteryScore ?? 0)) / 100,
       ),
-      srsLevel: userWord.srsLevel || 0,
+      srsLevel: userWord.srsLevel ?? 0,
       imageUrl: userWord.definition.image?.url,
       imageId: userWord.definition.image?.id,
-      imageDescription: userWord.definition.image?.description || undefined,
-      partOfSpeech: wordDetail?.partOfSpeech || undefined,
-      phonetic: wordDetail?.word?.phoneticGeneral || undefined,
-      audioUrl: audioUrl || undefined, // Now properly populated from database
+      imageDescription: userWord.definition.image?.description ?? undefined,
+      partOfSpeech: wordDetail?.partOfSpeech ?? undefined,
+      phonetic: wordDetail?.word?.phoneticGeneral ?? undefined,
+      audioUrl: audioUrl ?? undefined, // Now properly populated from database
     };
   });
 
@@ -854,12 +854,12 @@ export async function getSessionAnalytics(sessionId: string): Promise<{
       if (!userWord) return 50; // Default difficulty
 
       // Calculate difficulty based on mastery score and mistake count
-      const masteryComponent = 100 - (userWord.masteryScore || 0);
+      const masteryComponent = 100 - (userWord.masteryScore ?? 0);
       const mistakeComponent = Math.min(
-        (userWord.amountOfMistakes || 0) * 5,
+        (userWord.amountOfMistakes ?? 0) * 5,
         50,
       );
-      const srsComponent = (userWord.srsLevel || 0) * 10;
+      const srsComponent = (userWord.srsLevel ?? 0) * 10;
 
       return Math.min(masteryComponent + mistakeComponent - srsComponent, 100);
     });
@@ -885,7 +885,7 @@ export async function getSessionAnalytics(sessionId: string): Promise<{
 
         if (partOfSpeech) {
           mistakePatterns[partOfSpeech] =
-            (mistakePatterns[partOfSpeech] || 0) + 1;
+            (mistakePatterns[partOfSpeech] ?? 0) + 1;
         }
 
         // Analyze word length patterns
@@ -893,7 +893,7 @@ export async function getSessionAnalytics(sessionId: string): Promise<{
           const lengthCategory =
             word.length <= 4 ? 'short' : word.length <= 8 ? 'medium' : 'long';
           const lengthKey = `${lengthCategory}_words`;
-          mistakePatterns[lengthKey] = (mistakePatterns[lengthKey] || 0) + 1;
+          mistakePatterns[lengthKey] = (mistakePatterns[lengthKey] ?? 0) + 1;
         }
       }
     });
@@ -906,7 +906,7 @@ export async function getSessionAnalytics(sessionId: string): Promise<{
       if (item.userDictionary) {
         const partOfSpeech =
           item.userDictionary.definition.wordDetails[0]?.wordDetails
-            ?.partOfSpeech || 'unknown';
+            ?.partOfSpeech ?? 'unknown';
 
         if (!categoryAccuracy[partOfSpeech]) {
           categoryAccuracy[partOfSpeech] = { correct: 0, total: 0 };
@@ -1073,23 +1073,23 @@ export async function getEnhancedSessionSummary(sessionId: string): Promise<{
     const consistencyScore = Math.max(0, 100 - Math.sqrt(variance) / 100);
 
     // Learning metrics
-    const wordsLearned = session.wordsLearned || 0;
+    const wordsLearned = session.wordsLearned ?? 0;
 
     // Count new words that were mastered (first time getting them right)
     const newWordsMastered = session.sessionItems.filter(
-      (item) => item.isCorrect && (item.userDictionary?.reviewCount || 0) <= 1,
+      (item) => item.isCorrect && (item.userDictionary?.reviewCount ?? 0) <= 1,
     ).length;
 
     // Count review words that were improved
     const reviewWordsImproved = session.sessionItems.filter(
-      (item) => item.isCorrect && (item.userDictionary?.reviewCount || 0) > 1,
+      (item) => item.isCorrect && (item.userDictionary?.reviewCount ?? 0) > 1,
     ).length;
 
     // Calculate mastery progression (improvement in overall mastery)
     const totalMasteryGain = session.sessionItems.reduce((sum, item) => {
       if (item.isCorrect && item.userDictionary) {
         // Estimate mastery gain based on word difficulty and current mastery
-        const currentMastery = item.userDictionary.masteryScore || 0;
+        const currentMastery = item.userDictionary.masteryScore ?? 0;
         const masteryGain = Math.max(0, (100 - currentMastery) * 0.1); // 10% of remaining mastery
         return sum + masteryGain;
       }
@@ -1106,8 +1106,8 @@ export async function getEnhancedSessionSummary(sessionId: string): Promise<{
       if (item.userDictionary) {
         const category =
           item.userDictionary.definition.wordDetails[0]?.wordDetails
-            ?.partOfSpeech || 'unknown';
-        const stats = categoryStats.get(category) || { correct: 0, total: 0 };
+            ?.partOfSpeech ?? 'unknown';
+        const stats = categoryStats.get(category) ?? { correct: 0, total: 0 };
         stats.total++;
         if (item.isCorrect) stats.correct++;
         categoryStats.set(category, stats);
@@ -1170,7 +1170,7 @@ export async function getEnhancedSessionSummary(sessionId: string): Promise<{
           totalWords,
           correctAnswers,
           accuracy,
-          score: session.score || 0,
+          score: session.score ?? 0,
         },
         performance: {
           averageResponseTime,

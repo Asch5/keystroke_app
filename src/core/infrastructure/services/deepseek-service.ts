@@ -52,7 +52,7 @@ export class DeepSeekService {
   private readonly model = 'deepseek-chat';
 
   constructor() {
-    this.apiKey = process.env.DEEPSEEK_API_KEY || '';
+    this.apiKey = process.env.DEEPSEEK_API_KEY ?? '';
 
     if (!this.apiKey) {
       console.warn(
@@ -142,9 +142,9 @@ export class DeepSeekService {
       }
 
       const tokensUsed = {
-        input: data.usage?.prompt_tokens || 0,
-        output: data.usage?.completion_tokens || 0,
-        total: data.usage?.total_tokens || 0,
+        input: data.usage?.prompt_tokens ?? 0,
+        output: data.usage?.completion_tokens ?? 0,
+        total: data.usage?.total_tokens ?? 0,
       };
 
       return {
@@ -349,8 +349,7 @@ Word:`;
     };
 
     return (
-      languages[languageCode || 'en'] ||
-      languageCode?.toUpperCase() ||
+      (languages[languageCode ?? 'en'] || languageCode?.toUpperCase()) ??
       'UNKNOWN'
     );
   }

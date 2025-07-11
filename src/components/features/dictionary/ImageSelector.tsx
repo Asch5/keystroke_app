@@ -179,7 +179,7 @@ export function ImageSelector({
                         <div className="aspect-square relative bg-content-soft rounded-lg overflow-hidden hover:ring-2 hover:ring-info-border transition-all">
                           <Image
                             src={image.sizes.medium || image.url}
-                            alt={image.alt || 'Search result'}
+                            alt={image.alt ?? 'Search result'}
                             fill
                             className="object-cover"
                             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"

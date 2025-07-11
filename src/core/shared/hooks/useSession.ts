@@ -124,8 +124,8 @@ export function useSession(): UseSessionReturn {
           sessionId: currentSession.id,
           userDictionaryId: item.userDictionaryId,
           isCorrect: item.isCorrect,
-          responseTime: item.responseTime || null,
-          attemptsCount: item.attemptsCount || 1,
+          responseTime: item.responseTime ?? null,
+          attemptsCount: item.attemptsCount ?? 1,
           createdAt: new Date(),
         };
 

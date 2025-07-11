@@ -15,7 +15,7 @@ export const RoleGate = ({
   fallback,
 }: RoleGateProps) => {
   const { data: session, status } = useSession();
-  const userRole = session?.user?.role || 'user';
+  const userRole = session?.user?.role ?? 'user';
 
   // Wait for session to be loaded before making role decision
   if (status === 'loading') {
@@ -23,7 +23,7 @@ export const RoleGate = ({
   }
 
   if (!allowedRoles.includes(userRole)) {
-    return fallback || null;
+    return fallback ?? null;
   }
 
   return <>{children}</>;

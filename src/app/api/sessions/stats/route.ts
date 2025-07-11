@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     if (!result.success) {
       void serverLog(`Failed to fetch session stats: ${result.error}`, 'error');
       return NextResponse.json(
-        { error: result.error || 'Failed to fetch session statistics' },
+        { error: result.error ?? 'Failed to fetch session statistics' },
         { status: 500 },
       );
     }

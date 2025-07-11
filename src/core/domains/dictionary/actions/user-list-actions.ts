@@ -295,9 +295,10 @@ export async function getUserLists(
           ? listMap.get(userList.listId)
           : null;
         const displayName =
-          userList.customNameOfList || referencedList?.name || '';
+          (userList.customNameOfList || referencedList?.name) ?? '';
         const displayDescription =
-          userList.customDescriptionOfList || referencedList?.description || '';
+          (userList.customDescriptionOfList || referencedList?.description) ??
+          '';
         const searchLower = search.toLowerCase();
 
         return (
@@ -320,7 +321,7 @@ export async function getUserLists(
             const wordDetails =
               userListWord.userDictionary.definition.wordDetails[0]
                 ?.wordDetails;
-            return wordDetails?.word.word || 'Unknown word';
+            return wordDetails?.word.word ?? 'Unknown word';
           })
           .filter(Boolean);
 
@@ -336,17 +337,17 @@ export async function getUserLists(
           : null;
 
         const displayName =
-          userList.customNameOfList || referencedList?.name || 'Untitled List';
+          (userList.customNameOfList || referencedList?.name) ??
+          'Untitled List';
         const displayDescription =
-          userList.customDescriptionOfList ||
-          referencedList?.description ||
+          (userList.customDescriptionOfList || referencedList?.description) ??
           null;
         const displayDifficulty =
-          userList.customDifficulty ||
-          referencedList?.difficultyLevel ||
+          (userList.customDifficulty || referencedList?.difficultyLevel) ??
           'beginner';
         const displayCoverImageUrl =
-          userList.customCoverImageUrl || referencedList?.coverImageUrl || null;
+          (userList.customCoverImageUrl || referencedList?.coverImageUrl) ??
+          null;
 
         return {
           id: userList.id,
@@ -489,7 +490,7 @@ export async function getAvailablePublicLists(
         .slice(0, 3)
         .map((listWord) => {
           const wordDetails = listWord.definition.wordDetails[0]?.wordDetails;
-          return wordDetails?.word.word || 'Unknown word';
+          return wordDetails?.word.word ?? 'Unknown word';
         })
         .filter(Boolean);
 
@@ -645,18 +646,18 @@ export async function getPublicUserLists(
             const wordDetails =
               userListWord.userDictionary.definition.wordDetails[0]
                 ?.wordDetails;
-            return wordDetails?.word.word || 'Unknown word';
+            return wordDetails?.word.word ?? 'Unknown word';
           })
           .filter(Boolean);
 
         const displayName =
-          list.customNameOfList || list.list?.name || 'Untitled List';
+          (list.customNameOfList || list.list?.name) ?? 'Untitled List';
         const displayDescription =
-          list.customDescriptionOfList || list.list?.description || null;
+          (list.customDescriptionOfList || list.list?.description) ?? null;
         const displayDifficulty =
-          list.customDifficulty || list.list?.difficultyLevel || 'beginner';
+          (list.customDifficulty || list.list?.difficultyLevel) ?? 'beginner';
         const displayCoverImageUrl =
-          list.customCoverImageUrl || list.list?.coverImageUrl || null;
+          (list.customCoverImageUrl || list.list?.coverImageUrl) ?? null;
 
         // Check if user has a list with matching name (temporary solution)
         const isInCollection = userListNames.has(displayName.toLowerCase());
@@ -784,10 +785,10 @@ export async function getPublicListPreview(
         const translatedDefinition =
           definition.translationLinks.find(
             (link) => link.translation.languageCode === userLanguages.base,
-          )?.translation?.content || null;
+          )?.translation?.content ?? null;
 
         // Get audio URL
-        const audioUrl = wordDetail.audioLinks[0]?.audio?.url || null;
+        const audioUrl = wordDetail.audioLinks[0]?.audio?.url ?? null;
 
         // Process examples with translations
         const examples = definition.examples.map((example) => ({
@@ -795,7 +796,7 @@ export async function getPublicListPreview(
           translation:
             example.translationLinks.find(
               (link) => link.translation.languageCode === userLanguages.base,
-            )?.translation?.content || null,
+            )?.translation?.content ?? null,
         }));
 
         return {
@@ -1197,7 +1198,7 @@ export async function addPublicUserListToCollection(
 
     return {
       success: true,
-      message: `Successfully added "${sourceList.customNameOfList || 'list'}" to your collection with ${sourceList.userListWords.length} words`,
+      message: `Successfully added "${sourceList.customNameOfList ?? 'list'}" to your collection with ${sourceList.userListWords.length} words`,
       userListId: result.id,
     };
   } catch (error) {
@@ -1266,9 +1267,9 @@ export async function createCustomUserList(
         userId,
         listId: null, // Custom list
         customNameOfList: data.name,
-        customDescriptionOfList: data.description || null,
-        customDifficulty: data.difficulty || null,
-        customCoverImageUrl: data.coverImageUrl || null,
+        customDescriptionOfList: data.description ?? null,
+        customDifficulty: data.difficulty ?? null,
+        customCoverImageUrl: data.coverImageUrl ?? null,
         targetLanguageCode: data.targetLanguageCode,
         progress: 0,
         isModified: true,
@@ -1318,16 +1319,16 @@ export async function updateUserList(
     };
 
     if (data.customName !== undefined) {
-      updateData.customNameOfList = data.customName || null;
+      updateData.customNameOfList = data.customName ?? null;
     }
     if (data.customDescription !== undefined) {
-      updateData.customDescriptionOfList = data.customDescription || null;
+      updateData.customDescriptionOfList = data.customDescription ?? null;
     }
     if (data.customDifficulty !== undefined) {
-      updateData.customDifficulty = data.customDifficulty || null;
+      updateData.customDifficulty = data.customDifficulty ?? null;
     }
     if (data.customCoverImageUrl !== undefined) {
-      updateData.customCoverImageUrl = data.customCoverImageUrl || null;
+      updateData.customCoverImageUrl = data.customCoverImageUrl ?? null;
     }
 
     await prisma.userList.update({
@@ -1406,7 +1407,7 @@ export async function addWordToUserList(
       orderBy: { orderIndex: 'desc' },
     });
 
-    const nextOrderIndex = (lastEntry?.orderIndex || 0) + 1;
+    const nextOrderIndex = (lastEntry?.orderIndex ?? 0) + 1;
 
     // Add the word to the list
     await prisma.userListWord.create({
@@ -1694,8 +1695,8 @@ export async function getUserListWords(
         const word = wordDetails?.word;
 
         // Audio and image URLs
-        const audioUrl = wordDetails?.audioLinks?.[0]?.audio?.url || null;
-        const imageUrl = definition.image?.url || null;
+        const audioUrl = wordDetails?.audioLinks?.[0]?.audio?.url ?? null;
+        const imageUrl = definition.image?.url ?? null;
 
         // Get translations with proper typing
         const translations = definition.translationLinks.map(
@@ -1718,10 +1719,10 @@ export async function getUserListWords(
           orderIndex: userListWord.orderIndex,
 
           // Word details
-          word: word?.word || 'Unknown word',
+          word: word?.word ?? 'Unknown word',
           definition: definition.definition,
-          partOfSpeech: wordDetails?.partOfSpeech || null,
-          phoneticTranscription: wordDetails?.phonetic || null,
+          partOfSpeech: wordDetails?.partOfSpeech ?? null,
+          phoneticTranscription: wordDetails?.phonetic ?? null,
           audioUrl,
           imageUrl,
 
@@ -1741,7 +1742,7 @@ export async function getUserListWords(
             );
 
             // Only return DefinitionToOneWord match, never fall back to DefinitionTranslation
-            return matchingOneWordLink?.word?.word || null;
+            return matchingOneWordLink?.word?.word ?? null;
           })(),
         };
       },
@@ -1749,9 +1750,9 @@ export async function getUserListWords(
 
     // Get list details
     const displayName =
-      userList.customNameOfList || userList.list?.name || 'Untitled List';
+      (userList.customNameOfList || userList.list?.name) ?? 'Untitled List';
     const displayDescription =
-      userList.customDescriptionOfList || userList.list?.description || null;
+      (userList.customDescriptionOfList || userList.list?.description) ?? null;
 
     const listDetails = {
       id: userList.id,

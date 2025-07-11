@@ -195,7 +195,7 @@ export default function ListsManagementPage() {
             <div className="space-y-2">
               <Label>Category</Label>
               <Select
-                value={filters.category || ''}
+                value={filters.category ?? ''}
                 onValueChange={(value) =>
                   setFilters({
                     ...filters,
@@ -224,7 +224,7 @@ export default function ListsManagementPage() {
             <div className="space-y-2">
               <Label>Difficulty</Label>
               <Select
-                value={filters.difficulty || ''}
+                value={filters.difficulty ?? ''}
                 onValueChange={(value) =>
                   setFilters((prev) => {
                     const newFilters = { ...prev };
@@ -255,7 +255,7 @@ export default function ListsManagementPage() {
             <div className="space-y-2">
               <Label>Language</Label>
               <Select
-                value={filters.language || ''}
+                value={filters.language ?? ''}
                 onValueChange={(value) =>
                   setFilters((prev) => {
                     const newFilters = { ...prev };
@@ -486,7 +486,7 @@ export default function ListsManagementPage() {
                       </TableCell>
                       <TableCell>
                         <div className="max-w-xs text-sm text-muted-foreground truncate">
-                          {list.description || 'No description'}
+                          {list.description ?? 'No description'}
                         </div>
                       </TableCell>
                       <TableCell>

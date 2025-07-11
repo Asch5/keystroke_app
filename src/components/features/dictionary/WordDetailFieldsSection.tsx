@@ -89,7 +89,7 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
           <div className="space-y-2">
             <Label htmlFor="part-of-speech">Part of Speech</Label>
             <Select
-              value={formData.partOfSpeech || ''}
+              value={formData.partOfSpeech ?? ''}
               onValueChange={(value) =>
                 onInputChange('partOfSpeech', value as PartOfSpeech)
               }
@@ -112,8 +112,8 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
             <Label htmlFor="variant">Variant</Label>
             <Input
               id="variant"
-              value={formData.variant || ''}
-              onChange={(e) => onInputChange('variant', e.target.value || null)}
+              value={formData.variant ?? ''}
+              onChange={(e) => onInputChange('variant', e.target.value ?? null)}
               placeholder="Enter variant"
             />
           </div>
@@ -122,7 +122,7 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
           <div className="space-y-2">
             <Label htmlFor="gender">Gender</Label>
             <Select
-              value={formData.gender || ''}
+              value={formData.gender ?? ''}
               onValueChange={(value) =>
                 onInputChange('gender', value as Gender)
               }
@@ -145,9 +145,9 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
             <Label htmlFor="phonetic">Phonetic</Label>
             <Input
               id="phonetic"
-              value={formData.phonetic || ''}
+              value={formData.phonetic ?? ''}
               onChange={(e) =>
-                onInputChange('phonetic', e.target.value || null)
+                onInputChange('phonetic', e.target.value ?? null)
               }
               placeholder="Phonetic for this variant"
             />
@@ -158,8 +158,8 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
             <Label htmlFor="forms">Forms</Label>
             <Input
               id="forms"
-              value={formData.forms || ''}
-              onChange={(e) => onInputChange('forms', e.target.value || null)}
+              value={formData.forms ?? ''}
+              onChange={(e) => onInputChange('forms', e.target.value ?? null)}
               placeholder="Enter forms"
             />
           </div>
@@ -169,9 +169,9 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
             <Label htmlFor="etymology">Etymology</Label>
             <Input
               id="etymology"
-              value={formData.etymology || ''}
+              value={formData.etymology ?? ''}
               onChange={(e) =>
-                onInputChange('etymology', e.target.value || null)
+                onInputChange('etymology', e.target.value ?? null)
               }
               placeholder="Enter etymology"
             />
@@ -183,7 +183,7 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
             <Input
               id="frequency-general"
               type="number"
-              value={formData.frequencyGeneral || ''}
+              value={formData.frequencyGeneral ?? ''}
               onChange={(e) =>
                 onInputChange(
                   'frequencyGeneral',
@@ -200,7 +200,7 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
             <Input
               id="frequency"
               type="number"
-              value={formData.frequency || ''}
+              value={formData.frequency ?? ''}
               onChange={(e) =>
                 onInputChange('frequency', Number(e.target.value) || null)
               }
@@ -212,7 +212,7 @@ const WordDetailFieldsSection = memo(function WordDetailFieldsSection({
           <div className="space-y-2">
             <Label htmlFor="source">Source</Label>
             <Select
-              value={formData.source || ''}
+              value={formData.source ?? ''}
               onValueChange={(value) =>
                 onInputChange('source', value as SourceType)
               }

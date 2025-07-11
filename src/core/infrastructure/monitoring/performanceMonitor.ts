@@ -236,7 +236,7 @@ class PerformanceMonitor {
    */
   private analyzeResourceTiming(entry: PerformanceResourceTiming): void {
     const duration = entry.responseEnd - entry.requestStart;
-    const size = entry.transferSize || 0;
+    const size = entry.transferSize ?? 0;
 
     // Detect slow resources
     if (duration > 2000) {

@@ -129,7 +129,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
                   <span className="font-medium">
                     {performanceMetrics.practicePerformance.averageResponseTime?.toFixed(
                       1,
-                    ) || 'N/A'}
+                    ) ?? 'N/A'}
                     ms
                   </span>
                 </div>
@@ -138,7 +138,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
                   <Badge variant="outline">
                     {performanceMetrics.learningEfficiency.learningVelocity?.toFixed(
                       1,
-                    ) || 'N/A'}{' '}
+                    ) ?? 'N/A'}{' '}
                     words/day
                   </Badge>
                 </div>
@@ -147,7 +147,7 @@ export const WordAnalyticsTab: React.FC<WordAnalyticsTabProps> = ({
                   <span className="font-medium">
                     {performanceMetrics.learningEfficiency.retentionRate?.toFixed(
                       1,
-                    ) || 'N/A'}
+                    ) ?? 'N/A'}
                     %
                   </span>
                 </div>

@@ -41,7 +41,7 @@ export function ChooseRightWordGame({
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
 
-  const options = word.distractorOptions || [];
+  const options = word.distractorOptions ?? [];
   const correctIndex = word.correctAnswerIndex ?? 0;
 
   // Reset state when word changes

@@ -35,7 +35,7 @@ export async function PATCH(
     if (!result.success) {
       void serverLog(`Failed to update session: ${result.error}`, 'error');
       return NextResponse.json(
-        { error: result.error || 'Failed to update session' },
+        { error: result.error ?? 'Failed to update session' },
         { status: 500 },
       );
     }

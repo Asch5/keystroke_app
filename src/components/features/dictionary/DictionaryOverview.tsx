@@ -66,7 +66,7 @@ const STATUS_LABELS: Record<LearningStatus, string> = {
  * @returns {string} CSS class for the status color
  */
 const getStatusColor = (status: LearningStatus): string => {
-  return STATUS_COLORS[status] || 'bg-content-tertiary';
+  return STATUS_COLORS[status] ?? 'bg-content-tertiary';
 };
 
 /**
@@ -93,7 +93,7 @@ function DictionaryErrorFallback({ message }: { message: string }) {
           Unable to Load Dictionary
         </h3>
         <p className="text-muted-foreground mb-6">
-          {message ||
+          {message ??
             'We encountered an error while loading your dictionary statistics.'}
         </p>
         <Button asChild variant="outline">

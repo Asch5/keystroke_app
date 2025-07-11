@@ -173,7 +173,7 @@ export function useWordDetailEditActions({
           toast.success('Word detail updated successfully!');
           router.push('/admin/dictionaries');
         } else {
-          toast.error(result.error || 'Failed to update word detail');
+          toast.error(result.error ?? 'Failed to update word detail');
         }
       } catch (error) {
         console.error('Error updating word detail:', error);

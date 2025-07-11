@@ -23,7 +23,7 @@ export function formatWithBC(text: unknown): string {
 export function cleanupExampleText(text: unknown): string {
   if (typeof text !== 'string') {
     console.warn('Non-string example text encountered:', text);
-    return String(text || '')
+    return String(text ?? '')
       .replace(/{(?!it}|\/it})([^}]+)}/g, '') // Keep {it} and {/it} tags but remove others
       .replace(/\s+/g, ' ')
       .trim();

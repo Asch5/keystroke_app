@@ -57,7 +57,7 @@ class ModernLogger {
     // Initialize OpenTelemetry logger
     otelLogger.initialize({
       serviceName: 'keystroke-app',
-      serviceVersion: process.env.npm_package_version || '1.0.0',
+      serviceVersion: process.env.npm_package_version ?? '1.0.0',
     });
   }
 

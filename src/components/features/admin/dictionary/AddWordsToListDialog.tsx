@@ -139,7 +139,7 @@ export function AddWordsToListDialog({
         onWordsAdded();
         onClose();
       } else {
-        toast.error(result.error || 'Failed to add words to list');
+        toast.error(result.error ?? 'Failed to add words to list');
       }
     } catch (error) {
       console.error('Error adding words to list:', error);

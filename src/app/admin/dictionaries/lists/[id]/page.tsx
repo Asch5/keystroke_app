@@ -130,7 +130,7 @@ export default function ListDetailsPage() {
     return (
       <div className="container mx-auto py-6">
         <Alert variant="destructive">
-          <AlertDescription>{error || 'List not found'}</AlertDescription>
+          <AlertDescription>{error ?? 'List not found'}</AlertDescription>
         </Alert>
         <div className="mt-4">
           <Button
@@ -213,7 +213,7 @@ export default function ListDetailsPage() {
               <div>
                 <h4 className="font-medium mb-2">Description</h4>
                 <p className="text-muted-foreground">
-                  {list.description || 'No description provided'}
+                  {list.description ?? 'No description provided'}
                 </p>
               </div>
 

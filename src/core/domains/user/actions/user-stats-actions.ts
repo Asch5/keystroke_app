@@ -264,38 +264,38 @@ export const getUserStatistics = cache(
           wordsLearned:
             learningStatusBreakdown.find(
               (s) => s.learningStatus === LearningStatus.learned,
-            )?._count.id || 0,
+            )?._count.id ?? 0,
           wordsInProgress:
             learningStatusBreakdown.find(
               (s) => s.learningStatus === LearningStatus.inProgress,
-            )?._count.id || 0,
+            )?._count.id ?? 0,
           wordsNeedingReview:
             learningStatusBreakdown.find(
               (s) => s.learningStatus === LearningStatus.needsReview,
-            )?._count.id || 0,
+            )?._count.id ?? 0,
           difficultWords:
             learningStatusBreakdown.find(
               (s) => s.learningStatus === LearningStatus.difficult,
-            )?._count.id || 0,
-          averageMasteryScore: learningStats._avg.masteryScore || 0,
+            )?._count.id ?? 0,
+          averageMasteryScore: learningStats._avg.masteryScore ?? 0,
           currentStreak: streakInfo.currentStreak,
           longestStreak: streakInfo.longestStreak,
           progressPercentage:
             learningStats._count.id > 0
               ? ((learningStatusBreakdown.find(
                   (s) => s.learningStatus === LearningStatus.learned,
-                )?._count.id || 0) /
+                )?._count.id ?? 0) /
                   learningStats._count.id) *
                 100
               : 0,
         },
         sessionStatistics: {
           totalSessions: sessionStats._count.id,
-          totalStudyTime: Math.round((sessionStats._sum.duration || 0) / 60),
+          totalStudyTime: Math.round((sessionStats._sum.duration ?? 0) / 60),
           averageSessionDuration: Math.round(
-            (sessionStats._avg.duration || 0) / 60,
+            (sessionStats._avg.duration ?? 0) / 60,
           ),
-          totalWordsStudied: sessionStats._sum.wordsStudied || 0,
+          totalWordsStudied: sessionStats._sum.wordsStudied ?? 0,
           averageAccuracy:
             sessionStats._sum.correctAnswers &&
             sessionStats._sum.incorrectAnswers
@@ -304,25 +304,25 @@ export const getUserStatistics = cache(
                     sessionStats._sum.incorrectAnswers)) *
                 100
               : 0,
-          bestScore: sessionStats._max.score || 0,
+          bestScore: sessionStats._max.score ?? 0,
           recentSessionsCount: dailyStats.filter((session) => {
             const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
             return new Date(session.createdAt) >= weekAgo;
           }).length,
           streakDays: streakInfo.currentStreak,
-          lastSessionDate: dailyStats[0]?.createdAt || null,
+          lastSessionDate: dailyStats[0]?.createdAt ?? null,
         },
         mistakeAnalysis: {
           totalMistakes: difficultWords.reduce(
             (sum, dw) => sum + dw._count.id,
             0,
           ),
-          mostCommonMistakeType: mistakeStats[0]?.type || 'None',
+          mostCommonMistakeType: mistakeStats[0]?.type ?? 'None',
           improvementRate: calculateImprovementRate(dailyStats),
           difficultWords: difficultWords.map((dw) => {
             const wordText = difficultWordTexts.find((w) => w.id === dw.wordId);
             return {
-              wordText: wordText?.word || 'Unknown',
+              wordText: wordText?.word ?? 'Unknown',
               mistakeCount: dw._count.id,
               lastMistake: new Date(), // This would need a separate query for exact date
             };
@@ -342,13 +342,13 @@ export const getUserStatistics = cache(
           ),
         },
         dailyProgress: {
-          dailyGoal: userWithSettings.userSettings?.dailyGoal || 5,
+          dailyGoal: userWithSettings.userSettings?.dailyGoal ?? 5,
           todayProgress,
           weeklyProgress: weekProgress,
           monthlyProgress: monthProgress,
           goalAchievementRate: calculateGoalAchievementRate(
             dailyStats,
-            userWithSettings.userSettings?.dailyGoal || 5,
+            userWithSettings.userSettings?.dailyGoal ?? 5,
           ),
         },
         languageProgress: {
@@ -356,7 +356,7 @@ export const getUserStatistics = cache(
           targetLanguage: userWithSettings.targetLanguageCode,
           proficiencyLevel: estimateProficiencyLevel(
             learningStats._count.id,
-            learningStats._avg.masteryScore || 0,
+            learningStats._avg.masteryScore ?? 0,
           ),
           estimatedVocabularySize: learningStats._count.id,
         },
@@ -376,7 +376,7 @@ export const getUserStatistics = cache(
       const errorString =
         typeof errorMessage === 'string'
           ? errorMessage
-          : errorMessage.message || 'Unknown error';
+          : (errorMessage.message ?? 'Unknown error');
       void serverLog(
         `Failed to fetch user statistics: ${errorString}`,
         'error',
@@ -515,7 +515,7 @@ function calculateGoalAchievementRate(
       const dateKey = date.toISOString().split('T')[0];
 
       if (dateKey) {
-        acc[dateKey] = (acc[dateKey] || 0) + session.wordsStudied;
+        acc[dateKey] = (acc[dateKey] ?? 0) + session.wordsStudied;
       }
       return acc;
     },
@@ -629,7 +629,7 @@ export const getLearningAnalytics = cache(
         (acc, entry) => {
           const date = entry.createdAt.toISOString().split('T')[0];
           if (date) {
-            acc[date] = (acc[date] || 0) + 1;
+            acc[date] = (acc[date] ?? 0) + 1;
           }
           return acc;
         },
@@ -666,7 +666,7 @@ export const getLearningAnalytics = cache(
           mostActiveHour: findMostActiveHour(sessions),
           averageSessionLength:
             sessions.length > 0
-              ? sessions.reduce((sum, s) => sum + (s.duration || 0), 0) /
+              ? sessions.reduce((sum, s) => sum + (s.duration ?? 0), 0) /
                 sessions.length /
                 60
               : 0,
@@ -685,7 +685,7 @@ export const getLearningAnalytics = cache(
       const errorString =
         typeof errorMessage === 'string'
           ? errorMessage
-          : errorMessage.message || 'Unknown error';
+          : (errorMessage.message ?? 'Unknown error');
       void serverLog(
         `Failed to fetch learning analytics: ${errorString}`,
         'error',
@@ -707,7 +707,7 @@ function findMostActiveHour(sessions: { createdAt: Date }[]): number {
   const hourCounts = sessions.reduce(
     (acc, session) => {
       const hour = session.createdAt.getHours();
-      acc[hour] = (acc[hour] || 0) + 1;
+      acc[hour] = (acc[hour] ?? 0) + 1;
       return acc;
     },
     {} as Record<number, number>,
@@ -749,7 +749,7 @@ function calculateWeeklyDistribution(
   const dayCounts = sessions.reduce(
     (acc, session) => {
       const day = session.createdAt.getDay();
-      acc[day] = (acc[day] || 0) + 1;
+      acc[day] = (acc[day] ?? 0) + 1;
       return acc;
     },
     {} as Record<number, number>,
@@ -757,6 +757,6 @@ function calculateWeeklyDistribution(
 
   return dayNames.map((day, index) => ({
     day,
-    sessions: dayCounts[index] || 0,
+    sessions: dayCounts[index] ?? 0,
   }));
 }

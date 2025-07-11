@@ -241,7 +241,7 @@ export async function generateBatchWordImages(
     maxConcurrent?: number;
   },
 ): Promise<ImageBatchResult> {
-  const maxConcurrent = options?.maxConcurrent || 3; // Conservative to respect rate limits
+  const maxConcurrent = options?.maxConcurrent ?? 3; // Conservative to respect rate limits
   const results: GenerateImageResult[] = [];
   let processed = 0;
   let failed = 0;

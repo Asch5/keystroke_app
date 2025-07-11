@@ -49,7 +49,7 @@ export function useTypingPracticeState({
   // Input management
   const inputManager = useTypingInputManager({
     isActive: sessionManager.sessionState.isActive,
-    currentWord: sessionManager.sessionState.currentWord?.wordText || null,
+    currentWord: sessionManager.sessionState.currentWord?.wordText ?? null,
     autoSubmitAfterCorrect,
     onSubmit: handleWordSubmit,
   });

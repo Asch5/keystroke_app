@@ -335,7 +335,7 @@ export async function getWordFromMerriamWebster(
         message: null,
         errors: {
           word: [
-            `API request failed (${response.status}): ${response.statusText || 'Unknown error'}. Error: ${errorText}`,
+            `API request failed (${response.status}): ${response.statusText ?? 'Unknown error'}. Error: ${errorText}`,
           ],
         },
       };
@@ -465,20 +465,19 @@ export async function processAndSaveWord(
         apiResponse.hwi.prs?.[0]?.mw ||
         apiResponse.hwi.altprs?.[0]?.ipa ||
         apiResponse.hwi.altprs?.[0]?.mw ||
-        // checkedWordDetails?.word?.phonetic ||
-        null,
+        null, // checkedWordDetails?.word?.phonetic ?? null,
       audioFiles:
         audioFiles.length > 0
           ? audioFiles
-          : checkedWordDetails?.details?.[0]?.audioFiles || null,
+          : (checkedWordDetails?.details?.[0]?.audioFiles ?? null),
       etymology:
-        etymology || checkedWordDetails?.details?.[0]?.etymology || null, // Now from details
+        (etymology || checkedWordDetails?.details?.[0]?.etymology) ?? null, // Now from details
       relatedWords: [],
       sourceEntityId: `${source}-${sourceEntityId}-${sourceEntityUuid}`,
     },
     definitions: [],
     phrases: [],
-    stems: apiResponse.meta.stems || [],
+    stems: apiResponse.meta.stems ?? [],
   };
 
   enum SOURCE_OF_WORD {
@@ -654,8 +653,7 @@ export async function processAndSaveWord(
 
           // Extract phonetic spelling if available
           const phonetic =
-            apiResponse.hwi.prs?.[0]?.ipa ||
-            apiResponse.hwi.prs?.[0]?.mw ||
+            (apiResponse.hwi.prs?.[0]?.ipa || apiResponse.hwi.prs?.[0]?.mw) ??
             null;
 
           //           "hom":1,
@@ -713,7 +711,7 @@ export async function processAndSaveWord(
     for (const inflection of apiResponse.ins) {
       if (!inflection.if) continue;
 
-      const subjectStatusLabels = inflection.il || null;
+      const subjectStatusLabels = inflection.il ?? null;
 
       // Clean the inflection form
       const cleanedForm = inflection.if.replace(/\*/g, '');
@@ -745,7 +743,7 @@ export async function processAndSaveWord(
 
       // Extract phonetic spelling if available
       const formPhonetic =
-        inflection.prs?.[0]?.ipa || inflection.prs?.[0]?.mw || null;
+        (inflection.prs?.[0]?.ipa || inflection.prs?.[0]?.mw) ?? null;
 
       // Determine the verb form type and set appropriate relationships
       let verbFormType;
@@ -857,7 +855,7 @@ export async function processAndSaveWord(
 
       // Extract phonetic spelling if available
       const formPhonetic =
-        inflection.prs?.[0]?.ipa || inflection.prs?.[0]?.mw || null;
+        (inflection.prs?.[0]?.ipa || inflection.prs?.[0]?.mw) ?? null;
 
       let pluralForm: RelationshipType | null = null;
       let etymologySubWord: string | null = null;
@@ -878,7 +876,7 @@ export async function processAndSaveWord(
           {
             source: source,
             languageCode: language,
-            definition: etymologySubWord || '',
+            definition: etymologySubWord ?? '',
             examples: [],
           },
         ],
@@ -1005,16 +1003,16 @@ export async function processAndSaveWord(
                     if (!dt) continue;
 
                     if (currentSenData) {
-                      senGramaticalNote = currentSenData.sgram || null;
-                      senBnote = currentSenData.bnote || null;
+                      senGramaticalNote = currentSenData.sgram ?? null;
+                      senBnote = currentSenData.bnote ?? null;
                       senLbs = currentSenData.lbs?.join(', ') || null;
                       senSubjectStatusLabels =
                         currentSenData.sls?.join(', ') || null;
                     }
                     // Then check if there's sen data attached to this sense directly
                     else if (senseData.sen) {
-                      senGramaticalNote = senseData.sen.sgram || null;
-                      senBnote = senseData.sen.bnote || null;
+                      senGramaticalNote = senseData.sen.sgram ?? null;
+                      senBnote = senseData.sen.bnote ?? null;
                       senLbs = senseData.sen.lbs?.join(', ') || null;
                       senSubjectStatusLabels =
                         senseData.sen.sls?.join(', ') || null;
@@ -1087,9 +1085,9 @@ export async function processAndSaveWord(
                         }
 
                         // Process grammatical notes
-                        const grammaticalNote = senseData.sgram || null;
-                        const bnote = senseData.bnote || null;
-                        const mainGramNote = apiResponse.gram || null;
+                        const grammaticalNote = senseData.sgram ?? null;
+                        const bnote = senseData.bnote ?? null;
+                        const mainGramNote = apiResponse.gram ?? null;
 
                         const generalLabels = senseData.lbs?.join(', ') || null;
 
@@ -1123,7 +1121,7 @@ export async function processAndSaveWord(
                           frequencyPartOfSpeech: null,
                           usageNote: phrasalVerbUsage,
                           isInShortDef: false,
-                          examples: getPhrasalVerbExamples || [],
+                          examples: getPhrasalVerbExamples ?? [],
                         };
 
                         subWordPhrasalVerb.definitions.push(definitionData);
@@ -1249,16 +1247,16 @@ export async function processAndSaveWord(
 
                     // First check if we have sen data from a previous item in the sequence
                     if (currentSenData) {
-                      senGramaticalNote = currentSenData.sgram || null;
-                      senBnote = currentSenData.bnote || null;
+                      senGramaticalNote = currentSenData.sgram ?? null;
+                      senBnote = currentSenData.bnote ?? null;
                       senLbs = currentSenData.lbs?.join(', ') || null;
                       senSubjectStatusLabels =
                         currentSenData.sls?.join(', ') || null;
                     }
                     // Then check if there's sen data attached to this sense directly
                     else if (senseData.sen) {
-                      senGramaticalNote = senseData.sen.sgram || null;
-                      senBnote = senseData.sen.bnote || null;
+                      senGramaticalNote = senseData.sen.sgram ?? null;
+                      senBnote = senseData.sen.bnote ?? null;
                       senLbs = senseData.sen.lbs?.join(', ') || null;
                       senSubjectStatusLabels =
                         senseData.sen.sls?.join(', ') || null;
@@ -1331,9 +1329,9 @@ export async function processAndSaveWord(
                         }
 
                         // Process grammatical notes
-                        const grammaticalNote = senseData.sgram || null;
-                        const bnote = senseData.bnote || null;
-                        const mainGramNote = apiResponse.gram || null;
+                        const grammaticalNote = senseData.sgram ?? null;
+                        const bnote = senseData.bnote ?? null;
+                        const mainGramNote = apiResponse.gram ?? null;
 
                         const generalLabels = senseData.lbs?.join(', ') || null;
 
@@ -1367,7 +1365,7 @@ export async function processAndSaveWord(
                             ]) || null,
                           usageNote: phraseUsage,
                           isInShortDef: false,
-                          examples: getPhraseExamples || [],
+                          examples: getPhraseExamples ?? [],
                         };
 
                         subWordPhrase.definitions.push(definitionData);
@@ -1452,7 +1450,7 @@ export async function processAndSaveWord(
                   acc.push({
                     example: cleanupExampleText(vis.t),
                     languageCode: language,
-                    grammaticalNote: uro.gram || null,
+                    grammaticalNote: uro.gram ?? null,
                   });
                 }
               });
@@ -1484,7 +1482,7 @@ export async function processAndSaveWord(
           inflections.push({
             form: cleanedForm,
             type: inflectionType,
-            category: inflection.ifc || undefined,
+            category: inflection.ifc ?? undefined,
           });
         }
       }
@@ -1495,7 +1493,7 @@ export async function processAndSaveWord(
         languageCode: language,
         partOfSpeech: mapPartOfSpeech(uro.fl),
         source: source,
-        phonetic: uro.prs?.[0]?.ipa || uro.prs?.[0]?.mw || null,
+        phonetic: (uro.prs?.[0]?.ipa || uro.prs?.[0]?.mw) ?? null,
         audioFiles: audioFiles.length > 0 ? audioFiles : null,
         etymology: mainWordText,
         definitions: [
@@ -1505,7 +1503,7 @@ export async function processAndSaveWord(
             definition: `Form of {it}${mainWordText}{/it}`,
             subjectStatusLabels: null,
             generalLabels: null,
-            grammaticalNote: uro.gram || null,
+            grammaticalNote: uro.gram ?? null,
             isInShortDef: false,
             examples: examples,
           },
@@ -1613,7 +1611,7 @@ sourceWordText processing
   //!DEF Definitions handler
   if (apiResponse.def) {
     const processedDefinitions = new Set<string>(); // Track processed definitions to avoid duplicates
-    const mainLbs = apiResponse.lbs?.join(', ') || '';
+    const mainLbs = apiResponse.lbs?.join(', ') ?? '';
     for (const defEntry of apiResponse.def) {
       if (defEntry.sseq) {
         for (const sseqItem of defEntry.sseq) {
@@ -1637,15 +1635,15 @@ sourceWordText processing
 
               // First check if we have sen data from a previous item in the sequence
               if (currentSenData) {
-                senGramaticalNote = currentSenData.sgram || null;
-                senBnote = currentSenData.bnote || null;
+                senGramaticalNote = currentSenData.sgram ?? null;
+                senBnote = currentSenData.bnote ?? null;
                 senLbs = currentSenData.lbs?.join(', ') || null;
                 senSubjectStatusLabels = currentSenData.sls?.join(', ') || null;
               }
               // Then check if there's sen data attached to this sense directly
               else if (senseData.sen) {
-                senGramaticalNote = senseData.sen.sgram || null;
-                senBnote = senseData.sen.bnote || null;
+                senGramaticalNote = senseData.sen.sgram ?? null;
+                senBnote = senseData.sen.bnote ?? null;
                 senLbs = senseData.sen.lbs?.join(', ') || null;
                 senSubjectStatusLabels = senseData.sen.sls?.join(', ') || null;
               }
@@ -1688,9 +1686,9 @@ sourceWordText processing
               }
 
               // Process grammatical notes
-              const grammaticalNote = senseData.sgram || null;
-              const bnote = senseData.bnote || null;
-              const mainGramNote = apiResponse.gram || null;
+              const grammaticalNote = senseData.sgram ?? null;
+              const bnote = senseData.bnote ?? null;
+              const mainGramNote = apiResponse.gram ?? null;
 
               const generalLabels = senseData.lbs?.join(', ') || null;
 
@@ -1757,7 +1755,7 @@ sourceWordText processing
               processedData.definitions.push({
                 source: source,
                 languageCode: language,
-                definition: cleanDefinitionText || unsNoteText || '',
+                definition: (cleanDefinitionText || unsNoteText) ?? '',
                 subjectStatusLabels:
                   getStringFromArray([
                     senSubjectStatusLabels,
@@ -1773,7 +1771,7 @@ sourceWordText processing
                     grammaticalNote,
                     bnote,
                   ]) || null,
-                usageNote: extractedUsageNote || unsNoteText || null,
+                usageNote: (extractedUsageNote || unsNoteText) ?? null,
                 isInShortDef: artShortDefTexts.has(
                   cleanupDefinitionText(cleanDefinitionText),
                 ),
@@ -1834,8 +1832,8 @@ sourceWordText processing
           ) {
             wordId = mainWordEntity.id;
             partOfSpeech = processedMainWordData.partOfSpeech;
-            variant = processedMainWordData.variant || '';
-            phonetic = processedMainWordData.phonetic || null;
+            variant = processedMainWordData.variant ?? '';
+            phonetic = processedMainWordData.phonetic ?? null;
             // Use main word's own source if available, otherwise default API source
             entitySource = processedMainWordData.source || apiSource;
           } else if (
@@ -1858,8 +1856,8 @@ sourceWordText processing
               if (foundSubWord?.id) {
                 wordId = foundSubWord.id;
                 partOfSpeech = foundSubWord.partOfSpeech;
-                variant = foundSubWord.variant || '';
-                phonetic = foundSubWord.phonetic || null;
+                variant = foundSubWord.variant ?? '';
+                phonetic = foundSubWord.phonetic ?? null;
                 entitySource = foundSubWord.source || apiSource;
               } else {
                 return {
@@ -1874,8 +1872,8 @@ sourceWordText processing
             } else {
               wordId = currentSubWordInLoop.id;
               partOfSpeech = currentSubWordInLoop.partOfSpeech;
-              variant = currentSubWordInLoop.variant || '';
-              phonetic = currentSubWordInLoop.phonetic || null;
+              variant = currentSubWordInLoop.variant ?? '';
+              phonetic = currentSubWordInLoop.phonetic ?? null;
               entitySource = currentSubWordInLoop.source || apiSource;
             }
           } else if (typeof relationSide === 'string') {
@@ -1886,8 +1884,8 @@ sourceWordText processing
             if (targetSubWord?.id) {
               wordId = targetSubWord.id;
               partOfSpeech = targetSubWord.partOfSpeech;
-              variant = targetSubWord.variant || '';
-              phonetic = targetSubWord.phonetic || null;
+              variant = targetSubWord.variant ?? '';
+              phonetic = targetSubWord.phonetic ?? null;
               entitySource = targetSubWord.source || apiSource;
             } else {
               clientLog(
@@ -1949,12 +1947,12 @@ sourceWordText processing
           mainWordText,
           language as LanguageCode, // Ensure language is defined
           {
-            phonetic: processedData.word.phonetic || null,
-            audioFiles: processedData.word.audioFiles || null,
-            etymology: processedData.word.etymology || null,
-            sourceEntityId: processedData.word.sourceEntityId || null,
+            phonetic: processedData.word.phonetic ?? null,
+            audioFiles: processedData.word.audioFiles ?? null,
+            etymology: processedData.word.etymology ?? null,
+            sourceEntityId: processedData.word.sourceEntityId ?? null,
             partOfSpeech: processedData.word.partOfSpeech, // Ensure partOfSpeech from initial processing
-            variant: processedData.word.variant || '',
+            variant: processedData.word.variant ?? '',
             isHighlighted: processedData.word.isHighlighted, // Ensure isHighlighted is defined
             frequencyManager: frequencyManager,
           },
@@ -1968,10 +1966,10 @@ sourceWordText processing
           processedData.word.partOfSpeech, // Use partOfSpeech from initial processing
           source,
           false, // isPlural
-          processedData.word.variant || '',
+          processedData.word.variant ?? '',
           processedData.word.phonetic,
           processedData.word.frequency,
-          processedData.word.etymology || null, // Add etymology parameter
+          processedData.word.etymology ?? null, // Add etymology parameter
           frequencyManager,
         );
         //postion 1
@@ -1995,21 +1993,21 @@ sourceWordText processing
               },
               update: {
                 // Update any fields that might have changed
-                subjectStatusLabels: definitionData.subjectStatusLabels || null,
-                generalLabels: definitionData.generalLabels || null,
-                grammaticalNote: definitionData.grammaticalNote || null,
-                usageNote: definitionData.usageNote || null,
-                isInShortDef: definitionData.isInShortDef || false,
+                subjectStatusLabels: definitionData.subjectStatusLabels ?? null,
+                generalLabels: definitionData.generalLabels ?? null,
+                grammaticalNote: definitionData.grammaticalNote ?? null,
+                usageNote: definitionData.usageNote ?? null,
+                isInShortDef: definitionData.isInShortDef ?? false,
               },
               create: {
                 definition: definitionData.definition,
                 source: definitionData.source as SourceType,
                 languageCode: definitionData.languageCode as LanguageCode,
-                subjectStatusLabels: definitionData.subjectStatusLabels || null,
-                generalLabels: definitionData.generalLabels || null,
-                grammaticalNote: definitionData.grammaticalNote || null,
-                usageNote: definitionData.usageNote || null,
-                isInShortDef: definitionData.isInShortDef || false,
+                subjectStatusLabels: definitionData.subjectStatusLabels ?? null,
+                generalLabels: definitionData.generalLabels ?? null,
+                grammaticalNote: definitionData.grammaticalNote ?? null,
+                usageNote: definitionData.usageNote ?? null,
+                isInShortDef: definitionData.isInShortDef ?? false,
               },
             });
 
@@ -2075,10 +2073,10 @@ sourceWordText processing
                         example: example.example,
                         languageCode: example.languageCode as LanguageCode,
                         definitionId: definition.id,
-                        grammaticalNote: example.grammaticalNote || null,
+                        grammaticalNote: example.grammaticalNote ?? null,
                       },
                       update: {
-                        grammaticalNote: example.grammaticalNote || null,
+                        grammaticalNote: example.grammaticalNote ?? null,
                       },
                     });
                     return {
@@ -2150,9 +2148,9 @@ sourceWordText processing
               subWord.word,
               subWord.languageCode as LanguageCode,
               {
-                phonetic: subWord.phonetic || null,
-                audioFiles: subWord.audioFiles || null,
-                etymology: subWord.etymology || null,
+                phonetic: subWord.phonetic ?? null,
+                audioFiles: subWord.audioFiles ?? null,
+                etymology: subWord.etymology ?? null,
                 partOfSpeech: subWord.partOfSpeech,
                 frequencyManager: frequencyManager,
               },
@@ -2184,21 +2182,21 @@ sourceWordText processing
               },
               update: {
                 // Update any fields that might have changed
-                subjectStatusLabels: defData.subjectStatusLabels || null,
-                generalLabels: defData.generalLabels || null,
-                grammaticalNote: defData.grammaticalNote || null,
-                usageNote: defData.usageNote || null,
-                isInShortDef: defData.isInShortDef || false,
+                subjectStatusLabels: defData.subjectStatusLabels ?? null,
+                generalLabels: defData.generalLabels ?? null,
+                grammaticalNote: defData.grammaticalNote ?? null,
+                usageNote: defData.usageNote ?? null,
+                isInShortDef: defData.isInShortDef ?? false,
               },
               create: {
                 definition: defData.definition,
                 source: defData.source as SourceType,
                 languageCode: defData.languageCode as LanguageCode,
-                subjectStatusLabels: defData.subjectStatusLabels || null,
-                generalLabels: defData.generalLabels || null,
-                grammaticalNote: defData.grammaticalNote || null,
-                usageNote: defData.usageNote || null,
-                isInShortDef: defData.isInShortDef || false,
+                subjectStatusLabels: defData.subjectStatusLabels ?? null,
+                generalLabels: defData.generalLabels ?? null,
+                grammaticalNote: defData.grammaticalNote ?? null,
+                usageNote: defData.usageNote ?? null,
+                isInShortDef: defData.isInShortDef ?? false,
               },
             });
 
@@ -2219,13 +2217,13 @@ sourceWordText processing
             const subWordDetails = await upsertWordDetails(
               tx,
               subWordEntity.id,
-              subWord.partOfSpeech || null,
+              subWord.partOfSpeech ?? null,
               source,
               false, // isPlural
-              subWord.variant || '',
-              subWord.phonetic || null,
+              subWord.variant ?? '',
+              subWord.phonetic ?? null,
               null, // frequency will be fetched in upsertWordDetails
-              subWord.etymology || null, // Add etymology parameter
+              subWord.etymology ?? null, // Add etymology parameter
               frequencyManager,
             );
 
@@ -2272,10 +2270,10 @@ sourceWordText processing
                         example: example.example,
                         languageCode: example.languageCode as LanguageCode,
                         definitionId: subWordDef.id,
-                        grammaticalNote: example.grammaticalNote || null,
+                        grammaticalNote: example.grammaticalNote ?? null,
                       },
                       update: {
-                        grammaticalNote: example.grammaticalNote || null,
+                        grammaticalNote: example.grammaticalNote ?? null,
                       },
                     });
                   }),
@@ -2404,7 +2402,7 @@ sourceWordText processing
                     }
 
                     // Use actual data from sub-word if available, otherwise use defaults
-                    const fromEtymology = fromSubWordData?.etymology || null;
+                    const fromEtymology = fromSubWordData?.etymology ?? null;
 
                     clientLog(
                       `FROM processMerriamApi.ts: Found fromSubWordData for wordId ${fromInfo.wordId}: ${fromSubWordData ? 'YES' : 'NO'}, etymology: ${fromEtymology}`,
@@ -2420,7 +2418,7 @@ sourceWordText processing
                     }
 
                     // Use actual data from sub-word if available, otherwise use defaults
-                    const toEtymology = toSubWordData?.etymology || null;
+                    const toEtymology = toSubWordData?.etymology ?? null;
 
                     clientLog(
                       `FROM processMerriamApi.ts: Found toSubWordData for wordId ${toInfo.wordId}: ${toSubWordData ? 'YES' : 'NO'}, etymology: ${toEtymology}`,
@@ -2520,9 +2518,9 @@ sourceWordText processing
             .filter((def): def is typeof def & { id: number } => def.id != null)
             .map((def) => ({
               id: def.id,
-              partOfSpeech: processedData.word.partOfSpeech || 'undefined',
+              partOfSpeech: processedData.word.partOfSpeech ?? 'undefined',
               definition: def.definition,
-              examples: (def.examples || [])
+              examples: (def.examples ?? [])
                 .filter((ex): ex is typeof ex & { id: number } => ex.id != null)
                 .map((ex) => ({
                   id: ex.id,
@@ -2713,7 +2711,7 @@ async function processImagesForDefinitions(
 function cleanupDefinitionText(text: unknown): string {
   if (typeof text !== 'string') {
     void serverLog('Non-string definition text encountered', 'warn', text);
-    return String(text || '')
+    return String(text ?? '')
       .replace(/{[^}]+}/g, '')
       .replace(/\s+/g, ' ')
       .trim();
@@ -2734,7 +2732,7 @@ function cleanupExampleText(text: unknown): string {
   if (typeof text !== 'string') {
     void serverLog('Non-string example text encountered', 'warn', text);
     return (
-      String(text || '')
+      String(text ?? '')
         // .replace(/{(?!it}|\/it})([^}]+)}/g, '') // Keep {it} and {/it} tags but remove others
         // .replace(/\s+/g, ' ')
         .trim()
@@ -2971,7 +2969,7 @@ function extractExamples(
         usages.push(
           ...result.usageTexts.map((text, i) => ({
             text,
-            examples: result.usageToExamples[i] || [],
+            examples: result.usageToExamples[i] ?? [],
           })),
         );
       }
@@ -3010,8 +3008,8 @@ function extractExamples(
                 example: cleanedExample,
                 languageCode: language,
                 grammaticalNote: getStringFromArray([
-                  currentWsgram || '',
-                  snoteText || '',
+                  currentWsgram ?? '',
+                  snoteText ?? '',
                 ]),
               });
 
@@ -3315,7 +3313,9 @@ async function upsertWord(
 
   // Ensure that partOfSpeech passed to upsertWordDetails is PartOfSpeech | null
   const partOfSpeechForDetails: PartOfSpeech | null =
-    options?.partOfSpeech === undefined ? null : options?.partOfSpeech || null;
+    options?.partOfSpeech === undefined
+      ? null
+      : (options?.partOfSpeech ?? null);
 
   // Get PoS-specific frequency using the frequency manager
   let posSpecificFrequency: number | null = null;
@@ -3402,7 +3402,7 @@ function getStringFromArray(
   if (filteredArray.length > 1) {
     return filteredArray.join(' | '); // No need to trim here
   } else if (filteredArray.length === 1) {
-    return filteredArray[0] || null; // No need to trim here
+    return filteredArray[0] ?? null; // No need to trim here
   } else {
     return null; // Return an empty string if no valid entries
   }

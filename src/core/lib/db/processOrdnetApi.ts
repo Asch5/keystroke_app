@@ -484,7 +484,9 @@ async function upsertWord(
 
   // Ensure that partOfSpeech passed to upsertWordDetails is PartOfSpeech | null
   const partOfSpeechForDetails: PartOfSpeech | null =
-    options?.partOfSpeech === undefined ? null : options?.partOfSpeech || null;
+    options?.partOfSpeech === undefined
+      ? null
+      : (options?.partOfSpeech ?? null);
 
   // Get PoS-specific frequency using the frequency manager
   let posSpecificFrequency: number | null = null;
@@ -607,10 +609,10 @@ export async function processAndSaveDanishWord(
     determinedGender = null;
   }
   const gender: Gender | null = determinedGender;
-  const audioFiles = danishWordData.word.audio || [];
+  const audioFiles = danishWordData.word.audio ?? [];
   const etymology = danishWordData.word.etymology;
   void serverLog(`etymology: ${etymology} `, 'info');
-  const variant = danishWordData.word.variant || '';
+  const variant = danishWordData.word.variant ?? '';
   const sourceEntityId = `${source}- word: ${mainWordText} - pos: ${partOfSpeech} - variant: ${variant} - forms: ${danishWordData.word.forms.join(',')}`;
   // Initialize frequency manager for this processing session
   const frequencyManager = new FrequencyManager();
@@ -682,10 +684,10 @@ export async function processAndSaveDanishWord(
 
           const mappedAudioFiles = eligibleAudioSourceEntries.map((entry) => ({
             url: entry.audio_url,
-            word: entry.word || '',
-            audio_type: entry.audio_type || null,
-            phonetic_audio: entry.phonetic_audio || null,
-            note: entry.word || null,
+            word: entry.word ?? '',
+            audio_type: entry.audio_type ?? null,
+            phonetic_audio: entry.phonetic_audio ?? null,
+            note: entry.word ?? null,
           }));
           files.push(...mappedAudioFiles);
         }
@@ -756,7 +758,7 @@ export async function processAndSaveDanishWord(
     const danishEntry = {
       word: mainWordText,
       word_variants: [],
-      variant: danishWordData.word.variant || '',
+      variant: danishWordData.word.variant ?? '',
       variant_pos: '',
       phonetic: danishWordData.word.phonetic,
       partOfSpeech: Array.isArray(danishWordData.word.partOfSpeech)
@@ -764,7 +766,7 @@ export async function processAndSaveDanishWord(
             (p: PartOfSpeechDanish) => typeof p === 'string',
           )
         : [],
-      forms: danishWordData.word.forms || [],
+      forms: danishWordData.word.forms ?? [],
       contextual_forms:
         (danishWordData.word.contextual_forms as {
           [key: string]: string[];
@@ -774,7 +776,7 @@ export async function processAndSaveDanishWord(
           ? danishWordData.word.audio.map((a) => ({
               audio_url: a.audio_url,
               audio_type: a.audio_type,
-              word: a.word || '',
+              word: a.word ?? '',
               phonetic_audio: a.phonetic_audio,
             }))
           : [],
@@ -800,15 +802,15 @@ export async function processAndSaveDanishWord(
         source: SourceType.danish_dictionary,
 
         partOfSpeech: mapDanishPosToEnum(relatedWord.partOfSpeech),
-        phonetic: relatedWord.phonetic || null,
+        phonetic: relatedWord.phonetic ?? null,
         audioFiles: relatedWord.audio
           ? relatedWord.audio.map((a) => ({
               url: a.audio_url,
-              note: a.word || null,
+              note: a.word ?? null,
             }))
           : null,
         usageNote:
-          relatedWord.relationships.find((rel) => rel.usageNote)?.usageNote ||
+          relatedWord.relationships.find((rel) => rel.usageNote)?.usageNote ??
           null,
         etymology: mainWordText,
         definitions: [
@@ -822,7 +824,7 @@ export async function processAndSaveDanishWord(
             grammaticalNote: null,
             usageNote:
               relatedWord.relationships.find((rel) => rel.usageNote)
-                ?.usageNote || null,
+                ?.usageNote ?? null,
             isInShortDef: false,
           },
         ],

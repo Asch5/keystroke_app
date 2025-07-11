@@ -194,7 +194,7 @@ export function AddNewWordContent({
             // Refresh search results to update the button states
             await handleSearch(searchQuery, currentPage);
           } else {
-            toast.error(result.error || 'Failed to add word to dictionary');
+            toast.error(result.error ?? 'Failed to add word to dictionary');
           }
         } catch (error) {
           await errorLog(
@@ -240,7 +240,7 @@ export function AddNewWordContent({
             });
           }
         } else {
-          toast.error(result.error || 'Failed to add word to dictionary');
+          toast.error(result.error ?? 'Failed to add word to dictionary');
         }
       } catch (error) {
         await errorLog(

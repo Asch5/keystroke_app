@@ -74,7 +74,7 @@ export default async function AddNewWordPage() {
   // Extract user information for better type safety and component props
   const userContext = {
     id: user.id,
-    name: user.name || 'User',
+    name: user.name ?? 'User',
     email: user.email,
     baseLanguageCode: user.baseLanguageCode,
     targetLanguageCode: user.targetLanguageCode,

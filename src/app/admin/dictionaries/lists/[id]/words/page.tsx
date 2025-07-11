@@ -264,7 +264,7 @@ export default function AdminListWordsPage() {
     return (
       <div className="container mx-auto py-6">
         <Alert variant="destructive">
-          <AlertDescription>{error || 'List not found'}</AlertDescription>
+          <AlertDescription>{error ?? 'List not found'}</AlertDescription>
         </Alert>
         <div className="mt-4">
           <Button

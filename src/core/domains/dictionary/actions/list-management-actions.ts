@@ -181,7 +181,7 @@ export async function fetchAllLists(
         .slice(0, 3)
         .map((listWord) => {
           const wordDetails = listWord.definition.wordDetails[0]?.wordDetails;
-          return wordDetails?.word.word || 'Unknown word';
+          return wordDetails?.word.word ?? 'Unknown word';
         })
         .filter(Boolean);
 
@@ -281,7 +281,7 @@ export async function getListDetails(
     const allWords = list.listWords
       .map((listWord) => {
         const wordDetails = listWord.definition.wordDetails[0]?.wordDetails;
-        return wordDetails?.word.word || 'Unknown word';
+        return wordDetails?.word.word ?? 'Unknown word';
       })
       .filter(Boolean);
 
@@ -443,7 +443,7 @@ export async function updateListAction(
     const difficultyLevel = formData.get('difficultyLevel') as DifficultyLevel;
     const isPublic = formData.get('isPublic') === 'on';
     const tags =
-      (formData.get('tags') as string)?.split(',').filter(Boolean) || [];
+      (formData.get('tags') as string)?.split(',').filter(Boolean) ?? [];
     const coverImageUrl = formData.get('coverImageUrl') as string;
 
     if (!name?.trim()) {

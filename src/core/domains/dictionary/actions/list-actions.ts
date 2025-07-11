@@ -118,13 +118,13 @@ export async function createListWithWords(listData: CreateListData): Promise<{
       const list = await tx.list.create({
         data: {
           name: listData.name,
-          description: listData.description || null,
+          description: listData.description ?? null,
           categoryId: listData.categoryId,
           targetLanguageCode: listData.targetLanguageCode,
           difficultyLevel: listData.difficultyLevel,
           isPublic: listData.isPublic,
           tags: listData.tags,
-          coverImageUrl: listData.coverImageUrl || null,
+          coverImageUrl: listData.coverImageUrl ?? null,
           wordCount: listData.selectedDefinitionIds.length,
           learnedWordCount: 0,
         },
@@ -239,7 +239,7 @@ export async function createListAction(
       (formData.get('tags') as string)
         ?.split(',')
         .map((tag) => tag.trim())
-        .filter(Boolean) || [];
+        .filter(Boolean) ?? [];
     const coverImageUrl = formData.get('coverImageUrl') as string;
     const selectedDefinitionIds =
       (formData.get('selectedDefinitionIds') as string)
@@ -273,7 +273,7 @@ export async function createListAction(
 
     if (!result.success) {
       return {
-        message: result.error || 'Failed to create list',
+        message: result.error ?? 'Failed to create list',
         success: false,
       };
     }
@@ -368,7 +368,7 @@ export async function addWordsToList(
         select: { orderIndex: true },
       });
 
-      const startIndex = (maxOrder?.orderIndex || 0) + 1;
+      const startIndex = (maxOrder?.orderIndex ?? 0) + 1;
 
       // Create new ListWord relationships
       const listWords = definitionIds.map((definitionId, index) => ({
@@ -579,8 +579,8 @@ export async function getListWords(
 
       // Get primary audio URL from database
       const primaryAudio = wordDetails?.audioLinks?.[0]?.audio;
-      const audioUrl = primaryAudio?.url || null;
-      const imageUrl = definition.image?.url || null;
+      const audioUrl = primaryAudio?.url ?? null;
+      const imageUrl = definition.image?.url ?? null;
 
       // Get translations from DefinitionTranslation
       const translations =
@@ -592,7 +592,7 @@ export async function getListWords(
 
       // Get one-word translation from DefinitionToOneWord
       const oneWordTranslation =
-        definition.oneWordLinks?.[0]?.word?.word || null;
+        definition.oneWordLinks?.[0]?.word?.word ?? null;
 
       return {
         listId: listWord.listId,
@@ -600,16 +600,16 @@ export async function getListWords(
         orderIndex: listWord.orderIndex,
 
         // Word details
-        word: word?.word || 'Unknown word',
+        word: word?.word ?? 'Unknown word',
         definition: definition.definition,
-        partOfSpeech: wordDetails?.partOfSpeech || null,
-        phoneticTranscription: wordDetails?.phonetic || null,
+        partOfSpeech: wordDetails?.partOfSpeech ?? null,
+        phoneticTranscription: wordDetails?.phonetic ?? null,
         audioUrl,
         imageUrl,
 
         // Metadata
-        wordId: word?.id || 0,
-        wordDetailId: wordDetails?.id || 0,
+        wordId: word?.id ?? 0,
+        wordDetailId: wordDetails?.id ?? 0,
 
         // Translation support
         translations,

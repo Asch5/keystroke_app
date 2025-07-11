@@ -61,7 +61,7 @@ export function useWordDetailEditActions({
         // Reload data to get fresh state
         await loadWordDetail();
       } else {
-        toast.error(result.error || 'Failed to save definitions');
+        toast.error(result.error ?? 'Failed to save definitions');
       }
     } catch (error) {
       await errorLog(
@@ -92,7 +92,7 @@ export function useWordDetailEditActions({
         // Reload data to get fresh state
         await loadWordDetail();
       } else {
-        toast.error(result.error || 'Failed to save audio files');
+        toast.error(result.error ?? 'Failed to save audio files');
       }
     } catch (error) {
       await errorLog(
@@ -123,7 +123,7 @@ export function useWordDetailEditActions({
         // Reload data to get fresh state
         await loadWordDetail();
       } else {
-        toast.error(result.error || 'Failed to save images');
+        toast.error(result.error ?? 'Failed to save images');
       }
     } catch (error) {
       await errorLog(
@@ -155,7 +155,7 @@ export function useWordDetailEditActions({
         // Reload data to get fresh state
         await loadWordDetail();
       } else {
-        toast.error(result.error || 'Failed to save relationships');
+        toast.error(result.error ?? 'Failed to save relationships');
       }
     } catch (error) {
       await errorLog(
@@ -183,7 +183,7 @@ export function useWordDetailEditActions({
         // Reload data to get fresh state
         await loadWordDetail();
       } else {
-        toast.error(result.error || 'Failed to save changes');
+        toast.error(result.error ?? 'Failed to save changes');
       }
     } catch (error) {
       await errorLog(

@@ -262,7 +262,7 @@ export function RelationshipManager({
               <div className="space-y-2">
                 {formData.wordDetailRelationships.map((rel, index) => (
                   <Card
-                    key={rel.id || `new-${index}`}
+                    key={rel.id ?? `new-${index}`}
                     className="border-dashed"
                   >
                     <CardContent className="p-3">
@@ -325,7 +325,7 @@ export function RelationshipManager({
               <div className="space-y-2">
                 {formData.wordRelationships.map((rel, index) => (
                   <Card
-                    key={rel.id || `new-${index}`}
+                    key={rel.id ?? `new-${index}`}
                     className="border-dashed"
                   >
                     <CardContent className="p-3">

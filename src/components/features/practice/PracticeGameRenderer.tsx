@@ -63,9 +63,9 @@ export function PracticeGameRenderer({
   // Ensure word has required properties for game components
   const wordForGame = {
     ...currentWord,
-    oneWordTranslation: currentWord.oneWordTranslation || '',
-    audioUrl: currentWord.audioUrl || '',
-    phonetic: currentWord.phonetic || '',
+    oneWordTranslation: currentWord.oneWordTranslation ?? '',
+    audioUrl: currentWord.audioUrl ?? '',
+    phonetic: currentWord.phonetic ?? '',
   };
 
   // Create specific props for each game type to match their expected interfaces

@@ -118,7 +118,7 @@ export async function createIntelligentPracticeSession(
     const config: PracticeSessionConfig = {
       ...baseConfig,
       ...customConfig,
-      targetWords: targetWords || baseConfig.targetWords || 10,
+      targetWords: (targetWords || baseConfig.targetWords) ?? 10,
       difficultyDistribution: {
         ...baseConfig.difficultyDistribution,
         ...difficultyAdjustments.difficultyDistribution,

@@ -31,7 +31,7 @@ export function useWordAnalytics(
         setState({
           analytics: null,
           loading: false,
-          error: result.error || 'Failed to load word analytics',
+          error: result.error ?? 'Failed to load word analytics',
         });
       }
     } catch {

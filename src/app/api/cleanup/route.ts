@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   // Security: Validate API key
   const apiKey = request.headers.get('x-api-key');
   const validApiKey =
-    process.env.API_SECRET_KEY || 'default-dev-key-do-not-use-in-production';
+    process.env.API_SECRET_KEY ?? 'default-dev-key-do-not-use-in-production';
 
   if (apiKey !== validApiKey) {
     return NextResponse.json(

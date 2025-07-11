@@ -151,12 +151,12 @@ export async function fetchDictionaryWords(
         return {
           id: String(entry.id),
           text: entry.word,
-          translation: primaryDefinition?.definition || '',
+          translation: primaryDefinition?.definition ?? '',
           languageId: entry.languageCode as LanguageCode,
           category: 'dictionary', // Default category since definition doesn't have source
           difficulty: DifficultyLevel.intermediate,
-          audioUrl: primaryAudio?.url || '',
-          exampleSentence: primaryDefinition?.examples[0]?.example || '',
+          audioUrl: primaryAudio?.url ?? '',
+          exampleSentence: primaryDefinition?.examples[0]?.example ?? '',
         };
       }),
     );
@@ -228,7 +228,7 @@ export async function fetchDictionaryWordDetails(
         const hasImage = !!firstDefinition?.image;
 
         // Truncate definition to 3 words for display
-        const definitionText = firstDefinition?.definition || '';
+        const definitionText = firstDefinition?.definition ?? '';
         const definitionWords = definitionText.split(' ');
         const truncatedDefinition =
           definitionWords.length > 3
@@ -245,7 +245,7 @@ export async function fetchDictionaryWordDetails(
 
         // Get one-word translation from DefinitionToOneWord
         const oneWordTranslation =
-          firstDefinition?.oneWordLinks?.[0]?.word?.word || null;
+          firstDefinition?.oneWordLinks?.[0]?.word?.word ?? null;
 
         return {
           id: details.id,
@@ -257,10 +257,10 @@ export async function fetchDictionaryWordDetails(
           source: details.source,
           definition: truncatedDefinition,
           definitionFull: definitionText,
-          definitionId: firstDefinition?.id || null, // Added for list creation
-          audioUrl: firstAudio?.url || null,
+          definitionId: firstDefinition?.id ?? null, // Added for list creation
+          audioUrl: firstAudio?.url ?? null,
           hasImage,
-          imageUrl: firstDefinition?.image?.url || null,
+          imageUrl: firstDefinition?.image?.url ?? null,
           wordId: details.wordId,
           gender: details.gender,
           forms: details.forms,

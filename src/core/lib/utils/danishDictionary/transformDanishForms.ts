@@ -141,7 +141,7 @@ function processContextualForms(
   ) => {
     // Create a more unique key including usageNote and definitionNumbers
     const defNumKey = definitionNumbers ? definitionNumbers.join(',') : '';
-    const relationshipKey = `${currentRelatedWord}:${relationshipType}:${usageNote || ''}:${defNumKey}`;
+    const relationshipKey = `${currentRelatedWord}:${relationshipType}:${usageNote ?? ''}:${defNumKey}`;
 
     if (!addedRelationships.has(relationshipKey)) {
       const relationship: WordRelationship = {
@@ -1144,7 +1144,7 @@ function processPronounForms(
     relationshipType: RelationshipType,
     usageNote?: string,
   ) => {
-    const relationshipKey = `${currentRelatedWord}:${relationshipType}:${usageNote || ''}`;
+    const relationshipKey = `${currentRelatedWord}:${relationshipType}:${usageNote ?? ''}`;
     if (!addedRelationships.has(relationshipKey)) {
       const relationship: WordRelationship = {
         baseWord: currentBaseWord,

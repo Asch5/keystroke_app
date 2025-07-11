@@ -83,7 +83,7 @@ export function FileUploadForm({
         />
         <Upload className="h-10 w-10 text-muted-foreground mb-2" />
         <p className="font-medium">
-          {fileState.uploadedFileName || 'Click to upload a .txt file'}
+          {fileState.uploadedFileName ?? 'Click to upload a .txt file'}
         </p>
         <p className="text-sm text-muted-foreground mt-1">
           Each line will be processed as a separate word

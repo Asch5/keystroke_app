@@ -245,7 +245,7 @@ export function VocabularyPracticeSettings({
                       settings.enableWriteBySound && 'Write by Sound',
                     ]
                       .filter(Boolean)
-                      .join(', ') || 'None selected'}
+                      .join(', ') ?? 'None selected'}
                   </p>
                   {settings.enableTimeLimit && (
                     <p>

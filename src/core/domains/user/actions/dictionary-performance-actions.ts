@@ -410,11 +410,11 @@ function calculateLearningEfficiency(
 
   // Mastery progression
   const masteryScores = recentActivity
-    .map((word) => word.masteryScore || 0)
+    .map((word) => word.masteryScore ?? 0)
     .sort((a, b) => a - b);
   const masteryProgression =
     masteryScores.length > 1
-      ? (masteryScores[masteryScores.length - 1] || 0) - (masteryScores[0] || 0)
+      ? (masteryScores[masteryScores.length - 1] || 0) - (masteryScores[0] ?? 0)
       : 0;
 
   return {
@@ -453,12 +453,12 @@ function calculatePracticePerformance(practiceSessions: UserLearningSession[]) {
 
   // Calculate accuracy
   const totalCorrect = practiceSessions.reduce(
-    (sum, session) => sum + (session.correctAnswers || 0),
+    (sum, session) => sum + (session.correctAnswers ?? 0),
     0,
   );
   const totalAnswers = practiceSessions.reduce(
     (sum, session) =>
-      sum + (session.correctAnswers || 0) + (session.incorrectAnswers || 0),
+      sum + (session.correctAnswers ?? 0) + (session.incorrectAnswers ?? 0),
     0,
   );
   const averageAccuracy =
@@ -466,7 +466,7 @@ function calculatePracticePerformance(practiceSessions: UserLearningSession[]) {
 
   // Calculate response time from session items
   const allResponseTimes = practiceSessions
-    .flatMap((session) => session.sessionItems || [])
+    .flatMap((session) => session.sessionItems ?? [])
     .map((item) => item.responseTime)
     .filter((time) => time && time > 0);
 
@@ -479,9 +479,9 @@ function calculatePracticePerformance(practiceSessions: UserLearningSession[]) {
 
   // Calculate consistency score (lower variance = higher consistency)
   const sessionAccuracies = practiceSessions.map((session) => {
-    const correct = session.correctAnswers || 0;
+    const correct = session.correctAnswers ?? 0;
     const total =
-      (session.correctAnswers || 0) + (session.incorrectAnswers || 0);
+      (session.correctAnswers ?? 0) + (session.incorrectAnswers ?? 0);
     return total > 0 ? (correct / total) * 100 : 0;
   });
 
@@ -507,9 +507,9 @@ function calculatePracticePerformance(practiceSessions: UserLearningSession[]) {
   const recentAvgAccuracy =
     recentHalf.length > 0
       ? recentHalf.reduce((sum, session) => {
-          const correct = session.correctAnswers || 0;
+          const correct = session.correctAnswers ?? 0;
           const total =
-            (session.correctAnswers || 0) + (session.incorrectAnswers || 0);
+            (session.correctAnswers ?? 0) + (session.incorrectAnswers ?? 0);
           return sum + (total > 0 ? (correct / total) * 100 : 0);
         }, 0) / recentHalf.length
       : 0;
@@ -517,9 +517,9 @@ function calculatePracticePerformance(practiceSessions: UserLearningSession[]) {
   const olderAvgAccuracy =
     olderHalf.length > 0
       ? olderHalf.reduce((sum, session) => {
-          const correct = session.correctAnswers || 0;
+          const correct = session.correctAnswers ?? 0;
           const total =
-            (session.correctAnswers || 0) + (session.incorrectAnswers || 0);
+            (session.correctAnswers ?? 0) + (session.incorrectAnswers ?? 0);
           return sum + (total > 0 ? (correct / total) * 100 : 0);
         }, 0) / olderHalf.length
       : 0;
@@ -563,9 +563,9 @@ function calculatePracticePerformance(practiceSessions: UserLearningSession[]) {
     consistencyScore,
     improvementTrend,
     recentSessionsCount: recentSessions.length,
-    bestSessionScore: Math.max(...practiceSessions.map((s) => s.score || 0), 0),
+    bestSessionScore: Math.max(...practiceSessions.map((s) => s.score ?? 0), 0),
     averageSessionDuration:
-      practiceSessions.reduce((sum, s) => sum + (s.duration || 0), 0) /
+      practiceSessions.reduce((sum, s) => sum + (s.duration ?? 0), 0) /
       practiceSessions.length /
       60, // Convert to minutes
     fastestResponseTime,
@@ -605,7 +605,7 @@ function calculateMistakeAnalysis(
     { count: number; types: Set<string>; lastMistake: Date }
   >();
   mistakeData.forEach((mistake) => {
-    const wordKey = mistake.word?.word || 'Unknown';
+    const wordKey = mistake.word?.word ?? 'Unknown';
     if (!mistakesByWord.has(wordKey)) {
       mistakesByWord.set(wordKey, {
         count: 0,
@@ -637,7 +637,7 @@ function calculateMistakeAnalysis(
   mistakeData.forEach((mistake) => {
     mistakeTypeCount.set(
       mistake.type,
-      (mistakeTypeCount.get(mistake.type) || 0) + 1,
+      (mistakeTypeCount.get(mistake.type) ?? 0) + 1,
     );
   });
 
@@ -656,7 +656,7 @@ function calculateMistakeAnalysis(
   const averageMistakesPerWord =
     userDictionaryStats.length > 0
       ? userDictionaryStats.reduce(
-          (sum, word) => sum + (word.amountOfMistakes || 0),
+          (sum, word) => sum + (word.amountOfMistakes ?? 0),
           0,
         ) / userDictionaryStats.length
       : 0;
@@ -665,9 +665,9 @@ function calculateMistakeAnalysis(
   const highestMistakeWord =
     userDictionaryStats.length > 0
       ? userDictionaryStats
-          .filter((word) => (word.amountOfMistakes || 0) > 0)
+          .filter((word) => (word.amountOfMistakes ?? 0) > 0)
           .sort(
-            (a, b) => (b.amountOfMistakes || 0) - (a.amountOfMistakes || 0),
+            (a, b) => (b.amountOfMistakes ?? 0) - (a.amountOfMistakes ?? 0),
           )[0]
       : null;
 
@@ -681,7 +681,7 @@ function calculateMistakeAnalysis(
     highestMistakeWord: highestMistakeWord
       ? {
           wordText: 'Word', // Would need to join with word data
-          mistakeCount: highestMistakeWord.amountOfMistakes || 0,
+          mistakeCount: highestMistakeWord.amountOfMistakes ?? 0,
         }
       : null,
   };
@@ -721,7 +721,7 @@ function calculateStudyHabits(practiceSessions: UserLearningSession[]) {
 
   // Average study time
   const totalStudyTime = practiceSessions.reduce(
-    (sum, session) => sum + (session.duration || 0),
+    (sum, session) => sum + (session.duration ?? 0),
     0,
   );
   const averageStudyTime =
@@ -762,7 +762,7 @@ function calculateStudyHabits(practiceSessions: UserLearningSession[]) {
       sessions: daySessions.length,
       averageDuration:
         daySessions.length > 0
-          ? daySessions.reduce((sum, s) => sum + (s.duration || 0), 0) /
+          ? daySessions.reduce((sum, s) => sum + (s.duration ?? 0), 0) /
             daySessions.length /
             60
           : 0,
@@ -842,15 +842,15 @@ function calculateReviewSystem(srsData: UserDictionary[]) {
 
   const averageSrsLevel =
     srsData.length > 0
-      ? srsData.reduce((sum, word) => sum + (word.srsLevel || 0), 0) /
+      ? srsData.reduce((sum, word) => sum + (word.srsLevel ?? 0), 0) /
         srsData.length
       : 0;
 
   // SRS distribution
   const srsLevelCounts = new Map<number, number>();
   srsData.forEach((word) => {
-    const level = word.srsLevel || 0;
-    srsLevelCounts.set(level, (srsLevelCounts.get(level) || 0) + 1);
+    const level = word.srsLevel ?? 0;
+    srsLevelCounts.set(level, (srsLevelCounts.get(level) ?? 0) + 1);
   });
 
   const srsDistribution = Array.from(srsLevelCounts.entries())
@@ -898,7 +898,7 @@ function calculateDifficultyDistribution(
   const statusCounts = new Map();
   userDictionaryStats.forEach((word) => {
     const status = word.learningStatus;
-    statusCounts.set(status, (statusCounts.get(status) || 0) + 1);
+    statusCounts.set(status, (statusCounts.get(status) ?? 0) + 1);
   });
 
   const byLearningStatus = Array.from(statusCounts.entries()).map(
@@ -924,8 +924,8 @@ function calculateDifficultyDistribution(
   const byMasteryScore = masteryRanges.map((range) => {
     const count = userDictionaryStats.filter(
       (word) =>
-        (word.masteryScore || 0) >= range.min &&
-        (word.masteryScore || 0) <= range.max,
+        (word.masteryScore ?? 0) >= range.min &&
+        (word.masteryScore ?? 0) <= range.max,
     ).length;
     return {
       range: range.range,
@@ -941,7 +941,7 @@ function calculateDifficultyDistribution(
   const averageDifficulty =
     userDictionaryStats.length > 0
       ? userDictionaryStats.reduce(
-          (sum, word) => sum + (100 - (word.masteryScore || 0)),
+          (sum, word) => sum + (100 - (word.masteryScore ?? 0)),
           0,
         ) / userDictionaryStats.length
       : 0;
@@ -978,7 +978,7 @@ function calculateIndividualWordPerformance(
 
   // Calculate streak metrics
   const correctStreaks = userDictionaryStats.map(
-    (word) => word.correctStreak || 0,
+    (word) => word.correctStreak ?? 0,
   );
   const averageCorrectStreak =
     correctStreaks.reduce((sum, streak) => sum + streak, 0) /
@@ -986,7 +986,7 @@ function calculateIndividualWordPerformance(
   const longestCorrectStreak = Math.max(...correctStreaks);
 
   // Calculate skip metrics
-  const skipCounts = userDictionaryStats.map((word) => word.skipCount || 0);
+  const skipCounts = userDictionaryStats.map((word) => word.skipCount ?? 0);
   const totalSkips = skipCounts.reduce((sum, count) => sum + count, 0);
   const averageSkipRate =
     userDictionaryStats.length > 0
@@ -995,45 +995,45 @@ function calculateIndividualWordPerformance(
 
   // Calculate mastery score
   const masteryScores = userDictionaryStats.map(
-    (word) => word.masteryScore || 0,
+    (word) => word.masteryScore ?? 0,
   );
   const averageMasteryScore =
     masteryScores.reduce((sum, score) => sum + score, 0) / masteryScores.length;
 
   // Get top performing words (top 10 by mastery score)
   const topPerformingWords = userDictionaryStats
-    .sort((a, b) => (b.masteryScore || 0) - (a.masteryScore || 0))
+    .sort((a, b) => (b.masteryScore ?? 0) - (a.masteryScore ?? 0))
     .slice(0, 10)
     .map((word) => ({
       wordText: 'Word', // Would need to join with word data
-      masteryScore: word.masteryScore || 0,
-      correctStreak: word.correctStreak || 0,
-      srsLevel: word.srsLevel || 0,
+      masteryScore: word.masteryScore ?? 0,
+      correctStreak: word.correctStreak ?? 0,
+      srsLevel: word.srsLevel ?? 0,
     }));
 
   // Get struggling words (bottom 10 by mastery score, but with some activity)
   const strugglingWords = userDictionaryStats
     .filter(
-      (word) => (word.amountOfMistakes || 0) > 0 || (word.skipCount || 0) > 0,
+      (word) => (word.amountOfMistakes ?? 0) > 0 || (word.skipCount ?? 0) > 0,
     )
     .sort((a, b) => {
       // Sort by combination of low mastery score and high mistakes/skips
       const aScore =
-        (a.masteryScore || 0) -
-        (a.amountOfMistakes || 0) * 2 -
-        (a.skipCount || 0);
+        (a.masteryScore ?? 0) -
+        (a.amountOfMistakes ?? 0) * 2 -
+        (a.skipCount ?? 0);
       const bScore =
-        (b.masteryScore || 0) -
-        (b.amountOfMistakes || 0) * 2 -
-        (b.skipCount || 0);
+        (b.masteryScore ?? 0) -
+        (b.amountOfMistakes ?? 0) * 2 -
+        (b.skipCount ?? 0);
       return aScore - bScore;
     })
     .slice(0, 10)
     .map((word) => ({
       wordText: 'Word', // Would need to join with word data
-      masteryScore: word.masteryScore || 0,
-      mistakeCount: word.amountOfMistakes || 0,
-      skipCount: word.skipCount || 0,
+      masteryScore: word.masteryScore ?? 0,
+      mistakeCount: word.amountOfMistakes ?? 0,
+      skipCount: word.skipCount ?? 0,
       responseTimeAvg: 0, // Will be calculated from session items if available
     }));
 
@@ -1069,22 +1069,22 @@ function calculatePerformanceScores(
 
   // Calculate mistake rate score (0-10, higher is better)
   const totalMistakes = userDictionaryStats.reduce(
-    (sum, word) => sum + (word.amountOfMistakes || 0),
+    (sum, word) => sum + (word.amountOfMistakes ?? 0),
     0,
   );
   const avgMistakesPerWord = totalMistakes / userDictionaryStats.length;
   const mistakeRateScore = Math.max(0, 10 - avgMistakesPerWord * 2); // Less mistakes = higher score
 
   // Calculate streak consistency score (0-10, higher is better)
-  const streaks = userDictionaryStats.map((word) => word.correctStreak || 0);
+  const streaks = userDictionaryStats.map((word) => word.correctStreak ?? 0);
   const avgStreak =
     streaks.reduce((sum, streak) => sum + streak, 0) / streaks.length;
   const streakConsistencyScore = Math.min(10, avgStreak / 2); // Cap at 10
 
   // Calculate response time score (0-10, faster is better)
   const responseTimes = practiceSessions.flatMap((session) =>
-    (session.sessionItems || [])
-      .map((item) => item.responseTime || 0)
+    (session.sessionItems ?? [])
+      .map((item) => item.responseTime ?? 0)
       .filter((time) => time > 0),
   );
   const avgResponseTime =
@@ -1096,14 +1096,14 @@ function calculatePerformanceScores(
 
   // Calculate skip behavior score (0-10, fewer skips is better)
   const totalSkips = userDictionaryStats.reduce(
-    (sum, word) => sum + (word.skipCount || 0),
+    (sum, word) => sum + (word.skipCount ?? 0),
     0,
   );
   const avgSkipsPerWord = totalSkips / userDictionaryStats.length;
   const skipBehaviorScore = Math.max(0, 10 - avgSkipsPerWord * 2); // Fewer skips = higher score
 
   // Calculate SRS progression score (0-10, higher SRS levels are better)
-  const srsLevels = userDictionaryStats.map((word) => word.srsLevel || 0);
+  const srsLevels = userDictionaryStats.map((word) => word.srsLevel ?? 0);
   const avgSrsLevel =
     srsLevels.reduce((sum, level) => sum + level, 0) / srsLevels.length;
   const srsProgressionScore = Math.min(10, avgSrsLevel * 2); // Cap at 10
@@ -1114,9 +1114,9 @@ function calculatePerformanceScores(
     recentSessions.length > 0
       ? recentSessions.reduce((sum, session) => {
           const accuracy =
-            (session.correctAnswers || 0) /
-              ((session.correctAnswers || 0) +
-                (session.incorrectAnswers || 0)) || 0;
+            (session.correctAnswers ?? 0) /
+              ((session.correctAnswers ?? 0) +
+                (session.incorrectAnswers ?? 0)) || 0;
           return sum + accuracy;
         }, 0) / recentSessions.length
       : 0.5;

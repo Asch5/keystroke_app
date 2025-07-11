@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
-    const result = await loadUserSettings(userId || undefined);
+    const result = await loadUserSettings(userId ?? undefined);
 
     return NextResponse.json(result);
   } catch (error) {

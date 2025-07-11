@@ -109,7 +109,7 @@ const AudioFilesSection = memo(function AudioFilesSection({
                   if (audio._toDelete) return null;
                   return (
                     <Card
-                      key={audio.id || `new-audio-${audioIndex}`}
+                      key={audio.id ?? `new-audio-${audioIndex}`}
                       className="relative"
                     >
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -210,7 +210,7 @@ const AudioFilesSection = memo(function AudioFilesSection({
                             </Label>
                             <Input
                               id={`audio-note-${audioIndex}`}
-                              value={audio.note || ''}
+                              value={audio.note ?? ''}
                               onChange={(e) =>
                                 onUpdateAudioFile(
                                   audioIndex,

@@ -154,7 +154,7 @@ class AudioDownloadService {
         const uploadResult = await blobStorageService.uploadAudio(
           base64Audio,
           enhancedMetadata,
-          contentType || 'audio/mp3',
+          contentType ?? 'audio/mp3',
         );
 
         if (!uploadResult.success) {
@@ -232,7 +232,7 @@ class AudioDownloadService {
     for (const audioFile of audioFiles) {
       const metadata: AudioMetadata = {
         ...baseMetadata,
-        characterCount: audioFile.word?.length || audioFile.note?.length || 0,
+        characterCount: (audioFile.word?.length || audioFile.note?.length) ?? 0,
       };
 
       const result = await this.downloadAndStoreAudio(audioFile.url, metadata);

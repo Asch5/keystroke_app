@@ -111,7 +111,7 @@ const AudioFilesSection = memo(function AudioFilesSection({
             </div>
 
             {formData.audioFiles.map((audio, index) => (
-              <Card key={audio.id || `new-audio-${index}`} className="border-2">
+              <Card key={audio.id ?? `new-audio-${index}`} className="border-2">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm flex items-center justify-between">
                     <span>Audio {index + 1}</span>
@@ -201,9 +201,9 @@ const AudioFilesSection = memo(function AudioFilesSection({
                   <div className="space-y-2">
                     <Label>Note</Label>
                     <Input
-                      value={audio.note || ''}
+                      value={audio.note ?? ''}
                       onChange={(e) =>
-                        onAudioChange(index, 'note', e.target.value || null)
+                        onAudioChange(index, 'note', e.target.value ?? null)
                       }
                       placeholder="Optional note about this audio file"
                     />

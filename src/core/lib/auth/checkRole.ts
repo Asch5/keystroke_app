@@ -8,7 +8,7 @@ export async function checkRole(allowedRoles: string[]) {
     redirect('/login');
   }
 
-  const userRole = session.user?.role || 'user';
+  const userRole = session.user?.role ?? 'user';
 
   if (!allowedRoles.includes(userRole)) {
     redirect('/dashboard');

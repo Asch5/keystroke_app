@@ -145,7 +145,7 @@ export function useTypingSessionManager({
           sessionId,
           words,
           currentWordIndex: 0,
-          currentWord: words[0] || null,
+          currentWord: words[0] ?? null,
           userInput: '',
           difficultyConfig,
           isActive: true,
@@ -159,7 +159,7 @@ export function useTypingSessionManager({
           `Practice session started! ${words.length} words to practice.`,
         );
       } else {
-        toast.error(response.error || 'Failed to start practice session');
+        toast.error(response.error ?? 'Failed to start practice session');
       }
     } catch (error) {
       console.error('Error starting practice session:', error);

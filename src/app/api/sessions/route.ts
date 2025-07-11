@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       void serverLog(`Failed to create session: ${result.error}`, 'error');
       return NextResponse.json(
-        { error: result.error || 'Failed to create session' },
+        { error: result.error ?? 'Failed to create session' },
         { status: 500 },
       );
     }
@@ -88,7 +88,7 @@ export async function GET() {
 
     if (!result.success) {
       return NextResponse.json(
-        { error: result.error || 'Failed to get current session' },
+        { error: result.error ?? 'Failed to get current session' },
         { status: 500 },
       );
     }

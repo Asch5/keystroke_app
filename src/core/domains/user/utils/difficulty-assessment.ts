@@ -475,7 +475,7 @@ export class DifficultyAssessment {
     frequency: number | null,
     frequencyGeneral: number | null,
   ): number {
-    const freq = frequency || frequencyGeneral || 0;
+    const freq = (frequency || frequencyGeneral) ?? 0;
     if (freq === 0) return 1.0; // Unknown frequency = high difficulty
 
     // Assume frequency is ranked 1-10000, normalize inversely
@@ -549,7 +549,7 @@ export class DifficultyAssessment {
       inProgress: 0.5,
       learned: 0.2,
     };
-    return statusMap[status] || 0.5;
+    return statusMap[status] ?? 0.5;
   }
 
   private static normalizeResponseTime(responseTime: number): number {
@@ -771,20 +771,20 @@ export class DifficultyAssessment {
 
     // Select hard words (combine very_hard and hard)
     const hardWords = [
-      ...(categorizedWords.very_hard || []),
-      ...(categorizedWords.hard || []),
+      ...(categorizedWords.very_hard ?? []),
+      ...(categorizedWords.hard ?? []),
     ];
     selectedWords.push(...this.selectRandomWords(hardWords, hardCount));
 
     // Select medium words
     selectedWords.push(
-      ...this.selectRandomWords(categorizedWords.medium || [], mediumCount),
+      ...this.selectRandomWords(categorizedWords.medium ?? [], mediumCount),
     );
 
     // Select easy words (combine easy and very_easy)
     const easyWords = [
-      ...(categorizedWords.easy || []),
-      ...(categorizedWords.very_easy || []),
+      ...(categorizedWords.easy ?? []),
+      ...(categorizedWords.very_easy ?? []),
     ];
     selectedWords.push(...this.selectRandomWords(easyWords, easyCount));
 
@@ -830,13 +830,13 @@ export class DifficultyAssessment {
 
     const content: LearningUnit['content'] = {
       primary: entry.definition.definition,
-      word: word?.word || 'unknown',
+      word: word?.word ?? 'unknown',
       metadata: {
         definitionId: entry.definitionId,
-        wordId: word?.id || null,
-        partOfSpeech: wordDetails?.partOfSpeech || null,
-        phonetic: wordDetails?.phonetic || null,
-        wordText: word?.word || 'unknown',
+        wordId: word?.id ?? null,
+        partOfSpeech: wordDetails?.partOfSpeech ?? null,
+        phonetic: wordDetails?.phonetic ?? null,
+        wordText: word?.word ?? 'unknown',
       },
     };
 
@@ -851,8 +851,8 @@ export class DifficultyAssessment {
       content,
       difficulty,
       userProgress: {
-        attempts: entry.reviewCount || 0,
-        successes: entry.reviewCount || 0,
+        attempts: entry.reviewCount ?? 0,
+        successes: entry.reviewCount ?? 0,
         lastAttempt: entry.lastReviewedAt,
         nextReview: entry.nextReviewDue,
       },
@@ -939,12 +939,12 @@ export class LearningProgressTracker {
         const learningStatus = this.determineLearningStatus(
           currentEntry.reviewCount,
           updates.amountOfMistakes || currentEntry.amountOfMistakes,
-          updates.correctStreak || 0,
+          updates.correctStreak ?? 0,
         );
 
         // Update mastery score
         const masteryScore = this.calculateMasteryScore(
-          updates.correctStreak || 0,
+          updates.correctStreak ?? 0,
           updates.amountOfMistakes || currentEntry.amountOfMistakes,
           updates.reviewCount,
         );

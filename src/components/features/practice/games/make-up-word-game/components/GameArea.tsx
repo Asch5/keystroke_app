@@ -42,7 +42,7 @@ export function GameArea({
             : onCharacterRemove(index)
         }
         disabled={gameState.showFeedback || gameState.isGameCompleted}
-        characterPool={word.characterPool || []}
+        characterPool={word.characterPool ?? []}
         wrongPositions={gameState.wrongPositions}
         showFeedback={gameState.showFeedback}
         isCorrect={gameState.isCorrect}

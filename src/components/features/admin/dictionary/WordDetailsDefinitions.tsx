@@ -142,7 +142,7 @@ export function WordDetailsDefinitions({
           },
         });
       } else {
-        toast.error(result.error || 'Failed to add word to dictionary');
+        toast.error(result.error ?? 'Failed to add word to dictionary');
       }
     } catch (error) {
       console.error('Error adding word to dictionary:', error);
@@ -189,7 +189,7 @@ export function WordDetailsDefinitions({
             <div className="space-y-4 mt-2">
               {definitions.map((def: DefinitionData, index: number) => {
                 const isInDictionary =
-                  definitionStatus[def.id]?.exists || false;
+                  definitionStatus[def.id]?.exists ?? false;
 
                 return (
                   <Card
@@ -376,7 +376,7 @@ export function WordDetailsDefinitions({
                                   example: DefinitionExample,
                                 ) => {
                                   const noteKey =
-                                    example.grammaticalNote ||
+                                    example.grammaticalNote ??
                                     'General Examples';
                                   if (!acc[noteKey]) acc[noteKey] = [];
                                   acc[noteKey].push(example);
@@ -489,7 +489,7 @@ export function WordDetailsDefinitions({
           userId={userId}
           userLanguages={userLanguages}
           wordText={addToListDialog.wordText}
-          userDictionaryId={addToListDialog.definitionId?.toString() || ''}
+          userDictionaryId={addToListDialog.definitionId?.toString() ?? ''}
           onWordAddedToList={() => {
             toast.success('Word added to list!');
             closeAddToListDialog();

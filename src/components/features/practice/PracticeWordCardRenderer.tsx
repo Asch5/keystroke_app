@@ -100,7 +100,7 @@ export function PracticeWordCardRenderer({
         ? {
             wordText: currentWord.wordText,
             definition: currentWord.definition,
-            oneWordTranslation: currentWord.oneWordTranslation || '',
+            oneWordTranslation: currentWord.oneWordTranslation ?? '',
             // Only include phonetic if setting is enabled AND data exists
             ...(safeSettings.showPhoneticPronunciation &&
               currentWord.phonetic && {

@@ -65,7 +65,7 @@ export function useTranslationState() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Translation request failed');
+        throw new Error(errorData.error ?? 'Translation request failed');
       }
 
       const data = await response.json();

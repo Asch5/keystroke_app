@@ -66,7 +66,7 @@ const LOGGING_DESTINATIONS: Record<string, LoggingDestination[]> = {
     {
       name: 'otel',
       endpoint:
-        process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ||
+        process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
         'http://localhost:4318/v1/logs',
       batchSize: 50,
       enabled: true,
@@ -77,20 +77,20 @@ const LOGGING_DESTINATIONS: Record<string, LoggingDestination[]> = {
     {
       name: 'otel',
       endpoint:
-        process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ||
+        process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT ??
         'https://api.honeycomb.io/v1/logs',
       headers: {
-        'x-honeycomb-team': process.env.HONEYCOMB_API_KEY || '',
-        'x-honeycomb-dataset': process.env.HONEYCOMB_DATASET || 'keystroke-app',
+        'x-honeycomb-team': process.env.HONEYCOMB_API_KEY ?? '',
+        'x-honeycomb-dataset': process.env.HONEYCOMB_DATASET ?? 'keystroke-app',
       },
       batchSize: 100,
       enabled: !!process.env.OTEL_EXPORTER_OTLP_LOGS_ENDPOINT,
     },
     {
       name: 'datadog',
-      endpoint: process.env.DATADOG_LOGS_ENDPOINT || undefined,
+      endpoint: process.env.DATADOG_LOGS_ENDPOINT ?? undefined,
       headers: {
-        'DD-API-KEY': process.env.DATADOG_API_KEY || '',
+        'DD-API-KEY': process.env.DATADOG_API_KEY ?? '',
       },
       batchSize: 100,
       enabled: !!process.env.DATADOG_API_KEY,
@@ -206,7 +206,7 @@ class LoggingConfigurator {
     if (otelDestination?.endpoint) {
       otelLogger.initialize({
         serviceName: 'keystroke-app',
-        serviceVersion: process.env.npm_package_version || '1.0.0',
+        serviceVersion: process.env.npm_package_version ?? '1.0.0',
         otlpEndpoint: otelDestination.endpoint,
         ...(otelDestination.headers && { headers: otelDestination.headers }),
       });
@@ -317,8 +317,8 @@ class LoggingConfigurator {
             };
             modernLogger.error('Resource loading error', undefined, {
               type: 'resource_error',
-              source: target.src || target.href || 'unknown',
-              tagName: target.tagName || 'unknown',
+              source: (target.src || target.href) ?? 'unknown',
+              tagName: target.tagName ?? 'unknown',
             });
           }
         },

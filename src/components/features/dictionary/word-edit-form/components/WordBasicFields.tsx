@@ -41,7 +41,7 @@ export const WordBasicFields = memo(function WordBasicFields({
                   <FormControl>
                     <Input
                       {...field}
-                      value={field.value || ''}
+                      value={field.value ?? ''}
                       placeholder="Enter the word"
                       disabled={isLoading}
                     />

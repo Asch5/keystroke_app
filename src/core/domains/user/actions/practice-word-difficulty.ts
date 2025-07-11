@@ -94,13 +94,13 @@ export async function analyzeWordDifficulty(
 
     for (const userWord of userWords) {
       const wordText =
-        userWord.definition.wordDetails[0]?.wordDetails?.word?.word ||
+        userWord.definition.wordDetails[0]?.wordDetails?.word?.word ??
         'Unknown';
 
       // Calculate basic metrics
-      const totalAttempts = userWord.reviewCount || 0;
+      const totalAttempts = userWord.reviewCount ?? 0;
 
-      const mistakeCount = userWord.amountOfMistakes || 0;
+      const mistakeCount = userWord.amountOfMistakes ?? 0;
       const mistakeRate =
         totalAttempts > 0 ? (mistakeCount / totalAttempts) * 100 : 0;
 
@@ -128,8 +128,8 @@ export async function analyzeWordDifficulty(
         mistakeRate,
         consistencyScore,
         recentPerformance,
-        masteryScore: userWord.masteryScore || 0,
-        srsLevel: userWord.srsLevel || 0,
+        masteryScore: userWord.masteryScore ?? 0,
+        srsLevel: userWord.srsLevel ?? 0,
         learningStatus: userWord.learningStatus,
         mistakeTypes,
       });
@@ -140,7 +140,7 @@ export async function analyzeWordDifficulty(
         mistakeRate,
         mistakeTypes,
         learningStatus: userWord.learningStatus,
-        masteryScore: userWord.masteryScore || 0,
+        masteryScore: userWord.masteryScore ?? 0,
       });
 
       wordMetrics.push({
@@ -152,8 +152,8 @@ export async function analyzeWordDifficulty(
         totalAttempts,
         avgResponseTime: 0, // Would need session data for accurate calculation
         learningStatus: userWord.learningStatus,
-        srsLevel: userWord.srsLevel || 0,
-        masteryScore: userWord.masteryScore || 0,
+        srsLevel: userWord.srsLevel ?? 0,
+        masteryScore: userWord.masteryScore ?? 0,
         consistencyScore,
         recentPerformance,
         mistakeTypes,
@@ -421,7 +421,7 @@ function calculateConsistencyScore(
   recentMistakes.forEach((mistake) => {
     const day = mistake.createdAt.toISOString().split('T')[0];
     if (day) {
-      mistakesByDay[day] = (mistakesByDay[day] || 0) + 1;
+      mistakesByDay[day] = (mistakesByDay[day] ?? 0) + 1;
     }
   });
 
@@ -505,7 +505,7 @@ function calculateDifficultyScore(metrics: {
     [LearningStatus.needsReview]: 80,
     [LearningStatus.difficult]: 90,
   };
-  const statusDifficulty = statusDifficultyMap[learningStatus] || 50;
+  const statusDifficulty = statusDifficultyMap[learningStatus] ?? 50;
 
   // Calculate weighted difficulty score
   const weightedScore =
@@ -577,7 +577,7 @@ async function analyzeMistakePatterns(
         typeMistakes.map(
           (m) =>
             m.userDictionary?.definition.wordDetails[0]?.wordDetails?.word
-              ?.word || 'Unknown',
+              ?.word ?? 'Unknown',
         ),
       );
 
@@ -586,7 +586,7 @@ async function analyzeMistakePatterns(
           try {
             const context =
               typeof m.context === 'string' ? JSON.parse(m.context) : m.context;
-            return context?.exerciseType || 'unknown';
+            return context?.exerciseType ?? 'unknown';
           } catch {
             return 'unknown';
           }
@@ -595,7 +595,7 @@ async function analyzeMistakePatterns(
 
       const avgDifficulty =
         typeMistakes.reduce((sum, m) => {
-          return sum + (m.userDictionary?.srsLevel || 0);
+          return sum + (m.userDictionary?.srsLevel ?? 0);
         }, 0) / typeMistakes.length;
 
       // Generate recommendations based on mistake type
@@ -727,7 +727,7 @@ function getMistakeTypeDescription(type: string): string {
     memory: 'Difficulty recalling word or meaning',
   };
 
-  return descriptions[type] || 'General learning difficulty';
+  return descriptions[type] ?? 'General learning difficulty';
 }
 
 /**

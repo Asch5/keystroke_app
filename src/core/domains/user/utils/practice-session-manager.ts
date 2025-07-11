@@ -169,8 +169,8 @@ export class PracticeSessionManager {
         data: {
           userId,
           sessionType: this.mapSessionType(config.sessionType),
-          userListId: options.userListId || null,
-          listId: options.listId || null,
+          userListId: options.userListId ?? null,
+          listId: options.listId ?? null,
           startTime: new Date(),
           wordsStudied: filteredUnits.length,
         },
@@ -295,7 +295,7 @@ export class PracticeSessionManager {
           // Track mistake patterns
           const mistakeType = this.categorizemistake(attempt, currentUnit);
           session.analytics.mistakePatterns[mistakeType] =
-            (session.analytics.mistakePatterns[mistakeType] || 0) + 1;
+            (session.analytics.mistakePatterns[mistakeType] ?? 0) + 1;
         }
 
         // Update analytics
@@ -760,8 +760,8 @@ export class PracticeSessionManager {
       session.analytics.mistakePatterns,
     ).reduce(
       (a, b) =>
-        (session.analytics.mistakePatterns[a] || 0) >
-        (session.analytics.mistakePatterns[b] || 0)
+        (session.analytics.mistakePatterns[a] ?? 0) >
+        (session.analytics.mistakePatterns[b] ?? 0)
           ? a
           : b,
       '',

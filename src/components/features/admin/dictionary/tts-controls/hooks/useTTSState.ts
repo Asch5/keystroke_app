@@ -196,7 +196,7 @@ export function useTTSState(
       description: level.description,
       costPerChar: level.costPerCharacter,
       freeLimit: level.freeLimit,
-      remaining: ttsStats?.remainingFreeQuota[qualityLevel] || 0,
+      remaining: ttsStats?.remainingFreeQuota[qualityLevel] ?? 0,
     };
   }, [qualityLevels, qualityLevel, ttsStats]);
 

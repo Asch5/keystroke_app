@@ -78,7 +78,7 @@ export class SettingsSyncService {
     }
 
     // Don't sync too frequently (minimum 10 seconds between syncs)
-    const timeSinceLastSync = Date.now() - (syncStatus.lastSyncedAt || 0);
+    const timeSinceLastSync = Date.now() - (syncStatus.lastSyncedAt ?? 0);
     if (timeSinceLastSync < 10000) {
       return;
     }
@@ -157,7 +157,7 @@ export class SettingsSyncService {
       const result = await response.json();
 
       if (!result.success) {
-        throw new Error(result.error || 'Settings sync failed');
+        throw new Error(result.error ?? 'Settings sync failed');
       }
 
       // Mark sync as successful
@@ -230,7 +230,7 @@ export class SettingsSyncService {
       const result = await response.json();
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to load settings');
+        throw new Error(result.error ?? 'Failed to load settings');
       }
 
       // Initialize Redux with loaded settings

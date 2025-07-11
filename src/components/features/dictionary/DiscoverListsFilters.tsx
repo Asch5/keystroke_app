@@ -53,7 +53,7 @@ export function DiscoverListsFilters({
           </div>
 
           <Select
-            value={publicListFilters.difficulty || 'all'}
+            value={publicListFilters.difficulty ?? 'all'}
             onValueChange={(value) => {
               const newFilters = { ...publicListFilters };
               if (value && value !== 'all') {

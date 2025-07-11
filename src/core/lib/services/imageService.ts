@@ -179,9 +179,9 @@ export class ImageService {
 
       // Create image data object with proper fallbacks
       const imageData = {
-        url: photo.src.original || '',
-        description: photo.alt || photo.photographer || '',
-        alt: photo.alt || photo.photographer || '',
+        url: photo.src.original ?? '',
+        description: (photo.alt || photo.photographer) ?? '',
+        alt: (photo.alt || photo.photographer) ?? '',
         sizes: {
           thumbnail: photo.src.small || photo.src.tiny || photo.src.original,
           medium: photo.src.medium || photo.src.original,
@@ -502,7 +502,7 @@ export class ImageService {
           });
 
           clientLog(
-            `Pexels search returned ${searchResponse.photos?.length || 0} photos`,
+            `Pexels search returned ${searchResponse.photos?.length ?? 0} photos`,
             'info',
           );
         } catch (error) {
@@ -571,7 +571,7 @@ export class ImageService {
             });
 
             clientLog(
-              `Fallback search returned ${searchResponse.photos?.length || 0} photos`,
+              `Fallback search returned ${searchResponse.photos?.length ?? 0} photos`,
               'info',
             );
           } catch (error) {
@@ -656,7 +656,7 @@ export class ImageService {
 
     // Extract key concepts from definition
     const keyWords = this.extractKeywords(normalizeText(definition.definition));
-    const partOfSpeech = definition.partOfSpeech || 'undefined'; // Use the backward compatibility field
+    const partOfSpeech = definition.partOfSpeech ?? 'undefined'; // Use the backward compatibility field
 
     // Create base query based on part of speech
     const query = `${word} ${partOfSpeech} ${keyWords.join(' ')}`;
@@ -963,7 +963,7 @@ export class ImageService {
       if (englishTranslations.length > 0) {
         // Use the first English translation
         const englishTranslation = englishTranslations[0];
-        const translatedContent = englishTranslation?.content || '';
+        const translatedContent = englishTranslation?.content ?? '';
 
         void serverLog(
           `======FROM getOrCreateTranslatedDefinitionImage===========: Using English translation for search: "${translatedContent}"`,

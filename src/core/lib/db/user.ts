@@ -155,8 +155,10 @@ function calculateUserStats(user: UserWithStats): UserStats {
     (w) => w.learningStatus === 'learned',
   ).length;
   const averageProgress =
-    user.userDictionary.reduce((acc, curr) => acc + curr.progress, 0) /
-      totalWords || 0;
+    totalWords > 0
+      ? user.userDictionary.reduce((acc, curr) => acc + curr.progress, 0) /
+        totalWords
+      : 0;
 
   const sessions = user.learningSessions;
   const lastActive = sessions.length
@@ -181,8 +183,10 @@ function calculateUserStats(user: UserWithStats): UserStats {
     lastActive,
     totalSessions: sessions.length,
     averageScore:
-      sessions.reduce((acc, curr) => acc + (curr.score ?? 0), 0) /
-        sessions.length || 0,
+      sessions.length > 0
+        ? sessions.reduce((acc, curr) => acc + (curr.score ?? 0), 0) /
+          sessions.length
+        : 0,
     learningStreak: Math.max(
       ...user.userDictionary.map((w) => w.correctStreak),
       0,
@@ -263,10 +267,13 @@ function calculateLearningProgress(user: UserWithStats) {
           0,
         ),
         score:
-          sessions.reduce(
-            (acc: number, s: { score: number | null }) => acc + (s.score ?? 0),
-            0,
-          ) / sessions.length || 0,
+          sessions.length > 0
+            ? sessions.reduce(
+                (acc: number, s: { score: number | null }) =>
+                  acc + (s.score ?? 0),
+                0,
+              ) / sessions.length
+            : 0,
       };
     })
     .reverse();

@@ -133,7 +133,7 @@ export async function createVocabularyPracticeSession(
         sessionScore: 0,
       },
       adaptiveSettings: {
-        difficulty: config.difficulty || 2,
+        difficulty: config.difficulty ?? 2,
         adaptiveDifficulty:
           (vocabularySettings.adaptiveDifficulty as boolean) || false,
         pauseOnIncorrect:
@@ -344,7 +344,7 @@ async function selectVocabularyPracticeWords(
 
     // Get one-word translation from DefinitionToOneWord table
     const oneWordLink = userWord.definition.oneWordLinks?.[0];
-    const oneWordTranslation = oneWordLink?.word?.word || '';
+    const oneWordTranslation = oneWordLink?.word?.word ?? '';
 
     // Get audio URL from definition audio or word details audio
     let audioUrl = '';
@@ -359,22 +359,22 @@ async function selectVocabularyPracticeWords(
 
     return {
       userDictionaryId: userWord.id,
-      wordText: word?.word || '',
+      wordText: word?.word ?? '',
       definition: definitionData.content,
       oneWordTranslation,
-      difficulty: userWord.srsLevel || 0,
+      difficulty: userWord.srsLevel ?? 0,
       learningStatus: userWord.learningStatus,
-      attempts: userWord.reviewCount || 0,
+      attempts: userWord.reviewCount ?? 0,
       correctAttempts: Math.round(
-        ((userWord.reviewCount || 0) * (userWord.masteryScore || 0)) / 100,
+        ((userWord.reviewCount ?? 0) * (userWord.masteryScore ?? 0)) / 100,
       ),
-      srsLevel: userWord.srsLevel || 0,
+      srsLevel: userWord.srsLevel ?? 0,
       imageUrl: userWord.definition.image?.url,
       imageId: userWord.definition.image?.id,
-      imageDescription: userWord.definition.image?.description || undefined,
-      partOfSpeech: wordDetail?.partOfSpeech || undefined,
-      phonetic: wordDetail?.word?.phoneticGeneral || undefined,
-      audioUrl: audioUrl || undefined, // Now properly populated from database
+      imageDescription: userWord.definition.image?.description ?? undefined,
+      partOfSpeech: wordDetail?.partOfSpeech ?? undefined,
+      phonetic: wordDetail?.word?.phoneticGeneral ?? undefined,
+      audioUrl: audioUrl ?? undefined, // Now properly populated from database
     };
   });
 
@@ -405,8 +405,8 @@ async function enhanceWordsWithExerciseTypes(
       );
 
       const exerciseType =
-        progressiveResult.exerciseType || 'remember-translation';
-      const reasoning = `Progressive learning level ${progressiveResult.currentLevel || 0}`;
+        progressiveResult.exerciseType ?? 'remember-translation';
+      const reasoning = `Progressive learning level ${progressiveResult.currentLevel ?? 0}`;
 
       enhancedWords.push({
         ...word,

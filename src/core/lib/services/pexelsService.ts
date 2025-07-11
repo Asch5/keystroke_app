@@ -64,11 +64,11 @@ export class PexelsService {
 
       const searchParams: PhotosSearchParams = {
         query,
-        orientation: options.orientation || 'portrait',
-        size: options.size || 'small',
-        locale: options.locale || 'en-US',
-        page: options.page || 1,
-        per_page: options.per_page || 15,
+        orientation: options.orientation ?? 'portrait',
+        size: options.size ?? 'small',
+        locale: options.locale ?? 'en-US',
+        page: options.page ?? 1,
+        per_page: options.per_page ?? 15,
       };
 
       const response = await this.client.photos.search(searchParams);

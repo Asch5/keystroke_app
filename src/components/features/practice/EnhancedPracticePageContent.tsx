@@ -158,8 +158,8 @@ export function EnhancedPracticePageContent() {
         practiceType: PracticeType;
       } = {
         userId: user.id,
-        userListId: userListId || null,
-        listId: listId || null,
+        userListId: userListId ?? null,
+        listId: listId ?? null,
         difficultyLevel: settings.difficultyLevel,
         wordsCount: settings.wordsCount,
         practiceType: sessionPracticeType,
@@ -179,12 +179,12 @@ export function EnhancedPracticePageContent() {
                 request.userId,
                 {
                   practiceType: request.practiceType,
-                  wordsToStudy: request.wordsCount || 20,
+                  wordsToStudy: request.wordsCount ?? 20,
                   difficulty: request.difficultyLevel,
                   targetLanguageCode: 'da' as LanguageCode,
                   timeLimit: undefined,
-                  listId: request.listId || undefined,
-                  userListId: request.userListId || undefined,
+                  listId: request.listId ?? undefined,
+                  userListId: request.userListId ?? undefined,
                   settings: {
                     autoPlayAudio: settings.autoPlayAudioOnWordCard,
                     enableGameSounds: settings.enableGameSounds,
@@ -197,12 +197,12 @@ export function EnhancedPracticePageContent() {
               )
             : await createUnifiedPracticeSession(request.userId, {
                 practiceType: request.practiceType,
-                wordsToStudy: request.wordsCount || 20,
+                wordsToStudy: request.wordsCount ?? 20,
                 difficulty: request.difficultyLevel,
                 targetLanguageCode: 'da' as LanguageCode,
                 timeLimit: undefined,
-                listId: request.listId || undefined,
-                userListId: request.userListId || undefined,
+                listId: request.listId ?? undefined,
+                userListId: request.userListId ?? undefined,
                 settings: {
                   autoPlayAudio: settings.autoPlayAudioOnWordCard,
                   enableGameSounds: settings.enableGameSounds,
@@ -239,7 +239,7 @@ export function EnhancedPracticePageContent() {
       if (result.success && result.session) {
         setSession(result.session);
       } else {
-        throw new Error(result.error || 'Failed to create practice session');
+        throw new Error(result.error ?? 'Failed to create practice session');
       }
 
       // Initialize debugging session

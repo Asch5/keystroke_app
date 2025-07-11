@@ -75,7 +75,7 @@ export default function EditWordDetailPage() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              {error || 'WordDetail data is not available'}
+              {error ?? 'WordDetail data is not available'}
             </p>
             <div className="mt-4">
               <a

@@ -50,8 +50,8 @@ export function TypingPracticeContent({
 
   // Use settings values with URL parameters as fallback
   const effectiveDifficultyLevel =
-    settings.difficultyLevel || urlDifficultyLevel || 3;
-  const effectiveWordsCount = settings.wordsCount || urlWordsCount || 10;
+    (settings.difficultyLevel || urlDifficultyLevel) ?? 3;
+  const effectiveWordsCount = (settings.wordsCount || urlWordsCount) ?? 10;
 
   const {
     sessionState,

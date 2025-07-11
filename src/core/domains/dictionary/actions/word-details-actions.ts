@@ -252,7 +252,7 @@ export async function getWordDetails(
               text: actualDefinition.definition,
               image: actualDefinition.image,
               frequencyPartOfSpeech: getFrequencyPartOfSpeechEnum(
-                detail.frequency || 0,
+                detail.frequency ?? 0,
               ),
               languageCode: actualDefinition.languageCode,
               source: actualDefinition.source,
@@ -265,7 +265,7 @@ export async function getWordDetails(
                 id: ex.id,
                 text: ex.example,
                 grammaticalNote: ex.grammaticalNote,
-                audio: ex.audioLinks?.[0]?.audio.url || null,
+                audio: ex.audioLinks?.[0]?.audio.url ?? null,
                 translations: ex.translationLinks.map((tl) => ({
                   id: tl.translation.id,
                   languageCode: tl.translation.languageCode,
@@ -293,7 +293,7 @@ export async function getWordDetails(
           .map((rel) => {
             const targetDetails = rel.toWordDetails;
             const targetAudioUrl =
-              targetDetails?.audioLinks?.[0]?.audio?.url || null;
+              targetDetails?.audioLinks?.[0]?.audio?.url ?? null;
             if (!targetDetails || !targetDetails.word) {
               return null;
             }
@@ -316,9 +316,9 @@ export async function getWordDetails(
           etymology: detail.etymology,
           phonetic: detail.phonetic,
           forms: detail.forms,
-          frequency: detail.frequency || 0,
-          isPlural: detail.isPlural || false,
-          source: detail.source || 'unknown',
+          frequency: detail.frequency ?? 0,
+          isPlural: detail.isPlural ?? false,
+          source: detail.source ?? 'unknown',
           definitions,
           audioFiles,
           detailRelations,
@@ -329,11 +329,11 @@ export async function getWordDetails(
       id: wordRecord.id,
       word: wordRecord.word,
       phoneticGeneral: wordRecord.phoneticGeneral,
-      frequencyGeneral: wordRecord.frequencyGeneral || 0,
+      frequencyGeneral: wordRecord.frequencyGeneral ?? 0,
       languageCode: wordRecord.languageCode,
       createdAt: wordRecord.createdAt,
       updatedAt: wordRecord.updatedAt,
-      isHighlighted: wordRecord.isHighlighted || false,
+      isHighlighted: wordRecord.isHighlighted ?? false,
       additionalInfo: wordRecord.additionalInfo as Record<string, unknown>,
       details: wordPartOfSpeechDetails,
       relatedWords: {},
@@ -352,10 +352,10 @@ export async function getWordDetails(
       if (rel.toWord) {
         const relatedWordData = rel.toWord;
         const relatedAudio =
-          rel.toWord.details?.[0]?.audioLinks?.[0]?.audio?.url || null;
+          rel.toWord.details?.[0]?.audioLinks?.[0]?.audio?.url ?? null;
 
         const typeKey = rel.type as RelationshipType;
-        aggregatedRelatedWords[typeKey] = aggregatedRelatedWords[typeKey] || [];
+        aggregatedRelatedWords[typeKey] = aggregatedRelatedWords[typeKey] ?? [];
         if (
           !aggregatedRelatedWords[typeKey]?.find(
             (rw) => rw.id === relatedWordData.id,
@@ -376,12 +376,12 @@ export async function getWordDetails(
       if (rel.fromWord) {
         const relatedWordData = rel.fromWord;
         const relatedAudio =
-          rel.fromWord.details?.[0]?.audioLinks?.[0]?.audio?.url || null;
+          rel.fromWord.details?.[0]?.audioLinks?.[0]?.audio?.url ?? null;
 
         // For reverse relationships, we might want to show them under a different category
         // or use the same category depending on the relationship type
         const typeKey = rel.type as RelationshipType;
-        aggregatedRelatedWords[typeKey] = aggregatedRelatedWords[typeKey] || [];
+        aggregatedRelatedWords[typeKey] = aggregatedRelatedWords[typeKey] ?? [];
         if (
           !aggregatedRelatedWords[typeKey]?.find(
             (rw) => rw.id === relatedWordData.id,
@@ -403,11 +403,11 @@ export async function getWordDetails(
         if (rel.toWordDetails && rel.toWordDetails.word) {
           const relatedWordData = rel.toWordDetails.word;
           const relatedAudio =
-            rel.toWordDetails.audioLinks?.[0]?.audio?.url || null;
+            rel.toWordDetails.audioLinks?.[0]?.audio?.url ?? null;
 
           const typeKey = rel.type as RelationshipType;
           aggregatedRelatedWords[typeKey] =
-            aggregatedRelatedWords[typeKey] || [];
+            aggregatedRelatedWords[typeKey] ?? [];
           if (
             !aggregatedRelatedWords[typeKey]?.find(
               (rw) => rw.id === relatedWordData.id,
@@ -576,12 +576,12 @@ export async function updateWordDetails(
                   },
                 },
                 update: {
-                  isPrimary: audioData.isPrimary || false,
+                  isPrimary: audioData.isPrimary ?? false,
                 },
                 create: {
                   wordDetailsId: wordDetails.id,
                   audioId: audioData.id,
-                  isPrimary: audioData.isPrimary || false,
+                  isPrimary: audioData.isPrimary ?? false,
                 },
               });
             } else {
@@ -600,7 +600,7 @@ export async function updateWordDetails(
                 data: {
                   wordDetailsId: wordDetails.id,
                   audioId: newAudio.id,
-                  isPrimary: audioData.isPrimary || false,
+                  isPrimary: audioData.isPrimary ?? false,
                 },
               });
             }
@@ -802,7 +802,7 @@ export async function fetchWordDetailById(
         usageNote: wd.definition.usageNote,
         isInShortDef: wd.definition.isInShortDef,
         imageId: wd.definition.imageId,
-        imageUrl: wd.definition.image?.url || null,
+        imageUrl: wd.definition.image?.url ?? null,
         examples: wd.definition.examples.map((ex) => ({
           id: ex.id,
           example: ex.example,

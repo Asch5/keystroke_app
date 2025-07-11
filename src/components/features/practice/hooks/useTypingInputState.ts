@@ -142,7 +142,7 @@ export function useTypingInputState({
         void debugLog('🎯 Enter key pressed:', {
           showResult,
           userInput: sessionState.userInput,
-          userInputLength: sessionState.userInput?.length || 0,
+          userInputLength: sessionState.userInput?.length ?? 0,
         });
 
         if (showResult) {

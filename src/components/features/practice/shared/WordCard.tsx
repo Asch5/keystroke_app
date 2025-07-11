@@ -185,7 +185,7 @@ export function WordCard({
                   word.imageId ? `/api/images/${word.imageId}` : word.imageUrl!
                 }
                 alt={
-                  word.imageDescription ||
+                  word.imageDescription ??
                   `Visual representation of ${word.wordText}`
                 }
                 fill

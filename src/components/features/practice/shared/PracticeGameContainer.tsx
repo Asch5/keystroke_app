@@ -36,7 +36,7 @@ function GameErrorFallback({
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Something went wrong</h3>
         <p className="text-sm text-muted-foreground max-w-md">
-          {error.message ||
+          {error.message ??
             'An unexpected error occurred while loading the practice game.'}
         </p>
       </div>
@@ -136,7 +136,7 @@ export function PracticeGameContainer({
     return (
       <ErrorBoundary
         FallbackComponent={(props) => (
-          <GameErrorFallback {...props} onRetry={onRetry || undefined} />
+          <GameErrorFallback {...props} onRetry={onRetry ?? undefined} />
         )}
         onReset={resetHandler}
       >
@@ -149,17 +149,17 @@ export function PracticeGameContainer({
     <Card
       className={cn('w-full max-w-4xl mx-auto', className)}
       role="region"
-      aria-label={ariaLabel || `${gameTitle || 'Practice'} game area`}
+      aria-label={ariaLabel ?? `${gameTitle ?? 'Practice'} game area`}
     >
       <CardContent className="p-6">
         <ErrorBoundaryWrapper>
           {isLoading ? (
-            <GameLoadingState gameTitle={gameTitle || undefined} />
+            <GameLoadingState gameTitle={gameTitle ?? undefined} />
           ) : error ? (
             <GameErrorFallback
               error={error}
               resetErrorBoundary={() => onReset?.()}
-              onRetry={onRetry || undefined}
+              onRetry={onRetry ?? undefined}
             />
           ) : (
             <div className="space-y-6">

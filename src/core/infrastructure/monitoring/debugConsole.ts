@@ -67,7 +67,7 @@ export const debugConsole: DebugConsole = {
     const logStats = DebugUtils.getLogStats();
 
     console.group('🔧 Practice Debug Status');
-    console.log('Session ID:', summary.sessionId || 'No active session');
+    console.log('Session ID:', summary.sessionId ?? 'No active session');
     console.log('Issues Found:', summary.issues);
     console.log('Quick Fixes:', summary.quickFixes);
 
@@ -100,7 +100,7 @@ export const debugConsole: DebugConsole = {
         console.log('Session:', practiceReport.session);
         console.log(
           'Current Word:',
-          practiceReport.currentWord?.currentWord?.wordText || 'None',
+          practiceReport.currentWord?.currentWord?.wordText ?? 'None',
         );
         console.log('Issues:', practiceReport.issues);
         console.log('Recommendations:', practiceReport.recommendations);
@@ -181,7 +181,7 @@ export const debugConsole: DebugConsole = {
     recentLogs.forEach((log) => {
       const method =
         log.level === 'error' ? 'error' : log.level === 'warn' ? 'warn' : 'log';
-      console[method](`[${log.timestamp}] ${log.message}`, log.context || '');
+      console[method](`[${log.timestamp}] ${log.message}`, log.context ?? '');
     });
     console.groupEnd();
   },
@@ -193,7 +193,7 @@ export const debugConsole: DebugConsole = {
     results.forEach((log) => {
       const method =
         log.level === 'error' ? 'error' : log.level === 'warn' ? 'warn' : 'log';
-      console[method](`[${log.timestamp}] ${log.message}`, log.context || '');
+      console[method](`[${log.timestamp}] ${log.message}`, log.context ?? '');
     });
     console.groupEnd();
   },

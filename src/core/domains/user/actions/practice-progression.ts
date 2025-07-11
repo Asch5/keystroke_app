@@ -55,9 +55,9 @@ export async function determineExerciseTypeProgressive(
   const exerciseLevelMapping = await getExerciseLevelMapping();
   const requirements = await getProgressionRequirements();
 
-  const currentLevel = word.srsLevel || 0;
-  const attempts = word.attempts || 0;
-  const correctAttempts = word.correctAttempts || 0;
+  const currentLevel = word.srsLevel ?? 0;
+  const attempts = word.attempts ?? 0;
+  const correctAttempts = word.correctAttempts ?? 0;
   const successRate = attempts > 0 ? correctAttempts / attempts : 0;
 
   // Helper function to check if exercise type is enabled
@@ -106,7 +106,7 @@ export async function determineExerciseTypeProgressive(
   // Ensure the selected exercise type is enabled
   if (!isTypeEnabled(exerciseType)) {
     // Find the closest enabled exercise type
-    const enabledTypes = userPreferences?.enabledExerciseTypes || [];
+    const enabledTypes = userPreferences?.enabledExerciseTypes ?? [];
     const typeToLevelMap: Record<PracticeType, number> = {
       'remember-translation': 0,
       'choose-right-word': 2,
@@ -189,10 +189,10 @@ export async function updateWordProgression(
       };
     }
 
-    const currentLevel = userWord.srsLevel || 0;
-    const currentAttempts = userWord.reviewCount || 0;
+    const currentLevel = userWord.srsLevel ?? 0;
+    const currentAttempts = userWord.reviewCount ?? 0;
     const currentCorrectAttempts = Math.round(
-      ((userWord.reviewCount || 0) * (userWord.masteryScore || 0)) / 100,
+      ((userWord.reviewCount ?? 0) * (userWord.masteryScore ?? 0)) / 100,
     );
 
     // Calculate new metrics
@@ -394,18 +394,18 @@ export async function getWordsForSRSReview(
 
     return words.map((word) => ({
       userDictionaryId: word.id,
-      wordText: word.definition.wordDetails[0]?.wordDetails?.word?.word || '',
+      wordText: word.definition.wordDetails[0]?.wordDetails?.word?.word ?? '',
       definition: word.definition.definition,
-      difficulty: word.srsLevel || 0,
+      difficulty: word.srsLevel ?? 0,
       learningStatus: word.learningStatus,
-      attempts: word.reviewCount || 0,
+      attempts: word.reviewCount ?? 0,
       correctAttempts: Math.round(
-        ((word.reviewCount || 0) * (word.masteryScore || 0)) / 100,
+        ((word.reviewCount ?? 0) * (word.masteryScore ?? 0)) / 100,
       ),
-      srsLevel: word.srsLevel || 0,
-      imageUrl: word.definition.image?.url || undefined,
-      imageId: word.definition.image?.id || undefined,
-      imageDescription: word.definition.image?.description || undefined,
+      srsLevel: word.srsLevel ?? 0,
+      imageUrl: word.definition.image?.url ?? undefined,
+      imageId: word.definition.image?.id ?? undefined,
+      imageDescription: word.definition.image?.description ?? undefined,
     }));
   } catch (error) {
     void serverLog('Error getting words for SRS review', 'error', { error });
@@ -437,8 +437,8 @@ export async function updateSRSData(
       return { success: false, error: 'User word not found' };
     }
 
-    const currentLevel = userWord.srsLevel || 0;
-    const consecutiveCorrect = userWord.correctStreak || 0;
+    const currentLevel = userWord.srsLevel ?? 0;
+    const consecutiveCorrect = userWord.correctStreak ?? 0;
 
     // Calculate new SRS interval
     const { intervalHours, nextReviewDate } = await calculateSRSInterval(
@@ -563,8 +563,8 @@ export async function getSRSReviewSchedule(
         return {
           userDictionaryId: word.id,
           wordText:
-            word.definition.wordDetails[0]?.wordDetails?.word?.word || '',
-          srsLevel: word.srsLevel || 0,
+            word.definition.wordDetails[0]?.wordDetails?.word?.word ?? '',
+          srsLevel: word.srsLevel ?? 0,
           nextReview: reviewDate,
           priority,
         };
@@ -636,20 +636,20 @@ export async function getSRSStatistics(userId: string): Promise<{
     // Level distribution
     const levelDistribution: Record<number, number> = {};
     words.forEach((word) => {
-      const level = word.srsLevel || 0;
-      levelDistribution[level] = (levelDistribution[level] || 0) + 1;
+      const level = word.srsLevel ?? 0;
+      levelDistribution[level] = (levelDistribution[level] ?? 0) + 1;
     });
 
     // Average interval
     const intervalsSum = words.reduce(
-      (sum, word) => sum + (word.srsInterval || 0),
+      (sum, word) => sum + (word.srsInterval ?? 0),
       0,
     );
     const averageInterval = totalWords > 0 ? intervalsSum / totalWords : 0;
 
     // Review accuracy
     const accuracySum = words.reduce(
-      (sum, word) => sum + (word.masteryScore || 0),
+      (sum, word) => sum + (word.masteryScore ?? 0),
       0,
     );
     const reviewAccuracy = totalWords > 0 ? accuracySum / totalWords : 0;
@@ -703,9 +703,9 @@ export async function bulkUpdateSRSIntervals(
 
     for (const word of words) {
       const { intervalHours, nextReviewDate } = await calculateSRSInterval(
-        word.srsLevel || 0,
-        word.lastSrsSuccess || false,
-        word.correctStreak || 0,
+        word.srsLevel ?? 0,
+        word.lastSrsSuccess ?? false,
+        word.correctStreak ?? 0,
       );
 
       await prisma.userDictionary.update({
@@ -857,18 +857,18 @@ export async function createSRSPracticeSession(
 
     const practiceWords: PracticeWord[] = allWords.map((word) => ({
       userDictionaryId: word.id,
-      wordText: word.definition.wordDetails[0]?.wordDetails?.word?.word || '',
+      wordText: word.definition.wordDetails[0]?.wordDetails?.word?.word ?? '',
       definition: word.definition.definition,
-      difficulty: word.srsLevel || 0,
+      difficulty: word.srsLevel ?? 0,
       learningStatus: word.learningStatus,
-      attempts: word.reviewCount || 0,
+      attempts: word.reviewCount ?? 0,
       correctAttempts: Math.round(
-        ((word.reviewCount || 0) * (word.masteryScore || 0)) / 100,
+        ((word.reviewCount ?? 0) * (word.masteryScore ?? 0)) / 100,
       ),
-      srsLevel: word.srsLevel || 0,
+      srsLevel: word.srsLevel ?? 0,
       imageUrl: word.definition.image?.url,
       imageId: word.definition.image?.id,
-      imageDescription: word.definition.image?.description || undefined,
+      imageDescription: word.definition.image?.description ?? undefined,
     }));
 
     return {

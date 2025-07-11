@@ -93,11 +93,11 @@ export default function EditListPage() {
           setList(listDetails);
           setFormData({
             name: listDetails.name,
-            description: listDetails.description || '',
+            description: listDetails.description ?? '',
             categoryId: listDetails.categoryId.toString(),
             difficultyLevel: listDetails.difficultyLevel,
             isPublic: listDetails.isPublic,
-            coverImageUrl: listDetails.coverImageUrl || '',
+            coverImageUrl: listDetails.coverImageUrl ?? '',
           });
           setTags(listDetails.tags);
         } else {
@@ -147,7 +147,7 @@ export default function EditListPage() {
     try {
       const result = await createCategory(
         newCategoryName,
-        newCategoryDescription || undefined,
+        newCategoryDescription ?? undefined,
       );
 
       if (result.success && result.category) {
@@ -201,7 +201,7 @@ export default function EditListPage() {
     return (
       <div className="container mx-auto py-6">
         <Alert variant="destructive">
-          <AlertDescription>{error || 'List not found'}</AlertDescription>
+          <AlertDescription>{error ?? 'List not found'}</AlertDescription>
         </Alert>
         <div className="mt-4">
           <Button

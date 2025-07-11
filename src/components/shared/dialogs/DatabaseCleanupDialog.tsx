@@ -32,8 +32,8 @@ export function DatabaseCleanupDialog() {
         toast.success('Database tables cleaned successfully');
         setIsOpen(false);
       } else {
-        setError(result.error || 'An unexpected error occurred');
-        toast.error(result.error || 'Failed to clean database tables');
+        setError(result.error ?? 'An unexpected error occurred');
+        toast.error(result.error ?? 'Failed to clean database tables');
       }
     } catch (err) {
       const errorMessage =

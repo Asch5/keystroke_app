@@ -83,7 +83,7 @@ export default async function DictionaryPage() {
   const user = {
     id: session.user.id,
     email: session.user.email,
-    name: session.user.name || 'User',
+    name: session.user.name ?? 'User',
   };
 
   return (

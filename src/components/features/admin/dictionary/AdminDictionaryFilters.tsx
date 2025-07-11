@@ -136,7 +136,7 @@ export function AdminDictionaryFilters({
                 <div className="space-y-2">
                   <span className="text-sm font-medium">Audio</span>
                   <Select
-                    value={filters.hasAudio?.toString() || 'all'}
+                    value={filters.hasAudio?.toString() ?? 'all'}
                     onValueChange={(value) =>
                       onFilterChange(
                         'hasAudio',
@@ -159,7 +159,7 @@ export function AdminDictionaryFilters({
                 <div className="space-y-2">
                   <span className="text-sm font-medium">Image</span>
                   <Select
-                    value={filters.hasImage?.toString() || 'all'}
+                    value={filters.hasImage?.toString() ?? 'all'}
                     onValueChange={(value) =>
                       onFilterChange(
                         'hasImage',
@@ -182,7 +182,7 @@ export function AdminDictionaryFilters({
                 <div className="space-y-2">
                   <span className="text-sm font-medium">Variant</span>
                   <Select
-                    value={filters.hasVariant?.toString() || 'all'}
+                    value={filters.hasVariant?.toString() ?? 'all'}
                     onValueChange={(value) =>
                       onFilterChange(
                         'hasVariant',
@@ -205,7 +205,7 @@ export function AdminDictionaryFilters({
                 <div className="space-y-2">
                   <span className="text-sm font-medium">Definition</span>
                   <Select
-                    value={filters.hasDefinition?.toString() || 'all'}
+                    value={filters.hasDefinition?.toString() ?? 'all'}
                     onValueChange={(value) =>
                       onFilterChange(
                         'hasDefinition',
@@ -241,7 +241,7 @@ export function AdminDictionaryFilters({
                       type="number"
                       min="0"
                       placeholder="Min"
-                      value={filters.frequencyGeneralMin?.toString() || ''}
+                      value={filters.frequencyGeneralMin?.toString() ?? ''}
                       onChange={(e) => {
                         const value = e.target.value
                           ? parseInt(e.target.value)
@@ -255,7 +255,7 @@ export function AdminDictionaryFilters({
                       type="number"
                       min="0"
                       placeholder="Max"
-                      value={filters.frequencyGeneralMax?.toString() || ''}
+                      value={filters.frequencyGeneralMax?.toString() ?? ''}
                       onChange={(e) => {
                         const value = e.target.value
                           ? parseInt(e.target.value)
@@ -277,7 +277,7 @@ export function AdminDictionaryFilters({
                       type="number"
                       min="0"
                       placeholder="Min"
-                      value={filters.frequencyMin?.toString() || ''}
+                      value={filters.frequencyMin?.toString() ?? ''}
                       onChange={(e) => {
                         const value = e.target.value
                           ? parseInt(e.target.value)
@@ -291,7 +291,7 @@ export function AdminDictionaryFilters({
                       type="number"
                       min="0"
                       placeholder="Max"
-                      value={filters.frequencyMax?.toString() || ''}
+                      value={filters.frequencyMax?.toString() ?? ''}
                       onChange={(e) => {
                         const value = e.target.value
                           ? parseInt(e.target.value)

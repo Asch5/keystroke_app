@@ -67,7 +67,7 @@ const StatisticsContent = memo(function StatisticsContent({
       if (statsResult.success && statsResult.statistics) {
         setStatistics(statsResult.statistics);
       } else {
-        setError(statsResult.error || 'Failed to fetch statistics');
+        setError(statsResult.error ?? 'Failed to fetch statistics');
       }
 
       if (analyticsResult.success && analyticsResult.analytics) {
@@ -98,7 +98,7 @@ const StatisticsContent = memo(function StatisticsContent({
   if (error || !statistics) {
     return (
       <div className="text-center py-8 text-error-foreground">
-        Error: {error || 'No statistics available'}
+        Error: {error ?? 'No statistics available'}
       </div>
     );
   }

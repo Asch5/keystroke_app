@@ -332,7 +332,7 @@ export const getUserDictionary = cache(
             // Get primary audio URL if available
             const primaryAudio =
               wd.wordDetails.audioLinks.find((link) => link.isPrimary)?.audio
-                ?.url || null;
+                ?.url ?? null;
 
             wordDataMap.set(wd.definitionId, {
               word: wd.wordDetails.word.word,
@@ -356,23 +356,23 @@ export const getUserDictionary = cache(
             const listName =
               userListWord.userList?.customNameOfList ||
               userListWord.userList?.list?.name;
-            return listName || 'Unnamed List';
+            return listName ?? 'Unnamed List';
           }) || [];
 
         return {
           id: entry.id,
           userId: entry.userId,
           definitionId: entry.definitionId,
-          word: wordData?.word || 'Unknown Word',
-          wordId: wordData?.wordId || 0,
+          word: wordData?.word ?? 'Unknown Word',
+          wordId: wordData?.wordId ?? 0,
           partOfSpeech: wordData?.partOfSpeech || PartOfSpeech.undefined,
-          variant: wordData?.variant || null,
+          variant: wordData?.variant ?? null,
           gender: null, // TODO: Get from actual word data
           phonetic: null, // TODO: Get from actual word data
           forms: null, // TODO: Get from actual word data
           definition: entry.definition.definition,
-          imageUrl: entry.definition.image?.url || null,
-          audioUrl: wordData?.audioUrl || null, // Now properly getting audio URL from database
+          imageUrl: entry.definition.image?.url ?? null,
+          audioUrl: wordData?.audioUrl ?? null, // Now properly getting audio URL from database
 
           // Learning progress
           learningStatus: entry.learningStatus,
@@ -428,7 +428,7 @@ export const getUserDictionary = cache(
             );
 
             // Only return DefinitionToOneWord match, never fall back to DefinitionTranslation
-            return matchingOneWordLink?.word?.word || null;
+            return matchingOneWordLink?.word?.word ?? null;
           })(),
         };
       });
@@ -526,7 +526,7 @@ export async function updateWordLearningStatus(
   } catch (error) {
     await serverLog('Error updating word learning status', 'error', error);
     throw new Error(
-      handlePrismaError(error).message || 'Failed to update learning status',
+      handlePrismaError(error).message ?? 'Failed to update learning status',
     );
   }
 }
@@ -559,7 +559,7 @@ export async function toggleWordFavorite(
   } catch (error) {
     await serverLog('Error toggling word favorite', 'error', error);
     throw new Error(
-      handlePrismaError(error).message || 'Failed to toggle favorite',
+      handlePrismaError(error).message ?? 'Failed to toggle favorite',
     );
   }
 }
@@ -596,7 +596,7 @@ export async function updateUserWordCustomData(
   } catch (error) {
     await serverLog('Error updating user word custom data', 'error', error);
     throw new Error(
-      handlePrismaError(error).message || 'Failed to update custom data',
+      handlePrismaError(error).message ?? 'Failed to update custom data',
     );
   }
 }
@@ -623,7 +623,7 @@ export async function removeWordFromUserDictionary(
   } catch (error) {
     await serverLog('Error removing word from user dictionary', 'error', error);
     throw new Error(
-      handlePrismaError(error).message ||
+      handlePrismaError(error).message ??
         'Failed to remove word from dictionary',
     );
   }
@@ -671,7 +671,7 @@ export const getUserDictionaryStats = cache(async (userId: string) => {
       totalWords,
       favoriteWords,
       wordsNeedingReview,
-      averageMasteryScore: masteryStats._avg.masteryScore || 0,
+      averageMasteryScore: masteryStats._avg.masteryScore ?? 0,
       statusBreakdown: stats.reduce(
         (acc, stat) => {
           acc[stat.learningStatus] = stat._count.learningStatus;

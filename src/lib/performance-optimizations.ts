@@ -84,7 +84,7 @@ export class BundleSizeMonitor {
   private analyzeResourcePerformance(entry: PerformanceResourceTiming): void {
     const size =
       (entry as PerformanceResourceTiming & { transferSize?: number })
-        .transferSize || 0;
+        .transferSize ?? 0;
     const duration = entry.duration;
 
     // Flag large resources
@@ -126,7 +126,7 @@ export class BundleSizeMonitor {
       return (
         sum +
         ((entry as PerformanceResourceTiming & { transferSize?: number })
-          .transferSize || 0)
+          .transferSize ?? 0)
       );
     }, 0);
 
@@ -134,13 +134,13 @@ export class BundleSizeMonitor {
       .filter(
         (entry) =>
           ((entry as PerformanceResourceTiming & { transferSize?: number })
-            .transferSize || 0) > 500000,
+            .transferSize ?? 0) > 500000,
       ) // 500KB
       .map((entry) => ({
         name: entry.name,
         size:
           (entry as PerformanceResourceTiming & { transferSize?: number })
-            .transferSize || 0,
+            .transferSize ?? 0,
         duration: entry.duration,
       }))
       .sort((a, b) => b.size - a.size);
@@ -152,7 +152,7 @@ export class BundleSizeMonitor {
         duration: entry.duration,
         size:
           (entry as PerformanceResourceTiming & { transferSize?: number })
-            .transferSize || 0,
+            .transferSize ?? 0,
       }))
       .sort((a, b) => b.duration - a.duration);
 
@@ -303,7 +303,7 @@ export class ComponentPerformanceTracker {
       .filter(([, stats]) => stats !== null)
       .sort(
         ([, a], [, b]) =>
-          (b?.averageRenderTime || 0) - (a?.averageRenderTime || 0),
+          (b?.averageRenderTime ?? 0) - (a?.averageRenderTime ?? 0),
       );
 
     const performanceData = sortedStats

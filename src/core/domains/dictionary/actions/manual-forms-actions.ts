@@ -177,7 +177,7 @@ export async function addManualWordForms({
             wordId: formWord.id,
             partOfSpeech: formPartOfSpeech,
             source: source,
-            phonetic: formData.phonetic || null,
+            phonetic: formData.phonetic ?? null,
             etymology: baseWordText,
             variant: '',
             isPlural:
@@ -185,7 +185,7 @@ export async function addManualWordForms({
               formData.relationshipType === RelationshipType.plural_definite_da,
           },
           update: {
-            phonetic: formData.phonetic || null,
+            phonetic: formData.phonetic ?? null,
             etymology: baseWordText,
           },
         });
@@ -218,11 +218,11 @@ export async function addManualWordForms({
             definition: definitionText,
             languageCode: languageCode,
             source: source,
-            usageNote: formData.usageNote || null,
+            usageNote: formData.usageNote ?? null,
             isInShortDef: false,
           },
           update: {
-            usageNote: formData.usageNote || null,
+            usageNote: formData.usageNote ?? null,
           },
         });
 

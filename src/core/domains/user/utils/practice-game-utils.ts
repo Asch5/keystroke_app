@@ -185,7 +185,7 @@ export function extractWordText(definition: string): string {
       /^[a-zA-Z]+$/.test(word),
   );
 
-  return meaningfulWords[0] || words[0] || '';
+  return (meaningfulWords[0] || words[0]) ?? '';
 }
 
 /**

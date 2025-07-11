@@ -216,7 +216,7 @@ export class PracticeDebugger {
     return {
       sessionId: this.sessionId,
       issues: totalIssues,
-      recommendations: this.currentReport.recommendations || [],
+      recommendations: this.currentReport.recommendations ?? [],
       quickFixes: this.generateQuickFixes(),
     };
   }

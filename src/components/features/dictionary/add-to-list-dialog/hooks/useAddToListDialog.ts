@@ -70,7 +70,7 @@ export function useAddToListDialog(
         toast.success(
           `Word "${wordText}" added to ${selectedList?.displayName}`,
         );
-        onWordAddedToList(selectedList?.displayName || 'list');
+        onWordAddedToList(selectedList?.displayName ?? 'list');
         onClose();
       } else {
         toast.error(result.message);

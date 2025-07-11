@@ -41,7 +41,7 @@ export const startLearningSession = createAsyncThunk(
 
       if (!response.ok) {
         const error = await response.json();
-        return rejectWithValue(error.message || 'Failed to start session');
+        return rejectWithValue(error.message ?? 'Failed to start session');
       }
 
       const data = await response.json();
@@ -74,7 +74,7 @@ export const endLearningSession = createAsyncThunk(
 
       if (!response.ok) {
         const error = await response.json();
-        return rejectWithValue(error.message || 'Failed to end session');
+        return rejectWithValue(error.message ?? 'Failed to end session');
       }
 
       const data = await response.json();
@@ -102,7 +102,7 @@ export const addSessionItem = createAsyncThunk(
       if (!response.ok) {
         const errorData = await response.json();
         return rejectWithValue(
-          errorData.message || 'Failed to add session item',
+          errorData.message ?? 'Failed to add session item',
         );
       }
 
@@ -126,7 +126,7 @@ export const fetchSessionStats = createAsyncThunk(
       if (!response.ok) {
         const errorData = await response.json();
         return rejectWithValue(
-          errorData.message || 'Failed to fetch session stats',
+          errorData.message ?? 'Failed to fetch session stats',
         );
       }
 
@@ -176,7 +176,7 @@ export const fetchSessionHistory = createAsyncThunk(
       if (!response.ok) {
         const errorData = await response.json();
         return rejectWithValue(
-          errorData.message || 'Failed to fetch session history',
+          errorData.message ?? 'Failed to fetch session history',
         );
       }
 
@@ -402,7 +402,7 @@ export const selectSessionAccuracy = (state: { session: SessionState }) => {
 
 export const selectSessionProgress = (state: { session: SessionState }) => {
   const session = state.session.currentSession;
-  return session?.completionPercentage || 0;
+  return session?.completionPercentage ?? 0;
 };
 
 export const selectRecentSessions = (state: { session: SessionState }) =>

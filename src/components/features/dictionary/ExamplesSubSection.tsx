@@ -64,7 +64,7 @@ const ExamplesSubSection = memo(function ExamplesSubSection({
           <div className="space-y-3">
             {examples.map((example, exIndex) => (
               <Card
-                key={example.id || `new-example-${exIndex}`}
+                key={example.id ?? `new-example-${exIndex}`}
                 className="bg-muted/30"
               >
                 <CardContent className="pt-4">
@@ -92,7 +92,7 @@ const ExamplesSubSection = memo(function ExamplesSubSection({
                         <div>
                           <Label>Grammatical Note</Label>
                           <Input
-                            value={example.grammaticalNote || ''}
+                            value={example.grammaticalNote ?? ''}
                             onChange={(e) =>
                               onExampleChange(
                                 definitionIndex,
@@ -108,7 +108,7 @@ const ExamplesSubSection = memo(function ExamplesSubSection({
                         <div>
                           <Label>Source</Label>
                           <Input
-                            value={example.sourceOfExample || ''}
+                            value={example.sourceOfExample ?? ''}
                             onChange={(e) =>
                               onExampleChange(
                                 definitionIndex,

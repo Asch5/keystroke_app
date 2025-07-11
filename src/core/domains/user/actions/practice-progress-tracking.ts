@@ -97,16 +97,16 @@ export async function trackCompleteWordProgress(
     let mistakeRecord = null;
     if (!isCorrect) {
       const wordText =
-        userWord.definition.wordDetails[0]?.wordDetails?.word?.word ||
+        userWord.definition.wordDetails[0]?.wordDetails?.word?.word ??
         'unknown';
 
       mistakeRecord = await prisma.learningMistake.create({
         data: {
           userId: userWord.userId,
           wordId:
-            userWord.definition.wordDetails[0]?.wordDetails?.word?.id || 0,
+            userWord.definition.wordDetails[0]?.wordDetails?.word?.id ?? 0,
           wordDetailsId:
-            userWord.definition.wordDetails[0]?.wordDetailsId || null,
+            userWord.definition.wordDetails[0]?.wordDetailsId ?? null,
           definitionId: userWord.definitionId,
           userDictionaryId: userWord.id,
           type: getMistakeType(exerciseType),
@@ -125,7 +125,7 @@ export async function trackCompleteWordProgress(
             correctAnswer: wordText,
             responseTime,
             accuracy: calculateAccuracy(userInput, wordText),
-            wordDifficulty: userWord.srsLevel || 0,
+            wordDifficulty: userWord.srsLevel ?? 0,
             attempts: updatedUserDictionary.reviewCount,
           },
         },
@@ -318,7 +318,7 @@ export async function getLearningAnalytics(
       0,
     );
     const totalWordsLearned = sessions.reduce(
-      (sum, s) => sum + (s.wordsLearned || 0),
+      (sum, s) => sum + (s.wordsLearned ?? 0),
       0,
     );
     const totalTimeMinutes = progressRecords.reduce(
@@ -375,8 +375,8 @@ export async function getLearningAnalytics(
     // Mistake analysis
     const mistakeTypes = mistakes.reduce(
       (acc, mistake) => {
-        const type = mistake.type || 'unknown';
-        acc[type] = (acc[type] || 0) + 1;
+        const type = mistake.type ?? 'unknown';
+        acc[type] = (acc[type] ?? 0) + 1;
         return acc;
       },
       {} as Record<string, number>,
@@ -473,7 +473,7 @@ export async function analyzeDifficultWords(
     const mistakePatterns = difficultWords.reduce(
       (acc, word) => {
         const wordText =
-          word.definition.wordDetails[0]?.wordDetails?.word?.word || '';
+          word.definition.wordDetails[0]?.wordDetails?.word?.word ?? '';
         const mistakes = word.mistakes;
 
         mistakes.forEach((mistake) => {
@@ -482,7 +482,7 @@ export async function analyzeDifficultWords(
             (mistakeData?.exerciseType as string) || 'unknown';
 
           const pattern = {
-            type: mistake.type || 'unknown',
+            type: mistake.type ?? 'unknown',
             word: wordText,
             frequency: 1,
             exerciseTypes: [exerciseType],
@@ -515,30 +515,30 @@ export async function analyzeDifficultWords(
     // Calculate difficulty factors
     const difficultyFactors = difficultWords.map((word) => {
       const wordText =
-        word.definition.wordDetails[0]?.wordDetails?.word?.word || '';
+        word.definition.wordDetails[0]?.wordDetails?.word?.word ?? '';
       const mistakeRate =
-        (word.amountOfMistakes || 0) / Math.max(word.reviewCount || 1, 1);
+        (word.amountOfMistakes ?? 0) / Math.max(word.reviewCount ?? 1, 1);
 
       // Simple difficulty calculation since the method doesn't exist
       const difficultyScore = Math.min(
         100,
-        (word.amountOfMistakes || 0) * 10 +
-          (100 - (word.masteryScore || 0)) +
-          (word.srsLevel || 0) * 5,
+        (word.amountOfMistakes ?? 0) * 10 +
+          (100 - (word.masteryScore ?? 0)) +
+          (word.srsLevel ?? 0) * 5,
       );
 
       return {
         userDictionaryId: word.id,
         wordText,
-        masteryScore: word.masteryScore || 0,
-        mistakeCount: word.amountOfMistakes || 0,
+        masteryScore: word.masteryScore ?? 0,
+        mistakeCount: word.amountOfMistakes ?? 0,
         mistakeRate,
         difficultyScore,
         learningStatus: word.learningStatus,
-        srsLevel: word.srsLevel || 0,
+        srsLevel: word.srsLevel ?? 0,
         recentMistakes: word.mistakes.map((m) => ({
-          type: m.type || 'unknown',
-          incorrectValue: m.incorrectValue || '',
+          type: m.type ?? 'unknown',
+          incorrectValue: m.incorrectValue ?? '',
           createdAt: m.createdAt,
         })),
       };
@@ -636,7 +636,7 @@ export async function calculateProgressMetrics(userId: string): Promise<{
     };
 
     masteryDistribution.forEach((item) => {
-      const score = item.masteryScore || 0;
+      const score = item.masteryScore ?? 0;
       if (score <= 30) masteryRanges.beginner += item._count.id;
       else if (score <= 70) masteryRanges.intermediate += item._count.id;
       else if (score <= 90) masteryRanges.advanced += item._count.id;
@@ -649,7 +649,7 @@ export async function calculateProgressMetrics(userId: string): Promise<{
     // Calculate completion rate
     const learnedWords =
       statusCounts.find((s) => s.learningStatus === LearningStatus.learned)
-        ?._count.id || 0;
+        ?._count.id ?? 0;
     const completionRate =
       totalWords > 0 ? (learnedWords / totalWords) * 100 : 0;
 
@@ -1271,7 +1271,7 @@ function calculateStreakDays(
   }
 
   // Continue existing streak
-  return (yesterdayProgress.streakDays || 0) + 1;
+  return (yesterdayProgress.streakDays ?? 0) + 1;
 }
 
 /**

@@ -51,7 +51,7 @@ export async function POST(
     if (!result.success) {
       void serverLog(`Failed to add session item: ${result.error}`, 'error');
       return NextResponse.json(
-        { error: result.error || 'Failed to add session item' },
+        { error: result.error ?? 'Failed to add session item' },
         { status: 500 },
       );
     }

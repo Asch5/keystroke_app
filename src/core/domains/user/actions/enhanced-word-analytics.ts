@@ -405,11 +405,11 @@ function calculateBasicMetrics(
     totalAttempts,
     correctAttempts,
     averageResponseTime,
-    currentStreak: userWord.correctStreak || 0,
-    masteryScore: userWord.masteryScore || 0,
-    skipCount: userWord.skipCount || 0,
-    mistakeCount: userWord.amountOfMistakes || 0,
-    srsLevel: userWord.srsLevel || 0,
+    currentStreak: userWord.correctStreak ?? 0,
+    masteryScore: userWord.masteryScore ?? 0,
+    skipCount: userWord.skipCount ?? 0,
+    mistakeCount: userWord.amountOfMistakes ?? 0,
+    srsLevel: userWord.srsLevel ?? 0,
   };
 }
 
@@ -510,7 +510,7 @@ function calculateSessionPerformance(
       : 0;
 
   const firstAttemptSuccesses = sessionItems.filter(
-    (item) => item.isCorrect && (item.attemptsCount || 1) === 1,
+    (item) => item.isCorrect && (item.attemptsCount ?? 1) === 1,
   ).length;
   const firstAttemptSuccessRate =
     sessionItems.length > 0
@@ -518,10 +518,10 @@ function calculateSessionPerformance(
       : 0;
 
   const multipleAttemptSuccesses = sessionItems.filter(
-    (item) => item.isCorrect && (item.attemptsCount || 1) > 1,
+    (item) => item.isCorrect && (item.attemptsCount ?? 1) > 1,
   ).length;
   const multipleAttemptItems = sessionItems.filter(
-    (item) => (item.attemptsCount || 1) > 1,
+    (item) => (item.attemptsCount ?? 1) > 1,
   ).length;
   const multipleAttemptSuccessRate =
     multipleAttemptItems > 0
@@ -602,7 +602,7 @@ function calculateProgressionMetrics(
 
   const masteryVelocity =
     sessionItems.length > 1
-      ? (userWord.masteryScore || 0) / sessionItems.length
+      ? (userWord.masteryScore ?? 0) / sessionItems.length
       : 0;
 
   // Calculate time spans safely with null checks
@@ -632,8 +632,8 @@ function calculateProgressionMetrics(
       (item) => item.masteryScore,
     ),
     masteryVelocity,
-    masteryStabilityIndex: Math.min(100, (userWord.masteryScore || 0) * 0.8),
-    srsIntervalOptimality: Math.min(100, (userWord.srsLevel || 0) * 15),
+    masteryStabilityIndex: Math.min(100, (userWord.masteryScore ?? 0) * 0.8),
+    srsIntervalOptimality: Math.min(100, (userWord.srsLevel ?? 0) * 15),
     srsSuccessRate:
       sessionItems.length > 0
         ? (sessionItems.filter((item) => item.isCorrect).length /
@@ -643,7 +643,7 @@ function calculateProgressionMetrics(
     srsRegressionCount: 0, // Would need historical SRS data
     timeToFirstCorrect,
     timeToStabilization,
-    retentionStrength: Math.min(100, (userWord.masteryScore || 0) * 0.9),
+    retentionStrength: Math.min(100, (userWord.masteryScore ?? 0) * 0.9),
     usageContextVariety: Math.min(10, sessionItems.length),
     lastUsedRecency: userWord.lastReviewedAt
       ? Math.max(
@@ -684,7 +684,7 @@ function calculateErrorAnalytics(
   const mistakesByTimeOfDay: Record<number, number> = {};
   mistakes.forEach((mistake) => {
     const hour = new Date(mistake.createdAt).getHours();
-    mistakesByTimeOfDay[hour] = (mistakesByTimeOfDay[hour] || 0) + 1;
+    mistakesByTimeOfDay[hour] = (mistakesByTimeOfDay[hour] ?? 0) + 1;
   });
 
   // Mistake recurrence pattern
@@ -792,10 +792,10 @@ function calculateComparativeMetrics(
       difficultyRelative: 50, // Simplified
     },
     learningEfficiencyIndex:
-      (userWord.masteryScore || 0) / Math.max(sessionItems.length, 1),
+      (userWord.masteryScore ?? 0) / Math.max(sessionItems.length, 1),
     predictedTimeToMastery: Math.max(
       1,
-      Math.floor((100 - (userWord.masteryScore || 0)) / 5),
+      Math.floor((100 - (userWord.masteryScore ?? 0)) / 5),
     ), // Simplified
     optimalPracticeFrequency: 24, // hours - simplified
     difficultyPercentile: 50, // Simplified
@@ -816,7 +816,7 @@ function calculateVisualLearningMetrics(
   const hasAudio = false; // Would need to check userWord.definition?.audioLinks
 
   // Use mastery score as a proxy for learning effectiveness
-  const masteryScore = userWord.masteryScore || 0;
+  const masteryScore = userWord.masteryScore ?? 0;
   const baseEffectiveness = Math.max(50, masteryScore * 0.8);
 
   return {
@@ -872,7 +872,7 @@ function calculateContextualMetrics(
     const avgResponseTime =
       dayItems
         .filter((item) => item.responseTime)
-        .reduce((sum, item) => sum + (item.responseTime || 0), 0) /
+        .reduce((sum, item) => sum + (item.responseTime ?? 0), 0) /
       Math.max(dayItems.length, 1);
 
     dayOfWeekPerformance[day] = { accuracy, responseTime: avgResponseTime };
@@ -924,8 +924,8 @@ function calculatePredictiveMetrics(
   sessionItems: UserSessionItem[],
   mistakes: LearningMistake[],
 ): PredictivePerformanceMetrics {
-  const masteryScore = userWord.masteryScore || 0;
-  const currentStreak = userWord.correctStreak || 0;
+  const masteryScore = userWord.masteryScore ?? 0;
+  const currentStreak = userWord.correctStreak ?? 0;
   const mistakeCount = mistakes.length;
 
   // Simple forgetting curve prediction
@@ -938,7 +938,7 @@ function calculatePredictiveMetrics(
   // Calculate next optimal review timing
   const nextReviewOptimalTiming = new Date();
   nextReviewOptimalTiming.setHours(
-    nextReviewOptimalTiming.getHours() + (userWord.srsLevel || 1) * 24,
+    nextReviewOptimalTiming.getHours() + (userWord.srsLevel ?? 1) * 24,
   );
 
   // Determine retention risk
@@ -989,7 +989,7 @@ function generateSmartInsights(
   const insights = [];
   const recommendations = [];
 
-  const masteryScore = userWord.masteryScore || 0;
+  const masteryScore = userWord.masteryScore ?? 0;
   const accuracy =
     sessionItems.length > 0
       ? (sessionItems.filter((item) => item.isCorrect).length /
@@ -1089,11 +1089,11 @@ function generatePerformanceTimeline(
   }
 
   // Add streak milestones
-  if ((userWord.correctStreak || 0) >= 5) {
+  if ((userWord.correctStreak ?? 0) >= 5) {
     milestones.push({
       date: new Date(userWord.lastReviewedAt || Date.now()),
       event: 'streak_milestone' as const,
-      details: `Achieved ${userWord.correctStreak || 0} correct streak`,
+      details: `Achieved ${userWord.correctStreak ?? 0} correct streak`,
       performance: 75,
     });
   }
@@ -1102,18 +1102,18 @@ function generatePerformanceTimeline(
   const trendLine = sessionItems.slice(-20).map((item) => ({
     date: new Date(item.createdAt),
     accuracy: item.isCorrect ? 100 : 0,
-    responseTime: item.responseTime || 0,
+    responseTime: item.responseTime ?? 0,
   }));
 
   // Generate predictions
   const predictions = [
     {
       date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      predictedPerformance: Math.min(100, (userWord.masteryScore || 0) + 10),
+      predictedPerformance: Math.min(100, (userWord.masteryScore ?? 0) + 10),
     },
     {
       date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      predictedPerformance: Math.min(100, (userWord.masteryScore || 0) + 25),
+      predictedPerformance: Math.min(100, (userWord.masteryScore ?? 0) + 25),
     },
   ];
 

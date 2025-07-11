@@ -27,7 +27,7 @@ class BlobStorageService {
   private readonly token: string;
 
   constructor() {
-    this.token = process.env.BLOB_READ_WRITE_TOKEN || '';
+    this.token = process.env.BLOB_READ_WRITE_TOKEN ?? '';
     if (!this.token) {
       throw new Error('BLOB_READ_WRITE_TOKEN environment variable is required');
     }

@@ -22,7 +22,7 @@ export function DictionaryErrorBoundary({
       fallbackDescription="An error occurred while loading your dictionary. Your vocabulary data is safe, but there may be a temporary issue with the display."
       showHomeButton={true}
       showBackButton={true}
-      onRetry={onRetry || undefined}
+      onRetry={onRetry ?? undefined}
       errorContext="Dictionary"
     >
       {children}

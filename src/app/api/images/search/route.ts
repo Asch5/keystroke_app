@@ -49,7 +49,7 @@ export async function GET(request: Request) {
           medium: photo.src.medium,
           large: photo.src.large,
         },
-        alt: photo.alt || 'Image',
+        alt: photo.alt ?? 'Image',
         mimeType: 'image/jpeg',
         fileSize: 0,
         photographer: photo.photographer,

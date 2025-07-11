@@ -170,7 +170,7 @@ export function useRouteLogging() {
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
-      const from = previousRoute.current || 'initial';
+      const from = previousRoute.current ?? 'initial';
       log.navigation(from, url, {
         routerMethod: 'push',
         timestamp: new Date().toISOString(),

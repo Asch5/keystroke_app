@@ -123,7 +123,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
 
             {formData.definitions.map((def, defIndex) => (
               <Card
-                key={def.id || `new-definition-${defIndex}`}
+                key={def.id ?? `new-definition-${defIndex}`}
                 className="border-2"
               >
                 <CardHeader className="pb-3">
@@ -218,7 +218,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                     <div className="space-y-2">
                       <Label>Subject/Status Labels</Label>
                       <Input
-                        value={def.subjectStatusLabels || ''}
+                        value={def.subjectStatusLabels ?? ''}
                         onChange={(e) =>
                           onDefinitionChange(
                             defIndex,
@@ -234,7 +234,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                     <div className="space-y-2">
                       <Label>General Labels</Label>
                       <Input
-                        value={def.generalLabels || ''}
+                        value={def.generalLabels ?? ''}
                         onChange={(e) =>
                           onDefinitionChange(
                             defIndex,
@@ -250,7 +250,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                     <div className="space-y-2">
                       <Label>Grammatical Note</Label>
                       <Input
-                        value={def.grammaticalNote || ''}
+                        value={def.grammaticalNote ?? ''}
                         onChange={(e) =>
                           onDefinitionChange(
                             defIndex,
@@ -266,7 +266,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                     <div className="space-y-2">
                       <Label>Usage Note</Label>
                       <Input
-                        value={def.usageNote || ''}
+                        value={def.usageNote ?? ''}
                         onChange={(e) =>
                           onDefinitionChange(
                             defIndex,

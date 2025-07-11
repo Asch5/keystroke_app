@@ -178,7 +178,7 @@ export function ManualFormsDialog({
         onOpenChange(false);
         onSuccess?.();
       } else {
-        toast.error(result.error || 'Failed to add manual forms');
+        toast.error(result.error ?? 'Failed to add manual forms');
       }
     } catch (error) {
       console.error('Error adding manual forms:', error);

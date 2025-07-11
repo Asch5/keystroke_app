@@ -82,7 +82,7 @@ export class WordService {
       const frequencyData = await frequencyManager.getFrequencyData(
         wordText,
         languageCode,
-        options?.partOfSpeech || undefined,
+        options?.partOfSpeech ?? undefined,
       );
       frequencyGeneral = frequencyData.general;
 
@@ -290,7 +290,7 @@ export class WordService {
         },
         data: {
           ...updateData,
-          variant: variant || '', // Update variant to the new one
+          variant: variant ?? '', // Update variant to the new one
         },
       });
     } else {
@@ -300,18 +300,18 @@ export class WordService {
           wordId_partOfSpeech_variant: {
             wordId,
             partOfSpeech: dbPoSToPersist || PartOfSpeech.undefined,
-            variant: variant || '',
+            variant: variant ?? '',
           },
         },
         create: {
           wordId,
           partOfSpeech: dbPoSToPersist,
           phonetic: phonetic || (config.includeDanishFields ? null : ''),
-          variant: variant || '',
+          variant: variant ?? '',
           isPlural,
           source: source,
           frequency: posFrequency,
-          etymology: etymology || null,
+          etymology: etymology ?? null,
           ...(config.includeDanishFields && { gender, forms }),
         },
         update: updateData,

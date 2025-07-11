@@ -76,13 +76,13 @@ export async function processTranslationsForWord(
             },
             update: {
               phoneticGeneral:
-                english_word_data.word.phonetic_translation || null,
+                english_word_data.word.phonetic_translation ?? null,
             },
             create: {
               word: english_word_data.word.word_translation,
               languageCode: LanguageCode.da,
               phoneticGeneral:
-                english_word_data.word.phonetic_translation || null,
+                english_word_data.word.phonetic_translation ?? null,
               sourceEntityId: SourceType.helsinki_nlp,
             },
           });

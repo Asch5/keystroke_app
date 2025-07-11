@@ -136,7 +136,7 @@ function CreateListContent() {
             .map((word) => ({
               id: word.id.toString(),
               wordText: word.wordText,
-              definition: word.definition || '',
+              definition: word.definition ?? '',
               partOfSpeech: word.partOfSpeech,
             }));
           setSelectedWords(selectedWordInfo);
@@ -186,7 +186,7 @@ function CreateListContent() {
     try {
       const result = await createCategory(
         newCategoryName,
-        newCategoryDescription || undefined,
+        newCategoryDescription ?? undefined,
       );
 
       if (result.success && result.category) {
@@ -206,7 +206,7 @@ function CreateListContent() {
       } else {
         await errorLog(
           'Failed to create category',
-          result.error || 'Unknown error',
+          result.error ?? 'Unknown error',
         );
         // Could add toast notification here for better UX
       }

@@ -56,7 +56,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
         if (statsResult.success && statsResult.statistics) {
           setStatistics(statsResult.statistics);
         } else {
-          setError(statsResult.error || 'Failed to fetch statistics');
+          setError(statsResult.error ?? 'Failed to fetch statistics');
         }
 
         if (sessionStatsResult.success && sessionStatsResult.stats) {
@@ -95,7 +95,7 @@ export function DashboardContent({ userId }: DashboardContentProps) {
     return (
       <div className="text-center py-8">
         <div className="text-error-foreground mb-4">
-          Error: {error || 'No statistics available'}
+          Error: {error ?? 'No statistics available'}
         </div>
         <Button onClick={() => window.location.reload()} variant="outline">
           Try Again

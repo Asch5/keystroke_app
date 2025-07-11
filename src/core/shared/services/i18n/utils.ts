@@ -201,7 +201,7 @@ export function formatCurrency(
   locale: UILanguageCode,
   currency?: string,
 ): string {
-  const currencyCode = currency || 'USD'; // Default to USD
+  const currencyCode = currency ?? 'USD'; // Default to USD
 
   try {
     return new Intl.NumberFormat(locale, {
@@ -281,7 +281,7 @@ export function pluralize(
     return singular;
   }
 
-  return plural || `${singular}s`;
+  return plural ?? `${singular}s`;
 }
 
 /**

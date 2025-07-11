@@ -154,7 +154,7 @@ export function AdminCreateListDialog({
     try {
       const result = await createCategory(
         newCategoryName,
-        newCategoryDescription || undefined,
+        newCategoryDescription ?? undefined,
       );
 
       if (result.success && result.category) {
@@ -168,7 +168,7 @@ export function AdminCreateListDialog({
         setShowNewCategoryForm(false);
         toast.success(`Category "${newCategoryName}" created successfully`);
       } else {
-        toast.error(result.error || 'Failed to create category');
+        toast.error(result.error ?? 'Failed to create category');
       }
     } catch (error) {
       console.error('Error creating category:', error);
@@ -210,7 +210,7 @@ export function AdminCreateListDialog({
         onListCreated();
         handleClose();
       } else {
-        toast.error(result.error || 'Failed to create list');
+        toast.error(result.error ?? 'Failed to create list');
       }
     } catch (error) {
       console.error('Error creating list:', error);

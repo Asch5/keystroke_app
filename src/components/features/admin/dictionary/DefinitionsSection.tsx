@@ -142,7 +142,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                   if (def._toDelete) return null;
                   return (
                     <Card
-                      key={def.id || `new-${defIndex}`}
+                      key={def.id ?? `new-${defIndex}`}
                       className="relative"
                     >
                       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -238,7 +238,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                             </Label>
                             <Input
                               id={`subject-labels-${defIndex}`}
-                              value={def.subjectStatusLabels || ''}
+                              value={def.subjectStatusLabels ?? ''}
                               onChange={(e) =>
                                 onUpdateDefinition(
                                   defIndex,
@@ -256,7 +256,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                             </Label>
                             <Input
                               id={`general-labels-${defIndex}`}
-                              value={def.generalLabels || ''}
+                              value={def.generalLabels ?? ''}
                               onChange={(e) =>
                                 onUpdateDefinition(
                                   defIndex,
@@ -274,7 +274,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                             </Label>
                             <Input
                               id={`grammatical-note-${defIndex}`}
-                              value={def.grammaticalNote || ''}
+                              value={def.grammaticalNote ?? ''}
                               onChange={(e) =>
                                 onUpdateDefinition(
                                   defIndex,
@@ -292,7 +292,7 @@ const DefinitionsSection = memo(function DefinitionsSection({
                             </Label>
                             <Input
                               id={`usage-note-${defIndex}`}
-                              value={def.usageNote || ''}
+                              value={def.usageNote ?? ''}
                               onChange={(e) =>
                                 onUpdateDefinition(
                                   defIndex,

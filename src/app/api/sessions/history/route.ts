@@ -19,9 +19,9 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     // Parse pagination parameters
-    const page = parseInt(searchParams.get('page') || '1', 10);
+    const page = parseInt(searchParams.get('page') ?? '1', 10);
     const pageSize = Math.min(
-      parseInt(searchParams.get('pageSize') || '20', 10),
+      parseInt(searchParams.get('pageSize') ?? '20', 10),
       100, // Maximum page size
     );
 
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
         'error',
       );
       return NextResponse.json(
-        { error: result.error || 'Failed to fetch session history' },
+        { error: result.error ?? 'Failed to fetch session history' },
         { status: 500 },
       );
     }

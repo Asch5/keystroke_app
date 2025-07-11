@@ -53,7 +53,7 @@ function enhancedMiddleware(request: NextRequest) {
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
-  const userRole = req.auth?.user?.role || 'user';
+  const userRole = req.auth?.user?.role ?? 'user';
 
   // First run our enhanced middleware
   enhancedMiddleware(req);

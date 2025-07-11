@@ -165,13 +165,13 @@ export async function searchWords(
               frequency: detail.frequency,
               source: detail.source,
               hasImage: !!definition.image,
-              imageUrl: definition.image?.url || null,
+              imageUrl: definition.image?.url ?? null,
               hasAudio: !!audio,
-              audioUrl: audio?.url || null,
+              audioUrl: audio?.url ?? null,
               exampleCount: definition.examples.length,
               isInUserDictionary: !!userDictEntry,
-              userDictionaryId: userDictEntry?.id || null,
-              userLearningStatus: userDictEntry?.learningStatus || null,
+              userDictionaryId: userDictEntry?.id ?? null,
+              userLearningStatus: userDictEntry?.learningStatus ?? null,
               translations: definition.translationLinks.map((tl) => ({
                 id: tl.translation.id,
                 languageCode: tl.translation.languageCode,
@@ -328,7 +328,7 @@ export async function searchWordsForUser(
           const bestDefinition = getBestDefinitionForUser(
             definition.definition,
             languageCode,
-            definition.translations || [],
+            definition.translations ?? [],
             userNativeLanguage,
           );
 

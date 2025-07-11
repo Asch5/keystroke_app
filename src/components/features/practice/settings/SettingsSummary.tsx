@@ -18,7 +18,7 @@ export function SettingsSummary({ settings }: SettingsSummaryProps) {
       4: 'Advanced',
       5: 'Expert',
     };
-    return labels[level] || 'Intermediate';
+    return labels[level] ?? 'Intermediate';
   };
 
   return (

@@ -33,7 +33,7 @@ export function TypingWordDisplay({
         {!showResult ? (
           /* Show one-word translation or "-" during typing */
           <div className="text-4xl font-bold mb-4">
-            {sessionState.currentWord.oneWordTranslation || '-'}
+            {sessionState.currentWord.oneWordTranslation ?? '-'}
           </div>
         ) : (
           /* Show target word with phonetic after completion */
@@ -86,8 +86,8 @@ export function TypingWordDisplay({
         <div className="text-xs text-muted-foreground text-center space-y-1">
           <div>🔧 Debug Info:</div>
           <div>Show Images: {settings.showDefinitionImages ? '✅' : '❌'}</div>
-          <div>Image ID: {sessionState.currentWord.imageId || 'None'}</div>
-          <div>Image URL: {sessionState.currentWord.imageUrl || 'None'}</div>
+          <div>Image ID: {sessionState.currentWord.imageId ?? 'None'}</div>
+          <div>Image URL: {sessionState.currentWord.imageUrl ?? 'None'}</div>
         </div>
       )}
     </div>

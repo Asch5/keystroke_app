@@ -131,7 +131,7 @@ export class AudioService {
           } else {
             reject(
               new Error(
-                `Failed to play audio: ${playError.message || 'Unknown error'}`,
+                `Failed to play audio: ${playError.message ?? 'Unknown error'}`,
               ),
             );
           }

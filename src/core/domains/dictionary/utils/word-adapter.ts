@@ -10,7 +10,7 @@ export function convertWordEntryDataToWordDetails(
 ): WordFormData {
   // Extract primary WordDetails and aggregate data
   const primaryWordDetails = wordEntryData.details[0];
-  const etymology = primaryWordDetails?.etymology || null;
+  const etymology = primaryWordDetails?.etymology ?? null;
 
   // Aggregate all definitions from all WordDetails
   const allDefinitions = wordEntryData.details.flatMap((detail) =>
@@ -32,7 +32,7 @@ export function convertWordEntryDataToWordDetails(
       usageNote: def.usageNote,
       isInShortDef: def.isInShortDef,
       examples: def.examples,
-      translations: def.translations || [],
+      translations: def.translations ?? [],
     })),
   );
 
@@ -53,7 +53,7 @@ export function convertWordEntryDataToWordDetails(
       audio: null, // Not directly available in WordEntryData
       audioFiles: allAudioFiles,
       etymology: etymology,
-      isPlural: primaryWordDetails?.isPlural || false,
+      isPlural: primaryWordDetails?.isPlural ?? false,
       pluralForm: null, // Not available in WordEntryData
       pastTenseForm: null, // Not available in WordEntryData
       pastParticipleForm: null, // Not available in WordEntryData
@@ -70,7 +70,7 @@ export function convertWordEntryDataToWordDetails(
     relatedWords: wordEntryData.relatedWords,
     definitions: allDefinitions,
     phrases: [], // Phrases are not included in WordEntryData for now
-    mistakes: wordEntryData.mistakes || [],
+    mistakes: wordEntryData.mistakes ?? [],
   };
 }
 

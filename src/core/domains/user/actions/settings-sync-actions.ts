@@ -366,8 +366,8 @@ export async function importUserSettingsData(data: SettingsImportData) {
 
     void serverLog('Settings imported successfully', 'info', {
       userId,
-      settingsKeys: Object.keys(data.settings || {}),
-      studyPreferencesKeys: Object.keys(data.studyPreferences || {}),
+      settingsKeys: Object.keys(data.settings ?? {}),
+      studyPreferencesKeys: Object.keys(data.studyPreferences ?? {}),
       hasUserSettings: !!data.userSettings,
     });
 

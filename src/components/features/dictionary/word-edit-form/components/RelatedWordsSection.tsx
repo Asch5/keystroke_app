@@ -76,7 +76,7 @@ export const RelatedWordsSection = memo(function RelatedWordsSection({
   addRelatedWord,
   removeRelatedWord,
 }: RelatedWordsSectionProps) {
-  const relatedWords = form.watch('relatedWords') || {};
+  const relatedWords = form.watch('relatedWords') ?? {};
 
   const relationshipTypes = [
     RelationshipType.synonym,
@@ -101,7 +101,7 @@ export const RelatedWordsSection = memo(function RelatedWordsSection({
           </TabsList>
 
           {relationshipTypes.map((type) => {
-            const wordsOfType = relatedWords[type] || [];
+            const wordsOfType = relatedWords[type] ?? [];
 
             return (
               <TabsContent key={type} value={type} className="space-y-4">

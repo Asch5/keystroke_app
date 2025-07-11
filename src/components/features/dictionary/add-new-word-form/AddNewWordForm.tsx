@@ -117,7 +117,7 @@ export default function AddNewWordForm({ className }: AddNewWordFormProps) {
 
   return (
     <div
-      className={`mt-10 w-full max-w-md mx-auto space-y-6 ${className || ''}`}
+      className={`mt-10 w-full max-w-md mx-auto space-y-6 ${className ?? ''}`}
     >
       <Card>
         <CardHeader>

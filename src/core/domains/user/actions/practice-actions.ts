@@ -242,7 +242,7 @@ export async function createTypingPracticeSession(
     // Convert legacy request to new session configuration
     const config: SessionConfiguration = {
       practiceType: 'typing',
-      wordsToStudy: request.wordsCount || 20,
+      wordsToStudy: request.wordsCount ?? 20,
       difficulty: request.difficultyLevel,
       targetLanguageCode: 'da' as LanguageCode, // Default to Danish
       timeLimit: request.timeLimit,
@@ -262,12 +262,12 @@ export async function createTypingPracticeSession(
     if (!result.success || !result.sessionId || !result.words) {
       return {
         success: false,
-        error: result.error || 'Failed to create session',
+        error: result.error ?? 'Failed to create session',
       };
     }
 
     // Calculate difficulty config for legacy compatibility
-    const difficultyLevel = request.difficultyLevel || 3;
+    const difficultyLevel = request.difficultyLevel ?? 3;
     const difficultyConfig: DifficultyConfig =
       DIFFICULTY_ADJUSTMENT.DIFFICULTY_LEVELS[
         difficultyLevel as keyof typeof DIFFICULTY_ADJUSTMENT.DIFFICULTY_LEVELS
@@ -278,7 +278,7 @@ export async function createTypingPracticeSession(
       session: {
         sessionId: result.sessionId,
         words: result.words,
-        timeLimit: config.timeLimit || 0,
+        timeLimit: config.timeLimit ?? 0,
         difficultyConfig,
       },
     };
@@ -314,7 +314,7 @@ export async function createEnhancedPracticeSession(
     // Convert to unified practice session
     const config: SessionConfiguration = {
       practiceType: request.practiceType,
-      wordsToStudy: request.wordsCount || 20,
+      wordsToStudy: request.wordsCount ?? 20,
       difficulty: request.difficultyLevel,
       targetLanguageCode: 'da' as LanguageCode,
       timeLimit: request.timeLimit,
@@ -333,7 +333,7 @@ export async function createEnhancedPracticeSession(
     if (!result.success || !result.session) {
       return {
         success: false,
-        error: result.error || 'Failed to create enhanced session',
+        error: result.error ?? 'Failed to create enhanced session',
       };
     }
 
@@ -344,7 +344,7 @@ export async function createEnhancedPracticeSession(
       sessionId: result.session.sessionId,
       practiceType: result.session.practiceType,
       words: result.session.words,
-      difficultyLevel: config.difficulty || 2,
+      difficultyLevel: config.difficulty ?? 2,
       currentWordIndex: 0,
       settings: config.settings,
       config: practiceConfigs[request.practiceType],
@@ -386,7 +386,7 @@ export async function getPracticeSessionProgress(sessionId: string): Promise<{
     if (!statsResult.success || !statsResult.stats) {
       return {
         success: false,
-        error: statsResult.error || 'Failed to get session stats',
+        error: statsResult.error ?? 'Failed to get session stats',
       };
     }
 

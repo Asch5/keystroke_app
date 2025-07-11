@@ -101,7 +101,7 @@ export default async function WordListsPage() {
   // Extract user information for better type safety and component props
   const userContext = {
     id: session.user.id,
-    name: session.user.name || 'User',
+    name: session.user.name ?? 'User',
     email: session.user.email,
     languages: {
       base: userData.baseLanguageCode,

@@ -29,10 +29,10 @@
 //  * Get all examples from a Danish dictionary object
 //  */
 // export function getAllExamples(ddo: DanishDictionaryObject): Example[] {
-//   const definitionExamples = ddo.definition.examples || [];
+//   const definitionExamples = ddo.definition.examples ?? [];
 
 //   const fixedExpressionExamples = ddo.fixed_expressions.flatMap(
-//     (expression: FixedExpression) => expression.examples || [],
+//     (expression: FixedExpression) => expression.examples ?? [],
 //   );
 
 //   return [...definitionExamples, ...fixedExpressionExamples];

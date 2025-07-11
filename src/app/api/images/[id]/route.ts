@@ -68,7 +68,7 @@ export async function GET(
     // Return the image with appropriate headers
     const imageData = await imageResponse.blob();
     const contentType =
-      imageResponse.headers.get('content-type') || 'image/jpeg';
+      imageResponse.headers.get('content-type') ?? 'image/jpeg';
 
     const duration = Date.now() - startTime;
 
@@ -95,7 +95,7 @@ export async function GET(
       error instanceof Error ? error.message : 'Unknown error';
 
     void serverLog(
-      `💥 Image API: Error fetching image ${imageId || 'unknown'}: ${errorMessage}`,
+      `💥 Image API: Error fetching image ${imageId ?? 'unknown'}: ${errorMessage}`,
       'error',
       {
         imageId,

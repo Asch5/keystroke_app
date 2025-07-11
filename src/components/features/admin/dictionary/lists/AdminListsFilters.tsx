@@ -101,7 +101,7 @@ export function AdminListsFilters({
           <div className="space-y-2">
             <Label>Category</Label>
             <Select
-              value={filters.category || ''}
+              value={filters.category ?? ''}
               onValueChange={(value) =>
                 onFiltersChange({
                   ...filters,
@@ -127,7 +127,7 @@ export function AdminListsFilters({
           <div className="space-y-2">
             <Label>Difficulty</Label>
             <Select
-              value={filters.difficulty || ''}
+              value={filters.difficulty ?? ''}
               onValueChange={(value) => {
                 const newFilters = { ...filters };
                 if (value === 'all') {
@@ -156,7 +156,7 @@ export function AdminListsFilters({
           <div className="space-y-2">
             <Label>Language</Label>
             <Select
-              value={filters.language || ''}
+              value={filters.language ?? ''}
               onValueChange={(value) => {
                 const newFilters = { ...filters };
                 if (value === 'all') {

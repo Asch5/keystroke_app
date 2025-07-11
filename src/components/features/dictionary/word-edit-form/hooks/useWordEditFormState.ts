@@ -121,10 +121,10 @@ export function useWordEditFormState(
     if (wordDetails && !isLoading) {
       // Convert database format (null) to form format (undefined), omitting undefined values
       const formData: WordFormValues = omitUndefinedProperties({
-        word: wordDetails.word.text || '',
+        word: wordDetails.word.text ?? '',
         phonetic: convertNullToUndefined(wordDetails.word.phoneticGeneral),
         etymology: convertNullToUndefined(wordDetails.word.etymology),
-        definitions: (wordDetails.definitions || []).map((def) =>
+        definitions: (wordDetails.definitions ?? []).map((def) =>
           omitUndefinedProperties({
             text: def.text,
             partOfSpeech: def.partOfSpeech,
@@ -145,7 +145,7 @@ export function useWordEditFormState(
             ),
           }),
         ),
-        audioFiles: wordDetails.audioFiles || [],
+        audioFiles: wordDetails.audioFiles ?? [],
         relatedWords: wordDetails.relatedWords
           ? Object.fromEntries(
               Object.entries(wordDetails.relatedWords).map(([key, words]) => [

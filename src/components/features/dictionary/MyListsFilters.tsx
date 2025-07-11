@@ -52,7 +52,7 @@ export function MyListsFilters({
           </div>
 
           <Select
-            value={userListFilters.difficulty || 'all'}
+            value={userListFilters.difficulty ?? 'all'}
             onValueChange={(value) => {
               const newFilters: UserListFilters = { ...userListFilters };
               if (value && value !== 'all') {
@@ -77,7 +77,7 @@ export function MyListsFilters({
           </Select>
 
           <Select
-            value={userListFilters.sortBy || 'createdAt'}
+            value={userListFilters.sortBy ?? 'createdAt'}
             onValueChange={(value) =>
               setUserListFilters((prev) => ({
                 ...prev,

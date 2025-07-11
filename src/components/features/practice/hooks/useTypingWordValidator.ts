@@ -42,8 +42,8 @@ export function useTypingWordValidator({
       const mistakes = [];
 
       for (let i = 0; i < Math.max(userInput.length, correctWord.length); i++) {
-        const userChar = userInput[i] || '';
-        const correctChar = correctWord[i] || '';
+        const userChar = userInput[i] ?? '';
+        const correctChar = correctWord[i] ?? '';
 
         if (userChar !== correctChar) {
           mistakes.push({
@@ -105,7 +105,7 @@ export function useTypingWordValidator({
 
           return result;
         } else {
-          toast.error(response.error || 'Failed to validate input');
+          toast.error(response.error ?? 'Failed to validate input');
         }
       } catch (error) {
         console.error('Error validating input:', error);

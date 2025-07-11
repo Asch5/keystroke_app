@@ -52,7 +52,7 @@ export function usePracticeGameState({
   const [currentPhase, setCurrentPhase] = useState<PracticePhase>('game');
   const [showWordCard, setShowWordCard] = useState(false);
   const [currentWordIndex, setCurrentWordIndex] = useState(
-    session.currentWordIndex || 0,
+    session.currentWordIndex ?? 0,
   );
   const [sessionProgress, setSessionProgress] = useState<SessionProgress>({
     correctAnswers: 0,

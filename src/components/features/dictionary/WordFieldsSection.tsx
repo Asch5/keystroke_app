@@ -61,7 +61,7 @@ const WordFieldsSection = memo(function WordFieldsSection({
               <Label htmlFor="word-text">Word Text *</Label>
               <Input
                 id="word-text"
-                value={formData.wordText || ''}
+                value={formData.wordText ?? ''}
                 onChange={(e) => onInputChange('wordText', e.target.value)}
                 placeholder="Enter the word"
                 required
@@ -73,7 +73,7 @@ const WordFieldsSection = memo(function WordFieldsSection({
               <Label htmlFor="language-code">Language Code</Label>
               <Input
                 id="language-code"
-                value={formData.languageCode || ''}
+                value={formData.languageCode ?? ''}
                 onChange={(e) => onInputChange('languageCode', e.target.value)}
                 placeholder="e.g., da, en, de"
               />
@@ -84,7 +84,7 @@ const WordFieldsSection = memo(function WordFieldsSection({
               <Label htmlFor="phonetic-general">Phonetic General</Label>
               <Input
                 id="phonetic-general"
-                value={formData.phoneticGeneral || ''}
+                value={formData.phoneticGeneral ?? ''}
                 onChange={(e) =>
                   onInputChange('phoneticGeneral', e.target.value)
                 }
@@ -97,7 +97,7 @@ const WordFieldsSection = memo(function WordFieldsSection({
               <Label htmlFor="etymology">Etymology</Label>
               <Input
                 id="etymology"
-                value={formData.etymology || ''}
+                value={formData.etymology ?? ''}
                 onChange={(e) => onInputChange('etymology', e.target.value)}
                 placeholder="Word origin/etymology"
               />
@@ -109,7 +109,7 @@ const WordFieldsSection = memo(function WordFieldsSection({
             <Label htmlFor="variants">Variants</Label>
             <Textarea
               id="variants"
-              value={formData.variant || ''}
+              value={formData.variant ?? ''}
               onChange={(e) => onInputChange('variant', e.target.value)}
               placeholder="Alternative forms or spellings"
               className="min-h-[80px]"
@@ -121,7 +121,7 @@ const WordFieldsSection = memo(function WordFieldsSection({
             <Label htmlFor="forms">Forms</Label>
             <Textarea
               id="forms"
-              value={formData.forms || ''}
+              value={formData.forms ?? ''}
               onChange={(e) => onInputChange('forms', e.target.value)}
               placeholder="Grammatical forms (plural, past tense, etc.)"
               className="min-h-[80px]"

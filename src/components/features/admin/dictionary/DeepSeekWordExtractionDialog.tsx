@@ -164,7 +164,7 @@ export function DeepSeekWordExtractionDialog({
       const result = await removeLastExtractionAttempt();
 
       if (result.success) {
-        const count = result.data?.removedCount || 0;
+        const count = result.data?.removedCount ?? 0;
         if (count > 0) {
           toast.success(`Removed ${count} words from last extraction attempt`);
           onSuccess();
@@ -172,7 +172,7 @@ export function DeepSeekWordExtractionDialog({
           toast.info('No recent DeepSeek extractions found to remove');
         }
       } else {
-        toast.error(result.error || 'Failed to remove last extraction');
+        toast.error(result.error ?? 'Failed to remove last extraction');
       }
     } catch (error) {
       console.error('Error removing last attempt:', error);
@@ -189,7 +189,7 @@ export function DeepSeekWordExtractionDialog({
       const result = await cleanupIncorrectDeepSeekWords();
 
       if (result.success) {
-        const count = result.data?.cleanedUp || 0;
+        const count = result.data?.cleanedUp ?? 0;
         if (count > 0) {
           toast.success(`Cleaned up ${count} incorrect DeepSeek words`);
           onSuccess();
@@ -197,7 +197,7 @@ export function DeepSeekWordExtractionDialog({
           toast.info('No incorrect words found to clean up');
         }
       } else {
-        toast.error(result.error || 'Failed to cleanup incorrect words');
+        toast.error(result.error ?? 'Failed to cleanup incorrect words');
       }
     } catch (error) {
       console.error('Error during cleanup:', error);
@@ -266,11 +266,11 @@ export function DeepSeekWordExtractionDialog({
 
       if (result.success) {
         toast.success(
-          `Successfully extracted ${result.data?.successCount || 0} words`,
+          `Successfully extracted ${result.data?.successCount ?? 0} words`,
         );
         onSuccess();
       } else {
-        toast.error(result.error || 'Extraction failed');
+        toast.error(result.error ?? 'Extraction failed');
       }
     } catch (error) {
       console.error('Extraction error:', error);
@@ -687,7 +687,7 @@ export function DeepSeekWordExtractionDialog({
                     <Alert>
                       <XCircle className="h-4 w-4" />
                       <AlertDescription>
-                        {processingState.results.error || 'Extraction failed'}
+                        {processingState.results.error ?? 'Extraction failed'}
                       </AlertDescription>
                     </Alert>
                   )}

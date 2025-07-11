@@ -337,20 +337,20 @@ export function transformStateToDatabase(state: Partial<SettingsState>): {
   studyPreferences: Record<string, unknown>;
 } {
   const settings: Record<string, unknown> = {
-    ui: state.ui || {},
+    ui: state.ui ?? {},
     filters: {
-      dictionary: state.filters?.dictionary || {},
-      adminDictionary: state.filters?.adminDictionary || {},
+      dictionary: state.filters?.dictionary ?? {},
+      adminDictionary: state.filters?.adminDictionary ?? {},
     },
   };
 
   const studyPreferences: Record<string, unknown> = {
-    learning: state.learning || {},
+    learning: state.learning ?? {},
     practice: {
-      typing: state.practice?.typing || {},
-      vocabulary: state.practice?.vocabulary || {},
-      flashcards: state.practice?.flashcards || {},
-      quiz: state.practice?.quiz || {},
+      typing: state.practice?.typing ?? {},
+      vocabulary: state.practice?.vocabulary ?? {},
+      flashcards: state.practice?.flashcards ?? {},
+      quiz: state.practice?.quiz ?? {},
     },
   };
 

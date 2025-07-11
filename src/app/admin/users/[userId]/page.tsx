@@ -159,7 +159,7 @@ export default async function UserDetailsPage({
           <div>
             <p className="text-sm text-content-secondary">Daily Goal</p>
             <p className="text-lg text-foreground">
-              {user.userSettings?.dailyGoal || 'Not set'} words
+              {user.userSettings?.dailyGoal ?? 'Not set'} words
             </p>
           </div>
           <div>
@@ -177,7 +177,7 @@ export default async function UserDetailsPage({
           <div>
             <p className="text-sm text-content-secondary">Session Duration</p>
             <p className="text-lg text-foreground">
-              {user.userSettings?.sessionDuration || 'Default'} minutes
+              {user.userSettings?.sessionDuration ?? 'Default'} minutes
             </p>
           </div>
         </div>

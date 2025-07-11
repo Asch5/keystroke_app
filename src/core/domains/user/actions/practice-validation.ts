@@ -109,7 +109,7 @@ export async function validateTypingInput(
 
     // Get the correct word text
     const correctWord =
-      userWord.definition.wordDetails[0]?.wordDetails?.word?.word || '';
+      userWord.definition.wordDetails[0]?.wordDetails?.word?.word ?? '';
 
     if (!correctWord) {
       return { success: false, error: 'Correct word not found' };
@@ -138,9 +138,9 @@ export async function validateTypingInput(
     }
 
     // Update user dictionary progress
-    const newReviewCount = (userWord.reviewCount || 0) + 1;
+    const newReviewCount = (userWord.reviewCount ?? 0) + 1;
     const newCorrectStreak = validationResult.isCorrect
-      ? (userWord.correctStreak || 0) + 1
+      ? (userWord.correctStreak ?? 0) + 1
       : 0;
 
     // Calculate new learning metrics

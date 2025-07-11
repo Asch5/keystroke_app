@@ -305,7 +305,7 @@ export async function extractWordsFromDefinitionsBatch(
           word: null,
           confidence: 0,
           connected: false,
-          error: result.error || 'Word extraction failed',
+          error: result.error ?? 'Word extraction failed',
         });
         failureCount++;
       }

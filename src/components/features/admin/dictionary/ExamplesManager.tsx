@@ -71,7 +71,7 @@ const ExamplesManager = memo(function ExamplesManager({
                 if ((example as ExampleWithDeleteFlag)._toDelete) return null;
                 return (
                   <Card
-                    key={example.id || `new-ex-${exIndex}`}
+                    key={example.id ?? `new-ex-${exIndex}`}
                     className="bg-muted/30"
                   >
                     <CardContent className="pt-4">
@@ -109,7 +109,7 @@ const ExamplesManager = memo(function ExamplesManager({
                               </Label>
                               <Input
                                 id={`ex-grammatical-${definitionIndex}-${exIndex}`}
-                                value={example.grammaticalNote || ''}
+                                value={example.grammaticalNote ?? ''}
                                 onChange={(e) =>
                                   onUpdateExample(
                                     definitionIndex,
@@ -130,7 +130,7 @@ const ExamplesManager = memo(function ExamplesManager({
                               </Label>
                               <Input
                                 id={`ex-source-${definitionIndex}-${exIndex}`}
-                                value={example.sourceOfExample || ''}
+                                value={example.sourceOfExample ?? ''}
                                 onChange={(e) =>
                                   onUpdateExample(
                                     definitionIndex,
